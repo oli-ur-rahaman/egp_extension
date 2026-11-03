@@ -27,7 +27,7 @@ The top menu shows on every page.
 | Menu item | Path | Likely flow |
 |---|---|---|
 | My Dashboard | `/resources/common/InboxMessage.jsp` | — |
-| Advance Search | `/resources/common/AllTenders.jsp?h=t` | Flow 2 Tender Info? |
+| Advance Search | `/resources/common/AllTenders.jsp?h=t` | Flows 2–5: owner says use the homepage search dropdown → Advanced Search, **logged out** (D11) |
 | eTenders | `/resources/common/StdTenderSearch.jsp?h=t` | Flow 2 Tender Info? |
 | Annual Procurement Plans | `/resources/common/SearchAPP.jsp` | Flow 3 APP Info |
 | eContracts | `/resources/common/SearchNOA.jsp` | Flow 4 Contract Info |

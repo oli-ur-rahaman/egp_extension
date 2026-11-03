@@ -805,6 +805,7 @@ egp_ext/
 | D8 | No IP rotation in v1; documented extension point only | Recommended (§7.2), pending your final call |
 | D9 | MV3 + Side Panel + vanilla JS + IndexedDB + SheetJS | Architect's call (§3.9) |
 | D10 | All site knowledge externalised to a versioned Site Profile | Architect's call — prerequisite for §6 |
+| D11 | Flows 2–5 run **logged out** (public Advanced Search, all departments); Flow 1 runs logged in (PWD-scoped report) | Owner, 2026-11-04 (recon R2). See docs/recon/flow-1.md |
 
 ### Open — to resolve during Phase 1
 

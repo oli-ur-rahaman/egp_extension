@@ -142,15 +142,20 @@ async function cmdWatch() {
     }
   });
 
-  await cdp.send('Network.enable');
-  console.log(`Recording network on "${tab.title}" for ${seconds} s. Do the clicks now.`);
-  await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-  cdp.close();
-
   const dir = path.join(rawDir, `${stamp()}-${safeLabel(label)}`);
   await mkdir(dir, { recursive: true });
+  // Saved every 2 s, so the capture survives the process being stopped early.
+  const save = () => writeFile(path.join(dir, 'network.json'), JSON.stringify([...requests.values()], null, 2));
+  const timer = setInterval(save, 2000);
+
+  await cdp.send('Network.enable');
+  console.log(`Recording network on "${tab.title}" for ${seconds} s into ${path.relative(root, dir)}. Do the clicks now.`);
+  await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+  clearInterval(timer);
+  cdp.close();
+
+  await save();
   const list = [...requests.values()];
-  await writeFile(path.join(dir, 'network.json'), JSON.stringify(list, null, 2));
   console.log(`Saved ${list.length} request(s) to ${path.relative(root, dir)}`);
   for (const r of list.filter((x) => ['Document', 'XHR', 'Fetch'].includes(x.type))) {
     console.log(`  ${r.method} ${r.status ?? '…'} ${r.type} ${r.durationMs ?? '?'}ms ${r.url.slice(0, 120)}`);

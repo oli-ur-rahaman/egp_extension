@@ -1,0 +1,106 @@
+# Recon R2 — Flow 1: Procurement Transaction Report
+
+**Session:** R2, 2026-11-04 · **Driver:** owner (logged in, PWD officer account) · **Observer:** Claude over CDP
+**Status:** [~] in progress. One generate captured so far (an all-zero result). A non-empty result is still needed.
+
+## Key decision from this session
+
+**D11. Flows 2–5 run logged out; Flow 1 runs logged in.** The owner confirmed that the public pages (homepage → search dropdown → Advanced Search) offer a department selector only when logged out. Logged in, they are restricted to PWD. The Procurement Transaction Report is only available logged in. Consequences:
+
+- The Sentinel's `LOGIN_WALL` handling applies to **Flow 1 only**. For Flows 2–5, a logged-in page is the wrong state: the extension must tell the user to log out or use a logged-out window.
+- Flows 2–5 recon (R3–R6) is done logged out.
+
+## A. Identity
+
+| Item | Finding |
+|---|---|
+| Menu path | Reports → Procurement Transaction Report |
+| URL | `/report/ProcTransReport.jsp` (page title "Procurement Transaction Report (Nature Wise)") |
+| Direct GET | Works while logged in (the page loads from its URL) |
+| Department | **Fixed by the login.** Hidden `depId=21`, `depName=Public Works Department (PWD)`; not selectable |
+| Page tech | JSP, jQuery 1.4.3, inline handlers |
+
+## B. Filters
+
+| # | Label | Control | `name` | Options | Placeholder / "no filter" value | Change handler |
+|---|---|---|---|---|---|---|
+| 1 | By Financial Year * | `select#cmbFinancialYear` | `financialyear` | 18 years, `2010-2011` … `2027-2028` | `0` "Please Select Financial Year". **Mandatory** (client-side `validate()`) | `changeQuater()`: rebuilds Quarter **client-side**, no request |
+| 2 | By Quarter | `select#quater` | `quater` (+ hidden `quatername` = option text) | 10: All Four Quarter, Q1–Q4, Q1+Q2, Q2+Q3, Q3+Q4, Q1+Q2+Q3, Q2+Q3+Q4 | none ("All Four Quarter" is the default) | `setQuaterName()` |
+| 3 | PE Office | `select#cmboffice` | `offId` (+ hidden `offName`) | 224 PWD offices | **none**: the first office is preselected; there is no "all offices" option | `setOffName()` only (no request) |
+| 4 | By Programme | `select#program` | `program` (+ hidden `programname`) | 3,691 | `0` "Please Select Programme" | `onSelectionOfProject()`: XHR, replaces Project options |
+| 5 | By Project | `select#project` | `project` (+ hidden `projectname`) | 11,615 initially | `0` "Please Select Project" | `setProjectName()` |
+| 6 | Budget Type | `select#cmbBudType` | `cmbBudType` (+ hidden `budgetType` = option text) | Development `1`, Revenue `2`, Own Fund `3` | `0` "--Select Budget Type--" | `getProject()`: XHR, replaces Project options |
+
+**Quarter values are date ranges** built from the year: `Q1` of 2024-2025 = `2024-07-1_2024-09-30`, All Four Quarter = `2024-07-1_2025-06-30`. Before a year is chosen they contain `undefined`.
+
+**Portal bugs to code around:**
+1. The option "Q2 and Q3 and Q4" is written `<option value'…'>`, a typo, so its submitted value is the text `Q2 and Q3 and Q4`, not a date range. Don't offer it, or send its correct range ourselves.
+2. `getProject()` maps Budget Type to a different vocabulary before the XHR: Development → `Aid or Grant`, Revenue → `Government`, Own Fund → `Own fund`, none → `All`. The submitted form still carries `cmbBudType=1` and `budgetType=Development`.
+3. Changing PE Office doesn't refresh Project, although `getProject()` filters Project by office. The Project list can therefore be stale for the office shown.
+
+### Dependency graph
+
+```
+Financial Year ──(client-side)──► Quarter
+PE Office ─┐
+Budget Type ┴──(XHR getProject)──► Project
+Programme ─────(XHR getProjectFrmPrograme)──► Project
+```
+
+Project has two parents, and the last one changed wins. Programme isn't filtered by office (all 3,691 are always listed).
+
+## C. Search and results
+
+| Item | Finding |
+|---|---|
+| Search | **Generate** = `input#generate` (submit) → full-page **form POST** to `/report/ProcTransReport.jsp`, `application/x-www-form-urlencoded`, ~290 ms |
+| POST body | `financialyear, quater, quatername, depName, depId, offId, offName, program, programname, project, projectname, cmbBudType, budgetType, generate=Generate` |
+| **Fast path** | Yes. A plain form POST with known fields, and the response is server-rendered HTML. The engine can send the POST directly and parse the HTML, with no clicking (Q1 answered: postback, not JSON) |
+| Criteria echo | The results page prints "Search Criteria : By Financial Year : …, By Quarter : …, PE Office : …" above the table. This is useful as provenance and as a check that the server applied our filters |
+| Results table | `table#tab1.tableList_3` |
+| Pagination | **None.** It's an aggregate report: one row per procurement method plus a Total row |
+| Export links | "Print"; "Save As PDF" → `/TorRptServlet?…&action=PTRpt&…` (not needed) |
+
+### Results table layout (Nature Wise)
+
+Three header rows, then a row of column numbers 1–18, then data rows.
+
+| Col | Header (group → sub) |
+|---|---|
+| 1 | Sr. No |
+| 2 | Method of Procurement |
+| 3 / 4 | Total Contract Package/Lot planned as per Proc. Plan (No.) → National / International |
+| 5 / 6 | Total planned amount as per Proc. Plan (Crore BDT) → National / International |
+| 7 / 8 | Total Tender on Live → National / International |
+| 9 / 10 | Total Tender on Being Evaluated → National / International |
+| 11 / 12 | Total Contract Package/Lot awarded/contract signed (No.) → National / International |
+| 13 / 14 | Total Contracted amount (Crore BDT) → National / International |
+| 15 / 16 | Progress as against planned No. of package/Lot (%) → National (Col 11/3)*100 / International (Col 12/4)*100 |
+| 17 / 18 | Progress as against planned amount (%) → National (Col 13/5)*100 / International (Col 14/6)*100 |
+
+The last row is the Total, e.g. "Total Development Budget" (spans cols 1–2). Amounts have 3 decimals (Crore BDT). Counts are integers.
+
+**Implications for the design**
+- The Excel row = one method row × one filter combination, with the filter values as provenance columns. Flat headers are built by joining the groups, e.g. `planned_packages_national`.
+- There is no "of N" total to reconcile against. The **reconciliation oracle is the Total row**: the sum of the method rows must equal the Total row, column by column.
+- Columns 15–18 are derived. Store them as given and also check them against their formulas.
+
+## D. Detail pages
+
+Not applicable (Pattern A).
+
+## E. States captured
+
+| Page ID | State | Captured |
+|---|---|---|
+| P-1.1 | Initial load, filters at defaults | [x] |
+| P-1.2 | Cascade: Budget Type → Project, Programme → Project (network) | [x] |
+| P-1.3 | Validation: Generate with no year | [x] from code: client-side `validate()` adds `div.err` "Please select Financial Year". No request is sent |
+| P-1.4 | Results | [~] only an all-zero result so far (FY 2024-2025, Q1, Chattogram PWD Division-1, a single narrow Programme, Development) |
+| P-1.6 | Empty | [x] **Empty is not "no rows"**: the table renders with only the Total row, all zeros. Treat all-zero as `EMPTY` |
+| P-1.7 | Search request | [x] see C |
+
+## Open questions for the owner
+
+1. **Which filters get "All" iteration?** Iterating every Programme (3,691) or Project (11,615) is impractical and mostly empty. Leaving them on "Please Select" already means "no restriction". Proposed: iterate **Financial Year × Quarter × PE Office × Budget Type**, and keep Programme and Project as optional single picks.
+2. For Quarter, should "All" mean Q1–Q4 as four separate rows, or just "All Four Quarter" as one row?
