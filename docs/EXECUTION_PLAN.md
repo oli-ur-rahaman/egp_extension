@@ -775,6 +775,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-04 | 1 | M1-T02 | R1: dashboard (Message Box) captured; Reports menu mapped; **Flow 1 = `/report/ProcTransReport.jsp`** | Two APP candidates; waiting for the owner to map each flow to a page. |
 | 2026-11-04 | 1 | M1-T03 | **R2 Flow 1 mostly mapped:** 6 filters, dependency graph (FY→Quarter client-side; Office+Budget→Project and Programme→Project by XHR), Generate = plain form POST (fast path possible), aggregate 18-column table with no paging; Total row is the reconciliation check. **D11: Flows 2–5 run logged out, Flow 1 logged in.** Recorder now saves continuously. | Notes in `docs/recon/flow-1.md`. Needs a non-empty result, and the owner's answer on which filters to iterate. |
 | 2026-11-04 | 1 | M1-T03, M3, M4 | **Flow 1 scope narrowed by the client:** pick a Financial Year, plus one PE Office or All (loop every office). Quarter is fixed to All Four; Programme, Project and Budget Type are not used. | Pending: verify that Budget Type unselected returns all budgets; one non-empty capture. |
+| 2026-11-04 | 1 | M1-T03 | **R2 Flow 1 done.** Panel = Financial Year + PE Office only; other page filters never touched. Budget Type unselected returns 3 tables (Development, Revenue, Own Fund) + GRAND TOTAL; hand-reconciled. Cols 15–18 are filled by in-page JS, so the parser computes them. | Fixture commit waits for the sanitiser (M1-T07). Next: logout + login capture, then R3–R6 logged out. |
 
 **Milestone record**
 
