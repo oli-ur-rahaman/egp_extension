@@ -37,13 +37,30 @@ The top menu shows on every page.
 | Offline Tenders / Contracts | `SearchTenderOffline.jsp`, `SearchAwardedContractOffline.jsp` | out of scope |
 | Logout | `/Logout.jsp` | P-0.6 |
 
+### Logged-in menus (officer account)
+
+After "Update Later", the portal lands on **P-0.2 Message Box** (`/resources/common/InboxMessage.jsp`): the inbox, plus a "Today's To Do List". The menu depends on the account's role. These items appear only when logged in:
+
+| Menu | Item | Path |
+|---|---|---|
+| Reports | Procurement Statistics | `/report/AppMIS.jsp` |
+| Reports | Annual Procurement Plan | `/officer/SearchPackageReport.jsp` |
+| Reports | **Procurement Transaction Report** | `/report/ProcTransReport.jsp` → **Flow 1** |
+| Reports | PROMIS Report / PROMIS Overall Report | `/admin/PromiseIndicator.jsp`, `/admin/PromiseOverallReport.jsp` |
+| Reports | DLI1 Report | `/resources/common/AllTenders.jsp?h=f` |
+| My Account | View / Edit Profile, Change Password, Hint Q&A, Preference | `/admin/…` (never touched by the extension) |
+| Help | Page Help, User Manual | `/resources/common/Help.jsp?pageName=…`, `userManual.jsp` |
+
+Profile links carry the account's user ID in the query string. It is deliberately not recorded here.
+
 The header also has a quick search: `select#cmbSearchTab` (eTenders / Annual Procurement Plans / eContracts / eExperience) with `input#txtKeyword` and `#btnKeyword`.
 
 The mapping from flow to page is a guess from the menu labels. Each one is confirmed in its own session (R2–R6).
 
 ## Still to capture in R1
 
-- [ ] P-0.2 dashboard after "Update Later"
+- [x] P-0.2 dashboard after "Update Later" (Message Box)
+- [ ] Owner confirms which page each flow means (two APP candidates: public `SearchAPP.jsp` vs officer `/officer/SearchPackageReport.jsp`)
 - [ ] P-0.3 the Reports menu and the route to each of the five report pages; whether direct URLs work after a refresh
 - [ ] P-0.4 session expired (idle timeout length, redirect)
 - [ ] P-0.1 login page signature (logged out) and P-0.6 logout result. Done last, because it ends the session.

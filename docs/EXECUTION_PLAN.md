@@ -772,6 +772,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-04 | 1 | M0-T02…T08 | M0 built. `npm run verify` green: lint, type-check, 34/34 unit tests, build. E2E smoke 1/1 passes. | Added README (two-PC setup and daily routine), CLAUDE.md, `.gitattributes` (LF everywhere), `.nvmrc`. Next: you tick M0-MC1–MC4, then R0. |
 | 2026-11-04 | 1 | X2, M0-T01 | Repo made private. First commit `01fb551` made locally. The owner pushes it (Claude's push was blocked by permissions). | `npm run chrome` failed: PowerShell execution policy blocks `npm.ps1`. Fix added to the README: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `npm.cmd`. |
 | 2026-11-04 | 1 | M0-T01, R0, M1-T02 | Both commits pushed; repo public by the owner's choice; Claude now commits and pushes. **R0 done:** CDP link to Chrome 156. **R1 started:** JSP site; post-login mobile/NID interstitial found; global nav mapped. | Notes in `docs/recon/00-portal-shell.md`. |
+| 2026-11-04 | 1 | M1-T02 | R1: dashboard (Message Box) captured; Reports menu mapped; **Flow 1 = `/report/ProcTransReport.jsp`** | Two APP candidates; waiting for the owner to map each flow to a page. |
 
 **Milestone record**
 
