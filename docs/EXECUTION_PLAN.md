@@ -777,6 +777,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-04 | 1 | M1-T03, M3, M4 | **Flow 1 scope narrowed by the client:** pick a Financial Year, plus one PE Office or All (loop every office). Quarter is fixed to All Four; Programme, Project and Budget Type are not used. | Pending: verify that Budget Type unselected returns all budgets; one non-empty capture. |
 | 2026-11-04 | 1 | M1-T03 | **R2 Flow 1 done.** Panel = Financial Year + PE Office only; other page filters never touched. Budget Type unselected returns 3 tables (Development, Revenue, Own Fund) + GRAND TOTAL; hand-reconciled. Cols 15–18 are filled by in-page JS, so the parser computes them. | Fixture commit waits for the sanitiser (M1-T07). Next: logout + login capture, then R3–R6 logged out. |
 | 2026-11-04 | 1 | — | End of day on the home PC. Handover written in §13 "Resume here". | Continue on the office PC with R3 (Flow 2, logged out). |
+| 2026-11-04 | 1 | — | Next-session plan (steps 0–9) written into §13; valid on either PC. | Target: R3–R6 done by ~Tue 10 Nov; M3 Wed–Thu; demo M1 Thu 12 Nov. |
 
 **Milestone record**
 
@@ -793,7 +794,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (handover written 2026-11-04, home PC → office PC)
+### ▶ Resume here (written 2026-11-04; valid on either PC)
 
 **Where we are:** M0 done. R0 done. R1 partly done (post-login interstitial, dashboard, menus). **R2 Flow 1 done** (`docs/recon/flow-1.md`). Nothing uncommitted.
 
@@ -802,13 +803,24 @@ Append one line per working block. Demo and feedback dates matter contractually 
 2. `git clone https://github.com/oli-ur-rahaman/egp_extension.git C:\egp_extension` → `cd C:\egp_extension` → `npm ci` → `npx playwright install chromium` → `npm run verify`
 3. Open Claude Code in `C:\egp_extension`. It reads `CLAUDE.md`, then this section.
 
-**Office PC, the next session:**
-1. `npm run chrome`. A fresh debug profile is created on this PC. **Do not log in**: Flows 2–5 run logged out (D11).
-2. Tell Claude "debug Chrome is open, logged out". Claude runs `npm run recon -- ping`, then:
-   - P-0.1: capture the logged-out homepage and login page signature (R1 leftover)
-   - **R3 Flow 2 Tender Info:** homepage → the search dropdown (eTenders / Annual Procurement Plans / eContracts / eExperience) → **Advanced Search**, with a department selectable
-   - then R4–R6 for Flows 3–5 the same way
-3. Still open from R1, to do whenever logged in: P-0.4 session expiry (let it idle), P-0.6 logout result, session cookie name.
+**Next session plan: works on either PC.** Step 0 applies to the office PC only. On the home PC, skip it and start at step 1 after `git pull`.
+
+| Step | Task | Module | Claude does | Owner does | Done when |
+|---|---|---|---|---|---|
+| 0 | Office PC setup *(office only, first time, ~15 min)* | M0 | Runs `npm run verify` and confirms the setup is green | Steps in "first time only" above; loads `dist/` unpacked (M0-MC1, MC2) | verify green; panel says "Ready" |
+| 1 | Link-up, logged out | R0 | `npm run recon -- ping` | `npm run chrome`, **does not log in** | Claude sees the tab |
+| 2 | Logged-out shell | R1 / M2 | Captures the homepage and the login page signature (P-0.1); records the search dropdown | Opens the homepage | `00-portal-shell.md` updated |
+| 3 | **Flow 2 Tender Info** (~1.5–2 h) | R3 / M1 | Runs the per-flow checklist (PROJECT_PLAN §2.3) one click at a time: initial page, every filter and how they cascade (network recording), Search, results p1 and pN, page size, empty result, **detail page** (how it opens, whether its URL can be built directly, its fields), list page after the detail closes | Clicks as asked. Decides which filters the client needs (as with Flow 1). Confirms what the detail page should contribute (X3) | `flow-2.md` written, committed, pushed |
+| 4 | **Flow 3 APP Info** | R4 / M1 | Same checklist. Watches for one-to-many package tables in the detail | Same; decides which filters to use and how to flatten multi-row details | `flow-3.md` pushed |
+| 5 | **Flow 4 Contract Info** | R5 / M1 | Same; records amount and date formats | Same | `flow-4.md` pushed |
+| 6 | **Flow 5 Experience Info** | R6 / M1 | Same; proposes the natural key (Q6) for every flow | Confirms the natural keys | `flow-5.md` pushed |
+| 7 | Logged-in leftovers *(last, because it needs a login)* | R1 / R2 | Captures session expiry (P-0.4), the logout result (P-0.6), and the session cookie **name**. On the office PC, also recaptures the Flow 1 non-empty result | Logs in; lets the session idle for the expiry test; logs out | R1 fully ticked |
+| 8 | Build without the browser *(Claude, between and after sessions)* | M1 | `profiles/schema.json` (M1-T01); **fixture sanitiser** (M1-T07); Site Profile fragments per flow; sanitised fixtures committed; start of the mock server (M1-T08) | — | `npm run verify` green, tests for each |
+| 9 | End of day | — | Updates §12 log, §13 "Resume here", task markers; commits and pushes | Logs out, closes the debug Chrome | `git status` clean on both sides |
+
+Steps 3–6 can stop at any flow boundary. Each flow is committed on its own, so the next session (on either PC) starts at the first unticked step. Step 8 runs during the owner's breaks; it needs no browser.
+
+**Decisions needed from the owner, per flow:** which filters the extension shows (the rest stay at page defaults, as for Flow 1), what a detail page contributes, how multi-row details are flattened, and the natural key. Target: R3–R6 finished by about Tue 10 Nov, leaving Wed–Thu for filter mirroring (M3) before **demo M1 on Thu 12 Nov**.
 
 **Not on the office PC:** the raw captures in `recon/raw/` (home PC only, git-ignored on purpose; they contain account details). The Flow 1 parser fixture must be recaptured once, logged in: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. It's committed only after the sanitiser (M1-T07) cleans it.
 
