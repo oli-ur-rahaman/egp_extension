@@ -1,7 +1,7 @@
 # Recon R2 — Flow 1: Procurement Transaction Report
 
 **Session:** R2, 2026-11-04 · **Driver:** owner (logged in, PWD officer account) · **Observer:** Claude over CDP
-**Status:** [~] in progress. One generate captured so far (an all-zero result). A non-empty result is still needed.
+**Status:** [~] in progress. Client requirement captured (FY + office or All-offices loop). One all-zero result captured; a non-empty result and the Budget Type check are still needed.
 
 ## Key decision from this session
 
@@ -100,7 +100,27 @@ Not applicable (Pattern A).
 | P-1.6 | Empty | [x] **Empty is not "no rows"**: the table renders with only the Total row, all zeros. Treat all-zero as `EMPTY` |
 | P-1.7 | Search request | [x] see C |
 
-## Open questions for the owner
+## Client requirement (owner, 2026-11-04) — supersedes the generic "mirror every filter"
 
-1. **Which filters get "All" iteration?** Iterating every Programme (3,691) or Project (11,615) is impractical and mostly empty. Leaving them on "Please Select" already means "no restriction". Proposed: iterate **Financial Year × Quarter × PE Office × Budget Type**, and keep Programme and Project as optional single picks.
-2. For Quarter, should "All" mean Q1–Q4 as four separate rows, or just "All Four Quarter" as one row?
+The page is poorly designed: choosing a Programme or Project often returns nothing. The client's need is narrow:
+
+| Filter | In the extension panel | Sent to the portal |
+|---|---|---|
+| Financial Year | **User picks one** (required) | the chosen year |
+| PE Office | **User picks one office, or "All"** | one office; on "All", **loop through every office** (224 today, read live from the dropdown) |
+| Quarter | not shown | `All Four Quarter` (full-year range) |
+| Programme | not shown | `0` (Please Select) |
+| Project | not shown | `0` (Please Select) |
+| Budget Type | not shown | [~] `0` (no budget type), **to be verified** that this returns all budget types (R2 test below) |
+
+- A sprint is one year × N offices, so on "All" it makes 224 requests. There's no cascade to walk: PE Office doesn't depend on anything here.
+- Excel: one row per office × procurement method (the office's Total row is kept as its own row, flagged `is_total`), with `financial_year`, `office_id`, `office_name` as provenance.
+- An office with an all-zero table is recorded as `EMPTY`, not as an error.
+- Estimate: 224 × (≈0.3 s server + polite delay) ≈ 10–20 min per full run.
+
+This simplifies M3/M4 for Flow 1: the panel mirrors two filters, and the planner is a single-level loop. The generic engine stays, because Flows 2–5 may still cascade.
+
+## Open
+
+- [ ] Verify Budget Type `0` (no selection) returns all budget types. Compare against Development (the Total row label changes with the budget type, e.g. "Total Development Budget").
+- [ ] One non-empty results capture for the parser fixture.
