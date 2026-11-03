@@ -13,6 +13,14 @@ A private Chrome (MV3) extension for the Public Works Department's Procurement D
 
 Requirements: Windows, Google Chrome, Git, Node.js 22 or later (24 recommended, see `.nvmrc`).
 
+If PowerShell says *"npm.ps1 cannot be loaded because running scripts is disabled"*, allow local scripts for your Windows user once:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Or skip the change and type `npm.cmd` instead of `npm` (for example `npm.cmd run chrome`).
+
 ```powershell
 git clone https://github.com/oli-ur-rahaman/egp_extension.git C:\egp_extension
 cd C:\egp_extension

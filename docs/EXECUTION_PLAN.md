@@ -54,7 +54,7 @@ I found these while cross-reading the documents. Items 1 and 2 are urgent. The r
 | # | Status | Resolution |
 |---|---|---|
 | X1 | [x] | `.gitignore` §4 now ignores `project_scope/*.txt` and `*pass*.txt`. Verified with `git check-ignore`. The file stays on this PC only; moving it to a password manager is still recommended. |
-| X2 | [!] | GitHub reports `oli-ur-rahaman/egp_extension` as **public**. The owner decides whether to make it private before the first push (the repo will hold the ToR, the Proposal and, later, sanitised portal fixtures). |
+| X2 | [x] | The owner made `oli-ur-rahaman/egp_extension` **private** on 2026-11-04 (the GitHub API returns 404 without a login). |
 | X3 | [x] | Settled by the ToR. |
 | X4 | [x] | Owner's call. The 10-week plan stands. Work actually started Wed 4 Nov, 3 working days after the planned Sun 1 Nov; the slip is absorbed by the contingency unless it grows. |
 | X5 | [x] | The owner is a PWD employee with an authorized account and permission to develop. No note to PWD is needed. |
@@ -770,6 +770,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-10-28 | 0 | Planning | Execution plan v1.0 written | Pending: X1, X2, X4, X5, X6 |
 | 2026-11-04 | 1 | X1, X4–X7 | Pre-start items resolved; see §1 status table | Owner is a PWD employee with permission: no note to PWD. X2 open: the GitHub repo is public. |
 | 2026-11-04 | 1 | M0-T02…T08 | M0 built. `npm run verify` green: lint, type-check, 34/34 unit tests, build. E2E smoke 1/1 passes. | Added README (two-PC setup and daily routine), CLAUDE.md, `.gitattributes` (LF everywhere), `.nvmrc`. Next: you tick M0-MC1–MC4, then R0. |
+| 2026-11-04 | 1 | X2, M0-T01 | Repo made private. First commit `01fb551` made locally. The owner pushes it (Claude's push was blocked by permissions). | `npm run chrome` failed: PowerShell execution policy blocks `npm.ps1`. Fix added to the README: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `npm.cmd`. |
 
 **Milestone record**
 
