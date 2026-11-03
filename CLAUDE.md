@@ -22,7 +22,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - Never read, log or store credentials, cookie values or tokens. Recon output is redacted before it touches disk (`tools/recon/redact.js`) and lives in the git-ignored `recon/raw/`.
 - Never develop against the live portal. Build against fixtures and the mock server; live checks use the smallest filter selection that proves the point. On a CAPTCHA or block page, stop and record it; don't retry.
 - No CAPTCHA solving, rate-limit evasion or IP rotation, ever.
-- Commit only when the owner asks. Conventional messages: `feat(m6): …`, `test(m4): …`, `recon(flow-3): …`, `docs: …`.
+- The owner has given Claude full control of commits and pushes: commit and push after each completed step. Never commit anything `.gitignore` excludes; check `git status` first. Conventional messages: `feat(m6): …`, `test(m4): …`, `recon(flow-3): …`, `docs: …`.
 
 ## Layout and commands
 

@@ -54,7 +54,7 @@ I found these while cross-reading the documents. Items 1 and 2 are urgent. The r
 | # | Status | Resolution |
 |---|---|---|
 | X1 | [x] | `.gitignore` §4 now ignores `project_scope/*.txt` and `*pass*.txt`. Verified with `git check-ignore`. The file stays on this PC only; moving it to a password manager is still recommended. |
-| X2 | [x] | The owner made `oli-ur-rahaman/egp_extension` **private** on 2026-11-04 (the GitHub API returns 404 without a login). |
+| X2 | [x] | Owner's decision (2026-11-04): the repo is **public**. ToR and Proposal are committed. Fixtures are committed only after sanitising (X9). |
 | X3 | [x] | Settled by the ToR. |
 | X4 | [x] | Owner's call. The 10-week plan stands. Work actually started Wed 4 Nov, 3 working days after the planned Sun 1 Nov; the slip is absorbed by the contingency unless it grows. |
 | X5 | [x] | The owner is a PWD employee with an authorized account and permission to develop. No note to PWD is needed. |
@@ -160,8 +160,8 @@ Proposal §9 says PWD feedback is due within **5 working days** of a phase demo.
 
 | Who | Does |
 |---|---|
-| **You** | Own login and portal navigation. Drive the debug Chrome during recon. Make domain decisions (natural keys, column meanings). Tick every `MC` check. Present demos to PWD. Make commits and pushes (Claude commits only when you ask). |
-| **Claude** | Recon scripting and observation over CDP. All code, the Site Profile, fixtures, the mock server, and all automated tests. Docs drafting. Turns each recon session into a written note. |
+| **You** | Own login and portal navigation. Drive the debug Chrome during recon. Make domain decisions (natural keys, column meanings). Tick every `MC` check. Present demos to PWD. |
+| **Claude** | Recon scripting and observation over CDP. All code, the Site Profile, fixtures, the mock server, and all automated tests. Docs drafting. Turns each recon session into a written note. Commits and pushes after each completed step (owner granted full control, 2026-11-04). |
 | **PWD officer** | Witnesses milestone demos. Gives written feedback within 5 working days. Signs UAT. Provides the authorized account. |
 
 ### 4.2 Session rhythm (each working block)
@@ -289,7 +289,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 | Status | Task | Description | Est. |
 |---|---|---|---|
-| [~] | M0-T01 | Resolve X1/X2 (credentials file out, `.gitignore` updated, private remote), then make the first commit | 0.5 h |
+| [x] | M0-T01 | Resolve X1/X2 (credentials file out, `.gitignore` updated, private remote), then make the first commit | 0.5 h |
 | [x] | M0-T02 | `package.json`, esbuild config, `npm run build / dev / test / e2e / lint` | 2 h |
 | [x] | M0-T03 | `manifest.json` (MV3) with minimum permissions: `sidePanel, storage, scripting, tabs, downloads, notifications`, host `*://*.eprocure.gov.bd/*`. No `proxy`, no `<all_urls>` | 1 h |
 | [x] | M0-T04 | Side panel "hello" that opens from the toolbar icon; service worker heartbeat | 2 h |
@@ -304,7 +304,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 - **Manual (You):**
   - [ ] M0-MC1 `chrome://extensions` → Load unpacked → **no errors**
   - [ ] M0-MC2 Clicking the icon opens the side panel
-  - [ ] M0-MC3 `launch-chrome.ps1` opens a separate Chrome. Claude confirms the attach (R0).
+  - [x] M0-MC3 `launch-chrome.ps1` opens a separate Chrome. Claude confirms the attach (R0).
   - [ ] M0-MC4 `git status` shows no credentials file and no `.chrome-*` folder
 - **Exit:** R0 done; CI-style `npm run verify` green.
 
@@ -771,6 +771,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-04 | 1 | X1, X4–X7 | Pre-start items resolved; see §1 status table | Owner is a PWD employee with permission: no note to PWD. X2 open: the GitHub repo is public. |
 | 2026-11-04 | 1 | M0-T02…T08 | M0 built. `npm run verify` green: lint, type-check, 34/34 unit tests, build. E2E smoke 1/1 passes. | Added README (two-PC setup and daily routine), CLAUDE.md, `.gitattributes` (LF everywhere), `.nvmrc`. Next: you tick M0-MC1–MC4, then R0. |
 | 2026-11-04 | 1 | X2, M0-T01 | Repo made private. First commit `01fb551` made locally. The owner pushes it (Claude's push was blocked by permissions). | `npm run chrome` failed: PowerShell execution policy blocks `npm.ps1`. Fix added to the README: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `npm.cmd`. |
+| 2026-11-04 | 1 | M0-T01, R0, M1-T02 | Both commits pushed; repo public by the owner's choice; Claude now commits and pushes. **R0 done:** CDP link to Chrome 156. **R1 started:** JSP site; post-login mobile/NID interstitial found; global nav mapped. | Notes in `docs/recon/00-portal-shell.md`. |
 
 **Milestone record**
 
