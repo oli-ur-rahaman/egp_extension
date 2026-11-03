@@ -776,6 +776,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-04 | 1 | M1-T03 | **R2 Flow 1 mostly mapped:** 6 filters, dependency graph (FY→Quarter client-side; Office+Budget→Project and Programme→Project by XHR), Generate = plain form POST (fast path possible), aggregate 18-column table with no paging; Total row is the reconciliation check. **D11: Flows 2–5 run logged out, Flow 1 logged in.** Recorder now saves continuously. | Notes in `docs/recon/flow-1.md`. Needs a non-empty result, and the owner's answer on which filters to iterate. |
 | 2026-11-04 | 1 | M1-T03, M3, M4 | **Flow 1 scope narrowed by the client:** pick a Financial Year, plus one PE Office or All (loop every office). Quarter is fixed to All Four; Programme, Project and Budget Type are not used. | Pending: verify that Budget Type unselected returns all budgets; one non-empty capture. |
 | 2026-11-04 | 1 | M1-T03 | **R2 Flow 1 done.** Panel = Financial Year + PE Office only; other page filters never touched. Budget Type unselected returns 3 tables (Development, Revenue, Own Fund) + GRAND TOTAL; hand-reconciled. Cols 15–18 are filled by in-page JS, so the parser computes them. | Fixture commit waits for the sanitiser (M1-T07). Next: logout + login capture, then R3–R6 logged out. |
+| 2026-11-04 | 1 | — | End of day on the home PC. Handover written in §13 "Resume here". | Continue on the office PC with R3 (Flow 2, logged out). |
 
 **Milestone record**
 
@@ -792,14 +793,35 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
+### ▶ Resume here (handover written 2026-11-04, home PC → office PC)
+
+**Where we are:** M0 done. R0 done. R1 partly done (post-login interstitial, dashboard, menus). **R2 Flow 1 done** (`docs/recon/flow-1.md`). Nothing uncommitted.
+
+**Office PC, first time only** (see README):
+1. `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (or use `npm.cmd` instead of `npm`)
+2. `git clone https://github.com/oli-ur-rahaman/egp_extension.git C:\egp_extension` → `cd C:\egp_extension` → `npm ci` → `npx playwright install chromium` → `npm run verify`
+3. Open Claude Code in `C:\egp_extension`. It reads `CLAUDE.md`, then this section.
+
+**Office PC, the next session:**
+1. `npm run chrome`. A fresh debug profile is created on this PC. **Do not log in**: Flows 2–5 run logged out (D11).
+2. Tell Claude "debug Chrome is open, logged out". Claude runs `npm run recon -- ping`, then:
+   - P-0.1: capture the logged-out homepage and login page signature (R1 leftover)
+   - **R3 Flow 2 Tender Info:** homepage → the search dropdown (eTenders / Annual Procurement Plans / eContracts / eExperience) → **Advanced Search**, with a department selectable
+   - then R4–R6 for Flows 3–5 the same way
+3. Still open from R1, to do whenever logged in: P-0.4 session expiry (let it idle), P-0.6 logout result, session cookie name.
+
+**Not on the office PC:** the raw captures in `recon/raw/` (home PC only, git-ignored on purpose; they contain account details). The Flow 1 parser fixture must be recaptured once, logged in: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. It's committed only after the sanitiser (M1-T07) cleans it.
+
+### Checklist
+
 1. [x] ~~X1: ignore rule for the credentials file.~~ Done 2026-11-04.
-2. [ ] **You:** decide the repo's visibility (X2), then first commit and push (M0-T01).
+2. [x] ~~Repo visibility (X2) and first push.~~ Public by the owner's choice; pushed.
 3. [x] ~~Note to PWD.~~ Not needed: the owner is a PWD employee with permission.
 4. [ ] **You:** pick the secret code privately (Q7). It's needed only by Week 9.
 5. [x] ~~**Claude:** M0-T02 … M0-T08.~~ Done 2026-11-04.
-6. [ ] **You:** M0-MC1–MC4 (load `dist/` unpacked, open the panel, `npm run chrome`, `git status` clean).
-7. [ ] **Together:** R0 link-up → R1 portal shell → R2 Flow 1.
-8. [ ] **Together, W2:** R3–R6, then filter mirroring on all five pages → **demo M1 on Thu 12 Nov 2026.**
+6. [ ] **You:** M0-MC1, MC2 (load `dist/` unpacked, open the panel → "Ready"), MC4 (`git status` clean). MC3 done.
+7. [~] **Together:** R0 ✓ → R1 (partly) → R2 Flow 1 ✓.
+8. [ ] **Together, W2:** R3–R6 (logged out), then filter mirroring on all five pages → **demo M1 on Thu 12 Nov 2026.**
 
 ---
 
