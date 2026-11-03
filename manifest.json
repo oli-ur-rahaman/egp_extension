@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "PDMS eGP Extractor",
+  "short_name": "eGP Extractor",
+  "version": "0.1.0",
+  "description": "Collects report data from the e-GP portal into Excel, inside your own logged-in session.",
+  "minimum_chrome_version": "116",
+  "permissions": ["sidePanel", "storage", "scripting", "tabs", "downloads", "notifications"],
+  "host_permissions": ["*://*.eprocure.gov.bd/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "panel/index.html"
+  },
+  "action": {
+    "default_title": "Open eGP Extractor"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

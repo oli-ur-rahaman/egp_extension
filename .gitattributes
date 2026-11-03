@@ -1,0 +1,10 @@
+# Same bytes on both PCs: LF in the repo and in the working tree.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.docx binary
+*.xlsx binary
+*.png binary
+*.jpg binary
+*.zip binary
+# Vendored files are hash-checked (vendor/SHA256SUMS); git must never touch their bytes.
+vendor/** -text

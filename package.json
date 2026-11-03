@@ -1,0 +1,37 @@
+{
+  "name": "egp-ext",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PDMS eGP Extractor: private Chrome MV3 extension that collects report data from eprocure.gov.bd into Excel.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node tools/build.js",
+    "dev": "node tools/build.js --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "lint": "eslint .",
+    "typecheck": "tsc -p jsconfig.json",
+    "vendor": "node tools/vendor.js",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build",
+    "chrome": "powershell -ExecutionPolicy Bypass -File tools/launch-chrome.ps1",
+    "recon": "node tools/recon/recon.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@types/chrome": "^0.3.7",
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "happy-dom": "^21.0.4",
+    "idb": "^8.0.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  }
+}

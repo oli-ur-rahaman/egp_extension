@@ -1,0 +1,195 @@
+# =============================================================================
+#  egp_extension — .gitignore
+#  Living file. Expand as the toolchain grows; keep the section order stable.
+#  Rule of thumb: anything that carries a SESSION, a CREDENTIAL, or EXTRACTED
+#  DATA never enters git — treat this repo as if it were public, even
+#  while it is private.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#  1. Live session material  —  HIGHEST RISK, never relax these
+#     The CDP debug Chrome profile holds your logged-in eGP cookies.
+# -----------------------------------------------------------------------------
+.chrome-debug-profile/
+chrome-debug-profile/
+chrome-profile/
+.chrome-user-data/
+user-data-dir/
+*.cookies
+cookies.json
+storage-state.json
+*.har
+devtools-*.json
+
+# -----------------------------------------------------------------------------
+#  2. Extracted data  —  outputs of any sprint
+# -----------------------------------------------------------------------------
+exports/
+output/
+out/
+data/raw/
+data/exports/
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+*.tsv
+*.sqlite
+*.sqlite3
+*.db
+indexeddb-dump*.json
+run-*.json
+sprint-*.json
+
+# -----------------------------------------------------------------------------
+#  3. Recon & drift artefacts
+#     Fixtures under tests/fixtures/ ARE tracked — they are the test suite.
+#     Raw, unsanitised captures are NOT: they may embed session tokens,
+#     personal names, or account identifiers lifted straight off the page.
+# -----------------------------------------------------------------------------
+recon/raw/
+recon/captures/
+recon/**/*.raw.html
+drift-reports/
+*.drift.json
+*.fingerprint.local.json
+!tests/fixtures/**
+!tests/fixtures/**/*.html
+
+# -----------------------------------------------------------------------------
+#  4. Secrets & credentials
+#     Only the SHA-256 hash of the dev-mode secret code belongs in source.
+#     The code itself, and any AI API key, must never be written to disk here.
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+secrets.json
+secrets.local.*
+credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+*.keystore
+.npmrc
+.netrc
+devcode.txt
+apikey*.txt
+# Portal login notes. Credentials belong in a password manager, never here.
+project_scope/*.txt
+*pass*.txt
+
+# -----------------------------------------------------------------------------
+#  5. Extension build & packaging
+# -----------------------------------------------------------------------------
+dist/
+build/
+release/
+unpacked/
+*.crx
+*.zip
+*.tar.gz
+key.pem
+manifest.local.json
+site-profile.override.json
+site-profile.session.json
+
+# -----------------------------------------------------------------------------
+#  6. Node / package managers
+# -----------------------------------------------------------------------------
+node_modules/
+jspm_packages/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm/
+.pnpm-store/
+
+# -----------------------------------------------------------------------------
+#  7. Test, coverage & automation output
+# -----------------------------------------------------------------------------
+coverage/
+*.lcov
+.nyc_output/
+.vitest/
+vitest-report/
+playwright-report/
+playwright/.cache/
+test-results/
+blob-report/
+snapshots/__diff_output__/
+__screenshots__/
+*.trace.zip
+
+# -----------------------------------------------------------------------------
+#  8. Caches & tool state
+# -----------------------------------------------------------------------------
+.cache/
+.parcel-cache/
+.esbuild/
+.rollup.cache/
+.turbo/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+.tmp/
+tmp/
+temp/
+scratch/
+
+# -----------------------------------------------------------------------------
+#  9. Logs
+# -----------------------------------------------------------------------------
+logs/
+*.log
+!CHANGELOG*.md
+
+# -----------------------------------------------------------------------------
+# 10. Editors & IDEs
+# -----------------------------------------------------------------------------
+.vscode/*
+!.vscode/settings.shared.json
+!.vscode/extensions.json
+!.vscode/launch.example.json
+.idea/
+*.iml
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+.history/
+
+# -----------------------------------------------------------------------------
+# 11. OS cruft  (Windows-first — Laragon working tree)
+# -----------------------------------------------------------------------------
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# -----------------------------------------------------------------------------
+# 12. Local-only scratch  —  anything you want git to forget, park here
+# -----------------------------------------------------------------------------
+local/
+notes.local.md
+*.local
+*.local.*
+!*.local.example

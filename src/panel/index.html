@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eGP Extractor</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header class="bar">
+    <h1>eGP Extractor</h1>
+    <span id="status" class="pill" data-state="pending" role="status" aria-live="polite">Connecting…</span>
+  </header>
+
+  <main>
+    <section class="card">
+      <p class="lead">Foundation build. Flows arrive after the portal recon sessions.</p>
+      <dl class="meta">
+        <dt>Service worker</dt><dd id="sw-uptime">—</dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span id="version">v—</span>
+  </footer>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

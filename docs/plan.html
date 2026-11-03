@@ -1,0 +1,1176 @@
+<title>eGP Extractor Blueprint</title>
+
+<style>
+:root{
+  --paper:#F2F4F1; --surface:#FFFFFF; --surface-2:#E9EDE8; --surface-3:#DFE5DF;
+  --line:#D3DAD3; --line-2:#B6C0B7;
+  --ink:#131A16; --ink-2:#3C4741; --ink-3:#5A665E;
+  --accent:#1E6B4E; --accent-2:#2E8B6A; --accent-soft:#DEEDE5;
+  --warn:#8F5D12; --warn-soft:#F4E8D2;
+  --crit:#993022; --crit-soft:#F5DFDB;
+  --user:#2F5470; --user-soft:#DEE8F0;
+  --serif:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+  --r:10px; --r-s:6px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1310; --surface:#161D19; --surface-2:#1E2621; --surface-3:#26302A;
+    --line:#2B342E; --line-2:#3D483F;
+    --ink:#E6EBE6; --ink-2:#B7C1B9; --ink-3:#8A968E;
+    --accent:#56BE92; --accent-2:#7FD3AF; --accent-soft:#16332A;
+    --warn:#D9A14A; --warn-soft:#33280F;
+    --crit:#E08476; --crit-soft:#3A1E19;
+    --user:#8CB4D2; --user-soft:#17262F;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1310; --surface:#161D19; --surface-2:#1E2621; --surface-3:#26302A;
+  --line:#2B342E; --line-2:#3D483F;
+  --ink:#E6EBE6; --ink-2:#B7C1B9; --ink-3:#8A968E;
+  --accent:#56BE92; --accent-2:#7FD3AF; --accent-soft:#16332A;
+  --warn:#D9A14A; --warn-soft:#33280F;
+  --crit:#E08476; --crit-soft:#3A1E19;
+  --user:#8CB4D2; --user-soft:#17262F;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---------- top bar ---------- */
+.topbar{background:var(--accent-soft);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:center;gap:10px;padding-top:9px;padding-bottom:9px;flex-wrap:wrap;text-align:center}
+.topbar a{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;display:inline-flex;align-items:center;gap:7px}
+.topbar a:hover{border-bottom-color:var(--accent)}
+.topbar a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.topbar .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
+.topbar .arw{font-size:13px;line-height:1}
+.topbar em{font-style:normal;color:var(--ink-3);font-family:var(--sans);font-size:11.5px;letter-spacing:0}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--line);background:var(--surface)}
+.mast .wrap{padding-top:44px;padding-bottom:32px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font-family:var(--serif);font-size:clamp(34px,5.4vw,54px);line-height:1.04;letter-spacing:-.02em;margin:0;text-wrap:balance;font-weight:600}
+.dek{max-width:60ch;color:var(--ink-2);font-size:17px;margin:16px 0 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--ink-2);background:var(--paper)}
+.tag b{color:var(--ink);font-weight:600}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:2px;overflow-x:auto;padding-top:0;padding-bottom:0}
+nav a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;padding:13px 11px;white-space:nowrap;border-bottom:2px solid transparent}
+nav a:hover{color:var(--ink);border-bottom-color:var(--line-2)}
+nav a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* ---------- sections ---------- */
+section{padding:56px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.snum{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+h2{font-family:var(--serif);font-size:clamp(24px,3.4vw,32px);line-height:1.15;letter-spacing:-.015em;margin:0;font-weight:600;text-wrap:balance}
+.sub{color:var(--ink-3);max-width:66ch;margin:0 0 28px;font-size:15px}
+h3{font-family:var(--sans);font-size:13px;font-weight:650;letter-spacing:.02em;margin:0 0 12px;color:var(--ink)}
+.lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+
+/* ---------- grid + cards ---------- */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card.soft{background:var(--surface-2)}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stat .n{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1}
+.stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin-top:7px}
+
+ul{margin:0;padding-left:18px}
+li{margin:6px 0;color:var(--ink-2)}
+li::marker{color:var(--line-2)}
+li b,li strong{color:var(--ink);font-weight:600}
+.tight li{margin:4px 0;font-size:14px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:var(--r-s);background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.chip.a{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.chip.w{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+.chip.c{background:var(--crit-soft);border-color:transparent;color:var(--crit)}
+.chip.u{background:var(--user-soft);border-color:transparent;color:var(--user)}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-weight:500;white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink)}
+td code,.mn{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
+
+/* ---------- figures ---------- */
+figure{margin:26px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+figure .fw{overflow-x:auto}
+figure svg{display:block;width:100%;min-width:600px;height:auto;color:var(--ink-2)}
+figcaption{font-size:13px;color:var(--ink-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);max-width:70ch}
+figcaption b{color:var(--ink-2)}
+.dg text{font-family:var(--mono);font-size:12px;fill:currentColor}
+.dg .t-ttl{font-size:12.5px;font-weight:600;fill:var(--ink);letter-spacing:.04em}
+.dg .t-sm{font-size:10.5px;fill:var(--ink-3)}
+.dg .t-arw{font-size:10.5px;fill:var(--ink-3)}
+.dg .box{fill:var(--surface-2);stroke:var(--line-2);stroke-width:1}
+.dg .box-o{fill:none;stroke:var(--line-2);stroke-width:1}
+.dg .box-a{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+.dg .box-c{fill:var(--crit-soft);stroke:var(--crit);stroke-width:1}
+.dg .box-w{fill:var(--warn-soft);stroke:var(--warn);stroke-width:1}
+.dg .box-u{fill:var(--user-soft);stroke:var(--user);stroke-width:1}
+.dg .ln{stroke:var(--line-2);stroke-width:1.4;fill:none}
+.dg .ln-a{stroke:var(--accent);stroke-width:1.6;fill:none}
+.dg .ln-c{stroke:var(--crit);stroke-width:1.6;fill:none}
+.dg .ln-d{stroke:var(--line-2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.dg .fa{fill:var(--accent)} .dg .fc{fill:var(--crit)} .dg .fw2{fill:var(--warn)} .dg .fu{fill:var(--user)}
+.dg .hd{fill:var(--ink);font-size:11px;letter-spacing:.12em;font-weight:600}
+
+/* ---------- journey timeline ---------- */
+.jour{display:grid;gap:0;margin-top:8px}
+.jstep{display:grid;grid-template-columns:44px 92px 1fr;gap:14px;align-items:start;padding:11px 0;border-bottom:1px dashed var(--line)}
+.jstep:last-child{border-bottom:0}
+.jn{font-family:var(--mono);font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;padding-top:2px}
+.jwho{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 0;text-align:center;border-radius:var(--r-s)}
+.jwho.u{background:var(--user-soft);color:var(--user)}
+.jwho.e{background:var(--accent-soft);color:var(--accent)}
+.jtxt{font-size:14.5px;color:var(--ink-2)}
+.jtxt b{color:var(--ink);font-weight:600}
+@media(max-width:600px){.jstep{grid-template-columns:32px 78px 1fr;gap:10px}}
+
+/* ---------- phases ---------- */
+.ph{display:grid;grid-template-columns:56px 1fr;gap:18px;padding:20px 0;border-top:1px solid var(--line)}
+.ph:first-of-type{border-top:0}
+.phn{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.phn small{display:block;font-size:9.5px;letter-spacing:.12em;color:var(--ink-3);font-weight:400;margin-top:5px}
+.phb h3{margin-bottom:5px;font-size:15px}
+.phgoal{font-size:14px;color:var(--ink-3);margin:0 0 12px;max-width:62ch}
+.phcols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.phcols{grid-template-columns:1fr}.ph{grid-template-columns:44px 1fr;gap:12px}}
+.phcol{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-s);padding:12px}
+.phcol .lab{margin-bottom:8px}
+.phcol ul{padding-left:15px}
+.phcol li{font-size:13px;margin:3px 0}
+
+/* ---------- UI mockups ---------- */
+.mocks{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:8px}
+@media(max-width:980px){.mocks{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.mocks{grid-template-columns:1fr}}
+.mock{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;font-size:11.5px}
+.mock .mh{display:flex;justify-content:space-between;align-items:center;padding:9px 11px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.mock .mt{font-weight:650;font-size:11.5px;color:var(--ink)}
+.pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;padding:2px 7px;border-radius:999px}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.run{background:var(--user-soft);color:var(--user)}
+.pill.wr{background:var(--warn-soft);color:var(--warn)}
+.mb{padding:11px}
+.mblk{margin-bottom:10px}
+.mblk:last-child{margin-bottom:0}
+.mlab{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.msel{border:1px solid var(--line);border-radius:var(--r-s);padding:6px 8px;color:var(--ink-2);display:flex;justify-content:space-between;background:var(--paper)}
+.msel.off{color:var(--ink-3);border-style:dashed}
+.mcb{font-family:var(--mono);font-size:9.5px;color:var(--accent)}
+.mbtn{background:var(--accent);color:var(--paper);text-align:center;padding:8px;border-radius:var(--r-s);font-weight:650;font-size:11.5px;letter-spacing:.02em}
+.mbtn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line-2)}
+.mbar{height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden;margin:7px 0}
+.mbar i{display:block;height:100%;background:var(--accent);width:40%}
+.mrow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.mkv{font-size:11px;color:var(--ink-2);margin:2px 0}
+.mkv span{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.06em}
+.mnote{border-left:2px solid var(--warn);background:var(--warn-soft);padding:8px 10px;border-radius:0 var(--r-s) var(--r-s) 0;color:var(--warn);font-size:11px}
+.mnote.good{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.mcap{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:center;margin-top:9px}
+
+/* ---------- callout ---------- */
+.callout{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;background:var(--surface);padding:18px 20px}
+.callout.warn{border-left-color:var(--warn)}
+.callout.crit{border-left-color:var(--crit)}
+.callout p{margin:0 0 10px;color:var(--ink-2)}
+.callout p:last-child{margin-bottom:0}
+.callout strong{color:var(--ink)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.split{grid-template-columns:1fr}}
+
+footer{padding:36px 0 60px;color:var(--ink-3);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+.ver{font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <a href="https://claude.ai/code/artifact/558f5048-8a9b-4e6e-a715-233f0c755bee" target="_blank" rel="noopener noreferrer">
+      <span class="dot"></span>Click here to see the original and latest version on the web<span class="arw">&#8599;</span>
+    </a>
+    <em>this file may be a local copy</em>
+  </div>
+</div>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">Plan of record · v0.1</p>
+    <h1>eGP Extractor</h1>
+    <p class="dek">A private Chrome extension that turns five click-heavy report pages on the Bangladesh e-GP portal into supervised, resumable, one-click data sprints — each ending in a single clean Excel table.</p>
+    <div class="meta">
+      <span class="tag"><b>Target</b> &nbsp;eprocure.gov.bd</span>
+      <span class="tag"><b>Build</b> &nbsp;Chrome MV3, unpacked</span>
+      <span class="tag"><b>Flows</b> &nbsp;5</span>
+      <span class="tag"><b>Phases</b> &nbsp;11</span>
+      <span class="tag"><b>Store listing</b> &nbsp;never</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <a href="#scope">Scope</a>
+    <a href="#journey">Journey</a>
+    <a href="#discovery">Discovery</a>
+    <a href="#arch">Architecture</a>
+    <a href="#tree">Tree walk</a>
+    <a href="#resil">Resilience</a>
+    <a href="#phases">Phases</a>
+    <a href="#ui">UI</a>
+    <a href="#guardian">Guardian</a>
+    <a href="#risks">Risks</a>
+    <a href="#decisions">Decisions</a>
+  </div>
+</nav>
+
+<!-- ============ SCOPE ============ -->
+<section id="scope">
+  <div class="wrap">
+    <div class="shead"><span class="snum">A</span><h2>Scope of work</h2></div>
+    <p class="sub">Two page patterns, five configurations. That is the whole surface area — and the reason the engine is flow-agnostic and each flow is data, not code.</p>
+
+    <div class="grid g4" style="margin-bottom:26px">
+      <div class="stat"><div class="n">5</div><div class="k">Report flows</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">Page patterns</div></div>
+      <div class="stat"><div class="n">1</div><div class="k">xlsx per sprint</div></div>
+      <div class="stat"><div class="n">0</div><div class="k">Credentials stored</div></div>
+    </div>
+
+    <div class="tw" style="margin-bottom:26px">
+      <table>
+        <thead><tr><th>#</th><th>Flow</th><th>Pattern</th><th>Extra behaviour</th></tr></thead>
+        <tbody>
+          <tr><td class="mn">1</td><td><b>Procurement Transaction Report</b><br><span class="mn" style="color:var(--ink-3)">procurement_transaction_report</span></td><td><span class="chip a">List</span></td><td>List page only</td></tr>
+          <tr><td class="mn">2</td><td><b>Tender Info</b><br><span class="mn" style="color:var(--ink-3)">tender_info</span></td><td><span class="chip a">List</span></td><td>List page only</td></tr>
+          <tr><td class="mn">3</td><td><b>APP Info</b><br><span class="mn" style="color:var(--ink-3)">app_info</span></td><td><span class="chip u">List + Detail</span></td><td>Per row: open detail in new tab &rarr; extract &rarr; close &rarr; return</td></tr>
+          <tr><td class="mn">4</td><td><b>Contract Info</b><br><span class="mn" style="color:var(--ink-3)">contract_info</span></td><td><span class="chip u">List + Detail</span></td><td>Per row: open detail in new tab &rarr; extract &rarr; close &rarr; return</td></tr>
+          <tr><td class="mn">5</td><td><b>Experience Info</b><br><span class="mn" style="color:var(--ink-3)">experience_info</span></td><td><span class="chip u">List + Detail</span></td><td>Per row: open detail in new tab &rarr; extract &rarr; close &rarr; return</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <p class="lab" style="color:var(--accent)">In scope</p>
+        <ul class="tight">
+          <li>Mirror every page filter into the extension UI, each with an <b>All</b> checkbox</li>
+          <li>Handle <b>cascading dropdowns</b> — Ministry &rarr; Agency &rarr; PE</li>
+          <li>Exhaustive <b>All</b> iteration, expanded lazily as a tree walk</li>
+          <li>Pagination across result pages</li>
+          <li>Detail-page harvesting in a managed background tab</li>
+          <li><b>Crash-safe progress</b> — resume after a browser restart</li>
+          <li>Adaptive pacing + graded recovery from throttles and logouts</li>
+          <li>Single-sheet flat Excel export with full filter provenance</li>
+          <li>Hidden Developer mode behind a secret code</li>
+          <li>Full run logs and audit trail</li>
+        </ul>
+      </div>
+      <div class="card soft">
+        <p class="lab" style="color:var(--crit)">Out of scope</p>
+        <ul class="tight">
+          <li>Chrome Web Store publication or auto-update infrastructure</li>
+          <li>Storing, typing or automating <b>login credentials</b> — ever</li>
+          <li>Downloading tender attachments and PDFs <span class="chip">v2 candidate</span></li>
+          <li>CAPTCHA solving, WAF evasion, authentication bypass</li>
+          <li>IP rotation as a default operating mode</li>
+          <li>Any server-side component — everything runs in your browser</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <p class="lab">Definition of done · v1.0.0</p>
+      <div class="grid g3">
+        <ul class="tight"><li>All five flows complete a full <b>All</b>-iterated sprint on live eGP unattended, apart from re-login</li><li>A killed browser resumes within one combination — <b>zero lost, zero duplicate rows</b></li></ul>
+        <ul class="tight"><li>Row counts reconcile against the portal's own reported totals</li><li>Every selector lives in the Site Profile; <b>none hard-coded</b> in logic</li></ul>
+        <ul class="tight"><li>Preflight catches a deliberately broken selector <b>before</b> a run starts</li><li>Secret code unlocks Dev mode; drift report exports and is machine-readable</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section id="journey">
+  <div class="wrap">
+    <div class="shead"><span class="snum">B</span><h2>Who does what</h2></div>
+    <p class="sub">Ten steps. You own authentication and intent; the extension owns the grind. The split is deliberate — the extension never touches a credential field.</p>
+
+    <div class="card">
+      <div class="jour">
+        <div class="jstep"><div class="jn">01</div><div class="jwho u">You</div><div class="jtxt">Open Chrome and navigate to <b>eGP</b></div></div>
+        <div class="jstep"><div class="jn">02</div><div class="jwho u">You</div><div class="jtxt">Log in with your own credentials — <b>the extension never sees, stores or transmits them</b></div></div>
+        <div class="jstep"><div class="jn">03</div><div class="jwho u">You</div><div class="jtxt">Navigate to the target report page</div></div>
+        <div class="jstep"><div class="jn">04</div><div class="jwho u">You</div><div class="jtxt">Open the side panel and pick the flow</div></div>
+        <div class="jstep"><div class="jn">05</div><div class="jwho e">Ext</div><div class="jtxt">Read the page's filter controls and <b>mirror every dropdown</b> into the panel, each with an <b>All</b> checkbox</div></div>
+        <div class="jstep"><div class="jn">06</div><div class="jwho u">You</div><div class="jtxt">Select the values you want — anything left on <b>All</b> gets iterated exhaustively</div></div>
+        <div class="jstep"><div class="jn">07</div><div class="jwho e">Ext</div><div class="jtxt">Compute the execution plan and show an estimate</div></div>
+        <div class="jstep"><div class="jn">08</div><div class="jwho u">You</div><div class="jtxt">Press <b>Start sprint</b></div></div>
+        <div class="jstep"><div class="jn">09</div><div class="jwho e">Ext</div><div class="jtxt">Apply filters, walk every combination and page, extract rows, <b>checkpoint continuously</b>, recover from throttles and logouts without losing progress</div></div>
+        <div class="jstep"><div class="jn">10</div><div class="jwho e">Ext</div><div class="jtxt">Export <b>one .xlsx — one sheet, one flat table</b> for the whole sprint</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISCOVERY ============ -->
+<section id="discovery">
+  <div class="wrap">
+    <div class="shead"><span class="snum">C</span><h2>Discovery — how I learn the pages</h2></div>
+    <p class="sub">I cannot design against a site I have not seen. Seven short sessions at the browser together, each ending in a written artifact so nothing lives only in conversation.</p>
+
+    <div class="split" style="margin-bottom:22px">
+      <div class="card">
+        <p class="lab">The mechanism · CDP attach</p>
+        <p style="margin:0 0 12px;color:var(--ink-2);font-size:14px">You launch Chrome with a debug port open. I attach over the DevTools Protocol and read structure while <b>you</b> do all navigation, login and clicking.</p>
+        <div class="chips">
+          <span class="chip a">separate profile — your normal Chrome untouched</span>
+          <span class="chip a">password fields redacted in every recon script</span>
+          <span class="chip a">close the window and the link is severed</span>
+        </div>
+      </div>
+      <div class="card soft">
+        <p class="lab">Sessions</p>
+        <ul class="tight">
+          <li><b class="mn">R0</b> &nbsp;Link-up — launch, verify attach</li>
+          <li><b class="mn">R1</b> &nbsp;Orientation — portal shell, session cookie, logout and error signatures</li>
+          <li><b class="mn">R2</b> &nbsp;Flow 1 · Procurement Transaction Report</li>
+          <li><b class="mn">R3</b> &nbsp;Flow 2 · Tender Info</li>
+          <li><b class="mn">R4</b> &nbsp;Flow 3 · APP Info + detail-tab behaviour</li>
+          <li><b class="mn">R5</b> &nbsp;Flow 4 · Contract Info</li>
+          <li><b class="mn">R6</b> &nbsp;Flow 5 · Experience Info</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="lab">The per-flow checklist I will walk you through</p>
+    <div class="grid g3">
+      <div class="card">
+        <h3 style="color:var(--accent)">A · Identity &nbsp;·&nbsp; B · Filters</h3>
+        <ul class="tight">
+          <li>Exact URL — reachable directly, or only via navigation?</li>
+          <li>Does a hard refresh hold, or bounce to login?</li>
+          <li>Every filter: label, type, <code>name</code>/<code>id</code></li>
+          <li>Which filters are <b>dependent</b> — and what fires when a parent changes</li>
+          <li>Which are mandatory before Search runs</li>
+          <li>Date formats and any max span the server enforces</li>
+          <li>Placeholder options to skip (<code>--Select--</code>, <code>All</code>)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--accent)">C · Search &amp; results</h3>
+        <ul class="tight">
+          <li><b>XHR or full postback?</b> — the single biggest determinant of speed and block risk</li>
+          <li>Exact column headers, meanings and types</li>
+          <li>Does the page report a total? <b>This is our correctness oracle</b></li>
+          <li>Pagination model; can page size be raised 20 &rarr; 100?</li>
+          <li>What zero results looks like — must be distinguishable from failure</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--accent)">D · Detail &nbsp;·&nbsp; E · Failure &nbsp;·&nbsp; F · Network</h3>
+        <ul class="tight">
+          <li>How the detail opens — link, <code>window.open</code>, JS handler</li>
+          <li>Is the detail URL <b>deterministic</b>? If so we skip clicking entirely</li>
+          <li>Does closing the tab disturb the parent's pagination?</li>
+          <li>Let the session expire on purpose — capture the logged-out signature</li>
+          <li>Record normal response timings to calibrate the slowdown detector</li>
+          <li>Capture the search request shape — JSON means a fast path</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px">
+      <p><strong>You do not need to prepare anything.</strong> I give one instruction at a time — <em>"click X"</em>, <em>"now change the Ministry dropdown"</em>, <em>"let this sit for twenty minutes"</em> — and explain what I am looking for each time.</p>
+      <p style="font-size:13.5px;color:var(--ink-3)">Each session returns a recon note, a machine-readable Site Profile fragment, and <strong>HTML fixtures</strong> — saved page snapshots that become our offline test suite and our drift baseline. That is why later testing never has to hammer the live portal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section id="arch">
+  <div class="shead wrap"><span class="snum">D</span><h2>Architecture</h2></div>
+  <div class="wrap">
+  <p class="sub">Three layers with one rule between them: the service worker owns all state, the panel is a pure view, and the content scripts are dumb hands driven entirely by the Site Profile.</p>
+
+  <figure>
+    <div class="fw">
+      <svg class="dg" viewBox="0 0 900 545" role="img" aria-label="Three-layer extension architecture: side panel as a stateless view, service worker owning all state and modules, content scripts driven by the site profile, acting on the eGP page.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+          <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fa"/></marker>
+        </defs>
+
+        <!-- L1 -->
+        <rect x="30" y="14" width="840" height="78" rx="8" class="box"/>
+        <text x="50" y="40" class="hd">SIDE PANEL</text>
+        <text x="152" y="40" class="t-sm">the view — owns no state</text>
+        <rect x="50" y="54" width="150" height="24" rx="5" class="box-o"/><text x="125" y="70" text-anchor="middle" class="t-sm">flow picker</text>
+        <rect x="212" y="54" width="150" height="24" rx="5" class="box-o"/><text x="287" y="70" text-anchor="middle" class="t-sm">filter mirror</text>
+        <rect x="374" y="54" width="150" height="24" rx="5" class="box-o"/><text x="449" y="70" text-anchor="middle" class="t-sm">live progress</text>
+        <rect x="536" y="54" width="150" height="24" rx="5" class="box-o"/><text x="611" y="70" text-anchor="middle" class="t-sm">export</text>
+        <rect x="698" y="54" width="150" height="24" rx="5" class="box-o"/><text x="773" y="70" text-anchor="middle" class="t-sm">dev panel</text>
+
+        <!-- arrows L1 <-> L2 -->
+        <line x1="240" y1="94" x2="240" y2="138" class="ln" marker-end="url(#ar)"/>
+        <text x="250" y="120" class="t-arw">commands</text>
+        <line x1="660" y1="138" x2="660" y2="94" class="ln" marker-end="url(#ar)"/>
+        <text x="670" y="120" class="t-arw">state + events</text>
+
+        <!-- L2 -->
+        <rect x="30" y="140" width="840" height="192" rx="8" class="box-a"/>
+        <text x="50" y="166" class="hd">SERVICE WORKER</text>
+        <text x="192" y="166" class="t-sm">the brain — owns all state</text>
+        <rect x="50" y="180" width="185" height="34" rx="5" class="box"/><text x="142" y="201" text-anchor="middle">Job Engine</text>
+        <rect x="250" y="180" width="185" height="34" rx="5" class="box"/><text x="342" y="201" text-anchor="middle">Rate Governor</text>
+        <rect x="450" y="180" width="185" height="34" rx="5" class="box"/><text x="542" y="201" text-anchor="middle">Sentinel</text>
+        <rect x="650" y="180" width="185" height="34" rx="5" class="box"/><text x="742" y="201" text-anchor="middle">Recovery Ladder</text>
+        <rect x="50" y="226" width="250" height="34" rx="5" class="box"/><text x="175" y="247" text-anchor="middle">Store · IndexedDB</text>
+        <rect x="315" y="226" width="250" height="34" rx="5" class="box"/><text x="440" y="247" text-anchor="middle">Exporter · XLSX</text>
+        <rect x="580" y="226" width="255" height="34" rx="5" class="box"/><text x="707" y="247" text-anchor="middle">Guardian · drift</text>
+        <line x1="50" y1="280" x2="850" y2="280" class="ln-d"/>
+        <text x="450" y="303" text-anchor="middle" class="t-sm">every mutation is written to disk before it is acknowledged — this is what makes resume real</text>
+
+        <!-- arrows L2 <-> L3 -->
+        <line x1="240" y1="334" x2="240" y2="376" class="ln" marker-end="url(#ar)"/>
+        <text x="250" y="359" class="t-arw">executeScript</text>
+        <line x1="660" y1="376" x2="660" y2="334" class="ln" marker-end="url(#ar)"/>
+        <text x="670" y="359" class="t-arw">parsed rows</text>
+
+        <!-- L3 -->
+        <rect x="30" y="378" width="840" height="70" rx="8" class="box"/>
+        <text x="50" y="402" class="hd">CONTENT SCRIPTS</text>
+        <text x="196" y="402" class="t-sm">dumb hands, no state — every rule comes from the Site Profile</text>
+        <rect x="50" y="412" width="150" height="24" rx="5" class="box-o"/><text x="125" y="428" text-anchor="middle" class="t-sm">filter reader</text>
+        <rect x="212" y="412" width="150" height="24" rx="5" class="box-o"/><text x="287" y="428" text-anchor="middle" class="t-sm">filter applier</text>
+        <rect x="374" y="412" width="150" height="24" rx="5" class="box-o"/><text x="449" y="428" text-anchor="middle" class="t-sm">table parser</text>
+        <rect x="536" y="412" width="150" height="24" rx="5" class="box-o"/><text x="611" y="428" text-anchor="middle" class="t-sm">detail parser</text>
+        <rect x="698" y="412" width="150" height="24" rx="5" class="box-o"/><text x="773" y="428" text-anchor="middle" class="t-sm">page classifier</text>
+
+        <line x1="450" y1="450" x2="450" y2="484" class="ln" marker-end="url(#ar)"/>
+        <text x="462" y="471" class="t-arw">reads / clicks</text>
+
+        <!-- L4 -->
+        <rect x="30" y="486" width="840" height="46" rx="8" class="box-o" stroke-dasharray="5 4"/>
+        <text x="450" y="514" text-anchor="middle" class="t-ttl">eGP page — in your logged-in tab</text>
+      </svg>
+    </div>
+    <figcaption><b>Why the service worker owns everything.</b> MV3 service workers get killed, content scripts die on navigation, and a popup dies the moment you click the page. Only a design where every mutation is persisted before it is acknowledged survives that — which is precisely the defect that stopped your previous tool. The side panel, not a popup, is chosen for the same reason: it stays open beside the page during a supervised run.</figcaption>
+  </figure>
+
+  <div class="grid g3" style="margin-top:20px">
+    <div class="card">
+      <p class="lab" style="color:var(--accent)">The keystone · Site Profile</p>
+      <p style="margin:0 0 10px;font-size:14px;color:var(--ink-2)">Every URL, selector, column map and page rule lives in <b>one versioned JSON file</b>. No selector appears anywhere else in the codebase.</p>
+      <ul class="tight" style="font-size:13px">
+        <li><b>Shipped</b> — what we captured and committed</li>
+        <li><b>Override</b> — Dev-mode repairs, never touching the shipped file</li>
+        <li><b>Session</b> — ephemeral, one run only</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="lab" style="color:var(--accent)">Extraction · hybrid</p>
+      <ul class="tight" style="font-size:13px">
+        <li><b>Fast path</b> — if recon finds the search is an XHR returning structured data, replay it directly. Fewer page loads, far lower block risk.</li>
+        <li><b>UI path</b> — otherwise, real clicks on real controls, parse the DOM.</li>
+        <li>Both sit behind one interface. A broken fast path <b>falls back automatically</b> and logs the downgrade.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="lab" style="color:var(--accent)">Stack</p>
+      <ul class="tight" style="font-size:13px">
+        <li><b>MV3</b> + Side Panel API</li>
+        <li><b>Vanilla JS</b> + Web Components — no framework to go stale</li>
+        <li><b>IndexedDB</b> — chrome.storage is too small and too slow for thousands of rows</li>
+        <li><b>SheetJS, vendored</b> — CSP forbids CDN loading</li>
+        <li><b>Vitest</b> + Playwright against a local mock</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ TREE WALK ============ -->
+<section id="tree">
+  <div class="wrap">
+    <div class="shead"><span class="snum">E</span><h2>The subtle part: <em>All</em> is a tree walk, not a product</h2></div>
+    <p class="sub">This is the thing that quietly breaks naive implementations. If Ministry is <b>All</b> and Agency is <b>All</b>, Agency's option list does not exist until a Ministry is chosen — so the plan cannot be enumerated up front.</p>
+
+    <figure>
+      <div class="fw">
+        <svg class="dg" viewBox="0 0 900 372" role="img" aria-label="Comparison: a flat cartesian product cannot be enumerated because child dropdown options do not exist yet, versus a lazy tree walk that discovers each child list after selecting its parent.">
+          <defs>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+          </defs>
+
+          <!-- LEFT -->
+          <text x="20" y="20" class="hd" fill="var(--crit)">✗ &nbsp;ASSUMED — FLAT CARTESIAN PRODUCT</text>
+          <rect x="20" y="34" width="410" height="270" rx="8" class="box-c" fill-opacity="0.35"/>
+          <rect x="52" y="66" width="140" height="112" rx="6" class="box"/>
+          <text x="122" y="86" text-anchor="middle" class="t-ttl">Ministry</text>
+          <line x1="62" y1="94" x2="182" y2="94" class="ln-d"/>
+          <text x="122" y="112" text-anchor="middle" class="t-sm">42 options</text>
+          <text x="122" y="132" text-anchor="middle" class="t-sm">known up front</text>
+          <text x="122" y="160" text-anchor="middle" class="t-sm" fill="var(--accent)">✓ enumerable</text>
+
+          <text x="216" y="128" text-anchor="middle" font-size="20" fill="var(--ink-3)">×</text>
+
+          <rect x="252" y="66" width="140" height="112" rx="6" class="box-o" stroke-dasharray="5 4" stroke="var(--crit)"/>
+          <text x="322" y="86" text-anchor="middle" class="t-ttl" fill="var(--crit)">Agency</text>
+          <line x1="262" y1="94" x2="382" y2="94" class="ln-d"/>
+          <text x="322" y="118" text-anchor="middle" font-size="22" fill="var(--crit)">?</text>
+          <text x="322" y="142" text-anchor="middle" class="t-sm">list is empty</text>
+          <text x="322" y="160" text-anchor="middle" class="t-sm" fill="var(--crit)">✗ unknowable</text>
+
+          <line x1="52" y1="204" x2="398" y2="204" class="ln-d"/>
+          <text x="52" y="228" class="t-sm">Agency is populated by the page only</text>
+          <text x="52" y="246" class="t-sm">after a Ministry is selected. There is</text>
+          <text x="52" y="264" class="t-sm">no set to multiply. The planner has</text>
+          <text x="52" y="282" class="t-sm" fill="var(--crit)">nothing to enumerate — it stalls at step one.</text>
+
+          <!-- RIGHT -->
+          <text x="470" y="20" class="hd" fill="var(--accent)">✓ &nbsp;ACTUAL — LAZY TREE WALK</text>
+          <rect x="470" y="34" width="410" height="270" rx="8" class="box-a" fill-opacity="0.4"/>
+
+          <rect x="486" y="152" width="66" height="26" rx="5" class="box"/>
+          <text x="519" y="169" text-anchor="middle" class="t-sm">start</text>
+
+          <path d="M552 165 L 578 78" class="ln-a" marker-end="url(#ar2)" stroke="var(--accent)"/>
+          <path d="M552 165 L 578 165" class="ln-a" marker-end="url(#ar2)" stroke="var(--accent)"/>
+          <path d="M552 165 L 578 252" class="ln-a" marker-end="url(#ar2)" stroke="var(--accent)"/>
+
+          <rect x="582" y="52" width="80" height="26" rx="5" class="box"/><text x="622" y="69" text-anchor="middle" class="t-sm">Ministry 1</text>
+          <rect x="582" y="152" width="80" height="26" rx="5" class="box"/><text x="622" y="169" text-anchor="middle" class="t-sm">Ministry 2</text>
+          <rect x="582" y="240" width="80" height="26" rx="5" class="box"/><text x="622" y="257" text-anchor="middle" class="t-sm">Ministry 3</text>
+
+          <path d="M662 65 L 692 42" class="ln" marker-end="url(#ar2)"/>
+          <path d="M662 65 L 692 100" class="ln" marker-end="url(#ar2)"/>
+          <path d="M662 165 L 692 165" class="ln" marker-end="url(#ar2)"/>
+          <path d="M662 253 L 692 216" class="ln" marker-end="url(#ar2)"/>
+          <path d="M662 253 L 692 278" class="ln" marker-end="url(#ar2)"/>
+
+          <rect x="696" y="30" width="104" height="24" rx="5" class="box"/><text x="748" y="46" text-anchor="middle" class="t-sm">Agency A</text>
+          <rect x="696" y="88" width="104" height="24" rx="5" class="box"/><text x="748" y="104" text-anchor="middle" class="t-sm">Agency B</text>
+          <rect x="696" y="153" width="104" height="24" rx="5" class="box"/><text x="748" y="169" text-anchor="middle" class="t-sm">Agency C</text>
+          <rect x="696" y="204" width="104" height="24" rx="5" class="box"/><text x="748" y="220" text-anchor="middle" class="t-sm">Agency D</text>
+          <rect x="696" y="266" width="104" height="24" rx="5" class="box"/><text x="748" y="282" text-anchor="middle" class="t-sm">Agency E</text>
+
+          <circle cx="826" cy="42" r="5" class="fa"/><circle cx="826" cy="100" r="5" class="fa"/><circle cx="826" cy="165" r="5" class="fa"/><circle cx="826" cy="216" r="5" class="fa"/><circle cx="826" cy="278" r="5" class="fa"/>
+          <text x="843" y="46" class="t-sm" fill="var(--accent)">ckpt</text>
+          <text x="843" y="169" class="t-sm" fill="var(--accent)">ckpt</text>
+          <text x="843" y="282" class="t-sm" fill="var(--accent)">ckpt</text>
+
+          <text x="486" y="204" class="t-sm">select parent &rarr; wait for child</text>
+          <text x="486" y="222" class="t-sm">to repopulate &rarr; recurse</text>
+
+          <!-- footer notes -->
+          <line x1="20" y1="322" x2="880" y2="322" class="ln-d"/>
+          <text x="20" y="344" class="t-sm">Consequence 1 — the total is an <tspan fill="var(--ink)">estimate</tspan> until the walk finishes. The UI shows ≈ and refines it live.</text>
+          <text x="20" y="362" class="t-sm">Consequence 2 — a checkpoint stores the <tspan fill="var(--ink)">path</tspan> [ministry index, agency index, page], so a resume re-enters the exact branch.</text>
+        </svg>
+      </div>
+      <figcaption><b>The difference is the arrow that does not exist on the left.</b> On the right, each parent selection is what <em>creates</em> its child's option list — so the plan is discovered while it executes. Every leaf is one combination and one checkpoint. A parent with zero children is recorded as a legitimate empty branch, never an error.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ RESILIENCE ============ -->
+<section id="resil">
+  <div class="wrap">
+    <div class="shead"><span class="snum">F</span><h2>Resilience</h2></div>
+    <p class="sub">Every page load is classified, then routed. Nothing is guessed, and nothing silently continues on a page it does not recognise.</p>
+
+    <figure>
+      <div class="fw">
+        <svg class="dg" viewBox="0 0 900 320" role="img" aria-label="Sentinel classification: every page load resolves to one of seven outcomes, which route into four actions — continue, recovery ladder, pause for the user, or halt loudly.">
+          <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+
+          <rect x="14" y="127" width="150" height="46" rx="7" class="box"/>
+          <text x="89" y="146" text-anchor="middle" class="t-ttl">Sentinel</text>
+          <text x="89" y="163" text-anchor="middle" class="t-sm">every load + search</text>
+
+          <path d="M164 150 L 208 29" class="ln"/><path d="M164 150 L 208 69" class="ln"/><path d="M164 150 L 208 109" class="ln"/>
+          <path d="M164 150 L 208 149" class="ln"/><path d="M164 150 L 208 189" class="ln"/><path d="M164 150 L 208 229" class="ln"/><path d="M164 150 L 208 269" class="ln"/>
+
+          <rect x="210" y="14" width="196" height="30" rx="5" class="box"/><text x="222" y="34">OK</text>
+          <rect x="210" y="54" width="196" height="30" rx="5" class="box"/><text x="222" y="74">EMPTY</text>
+          <rect x="210" y="94" width="196" height="30" rx="5" class="box-w"/><text x="222" y="114" fill="var(--warn)">RATE_LIMITED</text>
+          <rect x="210" y="134" width="196" height="30" rx="5" class="box-w"/><text x="222" y="154" fill="var(--warn)">SERVER_ERROR</text>
+          <rect x="210" y="174" width="196" height="30" rx="5" class="box-w"/><text x="222" y="194" fill="var(--warn)">TIMEOUT</text>
+          <rect x="210" y="214" width="196" height="30" rx="5" class="box-u"/><text x="222" y="234" fill="var(--user)">LOGIN_WALL</text>
+          <rect x="210" y="254" width="196" height="30" rx="5" class="box-c"/><text x="222" y="274" fill="var(--crit)">SHAPE_CHANGED</text>
+
+          <path d="M406 29 L 516 49" class="ln" marker-end="url(#ar3)"/>
+          <path d="M406 69 L 516 49" class="ln" marker-end="url(#ar3)"/>
+          <path d="M406 109 L 516 149" class="ln" marker-end="url(#ar3)"/>
+          <path d="M406 149 L 516 149" class="ln" marker-end="url(#ar3)"/>
+          <path d="M406 189 L 516 149" class="ln" marker-end="url(#ar3)"/>
+          <path d="M406 229 L 516 224" class="ln" marker-end="url(#ar3)"/>
+          <path d="M406 269 L 516 270" class="ln" marker-end="url(#ar3)"/>
+
+          <rect x="518" y="27" width="230" height="44" rx="6" class="box-a"/>
+          <text x="533" y="46" class="t-ttl" fill="var(--accent)">Continue</text><text x="533" y="62" class="t-sm">record and move on</text>
+          <rect x="518" y="127" width="230" height="44" rx="6" class="box-w"/>
+          <text x="533" y="146" class="t-ttl" fill="var(--warn)">Recovery ladder</text><text x="533" y="162" class="t-sm">back off, reset, cool down</text>
+          <rect x="518" y="205" width="230" height="38" rx="6" class="box-u"/>
+          <text x="533" y="221" class="t-ttl" fill="var(--user)">Pause for you</text><text x="533" y="236" class="t-sm">re-login, then auto-resume</text>
+          <rect x="518" y="251" width="230" height="38" rx="6" class="box-c"/>
+          <text x="533" y="267" class="t-ttl" fill="var(--crit)">Halt — fail loud</text><text x="533" y="282" class="t-sm">capture evidence, export nothing</text>
+
+          <text x="764" y="52" class="t-sm">no cost</text>
+          <text x="764" y="152" class="t-sm">progress kept</text>
+          <text x="764" y="232" class="t-sm">progress kept</text>
+          <text x="764" y="272" class="t-sm" fill="var(--crit)">data never</text>
+          <text x="764" y="288" class="t-sm" fill="var(--crit)">corrupted</text>
+        </svg>
+      </div>
+      <figcaption><b><code>SHAPE_CHANGED</code> is deliberately the loudest outcome.</b> Silently extracting garbage because a column moved is the worst possible result for a data project — worse than stopping. The four routes exist so "no data" is never confused with "we got blocked".</figcaption>
+    </figure>
+
+    <figure>
+      <div class="fw">
+        <svg class="dg" viewBox="0 0 900 300" role="img" aria-label="Recovery ladder: five escalating levels from immediate retry to pause and notify, with any success resetting to level zero, and progress checkpointed at every level.">
+          <defs><marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fa"/></marker></defs>
+
+          <path d="M775 44 L 775 26 L 115 26 L 115 194" class="ln-a" marker-end="url(#ar4)"/>
+          <text x="445" y="18" text-anchor="middle" class="t-sm" fill="var(--accent)">any success &rarr; reset to L0</text>
+
+          <rect x="40" y="200" width="150" height="40" rx="6" class="box"/>
+          <rect x="205" y="162" width="150" height="78" rx="6" class="box"/>
+          <rect x="370" y="124" width="150" height="116" rx="6" class="box"/>
+          <rect x="535" y="86" width="150" height="154" rx="6" class="box-w"/>
+          <rect x="700" y="48" width="150" height="192" rx="6" class="box-c"/>
+
+          <text x="115" y="218" text-anchor="middle" class="t-ttl">L0</text><text x="115" y="233" text-anchor="middle" class="t-sm">retry once</text>
+          <text x="280" y="182" text-anchor="middle" class="t-ttl">L1</text><text x="280" y="197" text-anchor="middle" class="t-sm">backoff</text><text x="280" y="212" text-anchor="middle" class="t-sm">5s → 15s → 45s</text>
+          <text x="445" y="144" text-anchor="middle" class="t-ttl">L2</text><text x="445" y="159" text-anchor="middle" class="t-sm">hard reset</text><text x="445" y="174" text-anchor="middle" class="t-sm">new tab, re-apply</text>
+          <text x="610" y="106" text-anchor="middle" class="t-ttl" fill="var(--warn)">L3</text><text x="610" y="121" text-anchor="middle" class="t-sm">5 min cool-down</text><text x="610" y="136" text-anchor="middle" class="t-sm">visible countdown</text>
+          <text x="775" y="68" text-anchor="middle" class="t-ttl" fill="var(--crit)">L4</text><text x="775" y="83" text-anchor="middle" class="t-sm">pause + notify</text><text x="775" y="98" text-anchor="middle" class="t-sm">resumable days later</text>
+
+          <line x1="40" y1="240" x2="860" y2="240" stroke="var(--accent)" stroke-width="2"/>
+          <text x="40" y="262" class="t-sm" fill="var(--accent)">CHECKPOINT FLOOR — every level resumes from the last committed combination. No level in this design can lose collected data.</text>
+          <text x="40" y="284" class="t-sm">Escalates on repeated failure of the same unit; resets on any success.</text>
+        </svg>
+      </div>
+      <figcaption><b>Your previous tool failed at the checkpoint floor, not the ladder.</b> "Stops and does not start over" is a resume defect — so the floor is drawn as a hard line the ladder cannot fall below. The <b>Rate Governor</b> sits above all of this: token-bucket pacing with jitter, plus rolling latency measurement, so it slows down <em>before</em> the server pushes back.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ PHASES ============ -->
+<section id="phases">
+  <div class="wrap">
+    <div class="shead"><span class="snum">G</span><h2>Eleven phases, each with a gate</h2></div>
+    <p class="sub">A phase is not done until the automated tests pass <b>and</b> you have ticked its manual checklist. Numbering is real — each phase depends on the one before it.</p>
+
+    <div class="ph">
+      <div class="phn">0<small>FOUND</small></div>
+      <div class="phb">
+        <h3>Foundation</h3>
+        <p class="phgoal">Repo, build, load-and-see-it-work.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Repo skeleton + manifest</li><li>esbuild config</li><li>Hello-world side panel</li><li><code>launch-chrome.ps1</code> + CDP recon scripts</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Build succeeds</li><li>Manifest validates</li><li>Lint clean</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Loads unpacked with no errors</li><li>Icon opens the side panel</li><li>Debug Chrome launches and I confirm attach</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">1<small>DISC</small></div>
+      <div class="phb">
+        <h3>Discovery</h3>
+        <p class="phgoal">Complete, evidence-backed knowledge of all five flows.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>6 recon notes</li><li>Site Profile v1.0.0</li><li>HTML fixture library</li><li><b>Local mock eGP server</b></li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Profile validates against schema</li><li>Mock serves every fixture</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Sessions R0–R6 completed</li><li>You've read each note and confirmed it matches the portal</li><li>Any business rule I got wrong is corrected before we build</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">2<small>ENGINE</small></div>
+      <div class="phb">
+        <h3>Core engine — flow-agnostic</h3>
+        <p class="phgoal">The brain, with no site knowledge in it at all.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Job engine + state machine</li><li>IndexedDB store</li><li>Checkpoint / resume</li><li>Message bus, structured logger</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Planner tree-walk units</li><li><b>Kill-and-resume simulation</b> — no lost or duplicate rows</li><li>ID determinism</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>I kill the worker mid-run and it resumes exactly</li><li>Log output is readable to <b>you</b>, not just to me</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">3<small>SLICE</small></div>
+      <div class="phb">
+        <h3>Flow 1 vertical slice</h3>
+        <p class="phgoal">One flow end-to-end against the mock, then live.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Filter mirroring</li><li>Cascading All expansion</li><li>Filter application + table parsing</li><li>Pagination, checkpointing, raw export</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Parser golden-file tests</li><li>Pagination + cascade tests</li><li>Empty-state test</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Panel dropdowns match the real page</li><li>Panel selections visibly apply to the page</li><li>Rows match what you see on screen, row by row</li><li>Count matches the portal's own "of N"</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">4<small>UI</small></div>
+      <div class="phb">
+        <h3>UI build-out</h3>
+        <p class="phgoal">Every panel state realised, light and dark.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Flow picker, filter card, plan preview</li><li>Run controls + live progress</li><li>Log stream, export</li><li>Empty / error / loading states</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Component tests</li><li>Accessibility — keyboard, focus order, contrast ≥ 4.5:1</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Every state legible at a glance</li><li>Pause / Resume / Stop do exactly what they say</li><li>Nothing shifts or flickers during a run</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">5<small>GEN</small></div>
+      <div class="phb">
+        <h3>Flow 2 — prove the pattern generalises</h3>
+        <p class="phgoal">Success criterion: flow 2 is added by writing <b>profile JSON only</b>. Zero new engine code.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Profile entry for <code>tender_info</code></li><li>Fixtures + goldens</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Same suite, new fixtures</li><li><b>Engine diff must be empty</b> — if not, the abstraction was wrong and we fix it here</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Small live run verified against the page</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">6<small>DETAIL</small></div>
+      <div class="phb">
+        <h3>Flows 3, 4, 5 — List + Detail</h3>
+        <p class="phgoal">The new-tab pattern, safely.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Managed background tab lifecycle</li><li>Detail parser</li><li>Direct-URL fast path where the URL is deterministic</li><li>List + detail merge into one flat record</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Tab lifecycle, incl. "tab crashed mid-extract"</li><li>Merge tests</li><li><b>Leak test</b> — 200 details, zero tabs left open</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Tabs open and close cleanly; nothing piles up</li><li>Parent page keeps its pagination</li><li>Detail fields match, spot-checked on 5 rows</li><li>Interrupt mid-detail — no duplicate, no skip</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">7<small>RESIL</small></div>
+      <div class="phb">
+        <h3>Resilience</h3>
+        <p class="phgoal">Survive eGP pushing back — built from real captured signatures, not guesses.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Sentinel classifiers</li><li>Recovery ladder</li><li>Rate governor</li><li>Login-wall pause/resume + notifications</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li><b>Fault injection</b> vs the mock — 429s, 500s, session drops, hangs, malformed HTML</li><li>Assert correct classification and ladder level every time</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Forced logout mid-run: pauses, prompts, resumes cleanly</li><li>Network killed mid-run: backs off, recovers, loses nothing</li><li>Browser closed mid-run: offers resume on reopen</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">8<small>DATA</small></div>
+      <div class="phb">
+        <h3>Export &amp; data quality</h3>
+        <p class="phgoal">The Excel file you actually wanted — one sheet, one flat table, fully traceable.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Single-sheet flat export</li><li>Provenance columns</li><li>Type coercion — dates as dates, numbers as numbers</li><li>Frozen header + autofilter</li><li>Dedupe by <code>row_hash</code></li><li><b>Reconciliation report</b></li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Export golden tests</li><li>Type coercion, dedupe</li><li>Large-file test</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Opens in Excel with no repair prompt</li><li>Sorting and filtering work natively; dates sort as dates</li><li>You can tell exactly where any row came from</li><li>Reconciliation shows no unexplained gaps</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">9<small>GUARD</small></div>
+      <div class="phb">
+        <h3>Guardian &amp; Dev mode</h3>
+        <p class="phgoal">The self-healing path, gated by the secret code.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Preflight health check</li><li>Drift detection + fingerprints</li><li>Secret-code gate</li><li>Dev panel offering both repair modes</li><li>Override layer + rollback</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Break a selector in a fixture — preflight must catch it <b>before</b> the run</li><li>Drift report schema validation</li><li>Override apply / rollback</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>Correct code opens Dev; wrong code does nothing and reveals nothing</li><li>Broken selector blocks the run and names itself</li><li>Both repair paths offered, you choose</li><li>Bad override rolls back in one click</li></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="phn">10<small>SHIP</small></div>
+      <div class="phb">
+        <h3>Hardening &amp; handover</h3>
+        <p class="phgoal">Full-scale live runs and the documentation that makes me optional.</p>
+        <div class="phcols">
+          <div class="phcol"><p class="lab">Build</p><ul class="tight"><li>Full sprints on all five flows</li><li>Performance profiling</li><li><code>README</code>, <code>OPERATIONS.md</code>, <code>MAINTENANCE.md</code>, <code>SITE-PROFILE.md</code></li><li>v1.0.0 tag</li></ul></div>
+          <div class="phcol"><p class="lab">Tests</p><ul class="tight"><li>Full regression suite</li><li>Final code review pass</li></ul></div>
+          <div class="phcol"><p class="lab">You verify</p><ul class="tight"><li>You ran a full sprint on every flow <b>unaided</b></li><li>Docs answered your questions without asking me</li><li>You can load it on a fresh machine from the repo alone</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UI ============ -->
+<section id="ui">
+  <div class="wrap">
+    <div class="shead"><span class="snum">H</span><h2>Interface</h2></div>
+    <p class="sub">One surface — the side panel — in four states. A popup would close the instant you click the page, which is constantly during a run.</p>
+
+    <div class="mocks">
+      <div>
+        <div class="mock">
+          <div class="mh"><span class="mt">eGP Extractor</span><span class="pill ok">● Ready</span></div>
+          <div class="mb">
+            <div class="mblk"><div class="mlab"><span>Flow</span></div><div class="msel">Procurement Transaction Report <span>▾</span></div>
+              <div style="font-size:10px;color:var(--accent);margin-top:5px">✓ Page matches this flow</div></div>
+            <div class="mblk"><div class="mlab"><span>Ministry</span><span class="mcb">☑ All</span></div><div class="msel off">all 42 items <span>▾</span></div></div>
+            <div class="mblk"><div class="mlab"><span>Agency</span><span class="mcb" style="color:var(--ink-3)">☐ All</span></div><div class="msel">Roads &amp; Highways Dept <span>▾</span></div>
+              <div style="font-size:9.5px;color:var(--ink-3);margin-top:4px">↳ depends on Ministry</div></div>
+            <div class="mblk"><div class="mlab"><span>Fiscal year</span><span class="mcb" style="color:var(--ink-3)">☐ All</span></div><div class="msel">2024–2025 <span>▾</span></div></div>
+            <div class="mblk" style="border-top:1px solid var(--line);padding-top:10px">
+              <div class="mrow"><span>≈ 42 combinations</span><span>≈ 18 min</span></div>
+              <div class="mrow" style="margin-top:3px"><span>est. 1,200–3,000 rows</span></div>
+            </div>
+            <div class="mbtn">▶ &nbsp;Start sprint</div>
+          </div>
+        </div>
+        <p class="mcap">1 · Setup</p>
+      </div>
+
+      <div>
+        <div class="mock">
+          <div class="mh"><span class="mt">eGP Extractor</span><span class="pill run">● Running</span></div>
+          <div class="mb">
+            <div class="mblk" style="display:flex;gap:6px"><div class="mbtn ghost" style="flex:1">⏸ Pause</div><div class="mbtn ghost" style="flex:1">⏹ Stop</div></div>
+            <div class="mblk">
+              <div class="mbar"><i style="width:40%"></i></div>
+              <div class="mrow"><span>17 / ≈42 combinations</span><span>40%</span></div>
+            </div>
+            <div class="mblk" style="border-top:1px solid var(--line);padding-top:9px">
+              <div class="mkv"><span>MINISTRY</span><br>Ministry of Communication</div>
+              <div class="mkv"><span>AGENCY</span><br>Roads &amp; Highways Dept</div>
+              <div class="mkv" style="color:var(--ink-3)"><span>PAGE</span> &nbsp;3 of 8</div>
+            </div>
+            <div class="mblk" style="border-top:1px solid var(--line);padding-top:9px">
+              <div class="mrow"><span>1,847 rows</span><span>6.2 /s</span><span>4:12</span></div>
+            </div>
+            <div class="mblk" style="font-size:10px;color:var(--ink-3);font-family:var(--mono)">▸ Activity log</div>
+          </div>
+        </div>
+        <p class="mcap">2 · Running</p>
+      </div>
+
+      <div>
+        <div class="mock">
+          <div class="mh"><span class="mt">eGP Extractor</span><span class="pill wr">▲ Recovering</span></div>
+          <div class="mb">
+            <div class="mblk mnote">
+              <b>Site not responding</b><br>
+              Backing off · retry in 0:38<br>
+              <span style="font-size:10px">Attempt 2 of 5 · ladder level L1</span>
+            </div>
+            <div class="mblk mnote good" style="font-size:10.5px"><b>Your progress is saved.</b><br>1,847 rows collected, checkpointed at combination 17.</div>
+            <div class="mblk"><div class="mbtn ghost">Retry now</div></div>
+            <div class="mblk" style="border-top:1px solid var(--line);padding-top:9px">
+              <div class="mkv" style="font-size:10.5px;color:var(--ink-3)">If this becomes a login wall instead, the panel switches to <b>“Log in again in the eGP tab — the sprint will resume automatically.”</b></div>
+            </div>
+          </div>
+        </div>
+        <p class="mcap">3 · Recovering</p>
+      </div>
+
+      <div>
+        <div class="mock">
+          <div class="mh"><span class="mt">eGP Extractor</span><span class="pill ok">✓ Complete</span></div>
+          <div class="mb">
+            <div class="mblk">
+              <div style="font-size:22px;font-family:var(--mono);color:var(--accent);font-weight:600">3,241</div>
+              <div style="font-size:10px;font-family:var(--mono);letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase">rows extracted</div>
+            </div>
+            <div class="mblk"><div class="mrow"><span>42 combinations</span><span>21:04</span></div></div>
+            <div class="mblk mnote good" style="font-size:10.5px">✓ Totals reconciled with the portal's own counts</div>
+            <div class="mblk"><div class="mbtn">⬇ &nbsp;Download Excel</div></div>
+            <div class="mblk" style="display:flex;gap:10px;font-size:10.5px;color:var(--ink-3);font-family:var(--mono)"><span>View report</span><span>Start another</span></div>
+            <div class="mblk" style="border-top:1px solid var(--line);padding-top:8px;text-align:center;font-size:9.5px;font-family:var(--mono);color:var(--ink-3)">v1.0.0</div>
+          </div>
+        </div>
+        <p class="mcap">4 · Done</p>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:24px">
+      <div class="card">
+        <p class="lab" style="color:var(--accent)">Principles</p>
+        <ul class="tight" style="font-size:13px">
+          <li><b>One surface</b> — no popup, no options page</li>
+          <li>Always answers three questions: what is it doing, how far along, what do I do next</li>
+          <li><b>Quiet by default</b> — grey is rest, colour means something</li>
+          <li><b>Honest progress</b> — ≈ when the total is an estimate, never a fake percentage</li>
+          <li>No dead ends — every error names the problem and offers the next action</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="lab" style="color:var(--accent)">Interaction rules</p>
+        <ul class="tight" style="font-size:13px">
+          <li><b>All</b> disables its select and shows the option count — you always know the size of what you asked for</li>
+          <li>All on a <b>parent</b> implies iterating its children; the UI says so rather than leaving you to infer it</li>
+          <li><b>Start</b> stays disabled until the page matches and the plan is computable, with the reason shown inline</li>
+          <li><b>Stop</b> asks once, then exports what was collected — never discards it</li>
+        </ul>
+      </div>
+      <div class="card soft">
+        <p class="lab">Dev mode entry</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-2)">Nothing hints it exists. Click the <b>version number</b> in the footer <b>seven times</b> to reveal a single unlabelled input.</p>
+        <p style="margin:10px 0 0;font-size:13px;color:var(--ink-3)">A wrong code does nothing at all — no error, no shake, no hint that a code even exists.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUARDIAN ============ -->
+<section id="guardian">
+  <div class="wrap">
+    <div class="shead"><span class="snum">I</span><h2>Guardian — surviving the site changing</h2></div>
+    <p class="sub">eGP will change its HTML. Four layers of defence, then a gated repair path where <b>you choose</b> which route to take.</p>
+
+    <div class="grid g4" style="margin-bottom:8px">
+      <div class="card"><p class="lab" style="color:var(--accent)">Layer 1</p><h3>Resilient selectors</h3><p style="margin:0;font-size:13px;color:var(--ink-3)">Ordered fallbacks and a semantic strategy — find by <b>label text</b>, never by a generated ID like <code>ctl00_…_ddl3</code> alone.</p></div>
+      <div class="card"><p class="lab" style="color:var(--accent)">Layer 2</p><h3>Preflight check</h3><p style="margin:0;font-size:13px;color:var(--ink-3)">Every selector asserted <b>before</b> each run. A failure blocks the run and names the culprit. You never get corrupt data — you get a stop.</p></div>
+      <div class="card"><p class="lab" style="color:var(--accent)">Layer 3</p><h3>Runtime assertions</h3><p style="margin:0;font-size:13px;color:var(--ink-3)">Column count, header text and value types checked per page. A silently shifted column is caught, not exported.</p></div>
+      <div class="card"><p class="lab" style="color:var(--accent)">Layer 4</p><h3>Structural fingerprint</h3><p style="margin:0;font-size:13px;color:var(--ink-3)">A normalised DOM skeleton hash per page, so we can tell a <b>cosmetic</b> change from a <b>structural</b> one.</p></div>
+    </div>
+
+    <figure>
+      <div class="fw">
+        <svg class="dg" viewBox="0 0 900 578" role="img" aria-label="Guardian repair flow: preflight assertion, halt on failure, secret code unlocks the developer panel, which offers an offline drift report or an AI-assisted repair, both converging on a reversible profile update.">
+          <defs><marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+
+          <rect x="310" y="14" width="280" height="44" rx="7" class="box"/>
+          <text x="450" y="33" text-anchor="middle" class="t-ttl">Preflight</text>
+          <text x="450" y="49" text-anchor="middle" class="t-sm">assert every selector this flow needs</text>
+          <line x1="450" y1="58" x2="450" y2="76" class="ln" marker-end="url(#ar5)"/>
+
+          <polygon points="450,78 566,112 450,146 334,112" class="box"/>
+          <text x="450" y="116" text-anchor="middle" class="t-sm">all pass?</text>
+
+          <line x1="566" y1="112" x2="654" y2="112" class="ln-a" marker-end="url(#ar5)" stroke="var(--accent)"/>
+          <text x="580" y="103" class="t-sm" fill="var(--accent)">yes</text>
+          <rect x="656" y="90" width="200" height="44" rx="7" class="box-a"/>
+          <text x="756" y="109" text-anchor="middle" class="t-ttl" fill="var(--accent)">Run the sprint</text>
+          <text x="756" y="125" text-anchor="middle" class="t-sm">invisible unless it fails</text>
+
+          <line x1="450" y1="146" x2="450" y2="168" class="ln-c" marker-end="url(#ar5)" stroke="var(--crit)"/>
+          <text x="462" y="162" class="t-sm" fill="var(--crit)">no</text>
+
+          <rect x="310" y="170" width="280" height="46" rx="7" class="box-c"/>
+          <text x="450" y="190" text-anchor="middle" class="t-ttl" fill="var(--crit)">HALT — nothing exported</text>
+          <text x="450" y="206" text-anchor="middle" class="t-sm">capture drift evidence, alert you</text>
+          <line x1="450" y1="216" x2="450" y2="234" class="ln" marker-end="url(#ar5)"/>
+
+          <rect x="310" y="236" width="280" height="44" rx="7" class="box-w"/>
+          <text x="450" y="255" text-anchor="middle" class="t-ttl" fill="var(--warn)">You enter the secret code</text>
+          <text x="450" y="271" text-anchor="middle" class="t-sm">SHA-256 in source · 5 wrong tries = 15 min lockout</text>
+          <line x1="450" y1="280" x2="450" y2="298" class="ln" marker-end="url(#ar5)"/>
+
+          <rect x="310" y="300" width="280" height="40" rx="7" class="box"/>
+          <text x="450" y="325" text-anchor="middle" class="t-ttl">Developer panel — you choose</text>
+
+          <path d="M450 340 L 450 356 L 240 356 L 240 372" class="ln" marker-end="url(#ar5)"/>
+          <path d="M450 340 L 450 356 L 660 356 L 660 372" class="ln" marker-end="url(#ar5)"/>
+
+          <rect x="90" y="374" width="300" height="106" rx="7" class="box"/>
+          <text x="106" y="396" class="t-ttl">A · Drift report</text>
+          <line x1="106" y1="404" x2="374" y2="404" class="ln-d"/>
+          <text x="106" y="422" class="t-sm">offline · no API key · no network</text>
+          <text x="106" y="440" class="t-sm">failing selectors + sanitised DOM +</text>
+          <text x="106" y="458" class="t-sm">fingerprint diff + ranked candidates</text>
+          <text x="106" y="474" class="t-sm" fill="var(--accent)">→ I patch the shipped profile</text>
+
+          <rect x="510" y="374" width="300" height="106" rx="7" class="box"/>
+          <text x="526" y="396" class="t-ttl">B · AI-assisted repair</text>
+          <line x1="526" y1="404" x2="794" y2="404" class="ln-d"/>
+          <text x="526" y="422" class="t-sm">your key, entered at use time,</text>
+          <text x="526" y="440" class="t-sm">never persisted · sanitised fragment only</text>
+          <text x="526" y="458" class="t-sm">diff + live match test shown</text>
+          <text x="526" y="474" class="t-sm" fill="var(--accent)">→ your approval → override layer</text>
+
+          <path d="M240 480 L 240 502 L 400 502 L 400 518" class="ln" marker-end="url(#ar5)"/>
+          <path d="M660 480 L 660 502 L 500 502 L 500 518" class="ln" marker-end="url(#ar5)"/>
+
+          <rect x="290" y="520" width="320" height="44" rx="7" class="box-a"/>
+          <text x="450" y="539" text-anchor="middle" class="t-ttl" fill="var(--accent)">Re-run preflight · rollback in one click</text>
+          <text x="450" y="555" text-anchor="middle" class="t-sm">override is provisional until folded into a reviewed commit</text>
+        </svg>
+      </div>
+      <figcaption><b>One honest note about the secret code.</b> An unpacked extension's source is readable by anyone with the folder, so the code is a <b>safety interlock against accidental activation</b> — not a security boundary against someone who already has your disk. It is exactly as strong as it needs to be for its actual job. Path A can also trigger the heavier remedy: I re-drive the controlled Chrome exactly as in discovery, re-inspect the pages from scratch, and diff the live site against the code.</figcaption>
+    </figure>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="card">
+        <p class="lab" style="color:var(--accent)">Versioning &amp; audit</p>
+        <ul class="tight" style="font-size:13.5px">
+          <li>Profile is semver'd — <b>patch</b> = selector fix, <b>minor</b> = new field, <b>major</b> = restructure</li>
+          <li><code>CHANGELOG-PROFILE.md</code> records every change, its cause, and the drift report behind it</li>
+          <li>Extracted data carries its <code>profileVersion</code> — you can always tell which rules produced a file</li>
+          <li>Each run stores a manifest: versions, timestamp, filter config, counts, warnings</li>
+        </ul>
+      </div>
+      <div class="card soft">
+        <p class="lab">Standing maintenance rhythm</p>
+        <ul class="tight" style="font-size:13.5px">
+          <li><b>Every run</b> — preflight, automatic and invisible unless it fails</li>
+          <li><b>Monthly</b> — you open Dev, run a full health scan. Two minutes. Catches drift <em>before</em> it interrupts real work</li>
+          <li><b>On any anomaly</b> — odd counts, missing columns, unexplained stops: export the drift report, send it to me</li>
+          <li><b>After each repair</b> — fixtures refreshed, goldens updated, fingerprint baseline re-based</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RISKS ============ -->
+<section id="risks">
+  <div class="wrap">
+    <div class="shead"><span class="snum">J</span><h2>Risks, and what absorbs them</h2></div>
+    <p class="sub">Ten identified. One is marked critical, and it is not the one most people expect.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>#</th><th>Risk</th><th>Impact</th><th>What absorbs it</th></tr></thead>
+        <tbody>
+          <tr><td class="mn">R6</td><td><b>Silent data corruption after a site change</b></td><td><span class="chip c">Critical</span></td><td>Fail-loud <code>SHAPE_CHANGED</code>, runtime assertions, reconciliation against the portal's own totals</td></tr>
+          <tr><td class="mn">R1</td><td>eGP changes its HTML</td><td><span class="chip w">High</span></td><td>Site Profile + fallbacks + preflight + Guardian</td></tr>
+          <tr><td class="mn">R2</td><td>Blocking under load</td><td><span class="chip w">High</span></td><td>Rate governor, recovery ladder, fast path, larger page size</td></tr>
+          <tr><td class="mn">R8</td><td>Portal introduces CAPTCHA</td><td><span class="chip w">High</span></td><td>Detect, pause, hand to you. <b>No bypass.</b> Escalate as a policy question, not a technical one</td></tr>
+          <tr><td class="mn">R3</td><td>Cascades deeper or odder than expected</td><td><span class="chip">Medium</span></td><td>The recursive tree walk is depth-agnostic by design</td></tr>
+          <tr><td class="mn">R4</td><td>MV3 service worker killed mid-run</td><td><span class="chip">Medium</span></td><td>Persist before ack; resume proven in Phase 2</td></tr>
+          <tr><td class="mn">R5</td><td>Detail tabs leak or crash the browser</td><td><span class="chip">Medium</span></td><td>Managed lifecycle, hard cap on concurrent tabs, leak test</td></tr>
+          <tr><td class="mn">R7</td><td>Combination count explodes</td><td><span class="chip">Medium</span></td><td>Live estimate before start, hard budget, pause/resume at any time</td></tr>
+          <tr><td class="mn">R9</td><td>Session expiry mid-run</td><td><span class="chip">Medium</span></td><td>Login-wall detection, pause, prompt, auto-resume</td></tr>
+          <tr><td class="mn">R10</td><td>Excel row limit — 1,048,576</td><td><span class="chip">Low</span></td><td>Chunked export with a row-count guard</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="callout warn">
+        <p class="lab" style="color:var(--warn)">On IP rotation — my recommendation</p>
+        <p><strong>You raised it; I'd advise against it, and it probably wouldn't fix your problem anyway.</strong></p>
+        <ul class="tight" style="font-size:13.5px">
+          <li>Throttling on an authenticated portal is almost certainly <b>per account</b>, not per IP. Rotating buys nothing.</li>
+          <li>A mid-session IP change is the textbook <b>session-hijack signature</b> — the likely result is being logged out <em>more</em>, not less.</li>
+          <li>It exposes <b>your real eGP identity</b> to a deliberate-circumvention finding. The technical risk is small; the account risk is not.</li>
+          <li>Your symptom — <em>"stops and does not start over"</em> — is a <b>resume defect</b>. Checkpointing plus the recovery ladder addresses it directly.</li>
+        </ul>
+        <p style="margin-top:10px;font-size:13.5px">Ship without proxying, instrument thoroughly. If Phase 7 produces hard evidence of IP-scoped blocking, we reopen it with data. The architecture leaves a clean extension point; the manifest deliberately does not request the permission.</p>
+      </div>
+      <div class="callout">
+        <p class="lab" style="color:var(--accent)">Posture — legal, security, data integrity</p>
+        <ul class="tight" style="font-size:13.5px">
+          <li>Data is accessed <b>through your own account</b>, with rights you already hold. The extension automates your clicks; it obtains nothing you could not obtain manually.</li>
+          <li>No authentication bypass, no CAPTCHA solving, no WAF evasion. If the portal genuinely blocks us, <b>we slow down</b>.</li>
+          <li>Minimum permissions, host-scoped to <code>*://*.eprocure.gov.bd/*</code>. No analytics, no telemetry, no outbound calls except Path B when you trigger it.</li>
+          <li>Every row carries <code>run_id</code>, <code>combination_id</code>, its filter values, <code>source_url</code> and <code>extracted_at</code> — <b>any row traces back to the page it came from</b>.</li>
+          <li>Dates parse to real dates, IDs stay text so leading zeros survive, and <b>a missing value is empty</b> — never zero, never "N/A".</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DECISIONS ============ -->
+<section id="decisions">
+  <div class="wrap">
+    <div class="shead"><span class="snum">K</span><h2>Decisions &amp; what's still open</h2></div>
+    <p class="sub">Ten locked, seven open. Nothing gets buried in code — an assumption either appears here or it isn't an assumption, it's a bug.</p>
+
+    <div class="split">
+      <div class="card">
+        <p class="lab" style="color:var(--accent)">Locked</p>
+        <div class="tw" style="border:0;border-radius:0">
+          <table style="min-width:0">
+            <tbody>
+              <tr><td class="mn" style="width:38px">D1</td><td>Target is Bangladesh eGP, <code>eprocure.gov.bd</code></td></tr>
+              <tr><td class="mn">D2</td><td>Recon by CDP attach to a <b>dedicated debug profile</b></td></tr>
+              <tr><td class="mn">D3</td><td>Dev mode offers <b>both</b> repair paths; you choose</td></tr>
+              <tr><td class="mn">D4</td><td>One <code>.xlsx</code> per sprint — one sheet, one flat table</td></tr>
+              <tr><td class="mn">D5</td><td>Scale ≈ under 5,000 rows/sprint; architecture tolerates 10×</td></tr>
+              <tr><td class="mn">D6</td><td>Attended runs that survive hiccups without losing progress</td></tr>
+              <tr><td class="mn">D7</td><td>Hybrid extraction — fast path where recon finds one</td></tr>
+              <tr><td class="mn">D8</td><td>No IP rotation in v1 <span class="chip w">your call pending</span></td></tr>
+              <tr><td class="mn">D9</td><td>MV3 + Side Panel + vanilla JS + IndexedDB + SheetJS</td></tr>
+              <tr><td class="mn">D10</td><td>All site knowledge externalised to a versioned Site Profile</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="card soft" style="margin-bottom:14px">
+          <p class="lab" style="color:var(--warn)">Open — resolved in Phase 1</p>
+          <ul class="tight" style="font-size:13.5px">
+            <li><b class="mn">Q1</b> XHR or full postback, per flow?</li>
+            <li><b class="mn">Q2</b> Are detail URLs deterministic — can we skip the click?</li>
+            <li><b class="mn">Q3</b> Can page size be raised beyond the default?</li>
+            <li><b class="mn">Q4</b> What the real throttle signature looks like</li>
+            <li><b class="mn">Q5</b> Exact cascade depth per flow</li>
+            <li><b class="mn">Q6</b> Which columns form each flow's natural key, for dedupe</li>
+            <li><b class="mn">Q7</b> The secret code — you pick it privately; only its hash enters the repo</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p class="lab">Assumptions until contradicted</p>
+          <ul class="tight" style="font-size:13.5px">
+            <li><b class="mn">A1</b> You have a valid account with access to all five reports</li>
+            <li><b class="mn">A2</b> The portal is stable enough for recon sessions</li>
+            <li><b class="mn">A3</b> Reports are HTML pages, not a JS SPA <span class="chip">if any flow is an SPA, recon takes longer — the architecture holds</span></li>
+            <li><b class="mn">A4</b> One user, one machine</li>
+            <li><b class="mn">A5</b> English UI — Bangla labels would make label-based selectors locale-aware work</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;border-left:3px solid var(--accent)">
+      <p class="lab" style="color:var(--accent)">Immediate next steps</p>
+      <div class="grid g3">
+        <ul class="tight"><li><b>You</b> — read this, correct anything I have wrong about the portal or your intent</li><li><b>You</b> — pick a secret code (Q7) and confirm D8</li></ul>
+        <ul class="tight"><li><b>Me</b> — Phase 0: repo skeleton, manifest, hello-world side panel, <code>launch-chrome.ps1</code>, CDP recon harness</li></ul>
+        <ul class="tight"><li><b>Together</b> — R0: launch the debug Chrome, confirm the link</li><li><b>Together</b> — R1 to R6: the discovery work. <b>This is where the project is really won.</b></li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>eGP Extractor · plan of record · companion to <span class="mn">PROJECT_PLAN.md</span></span>
+    <span class="ver">v0.1 · 2026-09-09</span>
+  </div>
+</footer>
