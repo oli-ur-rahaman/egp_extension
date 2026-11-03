@@ -4,7 +4,7 @@ import noSiteKnowledge from './tools/eslint-rules/no-site-knowledge.js';
 
 export default [
   {
-    ignores: ['dist/**', 'vendor/**', 'node_modules/**', 'recon/**', 'coverage/**', 'playwright-report/**', 'test-results/**'],
+    ignores: ['dist/**', 'vendor/**', 'node_modules/**', 'recon/**', '.chrome-*/**', 'chrome-*/**','coverage/**', 'playwright-report/**', 'test-results/**'],
   },
   js.configs.recommended,
   {
