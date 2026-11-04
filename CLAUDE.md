@@ -24,6 +24,25 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - No CAPTCHA solving, rate-limit evasion or IP rotation, ever.
 - The owner has given Claude full control of commits and pushes: commit and push after each completed step. Never commit anything `.gitignore` excludes; check `git status` first. Conventional messages: `feat(m6): …`, `test(m4): …`, `recon(flow-3): …`, `docs: …`.
 
+## Working with the owner
+
+- The owner drives the browser and Claude observes. Give **numbered clicks for one small step**, then wait for "done". Say exactly what to report back. Don't assume a click happened: a background-task notice is not a reply.
+- The owner knows the portal and the client. Their word on scope overrides the plan, so ask early for each flow: which filters, which fields, what limits the volume. Record each answer as a `D#` decision in `docs/PROJECT_PLAN.md` §8 and in the flow's note, and flag it when it departs from the ToR.
+- Flow 2 set the pattern for what the owner wants: panel filters chosen per flow, a field palette for notice data, and mandatory filters that keep a run a sensible size. Measure a run's size (`totalPages`) before agreeing a limit, and give the time estimate.
+- Recommend one option; don't just list them. Plain language, short messages. Say so plainly when a check failed or was skipped.
+
+## Recon traps (learned the hard way)
+
+- **Flows 2–5 run logged out; Flow 1 runs logged in** (D11). Do logged-in work last.
+- `npm run recon -- watch` records one tab only. A new tab or popup needs its own `--tab N` recording; tab numbers shift, so run `tabs` first. Start the recording **before** asking for the clicks, and give it plenty of time, because the owner may take a while.
+- The recorder once missed requests with no error, and the cause is unknown. It now prints `LINK LOST` if its connection closes. Confirm a click's request really appears in `network.json`, and fall back to reading the page's inline JS, which often tells you more anyway.
+- The response body in `network.json` is often the quickest source: a list response carries `totalPages` and the rows, so several clicks can be read from one recording.
+- Print structure, not personal values. When reading captures, don't echo field values, account IDs or officials' names. Nothing with those goes into a commit; this repo is **public**.
+- Never open `project_scope/id and pass.txt`.
+- Run `npm run verify` before every commit, not just lint.
+- Shell: backticks inside a double-quoted `node -e` or `sed` string run as commands, and regex backslashes get mangled. Write helper scripts to the scratchpad with the Write tool and pass the repo as the working directory. `require()` resolves relative to the script, so read files with `fs` and `process.cwd()`.
+- `tools/launch-chrome.ps1 -WithExtension` relies on `--load-extension`, which regular Chrome is believed to have removed in version 137. Untested; if the icon doesn't appear, load `dist/` once via `chrome://extensions`.
+
 ## Layout and commands
 
 `src/background` service worker · `src/content` content scripts · `src/panel` side panel · `src/shared` bus, schemas · `profiles/` Site Profile · `vendor/` pinned libs (hash-checked) · `tests/unit|golden|e2e|fixtures|mock-server` · `tools/` build, vendor, recon, launch-chrome.
