@@ -51,8 +51,14 @@ export function connect(wsUrl) {
     ws.addEventListener('error', () => reject(new Error(`could not open ${wsUrl}`)), { once: true });
   });
 
+  /** Resolves with a description when the socket closes, for any reason. */
+  const closed = new Promise((resolve) => {
+    ws.addEventListener('close', (ev) => resolve(`code ${ev.code}${ev.reason ? `: ${ev.reason}` : ''}`), { once: true });
+  });
+
   return {
     opened,
+    closed,
     /**
      * @param {string} method
      * @param {Record<string, unknown>} [params]

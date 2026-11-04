@@ -7,6 +7,8 @@
 
 **All filters are needed in the extension panel.** Unlike Flow 1, this page is well designed, so nothing is hidden.
 
+**D12. "All" on a filter means leave it blank: one sweep through the result pages** (owner's choice, option A). No looping over filter values, so a filter left on "All" causes no extra requests. Excel rows still show Ministry, Department, PE, Type and Method from the row itself. Flow 1 still loops offices, because that page has no "all offices" option. ToR Spec 2 words "All" as iterating every value; the owner, as client, accepts blank as equivalent for this flow.
+
 ## A. Identity
 
 | Item | Finding |
@@ -74,7 +76,7 @@ Each cell packs several values separated by `<br>`, so one column becomes severa
 | 1 | S.No. | row number |
 | 2 | Tender/Proposal ID, Reference No | ID, reference, status label (e.g. Live) |
 | 3 | Procurement Nature, Title | nature, title (link to the detail) |
-| 4 | Ministry, Division, Organization, PE | up to four comma/`<br>` separated levels |
+| 4 | Ministry, Division, Organization, PE | up to four `<br>` separated levels, **and the count varies**: DGHS shows 4 (Ministry, Division, Organization, PE), PWD shows 3 (Ministry, Organization, PE). Map first = Ministry and last = PE; the middle levels need a rule |
 | 5 | Type, Method | e.g. NCT, OTM |
 | 6 | Publishing Date and Time, Closing Date and Time | `dd-Mmm-yyyy HH:mm` |
 
@@ -90,11 +92,11 @@ Each cell packs several values separated by `<br>`, so one column becomes severa
 
 ## Recorder gap to resolve
 
-The network recorder logged neither `/ComboServlet` (main tab) nor `/getDataForTree` (popup tab) when the department was chosen, although the result was visible on the page. Those endpoints above come from the page's own code. The next Search shows whether the recorder works on this page in general.
+The network recorder logged neither `/ComboServlet` (main tab) nor `/getDataForTree` (popup tab) when the department was chosen, and it also missed the filtered Search, although all of them worked on the page. So the session's capture stops after the first page load, and the endpoints above come from the page's own code. Cause not known yet. `watch` now reports `LINK LOST` if its connection to Chrome closes; before this, the file kept being rewritten and looked healthy.
 
 ## Open
 
-- [ ] Filtered search, last page, empty result
+- [x] Filtered search: PWD + Mymensingh PWD Division, Live = 2 pages, 10 rows on page 1
+- [ ] Last page, empty result
 - [ ] Detail page fields; list page after the detail closes
 - [ ] Category tree (`loadCPVTree`)
-- [ ] "All" on a filter: leaving it blank already returns everything, so filters may not need looping at all. Decide with the owner: blank (one sweep through the pages) or loop each value (values recorded per row, far more requests).

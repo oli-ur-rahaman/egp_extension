@@ -806,6 +806,7 @@ egp_ext/
 | D9 | MV3 + Side Panel + vanilla JS + IndexedDB + SheetJS | Architect's call (§3.9) |
 | D10 | All site knowledge externalised to a versioned Site Profile | Architect's call — prerequisite for §6 |
 | D11 | Flows 2–5 run **logged out** (public Advanced Search, all departments); Flow 1 runs logged in (PWD-scoped report) | Owner, 2026-11-04 (recon R2). See docs/recon/flow-1.md |
+| D12 | Flow 2: a filter on "All" is left blank and the result pages are swept once; filter values are not looped. Flow 1 still loops offices | Owner, 2026-11-05 (recon R3). See docs/recon/flow-2.md |
 
 ### Open — to resolve during Phase 1
 

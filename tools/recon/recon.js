@@ -150,7 +150,12 @@ async function cmdWatch() {
 
   await cdp.send('Network.enable');
   console.log(`Recording network on "${tab.title}" for ${seconds} s into ${path.relative(root, dir)}. Do the clicks now.`);
-  await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+  // A dead link must be loud: without this, the file keeps being rewritten and looks healthy.
+  const lost = await Promise.race([
+    new Promise((resolve) => setTimeout(() => resolve(null), seconds * 1000)),
+    cdp.closed,
+  ]);
+  if (lost) console.error(`LINK LOST after ${Math.round((Date.now() - t0) / 1000)} s (${lost}). Nothing after this point was recorded.`);
   clearInterval(timer);
   cdp.close();
 
