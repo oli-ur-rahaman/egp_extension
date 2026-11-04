@@ -784,6 +784,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M0-T08 | Filtered search captured (PWD + Mymensingh division, 2 pages). **D12: "All" = blank, one sweep through pages; no looping of filter values in Flow 2.** Recorder fault found: capture stopped after first page load; `watch` now reports `LINK LOST`. | Cause still unknown. Next: last page, detail page, empty result. |
 | 2026-11-05 | 1 | M1-T04, M7, M13 | **Notice page read:** ~45 fields + lots table, located by label text. **Owner adds:** Status dropdown default All; a **field palette** choosing which notice fields to collect, looping every notice page. Last page confirmed (19 tenders over 2 pages). | Scope addition for M7 and M13. Next: list after the detail closes, All-tab volume, empty result, multi-lot sample. |
 | 2026-11-05 | 1 | M1-T04 | List stays on its page after the notice tab closes. **Volume measured: All tab, no filters = 63,889 pages (≈639,000 tenders)**, ~130× the contract scale. Tender ID `1` is a real 2011 tender with status "Contract Awarded". | Waiting for the owner's decision on a volume guard. Next: empty result, Service notice, multi-lot notice. |
+| 2026-11-05 | 1 | M1-T04, M3 | **D13:** mandatory date window of at most 3 years (owner's idea). **D14:** one row per tender; no multi-lot tenders exist yet. | Next: measure a 3-year window; empty result; Service notice. |
 
 **Milestone record**
 

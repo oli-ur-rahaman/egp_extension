@@ -13,6 +13,14 @@
 
 **Field palette** (owner, 2026-11-05). The user chooses which notice fields to collect from a wide list (section D), and the extension loops through the notice page of every result row. If no notice field is ticked, it skips the notice pages entirely and only sweeps the list, which is far quicker. The last selection is remembered between runs. Module note: this adds a palette component to M13 and a field selection to M7.
 
+**D13. Mandatory date window** (owner's idea, 2026-11-05). Start is refused unless a date window is set, with a span of **at most 3 years**. As drafted by Claude, pending the owner's confirmation:
+- The window is either Publishing dates or Closing dates, because those are the date filters this page has. It has no Opening date filter, although Opening date does appear on the notice.
+- Both From and To are required, since a span can't be measured from one end.
+- From must be before To (the portal's own rule). Format `dd/mm/yyyy`.
+- **Exemption:** a Tender/Proposal ID or Reference No. search needs no window, because it already targets one tender.
+
+**D14. One row per tender** (owner, 2026-11-05). Multi-lot tenders don't exist in e-GP yet, so the lot fields are single values in the row. If a notice ever shows more than one lot, the extension must not silently keep only the first: it flags the row in the reconciliation report so the rule can be revisited.
+
 ## A. Identity
 
 | Item | Finding |
@@ -114,7 +122,7 @@ Each cell packs several values separated by `<br>`, so one column becomes severa
 - "Pre-Qualification Document Price" appears twice with an empty value, and the label run together ("…(In BDT)Tender Document Price (In BDT)"). Likely hidden rows.
 - Empty values appear as blank cells, and also as "Not applicable" (Project Code). Whether that one is exported as text is a decision.
 - Official's name is personal data in a public notice. It is fine in the output; the fixture sanitiser must still strip it, since this repo is public.
-- Sample has one lot. A multi-lot sample is needed before the flattening rule is decided.
+- Sample has one lot, and multi-lot tenders do not exist yet (D14).
 
 ## Recorder gap to resolve
 
@@ -126,7 +134,8 @@ The first network recording logged neither `/ComboServlet` (main tab) nor `/getD
 - [x] Last page: page 2 of 2 has 9 rows (19 tenders), `cntTenBrief` = rows on the page. So `totalPages` is exact, and the per-page row count is available in every response.
 - [ ] Empty result. Tender ID `1` is **not** empty: it's a real 2011 LGED tender with status "Contract Awarded", so status values go beyond the four tabs
 - [x] Detail page fields. [x] List page after the detail closes: **stays on page 2** (owner). [ ] Multi-lot sample; other event types
-- [ ] Owner decision on the volume guard (below)
+- [x] Multi-lot: the owner confirms multi-lot tenders don't exist in e-GP yet (D14)
+- [ ] Measure how many tenders a 3-year window returns (D13)
 
 ## Volume (measured 2026-11-05)
 
