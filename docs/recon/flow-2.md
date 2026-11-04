@@ -1,7 +1,7 @@
 # Recon R3 — Flow 2: Tender Info
 
 **Session:** R3, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] in progress. Filters, department tree, list request and pagination read. Still to capture: a filtered search, last page, empty result, detail page, list page after the detail closes.
+**Status:** [~] nearly done. List, pagination, empty result and two notice types are captured. Left: Category tree, field differences across event types, and owner confirmations under D13.
 
 ## Client requirement (owner, 2026-11-05)
 
@@ -13,7 +13,7 @@
 
 **Field palette** (owner, 2026-11-05). The user chooses which notice fields to collect from a wide list (section D), and the extension loops through the notice page of every result row. If no notice field is ticked, it skips the notice pages entirely and only sweeps the list, which is far quicker. The last selection is remembered between runs. Module note: this adds a palette component to M13 and a field selection to M7.
 
-**D13. Mandatory date window** (owner's idea, 2026-11-05). Start is refused unless a date window is set, with a span of **at most 3 years**. As drafted by Claude, pending the owner's confirmation:
+**D13. Mandatory Department and date window** (owner, 2026-11-05). Start is refused unless **Department** is selected and a date window is set, with a span of **at most 3 years**. Measured: PWD, status All, published 01/01/2023–31/12/2025 = **2,274 pages ≈ 22,700 tenders**. At about 3 s per request, that is about 2 hours for the list alone and about 19 hours with notice pages. Details as drafted by Claude, pending the owner's confirmation:
 - The window is either Publishing dates or Closing dates, because those are the date filters this page has. It has no Opening date filter, although Opening date does appear on the notice.
 - Both From and To are required, since a span can't be measured from one end.
 - From must be before To (the portal's own rule). Format `dd/mm/yyyy`.
@@ -117,7 +117,7 @@ Each cell packs several values separated by `<br>`, so one column becomes severa
 | Official | Name, Designation, Address, City, Thana, District, Country of the official inviting the tender |
 
 **Parsing notes from the sample**
-- Other event types (PQ, REOI, RFP, PPS) likely show different fields; the title names them all. Sample more types before fixing the list.
+- **Fields vary by event type.** A REOI sample (Services, QCBS) uses different labels: "REOI No." not "Invitation Reference No.", "REOI Publication", "EOI Closing", "EOI Opening", "Eligibility of Consultant", "Brief Description of assignment". It adds Contract Type, Development Partner, "Request for expression of interest for selection of", "Experience, Resources and delivery capacity required", "Other details", "Association with foreign firm". Its lots table is also different: Ref. No., Phasing of service, Location, Indicative Start Date, Indicative Completion Date. So the palette needs **one field mapped from several labels**, plus the REOI-only fields. Still unsampled: PQ, RFP, PPS.
 - Lots table: 6 headers but **7 cells per data row** in the sample (the security amount appears twice; a hidden column is likely). Mapping by position would shift the dates. To inspect in the markup.
 - "Pre-Qualification Document Price" appears twice with an empty value, and the label run together ("…(In BDT)Tender Document Price (In BDT)"). Likely hidden rows.
 - Empty values appear as blank cells, and also as "Not applicable" (Project Code). Whether that one is exported as text is a decision.
@@ -132,10 +132,11 @@ The first network recording logged neither `/ComboServlet` (main tab) nor `/getD
 
 - [x] Filtered search: PWD + Mymensingh PWD Division, Live = 2 pages, 10 rows on page 1
 - [x] Last page: page 2 of 2 has 9 rows (19 tenders), `cntTenBrief` = rows on the page. So `totalPages` is exact, and the per-page row count is available in every response.
-- [ ] Empty result. Tender ID `1` is **not** empty: it's a real 2011 LGED tender with status "Contract Awarded", so status values go beyond the four tabs
+- [x] Empty result: `<td id="noRecordFound" value="noRecordFound">No records found</td>` with hidden `totalValue` = 0 and `totalTender` = 0, and **no `totalPages`**. Tested with Tender ID 999999999. Tender ID `1` is **not** empty: it's a real 2011 LGED tender with status "Contract Awarded", so status values go beyond the four tabs
 - [x] Detail page fields. [x] List page after the detail closes: **stays on page 2** (owner). [ ] Multi-lot sample; other event types
 - [x] Multi-lot: the owner confirms multi-lot tenders don't exist in e-GP yet (D14)
-- [ ] Measure how many tenders a 3-year window returns (D13)
+- [x] Measured a 3-year window (D13)
+- [ ] Category tree (`loadCPVTree`) is listed above; still to inspect
 
 ## Volume (measured 2026-11-05)
 

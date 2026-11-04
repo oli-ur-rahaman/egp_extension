@@ -785,6 +785,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M7, M13 | **Notice page read:** ~45 fields + lots table, located by label text. **Owner adds:** Status dropdown default All; a **field palette** choosing which notice fields to collect, looping every notice page. Last page confirmed (19 tenders over 2 pages). | Scope addition for M7 and M13. Next: list after the detail closes, All-tab volume, empty result, multi-lot sample. |
 | 2026-11-05 | 1 | M1-T04 | List stays on its page after the notice tab closes. **Volume measured: All tab, no filters = 63,889 pages (≈639,000 tenders)**, ~130× the contract scale. Tender ID `1` is a real 2011 tender with status "Contract Awarded". | Waiting for the owner's decision on a volume guard. Next: empty result, Service notice, multi-lot notice. |
 | 2026-11-05 | 1 | M1-T04, M3 | **D13:** mandatory date window of at most 3 years (owner's idea). **D14:** one row per tender; no multi-lot tenders exist yet. | Next: measure a 3-year window; empty result; Service notice. |
+| 2026-11-05 | 1 | M1-T04, M3 | **D13 extended: Department mandatory too.** PWD + 3-year window = 2,274 pages ≈ 22,700 tenders (≈19 h with notices). Empty result captured. REOI notice captured: labels and lots table differ by event type, so the palette maps one field from several labels. | End of day on the home PC. D13 details await confirmation. Resume: finish R3, then R4. |
 
 **Milestone record**
 
@@ -803,7 +804,14 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ### ▶ Resume here (written 2026-11-04; valid on either PC)
 
-**Where we are:** M0 done. R0 done. R1 partly done (post-login interstitial, dashboard, menus). **R2 Flow 1 done** (`docs/recon/flow-1.md`). Nothing uncommitted.
+**Where we are (2026-11-05):** M0 done. R0 done. R1 partly done (see step 7). **R2 Flow 1 done** (`docs/recon/flow-1.md`). **R3 Flow 2 nearly done** (`docs/recon/flow-2.md`). Steps 0–2 are done on the home PC. Nothing uncommitted.
+
+**Start next session here:**
+1. Ask the owner to confirm the D13 details in `flow-2.md`: the window is Publishing or Closing dates, both From and To are required, and Tender ID / Reference No. searches are exempt from the date window (does Department stay mandatory for those?).
+2. Finish step 3: inspect the Category tree; if practical, sample one PQ, RFP or PPS notice.
+3. Go on to step 4, **Flow 3 APP Info**, logged out. Same method. Ask the owner the same questions early: which filters, which notice fields, mandatory filters to limit volume.
+
+The raw R3 captures are in `recon/raw/` on the home PC only.
 
 **Office PC, first time only** (see README):
 1. `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (or use `npm.cmd` instead of `npm`)
