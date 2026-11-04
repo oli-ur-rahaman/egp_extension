@@ -9,12 +9,14 @@
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\launch-chrome.ps1
+  powershell -ExecutionPolicy Bypass -File tools\launch-chrome.ps1 -WithExtension
   powershell -ExecutionPolicy Bypass -File tools\launch-chrome.ps1 -Port 9223 -ProfileDir D:\egp-profile
 #>
 param(
   [string]$ProfileDir = (Join-Path (Split-Path $PSScriptRoot -Parent) '.chrome-debug-profile'),
   [int]$Port = 9222,
-  [string]$Url = 'https://www.eprocure.gov.bd'
+  [string]$Url = 'https://www.eprocure.gov.bd',
+  [switch]$WithExtension
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,15 +37,27 @@ try {
 
 New-Item -ItemType Directory -Force -Path $ProfileDir | Out-Null
 
-Start-Process -FilePath $chrome -ArgumentList @(
+$chromeArgs = @(
   "--remote-debugging-port=$Port",
   '--remote-allow-origins=http://127.0.0.1',
   "--user-data-dir=`"$ProfileDir`"",
   '--no-first-run',
-  '--no-default-browser-check',
-  $Url
+  '--no-default-browser-check'
 )
 
+if ($WithExtension) {
+  $dist = Join-Path (Split-Path $PSScriptRoot -Parent) 'dist'
+  if (-not (Test-Path (Join-Path $dist 'manifest.json'))) {
+    throw "No build found at $dist. Run: npm run build"
+  }
+  $chromeArgs += "--load-extension=`"$dist`""
+}
+
+$chromeArgs += $Url
+
+Start-Process -FilePath $chrome -ArgumentList $chromeArgs
+
 Write-Host "Debug Chrome started on port $Port"
+if ($WithExtension) { Write-Host "Extension loaded from dist/ (unpacked)" }
 Write-Host "Profile folder: $ProfileDir"
 Write-Host "Check the link with: npm run recon -- ping"

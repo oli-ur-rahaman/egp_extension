@@ -778,6 +778,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-04 | 1 | M1-T03 | **R2 Flow 1 done.** Panel = Financial Year + PE Office only; other page filters never touched. Budget Type unselected returns 3 tables (Development, Revenue, Own Fund) + GRAND TOTAL; hand-reconciled. Cols 15–18 are filled by in-page JS, so the parser computes them. | Fixture commit waits for the sanitiser (M1-T07). Next: logout + login capture, then R3–R6 logged out. |
 | 2026-11-04 | 1 | — | End of day on the home PC. Handover written in §13 "Resume here". | Continue on the office PC with R3 (Flow 2, logged out). |
 | 2026-11-04 | 1 | — | Next-session plan (steps 0–9) written into §13; valid on either PC. | Target: R3–R6 done by ~Tue 10 Nov; M3 Wed–Thu; demo M1 Thu 12 Nov. |
+| 2026-11-04 | 1 | Step 0, M0-T07 | **Second PC set up:** `npm ci` + `npm run verify` green (lint, type-check, 34/34, build). Added `start-dev-chrome.bat` (double-click: rebuild `dist/`, then launch the controlled Chrome) and a `-WithExtension` switch on `launch-chrome.ps1`, so one window serves both recon and extension testing. | `.gitattributes`: `*.bat`/`*.cmd` are CRLF. Next: re-walk Flow 1 with the owner (verification pass + the logged-in non-empty capture, step 7), then R3. |
 
 **Milestone record**
 
