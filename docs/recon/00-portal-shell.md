@@ -20,6 +20,10 @@ Raw captures are in `recon/raw/` (git-ignored, on the home PC only). Only findin
 |---|---|---|---|---|
 | P-0.2a | **Post-login interstitial: update mobile number / NID** | `/UpdateMobileNid.jsp?invalidMobNid=true` | `#txtMobile`, `#otpTxt`, `#sendOTP`, `#verifyOTP`, `#btnMobileSubmit`, `#btnUpdateLater` | Appears right after login. Has an OTP flow and an **Update Later** button. The extension must classify this page as *not a report page* (Sentinel: blocked by a portal prompt; ask the user), never as `SHAPE_CHANGED`. It never fills or submits this form. |
 
+| P-0.1 | **Logged-out homepage with login form** | `/` (title "Welcome to e-GP"; also `/Index.jsp`) | `#txtEmailId`, `#txtPassword`, `#btnLogin` (`onclick="return checkLogin();"`) | There's no separate login page: the form is on the homepage. The form's presence is the logged-out signature, meaning `LOGIN_WALL` for Flow 1 and the **expected state** for Flows 2–5 (D11). The extension never reads or fills these fields. |
+
+The logged-out menu is the same public set (Advance Search, eTenders, Annual Procurement Plans, eContracts, eExperience, Debarred Tenderers, Reports, Offline Tenders/Contracts), with "Home Page" where a logged-in user has "My Dashboard". The My Account, Help and officer report menus are absent.
+
 ## Global navigation (logged in)
 
 The top menu shows on every page.
@@ -63,6 +67,7 @@ The mapping from flow to page is a guess from the menu labels. Each one is confi
 - [ ] Owner confirms which page each flow means (two APP candidates: public `SearchAPP.jsp` vs officer `/officer/SearchPackageReport.jsp`)
 - [ ] P-0.3 the Reports menu and the route to each of the five report pages; whether direct URLs work after a refresh
 - [ ] P-0.4 session expired (idle timeout length, redirect)
-- [ ] P-0.1 login page signature (logged out) and P-0.6 logout result. Done last, because it ends the session.
+- [x] P-0.1 login form signature (logged out), on the homepage
+- [ ] P-0.6 logout result. Done last, because it ends the session.
 - [ ] Session cookie **name** only
 - [ ] `/TermsNConditions.jsp`: read for automation clauses (PROJECT_PLAN §7.1)
