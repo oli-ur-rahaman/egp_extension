@@ -124,6 +124,22 @@ The first network recording logged neither `/ComboServlet` (main tab) nor `/getD
 
 - [x] Filtered search: PWD + Mymensingh PWD Division, Live = 2 pages, 10 rows on page 1
 - [x] Last page: page 2 of 2 has 9 rows (19 tenders), `cntTenBrief` = rows on the page. So `totalPages` is exact, and the per-page row count is available in every response.
-- [ ] Empty result; volume on the All tab with no filters
-- [x] Detail page fields. [ ] List page after the detail closes; multi-lot sample; other event types
+- [ ] Empty result. Tender ID `1` is **not** empty: it's a real 2011 LGED tender with status "Contract Awarded", so status values go beyond the four tabs
+- [x] Detail page fields. [x] List page after the detail closes: **stays on page 2** (owner). [ ] Multi-lot sample; other event types
+- [ ] Owner decision on the volume guard (below)
+
+## Volume (measured 2026-11-05)
+
+| Selection | Pages | Tenders | List sweep alone | With notice pages |
+|---|---|---|---|---|
+| All tab, no filters | 63,889 | ≈ 639,000 | ≈ 2 days | ≈ 2–3 weeks non-stop |
+| Live tab, no filters | 351 | ≈ 3,500 | ≈ 15 min | ≈ 3 h |
+| PWD + one division, Live | 2 | 19 | seconds | ≈ 1 min |
+
+Estimates assume about 2–3 s per request at a polite pace. The real pace is set in M8.
+
+- This is about 130× the contract's stated scale ("a few thousand records", D5 under 5,000 rows per sprint). Default status All therefore makes the size of an unfiltered run a real risk: Excel writing in the browser is untested at this size, and the Excel row limit (1,048,576) comes into reach if lots become rows.
+- The portal's own Search refuses to run with no filter set (the Status tab doesn't count). Its unfiltered list appears only on page load.
+- A sweep this long overlaps new publications, which push rows onto later pages. Dedupe by Tender ID removes the repeats; the sweep must not assume a fixed page count.
+- The panel always knows the size before starting: `totalPages` from page 1 gives the estimate.
 - [ ] Category tree (`loadCPVTree`)
