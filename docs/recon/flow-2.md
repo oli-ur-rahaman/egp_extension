@@ -9,6 +9,10 @@
 
 **D12. "All" on a filter means leave it blank: one sweep through the result pages** (owner's choice, option A). No looping over filter values, so a filter left on "All" causes no extra requests. Excel rows still show Ministry, Department, PE, Type and Method from the row itself. Flow 1 still loops offices, because that page has no "all offices" option. ToR Spec 2 words "All" as iterating every value; the owner, as client, accepts blank as equivalent for this flow.
 
+**Status is a dropdown in the panel, default All** (owner, 2026-11-05). The page's Live / Archive / Cancelled / All tabs become one more filter, sending `viewType` = `AllTenders` unless changed. The page itself defaults to Live; the extension doesn't.
+
+**Field palette** (owner, 2026-11-05). The user chooses which notice fields to collect from a wide list (section D), and the extension loops through the notice page of every result row. If no notice field is ticked, it skips the notice pages entirely and only sweeps the list, which is far quicker. The last selection is remembered between runs. Module note: this adds a palette component to M13 and a field selection to M7.
+
 ## A. Identity
 
 | Item | Finding |
@@ -88,15 +92,38 @@ Each cell packs several values separated by `<br>`, so one column becomes severa
 |---|---|
 | How it opens | Title link submits a per-row form: `POST /resources/common/ViewTender.jsp`, `id=<tender id>`, `h=t`, `target="_blank"` |
 | Deterministic? | **Yes** (Q2): only the tender ID is needed, so the extension can send it directly. Whether a GET also works is to be checked |
-| Fields | Not yet captured |
+| Page | Title "View IFT /PQ / REOI / RFP / PPS Notice Details", same URL for every tender (the ID is only in the POST body). No login needed. Links: Documents (`/LotPckDocs.jsp?tenderId=<id>`, out of scope), Save As PDF |
+| Layout | Six tables, five `table.formStyle_1` (label cell followed by value cell, 1 or 2 pairs per row) and one `table.tableList_1` for lots. No element ids, so fields are located **by label text** |
+
+### Field palette (from the notice)
+
+| Group | Fields |
+|---|---|
+| Identity | Tender/Proposal ID, App ID, Invitation Reference No., Tender/Proposal Status, Event Type, Invitation for (e.g. "Tender - Single Lot") |
+| Organisation | Ministry, Division, Organization, Procuring Entity Name, Procuring Entity Code, Procuring Entity District |
+| Procurement | Procurement Nature, Procurement Type, Procurement Method, Budget Type, Source of Funds |
+| Project and package | Project Code, Project Name, Package No. and Description, Category |
+| Dates | Publication, Document last selling/downloading, Pre-Tender meeting Start, Pre-Tender meeting End, Closing, Opening, Last date for Security Submission |
+| Terms | Eligibility of Tenderer, Brief Description of Works, Evaluation Type, Document Available, Document Fees, Pre-Qualification Document Price, Tender/Proposal Document Price, Mode of Payment, Name and Address of Office(s) for security submission, Security Valid Up to, Tender/Proposal Valid Up to |
+| Lots (one-to-many) | Lot No., Identification of Lot, Location, Tender/Proposal Security (BDT), Tentative Start Date, Tentative Completion Date |
+| Official | Name, Designation, Address, City, Thana, District, Country of the official inviting the tender |
+
+**Parsing notes from the sample**
+- Other event types (PQ, REOI, RFP, PPS) likely show different fields; the title names them all. Sample more types before fixing the list.
+- Lots table: 6 headers but **7 cells per data row** in the sample (the security amount appears twice; a hidden column is likely). Mapping by position would shift the dates. To inspect in the markup.
+- "Pre-Qualification Document Price" appears twice with an empty value, and the label run together ("…(In BDT)Tender Document Price (In BDT)"). Likely hidden rows.
+- Empty values appear as blank cells, and also as "Not applicable" (Project Code). Whether that one is exported as text is a decision.
+- Official's name is personal data in a public notice. It is fine in the output; the fixture sanitiser must still strip it, since this repo is public.
+- Sample has one lot. A multi-lot sample is needed before the flattening rule is decided.
 
 ## Recorder gap to resolve
 
-The network recorder logged neither `/ComboServlet` (main tab) nor `/getDataForTree` (popup tab) when the department was chosen, and it also missed the filtered Search, although all of them worked on the page. So the session's capture stops after the first page load, and the endpoints above come from the page's own code. Cause not known yet. `watch` now reports `LINK LOST` if its connection to Chrome closes; before this, the file kept being rewritten and looked healthy.
+The first network recording logged neither `/ComboServlet` (main tab) nor `/getDataForTree` (popup tab) when the department was chosen, and it also missed the filtered Search, although all of them worked on the page. Those endpoints come from the page's own code. Cause not known. `watch` now reports `LINK LOST` if its connection to Chrome closes; before this, the file kept being rewritten and looked healthy. A restarted recording attached to the already-loaded page did capture the next page request.
 
 ## Open
 
 - [x] Filtered search: PWD + Mymensingh PWD Division, Live = 2 pages, 10 rows on page 1
-- [ ] Last page, empty result
-- [ ] Detail page fields; list page after the detail closes
+- [x] Last page: page 2 of 2 has 9 rows (19 tenders), `cntTenBrief` = rows on the page. So `totalPages` is exact, and the per-page row count is available in every response.
+- [ ] Empty result; volume on the All tab with no filters
+- [x] Detail page fields. [ ] List page after the detail closes; multi-lot sample; other event types
 - [ ] Category tree (`loadCPVTree`)
