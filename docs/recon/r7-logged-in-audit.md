@@ -2,7 +2,7 @@
 
 **Asked by the owner, 2026-11-05:** does a logged-in user see anything exceptional on the public pages, compared with logged out?
 **Session:** owner logged in with a PWD officer account; Claude compared structure against the logged-out captures, without echoing personal data. No recording ran during login.
-**Status:** [~] in progress. Flow 2 nearly done.
+**Status:** [~] in progress. Flows 2 and 3 compared; Flows 4 and 5 to do.
 **Limit of this audit:** it covers one account type and PWD. It can't show what other departments or roles see.
 
 ## Summary
@@ -10,7 +10,7 @@
 | Flow | Filters | List columns | Row count, same search | Detail page | Verdict |
 |---|---|---|---|---|---|
 | 2 Tender Info | Same; Department locked to PWD | Same | **2.5× more logged in** | **Identical**, one public tender | **Login reveals more tenders** |
-| 3 APP Info | | | | | |
+| 3 APP Info | Same; Department **not** locked | Same | **Same:** 1,841 pages | Same labels; not compared on one package | **Nothing extra found** |
 | 4 Contract Info | | | | | |
 | 5 Experience Info | | | | | |
 
@@ -49,3 +49,14 @@ Only 2 of the 10 rows on page 1 are shared. The logged-in page shows tenders wit
 **A "Being processed" notice, opened logged in (one sample):** a full notice, same layout and 35 rows as the public one, with no error. Two differences: the **Tender/Proposal Status row is absent**, and there is **no Documents link**. No extra fields.
 
 **Still to check:** whether that same tender can be found or opened logged out. Also, the status mix across the 5,733 pages: only one page has been sampled, so "the extra tenders are Being processed" is still an inference.
+
+## Flow 3 — APP Info
+
+Same URL, filters, columns and links. **Department stays selectable when logged in**, unlike Flow 2, and the page loads the same 17,391 pages.
+
+| PWD, FY 2024-2025 | Logged out | Logged in |
+|---|---|---|
+| All natures | 1,841 pages | **1,841 pages** |
+| Works | not measured | 1,775 pages |
+
+The search requests carry the same non-empty fields. The package detail shows the labels listed in `flow-3.md` and no extra links. It's a different package from the logged-out sample, so values weren't compared.

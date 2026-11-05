@@ -806,6 +806,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04 | **R6 Flow 5 done, so all five flows are mapped logged out.** Size 100 verified: 8,377 at both sizes. Window hides nothing visible. **D22:** the exemption holds up to 5,000 rows. | **New, owner's request: R7 audit of Flows 2–5 logged in**, for anything extra compared with logged out. |
 | 2026-11-05 | 1 | R7, D11 | **R7 audit, Flow 2: same request, logged in returns 5,733 pages against 2,274 logged out**, including "Being processed" tenders. Public notice identical; filters same; Department locked. | D11 needs the owner's review. Notes in `docs/recon/r7-logged-in-audit.md`. |
 | 2026-11-05 | 1 | R7 | A "Being processed" notice opens fully when logged in: same fields, but no status row and no Documents link. | To check logged out. Next: Flow 3 logged in. |
+| 2026-11-05 | 1 | R7 | **Flow 3 logged in: nothing extra.** 1,841 pages both ways, Department not locked, same detail labels. | Next: Flow 4 logged in. |
 
 **Milestone record**
 
