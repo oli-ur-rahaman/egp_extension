@@ -46,4 +46,6 @@ Only 2 of the 10 rows on page 1 are shared. The logged-in page shows tenders wit
 - Whether those tenders belong in an export is a decision for the owner. They may be restricted to the department, and the ToR's confidentiality clause (§14) and "no data the user couldn't obtain by hand" both apply.
 - Not to be tested: altering the locked Department while logged in, to reach other departments' restricted tenders. That would be going beyond what the account is given.
 
-**Still to check:** what those tenders' notice pages show, and whether they can be opened logged out.
+**A "Being processed" notice, opened logged in (one sample):** a full notice, same layout and 35 rows as the public one, with no error. Two differences: the **Tender/Proposal Status row is absent**, and there is **no Documents link**. No extra fields.
+
+**Still to check:** whether that same tender can be found or opened logged out. Also, the status mix across the 5,733 pages: only one page has been sampled, so "the extra tenders are Being processed" is still an inference.
