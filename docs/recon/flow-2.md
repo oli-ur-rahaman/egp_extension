@@ -181,7 +181,29 @@ The three add up to 637,128, consistent with about 639,000 in total once Physica
 
 **Why it matters:** if tied rows reshuffle between pages of one sweep, a row can be returned twice and another never. Dedupe removes the repeat but can't recover the missing one, and silent loss is the worst failure in this project.
 
-**Safeguard for every sweep:** count distinct Tender IDs against the exact total above. A shortfall must never be exported silently. Whether a sweep really loses rows is being tested.
+**Safeguard for every sweep:** count distinct Tender IDs against the exact total above. A shortfall must never be exported silently.
+
+**Tested: a sweep does lose rows.** Full sweeps of Service, status All, the owner clicking through every page:
+
+| Sweep | Rows returned | Distinct tenders | Returned twice | **Lost** | Time |
+|---|---|---|---|---|---|
+| Size 10, 64 pages | 639 | 632 | 7 | **7** | 119 s |
+| Size 100, 7 pages | 639 | 638 | 1 | **1** | 36 s |
+| Union of the two | | **639**, equal to the portal's total | | 0 | |
+
+Tender IDs are unique in e-GP (owner); these are the same tender returned on two pages, not two tenders sharing an ID. Repeats sit on page boundaries where the timestamps tie (e.g. pages 2/3, both 22-Jul-2026 12:00). Four of the six boundaries at size 100 were ties.
+
+**Not caused by new uploads.** The Service total stayed at 639 for 430 s, and the size 100 sweep took 36 s. Uploads are real and separate: Live went from 358 to 359 pages during the session. In a sweep lasting hours, they push rows down onto later pages, which causes repeats that dedupe handles, not losses.
+
+**The cause is the portal's sort:** by timestamp only, with no tie-break, so tied rows can fall differently on each page request.
+
+**Parser trap:** one tender's title holds its own table, so its fragment has 110 `<tr>` for 100 tenders. Count rows by the ID forms or `cntTenBrief`, never by `<tr>`, and select only direct rows of the result table.
+
+### Fix, to settle when building M6
+
+1. **Always:** distinct Tender IDs must equal the exact total, or the run says so. Never a silent shortfall.
+2. **Repeat sweep at a different size**, collecting the union, until the count reaches the total or tries run out. Proven here: two sweeps gave 639. Works on any flow, but each repeat costs a full list sweep.
+3. **To test: date windows that each fit on one page.** A window with no page boundary can't lose rows this way. Flow 2 already has a mandatory date window (D13). Flow 3 has no date filter, so it needs another way or option 2.
 
 ## Volume (measured 2026-11-05)
 

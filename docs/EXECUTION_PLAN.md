@@ -796,6 +796,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M3, M6-T02 | **D18 accepted by the owner.** **Page size: `/SearchServlet` honours `size=50`** (50 rows, 412 pages for PWD FY 2025-2026). APP ID is not unique: 16 distinct in 50 rows. | Next: largest allowed size and a completeness check. Flow 2's servlet still untested. |
 | 2026-11-05 | 1 | M1-T04, M6-T02, M8 | **Page size verified on `/SearchServlet`:** sizes 50 and 100 give the same 173,904 packages and identical leading rows. Size 100 is the default. Deep pages take ~2.3 s against ~0.2 s, which M8 must not read as throttling. Corrected: 17,391 pages is the preselected year, not "no filter". | Next: same test on Flow 2's `/TenderDetailsServlet`. |
 | 2026-11-05 | 1 | M1-T04, M6, M9 | **`/TenderDetailsServlet` honours size 100:** totals match at both sizes (Service 639, Goods 192,186, Works 444,303; the owner's idea to test the big ones). **Finding: row order is unstable among equal timestamps**, so a sweep could lose rows. Safeguard: distinct IDs must equal the computed total. | Next: full sweep of Service at size 100 to test for loss. |
+| 2026-11-05 | 1 | M1-T04, M6, M9 | **Proven: a list sweep loses rows.** Service, 639 tenders: size 10 lost 7, size 100 lost 1; the union of both is exactly 639. Cause: the sort has no tie-break on equal timestamps. Not uploads: the total held for 430 s. | Fix options in `flow-2.md`; settle in M6. Next: R5 Flow 4. |
 
 **Milestone record**
 
@@ -822,7 +823,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 | Step | Task | Needs the owner? |
 |---|---|---|
-| 1 | **Page `size` experiment** on Flow 3: does `/SearchServlet` honour `size` greater than 10? One search, one request. If it does, every sweep in every flow gets several times faster — the highest-value item outstanding. Owner drives, or agree one scripted request first | one click |
+| 1 | [x] **Page size done.** Size 100 works on Flows 2 and 3, but **full sweeps lose rows** on Flow 2 (unstable sort; see `flow-2.md`). M6 must include the fix and the count check | done |
 | 2 | **R5 — Flow 4 Contract Info**, logged out. Snapshot-and-read first. Ask the owner the same four questions: which filters, which detail fields, what limits the volume, what the natural key is | ~30–45 min |
 | 3 | **R6 — Flow 5 Experience Info**, logged out. Same | ~30–45 min |
 | 4 | **Flow 1 fixture**, logged in and therefore last: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. Also capture session expiry (P-0.4), the logout result (P-0.6) and the session cookie **name** to finish R1 | ~10 min |
