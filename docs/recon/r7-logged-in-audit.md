@@ -3,7 +3,7 @@
 **Asked by the owner, 2026-11-05:** does a logged-in user see anything exceptional on the public pages, compared with logged out?
 **Session:** owner logged in with a PWD officer account; Claude compared structure against the logged-out captures, without echoing personal data.
 **Correction:** two recorders were believed stopped but kept running through the second login, because stopping a background job on Windows left its node process alive. A scan of all recordings found no login request and no password, email or token field. They did store two account pages (mobile/NID prompt, Message Box); those bodies were wiped on 2026-11-06. The raw folder is git-ignored and nothing reached the repo. `recon stop` now kills recorders for real, and login and account pages are never recorded.
-**Status:** [~] in progress. Flows 2 and 3 compared; a likely reason found for Flow 2; Flows 4 and 5 to do.
+**Status:** [x] Audit answered: only Flow 2 differs, and the reason is LTM. Open: the owner's decision, the Sunday and midnight checks.
 **Limit of this audit:** it covers one account type and PWD. It can't show what other departments or roles see.
 
 ## Summary
@@ -12,8 +12,8 @@
 |---|---|---|---|---|---|
 | 2 Tender Info | Same; Department locked to PWD | Same | 5,733 against 2,274 pages; **not the `office` value** | **Identical**, one public tender | **Logged out appears to hide LTM tenders** |
 | 3 APP Info | Same; Department **not** locked | Same | **Same:** 1,841 pages | Same labels; not compared on one package | **Nothing extra found** |
-| 4 Contract Info | | | | | |
-| 5 Experience Info | | | | | |
+| 4 Contract Info | same-search check only | same-search check only | **Same:** 7,119 pages | not compared | **Nothing extra found** |
+| 5 Experience Info | same-search check only | same-search check only | **Same:** 1,578 pages | not compared | **Nothing extra found** |
 
 ## Flow 2 — Tender Info
 
@@ -66,7 +66,7 @@ Only 2 of the 10 rows on page 1 are shared. **Correction:** "Being processed" do
 
 LTM is the Limited Tendering Method, so it would make sense for these not to be listed publicly. **Why the portal does this is an inference;** that it happens is well supported. This replaces the status and date theories: "Being processed" appears both ways because status isn't what decides it. Other restricted methods haven't been ruled out; the logged-out sample also has no RFQ or DPM, for example.
 
-**Confirmed logged out (owner, 2026-11-06):** PWD + Mymensingh + 2023–2025, Method = LTM gives **no records**, while logged in the same office has 277 LTM tenders. Still to confirm: logged in, Method = OTM should match the logged-out count at PWD level (2,274 pages).
+**Confirmed logged out (owner, 2026-11-06):** PWD + Mymensingh + 2023–2025, Method = LTM gives **no records**, while logged in the same office has 277 LTM tenders. **Confirmed logged in:** PWD, 2023–2025, Method = OTM gives **2,272 pages**, against 2,274 logged out with all methods. So OTM accounts for almost all of the public list, and the remaining 2 pages (at most about 20 tenders) are other methods shown publicly. The logged-in extra, 3,459 pages or about 34,600 tenders, is overwhelmingly LTM.
 
 **Fault or design?** Unknown. For design: the rule is consistent across all rows sampled, and limited tendering invites only enlisted firms. For a fault: the logged-out page still offers LTM in its Method dropdown and then returns nothing, with no explanation. Only the portal's owners can settle it (BPPA, or the e-GP help desk).
 
@@ -80,13 +80,13 @@ LTM is the Limited Tendering Method, so it would make sense for these not to be 
 
 | # | Test | How | Answers | Status |
 |---|---|---|---|---|
-| T1 | **Confirm LTM** | Logged out, Method = LTM; logged in, Method = OTM | Logged out: no records ✓. Logged in OTM against 2,274: pending. Replaces the reverse space test | **half done** |
+| T1 | **Confirm LTM** | Logged out, Method = LTM; logged in, Method = OTM | Logged out: no records ✓. Logged in OTM 2,272 against 2,274 ✓. Replaces the reverse space test | **done** |
 | T2 | The hidden list | Logged in swept: 750. Logged out: count known, 473. Tender-by-tender comparison dropped unless T1 surprises | Count matches LTM exactly | **done enough** |
 | T3 | What the hidden ones share | Answered by the evidence above: method | | **done** |
-| T4 | Do LTM tenders have public contracts? | Flow 4 Method = LTM, both login states. Covered by T7 | Whether Flow 4 hides them too | with T7 |
+| T4 | Do LTM tenders have public contracts? | Flow 4 total is the same both ways, so whatever Flow 4 shows, it shows to everyone | Whether LTM contracts are public: Flow 4 Method = LTM, one search, not yet run | optional |
 | T5 | PWD-wide | T1 at PWD level: logged in OTM against 2,274 | Whether Mymensingh is typical | with T1 |
 | T6 | Other departments | **Logged out only:** does a department show the same pattern of gaps in dates? | Whether this is PWD-only. Other departments' logged-in view is out of bounds | optional |
-| T7 | Flows 4 and 5 | Same search both ways | Whether they hide rows too. Flow 3 doesn't | to do |
+| T7 | Flows 4 and 5 | Same search both ways | Same counts both ways: Flow 4 7,119, Flow 5 1,578. Flow 3 1,841. **Only Flow 2 differs** | **done**, counts only, at PWD level |
 | T8 | Sunday, morning and night | PWD + 01/01/2023–31/12/2025, logged out and logged in (owner's request) | How fast the numbers move on a working day; whether hidden tenders reappear | Sunday 2026-11-08 |
 | T9 | Midnight reset | Stay logged in across 12:00 on another night | Reset or chance. Matters for Flow 1 | any night |
 
