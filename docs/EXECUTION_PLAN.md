@@ -808,6 +808,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | R7 | A "Being processed" notice opens fully when logged in: same fields, but no status row and no Documents link. | To check logged out. Next: Flow 3 logged in. |
 | 2026-11-05 | 1 | R7 | **Flow 3 logged in: nothing extra.** 1,841 pages both ways, Department not locked, same detail labels. | Next: Flow 4 logged in. |
 | 2026-11-06 | 1 | R7, M0-T08 | **Claude's fault, fixed:** stopped recorders kept running through a login. No credentials captured; two account pages stored and wiped. New `recon stop`; private pages never recorded; email, mobile and NID redacted; 2 new tests. **Correction to R7:** the requests differ in `office` (`""` against `" "`) and "Being processed" appears both ways, so the cause of 5,733 against 2,274 is open. eContracts doesn't log out; session ended at midnight. | Next: test the space. Owner: repeat the search Sunday morning and night. |
+| 2026-11-06 | 1 | R7 | **Space test: logged in with the space still gives 5,733, so the space is not the cause.** Test plan T1–T9 written in `r7-logged-in-audit.md`. | Next: T2, full sweep of one small office both ways. |
 
 **Milestone record**
 
@@ -837,7 +838,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 1 | [x] **Page size done.** Size 100 works on Flows 2 and 3, but **full sweeps lose rows** on Flow 2 (unstable sort; see `flow-2.md`). M6 must include the fix and the count check | done |
 | 2 | [x] **R5 — Flow 4 done** (`docs/recon/flow-4.md`). Natural key still to confirm: `pkgLotId` | done |
 | 3 | [x] **R6 — Flow 5 done** (`docs/recon/flow-5.md`). Natural keys for Flows 4 and 5 still to confirm | done |
-| 3a | **R7 — Audit Flows 2–5 logged in** (owner's request, 2026-11-05). Does a logged-in user see anything extra? Compare with the logged-out captures: filters, list columns, links, row counts for the same search, and detail labels on the same record. **Never record during login.** Findings go in `docs/recon/r7-logged-in-audit.md` | ~30 min |
+| 3a | **R7 — see the test plan T1–T9 in `docs/recon/r7-logged-in-audit.md`.** Audit Flows 2–5 logged in (owner's request, 2026-11-05). Does a logged-in user see anything extra? Compare with the logged-out captures: filters, list columns, links, row counts for the same search, and detail labels on the same record. **Never record during login.** Findings go in `docs/recon/r7-logged-in-audit.md` | ~30 min |
 | 4 | **Flow 1 fixture**, logged in and therefore last: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. Also capture session expiry (P-0.4), the logout result (P-0.6) and the session cookie **name** to finish R1 | ~10 min |
 | 5 | **Step 8 build work, no browser:** `profiles/schema.json` (M1-T01), the **fixture sanitiser** (M1-T07) — it must strip the Flow 3 detail's person-name field — profile fragments per flow, then the mock server (M1-T08) | no |
 | 6 | **M3 filter mirroring**, which is what the **M1 demo on Thu 12 Nov** actually shows. The spare time won today belongs here | no |

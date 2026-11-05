@@ -10,7 +10,7 @@
 
 | Flow | Filters | List columns | Row count, same search | Detail page | Verdict |
 |---|---|---|---|---|---|
-| 2 Tender Info | Same; Department locked to PWD | Same | 5,733 against 2,274 pages, **cause under test** | **Identical**, one public tender | **Open** |
+| 2 Tender Info | Same; Department locked to PWD | Same | 5,733 against 2,274 pages; **not the `office` value** | **Identical**, one public tender | **Logged out hides tenders; pattern under test** |
 | 3 APP Info | Same; Department **not** locked | Same | **Same:** 1,841 pages | Same labels; not compared on one package | **Nothing extra found** |
 | 4 Contract Info | | | | | |
 | 5 Experience Info | | | | | |
@@ -54,6 +54,28 @@ Only 2 of the 10 rows on page 1 are shared. **Correction:** "Being processed" do
 **Session ended at midnight.** Logged in at 23:54 and 23:58, logged out at 00:00 (Bangladesh time), with no logout by the owner. **The owner's view: a system reset at 12 o'clock.** One observation so far; recheck another night. The owner's other theory, that opening eContracts causes it, is **disproved**: logged in again, eContracts opened and the session stayed (Logout link present). Flow 1 needs a login, so a run crossing midnight must expect this.
 
 **Owner's request:** run the 2,274 search on **Sunday, once in the morning and once at night**. Friday and Saturday are holidays, so tonight's unchanged number says little about how fast it moves on a working day.
+
+## Test plan: why do logged-out searches return fewer tenders?
+
+**Asked by the owner, 2026-11-06.** Result so far: logged in with `office` forced to the logged-out space value, the search still gives **5,733** pages, so **the space is not the cause**. Login state is the leading explanation, pending T1.
+
+**The owner's theory:** a tender drops off the public page once it has opened but its contract information hasn't been posted. **Evidence so far:** 8 tenders on one page are absent logged out, all published 31-Dec-2025; 7 are "Being processed" but 1 is "Contract Awarded"; and 5 "Being processed" tenders from 30-Dec-2025 **are** public. So status alone doesn't explain it.
+
+| # | Test | How | Answers | Status |
+|---|---|---|---|---|
+| T1 | Reverse of the space test | Logged out, empty `office` value, same search | Expect 2,274. If 5,733, the value matters after all | to do |
+| T2 | **The hidden list** | Full sweep of one small office, same filters, logged in and logged out; compare Tender IDs | The exact hidden set, with no sampling | to do |
+| T3 | What the hidden ones share | From T2: status, publication and closing dates, method, nature, against the public ones | Tests the owner's theory, and whether it's date-based | after T2 |
+| T4 | Do hidden tenders have contracts? | Search hidden Tender IDs in Flow 4, both login states | Whether a contract exists but is unpublished | after T2 |
+| T5 | Other offices | Repeat T2 on a second, larger office | Whether T2 is typical | after T3 |
+| T6 | Other departments | **Logged out only:** does a department show the same pattern of gaps in dates? | Whether this is PWD-only. Other departments' logged-in view is out of bounds | optional |
+| T7 | Flows 4 and 5 | Same search both ways | Whether they hide rows too. Flow 3 doesn't | to do |
+| T8 | Sunday, morning and night | PWD + 01/01/2023–31/12/2025, logged out and logged in (owner's request) | How fast the numbers move on a working day; whether hidden tenders reappear | Sunday 2026-11-08 |
+| T9 | Midnight reset | Stay logged in across 12:00 on another night | Reset or chance. Matters for Flow 1 | any night |
+
+**Then the owner decides** (D11 review): for the owner's own department, run logged in, logged out, or offer the choice; and whether hidden tenders may go in an export, given ToR §14 and the fact they aren't public. Hidden tender IDs stay out of this public repo.
+
+**Not tested, on purpose:** changing the locked Department while logged in, or opening a hidden tender's notice while logged out by sending its ID directly.
 
 ## Flow 3 — APP Info
 
