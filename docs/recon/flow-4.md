@@ -46,9 +46,9 @@
 | Search | `#btnSearch` → `loadTable(1)` → `POST /AdvSearchNOAServlet` with all the fields above plus `pageNo`, `size`. Confirmed on the wire: about 1 s, about 7 KB, fragment appended to `#resultTable`. Dates keep their `dd/mm/yyyy` form URL-encoded; Procuring Entity and District placeholders are sent as a single space. `cpvCode` is absent when Category is untouched |
 | Validation | Only the sign-date comparison. **Search runs with nothing set**, so the guard has to be ours |
 | Reset | Reloads the page rather than clearing fields (`location.href`) |
-| Page size | Hidden `#size` = 10, sent in the request. Size 100 **not yet tested on this servlet** |
+| Page size | Hidden `#size` = 10, sent in the request. **Size 100 honoured** |
 | Pagination | Hidden `#totalPages`, "Page 1 of 89586", `#dispPage` + `#btnGoto` |
-| Empty | `#noRecordFound` is checked in the code, same as Flows 2 and 3. Not yet seen |
+| Empty | `#noRecordFound`, seen on the wire (see Open) |
 
 ### Result columns (`table#resultTable`)
 
@@ -93,7 +93,8 @@
 
 - [x] Owner's scope (D19)
 - [x] Search seen on the wire; volume for a realistic selection; detail page fields
-- [ ] `size=100` with matching totals
+- [x] `size=100`: PWD + window gives **71,190** at both sizes (size 10: 7,119 pages, 10 on last; size 100: 712 pages, 90 on last). About 1 s per request at any depth, 70 KB at size 100. The first 10 rows held their positions in this one comparison, which does not show the sort is safe
+- [x] Empty: `<td id="noRecordFound" value="noRecordFound">No Record Found!</td>`, with `totalPages` = 1 in the fragment. The wording differs from Flows 2 and 3, so match the id, not the text
 - [ ] How many PWD contracts have no sign date in any window, which the mandatory window would hide
 - [ ] Beneficial ownership in the palette?
 - [ ] Empty result

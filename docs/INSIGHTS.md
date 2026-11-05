@@ -20,7 +20,7 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 
 | # | Insight | Status | What the build must do |
 |---|---|---|---|
-| 8 | **The servlets honour a larger `size`** though the page offers no control. Size 100 means 10× fewer list requests, with matching totals | ✅ Flows 2, 3; not yet Flow 4 | Default list size 100. Larger not tried: the gain shrinks and a failed page costs more |
+| 8 | **The servlets honour a larger `size`** though the page offers no control. Size 100 means 10× fewer list requests, with matching totals | ✅ Flows 2, 3, 4 | Default list size 100. Larger not tried: the gain shrinks and a failed page costs more |
 | 9 | **Detail pages don't get faster.** Each row is its own request, so the palette is the expensive part | ✅ | Palette starts empty (D15). With no detail field ticked, skip detail pages entirely |
 | 10 | Response time varies by query, not just load. Flow 3: page 1 ≈ 0.2 s, last page ≈ 2.3 s. Flow 2: status All ≈ 1–1.7 s, Live ≈ 30–70 ms | ✅ | M8's "site is slowing down" check needs a baseline per query, or normal slowness reads as throttling |
 | 11 | Size of unfiltered data: Flow 2 ≈ 637,000 tenders; Flow 3 173,904 packages in one year; Flow 4 ≈ 896,000 contracts | ✅ | Far beyond the contract's "few thousand". Every flow needs a mandatory-filter guard and a time estimate before Start |
