@@ -2,7 +2,7 @@
 // The rule: no password, token, cookie value or auth header ever reaches recon/raw/.
 
 /** Field names that may carry a secret. Matched against name, id and autocomplete. */
-export const SENSITIVE_NAME = /pass|pwd|token|secret|otp|captcha|csrf|xsrf|auth|session|cookie|pin\b/i;
+export const SENSITIVE_NAME = /pass|pwd|token|secret|otp|captcha|csrf|xsrf|auth|session|cookie|pin\b|email|mobile|\bnid\b/i;
 
 export const REDACTED = '[REDACTED]';
 
@@ -23,7 +23,7 @@ const SENSITIVE_HEADERS = new Set(['cookie', 'set-cookie', 'authorization', 'pro
  * @param {Document} [doc]
  */
 export function snapshotPage(doc = document) {
-  const sensitive = /pass|pwd|token|secret|otp|captcha|csrf|xsrf|auth|session|cookie|pin\b/i;
+  const sensitive = /pass|pwd|token|secret|otp|captcha|csrf|xsrf|auth|session|cookie|pin\b|email|mobile|\bnid\b/i;
   const redacted = '[REDACTED]';
   /** @param {Element} el */
   const isSensitive = (el) => {
