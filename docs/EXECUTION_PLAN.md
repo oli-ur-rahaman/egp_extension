@@ -798,6 +798,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M6, M9 | **`/TenderDetailsServlet` honours size 100:** totals match at both sizes (Service 639, Goods 192,186, Works 444,303; the owner's idea to test the big ones). **Finding: row order is unstable among equal timestamps**, so a sweep could lose rows. Safeguard: distinct IDs must equal the computed total. | Next: full sweep of Service at size 100 to test for loss. |
 | 2026-11-05 | 1 | M1-T04, M6, M9 | **Proven: a list sweep loses rows.** Service, 639 tenders: size 10 lost 7, size 100 lost 1; the union of both is exactly 639. Cause: the sort has no tie-break on equal timestamps. Not uploads: the total held for 430 s. | Fix options in `flow-2.md`; settle in M6. Next: R5 Flow 4. |
 | 2026-11-05 | 1 | M1-T04 | **`docs/INSIGHTS.md` created** at the owner's request: 40 findings and ideas across flows. **R5 Flow 4 started:** 16 filters, list POST `/AdvSearchNOAServlet`, 89,586 pages (≈896,000 contracts), detail buildable from the row; all from one snapshot. | Notes in `docs/recon/flow-4.md`. Next: owner's scope; see Search, size and detail on the wire. |
+| 2026-11-05 | 1 | M1-T04 | **D19:** Flow 4 keeps all 16 filters; Department + 5-year Contract Sign Date window mandatory; palette starts empty. PWD + window = 7,119 pages ≈ 71,200 contracts. Contract detail read: ~25 fields + ownership table. | Next: size 100, window exclusions, empty result. |
 
 **Milestone record**
 

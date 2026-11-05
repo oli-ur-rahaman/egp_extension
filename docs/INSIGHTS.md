@@ -33,7 +33,7 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 13 | **Live filters (owner's idea, D18).** Scan filters on load, apply each change to the real page, rescan all. No stored option lists | decided | The Site Profile names each filter (label, type, rule), never its items |
 | 14 | A scan alone can't see tree popups, operator-plus-value filters, mandatory rules, hidden filters, or a filter that vanished | ✅ | That's why the thin profile exists. A vanished filter must stop the run (ToR fail-loud) |
 | 15 | Both tree popups are avoidable: their data comes from an endpoint. Flow 2's list view can read Department without the popup | 📖 | Panel shows its own picker |
-| 16 | A filter's guard differs per flow: Flow 1 year + office; Flow 2 Department + publishing window ≤ 5 years (D13); Flow 3 Department + year (D15) | decided | Mandatory rules live in the profile, per flow |
+| 16 | A filter's guard differs per flow: Flow 1 year + office; Flow 2 Department + publishing window ≤ 5 years (D13); Flow 3 Department + year (D15); Flow 4 Department + sign-date window ≤ 5 years (D19) | decided | Mandatory rules live in the profile, per flow |
 | 17 | The panel may need a different filter set than the page: Flow 1 shows two of six; Flow 2 turns Status tabs into a dropdown, default All | decided | Panel definition is per flow, not a copy of the page |
 | 18 | "All" can be a blank value, with no looping, except where the page has no such option (Flow 1 PE Office) | ✅ | D12 |
 | 19 | Dropdown placeholders aren't uniform: blank, `0`, a space, or text | ✅ | Per-filter "no selection" value in the profile; never assume |
@@ -55,6 +55,9 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 30 | Values aren't always final in raw HTML: Flow 1's percentages are computed by inline script | ✅ | On the fast path, compute them from the documented formula |
 | 31 | Units differ: Flow 1 and Flow 4 values are in **Crore BDT**, Flow 3 in plain BDT | ✅ 📖 | Unit per column in the profile, and say it in the Excel header |
 | 32 | `N.A.` and `Not applicable` appear as values | ✅ | Export `N.A.` as empty. Decide per field for `Not applicable` |
+| 41 | Units can differ inside one flow: Flow 4's list is Crore BDT, its detail is full BDT with the currency in brackets | ✅ | Split amount from currency. Label units in Excel |
+| 42 | Detail pages have no login form, so its absence proves nothing about login state | ✅ | Check login state on list pages only |
+| 43 | A mandatory date window can hide rows that have no such date yet, e.g. contracts not yet signed | 💡 being measured | Tell the user what a window can't see |
 
 ## Portal and session
 

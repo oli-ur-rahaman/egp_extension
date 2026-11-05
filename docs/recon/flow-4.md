@@ -1,7 +1,11 @@
 # Recon R5 — Flow 4: Contract Info (eContracts)
 
 **Session:** R5, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] in progress. Everything below comes from one snapshot and the page's own JavaScript. Not yet seen on the wire: Search, page size, detail page, empty result, volume with filters. Owner's scope questions are open.
+**Status:** [~] in progress. Filters, Search on the wire, detail page and owner's scope are captured. Left: size 100 check, empty result, how many contracts the date window excludes.
+
+## Client requirement (owner, 2026-11-05)
+
+**D19. Flow 4 scope.** All **16 filters** in the panel. **Department and a date window of at most 5 years are mandatory.** The window uses Contract Sign Date From/To, the only date range this page has. The field palette starts empty. Measured: PWD, sign dates 03/01/2021–31/12/2025 = **7,119 pages ≈ 71,200 contracts**, down from 89,586 pages. At size 100 and about 3 s per request, that's about 36 minutes for the list and about 59 hours with every detail page.
 
 ## A. Identity
 
@@ -39,7 +43,7 @@
 
 | Item | Finding |
 |---|---|
-| Search | `#btnSearch` → `loadTable(1)` → `POST /AdvSearchNOAServlet` with all the fields above plus `pageNo`, `size` (📖 from code). Fragment appended to `#resultTable` |
+| Search | `#btnSearch` → `loadTable(1)` → `POST /AdvSearchNOAServlet` with all the fields above plus `pageNo`, `size`. Confirmed on the wire: about 1 s, about 7 KB, fragment appended to `#resultTable`. Dates keep their `dd/mm/yyyy` form URL-encoded; Procuring Entity and District placeholders are sent as a single space. `cpvCode` is absent when Category is untouched |
 | Validation | Only the sign-date comparison. **Search runs with nothing set**, so the guard has to be ours |
 | Reset | Reloads the page rather than clearing fields (`location.href`) |
 | Page size | Hidden `#size` = 10, sent in the request. Size 100 **not yet tested on this servlet** |
@@ -67,13 +71,30 @@
 |---|---|
 | Link | Title in column 3: `/resources/common/ViewAwardedContracts.jsp?pkgLotId=<id>&tenderid=<id>`, `target="_blank"` |
 | Buildable directly | **Yes**, a plain GET with both IDs from the row (📖) |
-| Fields | Not yet captured |
+| Page | Title "Contract Awards Details". Six `table.formStyle_1` label/value blocks, plus `table.viewShareholdersTable`. Located by label text |
+| Login state | **No login form on this page**, so its absence doesn't mean logged in. Detail pages can't show login state; check it on the list page |
+
+### Field palette (from the contract detail)
+
+| Group | Fields |
+|---|---|
+| Organisation | Ministry/Division, Agency, Procuring Entity Name, Code, District |
+| Identity | Contract Award for, Tender/Proposal ID, Invitation/Proposal Ref. No. |
+| Procurement | Procurement Method (National/International), Budget and Source of Funds, Development Partner |
+| Project and package | Project/Program Code, Project/Program Name, Package No., Package Name |
+| Dates | Date of Advertisement, Notification of Award, Contract Signing, Expected Contract Completion. No date range on Completion |
+| Contract | **Contract Price**, Name of the Economic Operator, Tenderer ID of the Economic Operator |
+| Beneficial ownership (one-to-many) | No., Name, Designation, Ownership %, Country. Holds personal names; can have several rows. **Owner to decide** |
+| Authorised officer | Name, Designation. Personal data; the sanitiser must strip it |
+
+**Units differ within this flow:** the list shows Crore BDT, the detail shows full BDT with the currency in brackets (e.g. `948782.473 (BDT)`). The parser splits amount from currency.
 
 ## Open
 
-- [ ] Owner's scope: which filters in the panel, which detail fields, which mandatory filters
-- [ ] Search seen on the wire; `size=100` with matching totals
-- [ ] Volume for a realistic selection
-- [ ] Detail page fields
+- [x] Owner's scope (D19)
+- [x] Search seen on the wire; volume for a realistic selection; detail page fields
+- [ ] `size=100` with matching totals
+- [ ] How many PWD contracts have no sign date in any window, which the mandatory window would hide
+- [ ] Beneficial ownership in the palette?
 - [ ] Empty result
 - [ ] Does a full sweep lose rows here too? Assumed yes (see `flow-2.md`)
