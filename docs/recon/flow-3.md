@@ -1,7 +1,7 @@
 # Recon R4 — Flow 3: APP Info (Annual Procurement Plan)
 
 **Session:** R4, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] the list mechanism is fully captured, read from the page's own code in one snapshot. Left: the package detail page, both cascades confirmed live, an empty result, and the owner's scope decisions.
+**Status:** [~] list mechanism, both cascades and the package detail page are captured. Left: an empty result, whether a larger page `size` is honoured, and the owner's scope decisions.
 
 ## A. Identity
 
@@ -76,7 +76,7 @@ Seven columns, and **four of them pack two values into one cell, separated by a 
 
 Splitting those cells is part of the parser, not an afterthought: the two halves are different fields. Costs arrive as plain decimals, not Crore, so there is no unit conversion here — unlike Flow 1.
 
-## D. Detail page
+## D. Detail page — `ViewPackageDetail.jsp`
 
 | Item | Finding |
 |---|---|
@@ -84,24 +84,52 @@ Splitting those cells is part of the parser, not an afterthought: the two halves
 | URL | `ViewPackageDetail.jsp?appId=<appId>&pkgId=<pkgId>&pkgType=Package&from=home` |
 | **Buildable directly** | **Yes** — both ids come from the list row, so the detail needs no click and no popup juggling |
 | Opens in | a new tab (`target="_blank"`). The extension builds the URL itself and never needs that tab |
-| Fields | **not yet read** |
+| Title | "View APP Package Details :" |
+| Structure | a 5-row header block, then four labelled sections. Fields are label/value table rows, located by label text, as on the Flow 2 notice |
+| Export | a "Save As PDF" link; not needed |
 
-**The list is already package-level, so Flow 3 has no one-to-many flattening problem.** One APP ID appears on several rows, one per package (observed: three rows sharing one APP ID). The natural key is therefore the pair (`appId`, `pkgId`), both available in the link — for the owner to confirm (Q6).
+### Field palette (from the package detail)
+
+**Header block:** Ministry · Division · Organization · PE Office and Code · Budget Type · Project Name.
+
+**Key Fields Information:** APP ID · APP Code · Financial Year · Budget Type · Advance Procurement (APP) · Project Name · **Procuring Entity** · District.
+
+**Package Details:** Procurement Nature · Type of Emergency · Advance Procurement (Package) · Package No · Package Description · Package Estimated Cost (In BDT) · **Category** · Approving Authority · PQ Requires · Procurement Method · Procurement Type · Package Type · Source of Fund · Development Partners.
+
+**Lot Details:** a table — Lot No. · Lot Description · Qty · Unit · Estimated Cost (In BDT).
+
+**Tender/Proposal Dates:** eight dates, all `dd-MMM-yyyy` (e.g. `01-Jun-2026`) — Expected Date of Advertisement of Tender/Proposal on e-GP website · of submission of Tender/Proposal · of Opening of Tender/Proposal · of Submission of Evaluation Report · of Approval for Award of Contract · of Issuance of the NOA · of Signing of Contract · of Completion of Contract. Then **Total Time to Contract Signing**, a plain number of days.
+
+So the palette for Flow 3 is about **35 fields plus the lot table**, a little smaller than Flow 2's notice.
+
+### Three things that matter for the build
+
+1. **`Procuring Entity` on this page is a person's name, not an office.** The list column of the same name holds the office. This is personal data: it must never be echoed into a commit, the sanitiser (M1-T07) must strip it, and the palette should mark it so the owner chooses it deliberately.
+2. **Lot Details is a real one-to-many table**, unlike Flow 2 where multi-lot tenders do not exist (D14). The sample package has one lot, labelled `Single`, so single-lot packages are expressed as a one-row table rather than as empty lot fields. A flattening rule is needed (see Open).
+3. **`Category` on the detail repeats the CPV name list** — 1,110 characters in the sample, the same shape as the `cpvCat` filter value. It is worth keeping as one cell, not split, for the reason given in the Flow 2 notes: names can themselves contain a semicolon.
+
+**Date format differs from the list and from Flow 2:** `dd-MMM-yyyy` here, against `dd/mm/yyyy` in the Flow 2 filters. The profile carries the format per flow; the parser never guesses.
 
 ## E. Volume
 
 | Selection | `totalPages` at size 10 | Rows |
 |---|---|---|
 | No filter at all, as the page loads | **17,391** | ≈ 174,000 |
+| PWD + Financial Year 2024-2025 (measured 2026-11-05) | **1,841** | ≈ 18,400 |
 
 At about 3 s per request that is roughly 15 hours for the list alone, before any detail pages. Flow 2's answer was a mandatory department plus a 5-year date window (D13), but **this page has no date filter at all** — the nearest equivalent is Financial Year, which is one year, not a range. A guard for this flow has to be built from Department plus Financial Year.
+
+**Measured: Department + Financial Year is still a long run.** PWD with FY 2024-2025 is 1,841 pages, so about 1.5 h for the list alone at a polite pace, and about 15 h if the palette asks for all 18,400 package pages. The list sweep is acceptable and resumable; the detail pass is what costs. Hence the recommendation that **the field palette starts with nothing ticked**, so a careless run is 1.5 h rather than 15.
 
 ## Open
 
 - [x] Filters, cascades, search contract, pagination, result columns and the detail route, all from `p3.1-app-initial`
 - [ ] Owner's scope decisions: which filters the panel shows, which detail fields matter, what keeps a run a sensible size
-- [ ] Department → Procuring Entity cascade confirmed live, and `totalPages` for a realistic selection
-- [ ] Financial Year + Budget Type → Project cascade confirmed live
-- [ ] `ViewPackageDetail.jsp` fields, and whether a package detail holds its own one-to-many tables
+- [x] Department → Procuring Entity cascade confirmed live: the tree writes `departmentId` = 21 and Procuring Entity goes from 1 option to **225**
+- [x] Financial Year alone repopulates Project (3,351 → **3,015** options), so the cascade fires on the year as well as on Budget Type
+- [x] `totalPages` for a realistic selection: PWD + FY 2024-2025 = **1,841 pages**
+- [x] `ViewPackageDetail.jsp` fields: ~35 in four sections, plus a **Lot Details** table (one-to-many) and eight `dd-MMM-yyyy` dates
+- [ ] **Owner:** how to flatten a package with several lots. Claude's recommendation: one row per package by default; when any lot field is in the palette, one row **per lot** with the package fields repeated, keyed (`appId`, `pkgId`, `lotNo`)
+- [ ] **Owner:** confirm that `Procuring Entity` (a person's name) is wanted at all, since it is personal data
 - [ ] Empty result shape
 - [ ] Does the servlet honour a `size` larger than 10?
