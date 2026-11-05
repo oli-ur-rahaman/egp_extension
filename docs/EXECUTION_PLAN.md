@@ -809,6 +809,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | R7 | **Flow 3 logged in: nothing extra.** 1,841 pages both ways, Department not locked, same detail labels. | Next: Flow 4 logged in. |
 | 2026-11-06 | 1 | R7, M0-T08 | **Claude's fault, fixed:** stopped recorders kept running through a login. No credentials captured; two account pages stored and wiped. New `recon stop`; private pages never recorded; email, mobile and NID redacted; 2 new tests. **Correction to R7:** the requests differ in `office` (`""` against `" "`) and "Being processed" appears both ways, so the cause of 5,733 against 2,274 is open. eContracts doesn't log out; session ended at midnight. | Next: test the space. Owner: repeat the search Sunday morning and night. |
 | 2026-11-06 | 1 | R7 | **Space test: logged in with the space still gives 5,733, so the space is not the cause.** Test plan T1–T9 written in `r7-logged-in-audit.md`. | Next: T2, full sweep of one small office both ways. |
+| 2026-11-06 | 1 | R7 | **Likely reason for the gap: logged-out Flow 2 hides LTM tenders.** Mymensingh: logged in OTM 473 + LTM 277 = 750; logged out exactly 473. On the sampled page, all 8 hidden are LTM and both shared are OTM; none of 961 logged-out rows is LTM. | §13 rewritten: confirm, finish the audit, owner decides, then stop recon and build. |
 
 **Milestone record**
 
@@ -825,53 +826,32 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (rewritten 2026-11-05, end of the office-PC session; valid on either PC)
+### ▶ Resume here (rewritten 2026-11-06, home PC; valid on either PC)
 
-**Where we are.** M0 done. R0 done. R1 partly done (step 7 below). **R2 Flow 1 done** · **R3 Flow 2 done** · **R4 Flow 3 done** · **R5 Flow 4 done** · **R6 Flow 5 done** — `docs/recon/flow-1.md` … `flow-5.md`; findings in `docs/INSIGHTS.md`. Decisions D11–D22 recorded in `PROJECT_PLAN.md` §8. Nothing uncommitted. Still no `profiles/` and no new `src/` code: everything so far is M0 plus recon.
+**Where we are.** All five report pages are mapped logged out. Decisions D11–D22 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. **The M1 demo is Thu 12 Nov.** Fri and Sat are holidays, so about 4 working days are left.
 
-**The method that made Flow 3 fast.** One `npm run recon -- snapshot` of a page, then read the page's **own JavaScript** out of the capture. That yielded all 11 filters, both cascades, the search POST contract, pagination, the result columns and the detail URL **before asking the owner for a single click**. Clicks were then needed only to confirm the cascades on the wire, to measure volume, and to see an empty result. Use this order on Flows 4 and 5: snapshot and read first, ask for clicks second.
+**Do these in order:**
 
-**Start the next session here:**
+| # | Task | Who | Time |
+|---|---|---|---|
+| 1 | **Confirm the LTM finding** (R7, T1): logged out, PWD + Mymensingh + dates, Procurement Method = LTM should give no records. Logged in, Method = OTM should give the same count as logged out | owner clicks | 5 min |
+| 2 | **Finish the audit quickly:** Flows 4 and 5, one same-search comparison each. Flow 4: PWD, signed 03/01/2021–31/12/2025, 7,119 pages logged out. Flow 5: PWD, Tender Type All, 1,578 pages logged out | owner clicks | 10 min |
+| 3 | **Owner decides** (D11 review): do LTM tenders belong in the extension, and how? See below | owner | 1 question |
+| 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
+| 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
+| 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean) | owner | 2 min |
 
-| Step | Task | Needs the owner? |
-|---|---|---|
-| 1 | [x] **Page size done.** Size 100 works on Flows 2 and 3, but **full sweeps lose rows** on Flow 2 (unstable sort; see `flow-2.md`). M6 must include the fix and the count check | done |
-| 2 | [x] **R5 — Flow 4 done** (`docs/recon/flow-4.md`). Natural key still to confirm: `pkgLotId` | done |
-| 3 | [x] **R6 — Flow 5 done** (`docs/recon/flow-5.md`). Natural keys for Flows 4 and 5 still to confirm | done |
-| 3a | **R7 — see the test plan T1–T9 in `docs/recon/r7-logged-in-audit.md`.** Audit Flows 2–5 logged in (owner's request, 2026-11-05). Does a logged-in user see anything extra? Compare with the logged-out captures: filters, list columns, links, row counts for the same search, and detail labels on the same record. **Never record during login.** Findings go in `docs/recon/r7-logged-in-audit.md` | ~30 min |
-| 4 | **Flow 1 fixture**, logged in and therefore last: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. Also capture session expiry (P-0.4), the logout result (P-0.6) and the session cookie **name** to finish R1 | ~10 min |
-| 5 | **Step 8 build work, no browser:** `profiles/schema.json` (M1-T01), the **fixture sanitiser** (M1-T07) — it must strip the Flow 3 detail's person-name field — profile fragments per flow, then the mock server (M1-T08) | no |
-| 6 | **M3 filter mirroring**, which is what the **M1 demo on Thu 12 Nov** actually shows. The spare time won today belongs here | no |
+**Dated checks that don't block the build:**
+- **Sunday 8 Nov, morning and night** (owner's request): PWD + 01/01/2023–31/12/2025, logged out and logged in. How fast do counts move on a working day?
+- **Any night:** stay logged in across 12:00. Was the midnight logout a reset, or chance?
 
-**Open decisions:** Q7 (secret code, needed by Week 9) · D17's person-name field, off until the owner says otherwise · natural keys per flow (Q6) for Flows 4 and 5.
+**Moved to M6, not recon:** the full-sweep row loss (`flow-2.md`), including trying one big `size` and date windows, and sweeps on Flows 3–5.
 
-**Not on the office PC:** the raw captures in `recon/raw/` are git-ignored on purpose. Today's office-PC captures (`p3.1`, `p3.4`, `p3.5`, `p3.6`, the recordings) stay on the office PC; everything learned from them is in `flow-3.md`, so nothing is lost.
+**Open owner decisions:** LTM (D11 review) · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
-**Office PC, first time only** (see README):
-1. `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (or use `npm.cmd` instead of `npm`)
-2. `git clone https://github.com/oli-ur-rahaman/egp_extension.git C:\egp_extension` → `cd C:\egp_extension` → `npm ci` → `npx playwright install chromium` → `npm run verify`
-3. Open Claude Code in `C:\egp_extension`. It reads `CLAUDE.md`, then this section.
+**Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
-**Next session plan: works on either PC.** Step 0 applies to the office PC only. On the home PC, skip it and start at step 1 after `git pull`.
-
-| Step | Task | Module | Claude does | Owner does | Done when |
-|---|---|---|---|---|---|
-| 0 | Office PC setup *(office only, first time, ~15 min)* | M0 | Runs `npm run verify` and confirms the setup is green | Steps in "first time only" above; loads `dist/` unpacked (M0-MC1, MC2) | verify green; panel says "Ready" |
-| 1 | Link-up, logged out | R0 | `npm run recon -- ping` | `npm run chrome`, **does not log in** | Claude sees the tab |
-| 2 | Logged-out shell | R1 / M2 | Captures the homepage and the login page signature (P-0.1); records the search dropdown | Opens the homepage | `00-portal-shell.md` updated |
-| 3 | **Flow 2 Tender Info** (~1.5–2 h) | R3 / M1 | Runs the per-flow checklist (PROJECT_PLAN §2.3) one click at a time: initial page, every filter and how they cascade (network recording), Search, results p1 and pN, page size, empty result, **detail page** (how it opens, whether its URL can be built directly, its fields), list page after the detail closes | Clicks as asked. Decides which filters the client needs (as with Flow 1). Confirms what the detail page should contribute (X3) | `flow-2.md` written, committed, pushed |
-| 4 | **Flow 3 APP Info** | R4 / M1 | Same checklist. Watches for one-to-many package tables in the detail | Same; decides which filters to use and how to flatten multi-row details | `flow-3.md` pushed |
-| 5 | **Flow 4 Contract Info** | R5 / M1 | Same; records amount and date formats | Same | `flow-4.md` pushed |
-| 6 | **Flow 5 Experience Info** | R6 / M1 | Same; proposes the natural key (Q6) for every flow | Confirms the natural keys | `flow-5.md` pushed |
-| 7 | Logged-in leftovers *(last, because it needs a login)* | R1 / R2 | Captures session expiry (P-0.4), the logout result (P-0.6), and the session cookie **name**. On the office PC, also recaptures the Flow 1 non-empty result | Logs in; lets the session idle for the expiry test; logs out | R1 fully ticked |
-| 8 | Build without the browser *(Claude, between and after sessions)* | M1 | `profiles/schema.json` (M1-T01); **fixture sanitiser** (M1-T07); Site Profile fragments per flow; sanitised fixtures committed; start of the mock server (M1-T08) | — | `npm run verify` green, tests for each |
-| 9 | End of day | — | Updates §12 log, §13 "Resume here", task markers; commits and pushes | Logs out, closes the debug Chrome | `git status` clean on both sides |
-
-Steps 3–6 can stop at any flow boundary. Each flow is committed on its own, so the next session (on either PC) starts at the first unticked step. Step 8 runs during the owner's breaks; it needs no browser.
-
-**Decisions needed from the owner, per flow:** which filters the extension shows (the rest stay at page defaults, as for Flow 1), what a detail page contributes, how multi-row details are flattened, and the natural key. Target: R3–R6 finished by about Tue 10 Nov, leaving Wed–Thu for filter mirroring (M3) before **demo M1 on Thu 12 Nov**.
-
-**Not on the office PC:** the raw captures in `recon/raw/` (home PC only, git-ignored on purpose; they contain account details). The Flow 1 parser fixture must be recaptured once, logged in: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. It's committed only after the sanitiser (M1-T07) cleans it.
+**First-time setup on a new PC:** see `README.md`. Raw captures in `recon/raw/` never travel between PCs; fixtures must be recaptured or built on the PC that holds them.
 
 ### Checklist
 
@@ -881,8 +861,8 @@ Steps 3–6 can stop at any flow boundary. Each flow is committed on its own, so
 4. [ ] **You:** pick the secret code privately (Q7). It's needed only by Week 9.
 5. [x] ~~**Claude:** M0-T02 … M0-T08.~~ Done 2026-11-04.
 6. [ ] **You:** M0-MC1, MC2 (load `dist/` unpacked, open the panel → "Ready"), MC4 (`git status` clean). MC3 done.
-7. [~] **Together:** R0 ✓ → R1 (partly, step 4 above) → R2 Flow 1 ✓ → R3 Flow 2 ✓ → R4 Flow 3 ✓.
-8. [ ] **Together, W2:** R5 Flow 4 and R6 Flow 5 (logged out), then filter mirroring on all five pages → **demo M1 on Thu 12 Nov 2026.**
+7. [~] **Together:** R0 ✓ → R1 partly (session expiry, logout page and cookie name left) → R2–R6 ✓ → R7 audit in progress.
+8. [ ] Build the profile and M3 live filters on all five pages → **demo M1 on Thu 12 Nov 2026.**
 
 ---
 
