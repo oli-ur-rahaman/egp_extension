@@ -5,7 +5,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter as L
 
-OUT = Path(r"C:\egp_extension\docs\samples")
+OUT = Path(__file__).resolve().parent.parent / "docs" / "samples"
 OUT.mkdir(parents=True, exist_ok=True)
 F = "Arial"
 FILL = {k: PatternFill("solid", fgColor=c) for k, c in dict(F="548235", L="1F3864", D="2E75B6", S="7F7F7F", H="1F3864", B="DDEBF7").items()}
