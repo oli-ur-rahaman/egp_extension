@@ -13,11 +13,14 @@
 
 **Field palette** (owner, 2026-11-05). The user chooses which notice fields to collect from a wide list (section D), and the extension loops through the notice page of every result row. If no notice field is ticked, it skips the notice pages entirely and only sweeps the list, which is far quicker. The last selection is remembered between runs. Module note: this adds a palette component to M13 and a field selection to M7.
 
-**D13. Mandatory Department and date window** (owner, 2026-11-05). Start is refused unless **Department** is selected and a date window is set, with a span of **at most 3 years**. Measured: PWD, status All, published 01/01/2023–31/12/2025 = **2,274 pages ≈ 22,700 tenders**. At about 3 s per request, that is about 2 hours for the list alone and about 19 hours with notice pages. Details as drafted by Claude, pending the owner's confirmation:
-- The window is either Publishing dates or Closing dates, because those are the date filters this page has. It has no Opening date filter, although Opening date does appear on the notice.
-- Both From and To are required, since a span can't be measured from one end.
+**D13. Mandatory Department and date window** (owner, 2026-11-05; span revised from 3 to 5 years). Start is refused unless **Department** is selected and a date window is set, with a span of **at most 5 years**. Measured at 3 years: PWD, status All, published 01/01/2023–31/12/2025 = **2,274 pages ≈ 22,700 tenders** (≈2 h for the list, ≈19 h with notices). Five years is roughly 1.7× that, so a full-span PWD run with notices is of the order of **30 h** and must be paced and resumable (M8/M5).
+
+- **Which window:** the mandatory one is the **Publishing date** window (`pubDtFrm` / `pubDtTo`). The Closing date window stays an ordinary optional filter. *(Claude's reading of "date_1 to date_2"; one word from the owner changes it to Closing.)*
+- **"Current date" checkbox** (owner, 2026-11-05): each of the two date boxes has its own checkbox labelled *current date*, **ticked by default**. Ticked, that end of the window is today's date, re-evaluated when the run starts, not when the box was ticked. Unticked, the user types a date and the box is required.
+- Both ends therefore always resolve to a value: an unset end means today.
 - From must be before To (the portal's own rule). Format `dd/mm/yyyy`.
-- **Exemption:** a Tender/Proposal ID or Reference No. search needs no window, because it already targets one tender.
+- The 5-year check runs on the **resolved** dates, so "current date" on both ends is a zero-length window: valid, and it means "published today". The panel shows the resolved span (e.g. *4 y 11 m*) next to the boxes so the user sees what they are about to run.
+- **Exemption:** a Tender/Proposal ID or Reference No. search needs no window, because it already targets one tender. Department stays mandatory for those searches as well, as the owner has not exempted it.
 
 **D14. One row per tender** (owner, 2026-11-05). Multi-lot tenders don't exist in e-GP yet, so the lot fields are single values in the row. If a notice ever shows more than one lot, the extension must not silently keep only the first: it flags the row in the reconciliation report so the rule can be revisited.
 

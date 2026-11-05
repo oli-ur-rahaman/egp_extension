@@ -807,7 +807,7 @@ egp_ext/
 | D10 | All site knowledge externalised to a versioned Site Profile | Architect's call — prerequisite for §6 |
 | D11 | Flows 2–5 run **logged out** (public Advanced Search, all departments); Flow 1 runs logged in (PWD-scoped report) | Owner, 2026-11-04 (recon R2). See docs/recon/flow-1.md |
 | D12 | Flow 2: a filter on "All" is left blank and the result pages are swept once; filter values are not looped. Flow 1 still loops offices | Owner, 2026-11-05 (recon R3). See docs/recon/flow-2.md |
-| D13 | Flow 2: Start requires a Department and a Publishing or Closing date window of at most 3 years; Tender ID or Reference No. searches are exempt | Owner's idea, 2026-11-05; details pending confirmation. See docs/recon/flow-2.md |
+| D13 | Flow 2: Start requires a Department and a Publishing date window of at most **5 years**; each date box carries a "current date" checkbox, ticked by default, so an unset end of the window means today; Tender ID or Reference No. searches are exempt | Owner, 2026-11-05 (span raised from 3 to 5 years). See docs/recon/flow-2.md |
 | D14 | Flow 2: one row per tender, because multi-lot tenders do not exist yet; more than one lot is flagged, never dropped | Owner, 2026-11-05. See docs/recon/flow-2.md |
 
 ### Open — to resolve during Phase 1

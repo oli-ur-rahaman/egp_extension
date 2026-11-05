@@ -787,6 +787,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M3 | **D13:** mandatory date window of at most 3 years (owner's idea). **D14:** one row per tender; no multi-lot tenders exist yet. | Next: measure a 3-year window; empty result; Service notice. |
 | 2026-11-05 | 1 | M1-T04, M3 | **D13 extended: Department mandatory too.** PWD + 3-year window = 2,274 pages ≈ 22,700 tenders (≈19 h with notices). Empty result captured. REOI notice captured: labels and lots table differ by event type, so the palette maps one field from several labels. | End of day on the home PC. D13 details await confirmation. Resume: finish R3, then R4. |
 | 2026-11-05 | 1 | — | Handover notes for the office PC added to `CLAUDE.md`: working style and recon traps. | Resume at §13 "Start next session here". |
+| 2026-11-05 | 1 | M1-T04, M3, M13 | **D13 confirmed and revised by the owner:** span **5 years** (was 3), window on Publishing dates, each date box gets a **"current date" checkbox ticked by default** so an unset end means today. Department stays mandatory, ID/Reference searches exempt from the window. | Second PC up to date (`npm run verify` green). Next: Category tree (`loadCPVTree`) closes R3, then R4 Flow 3 APP Info. |
 
 **Milestone record**
 
