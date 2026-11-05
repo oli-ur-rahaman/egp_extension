@@ -807,6 +807,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | R7, D11 | **R7 audit, Flow 2: same request, logged in returns 5,733 pages against 2,274 logged out**, including "Being processed" tenders. Public notice identical; filters same; Department locked. | D11 needs the owner's review. Notes in `docs/recon/r7-logged-in-audit.md`. |
 | 2026-11-05 | 1 | R7 | A "Being processed" notice opens fully when logged in: same fields, but no status row and no Documents link. | To check logged out. Next: Flow 3 logged in. |
 | 2026-11-05 | 1 | R7 | **Flow 3 logged in: nothing extra.** 1,841 pages both ways, Department not locked, same detail labels. | Next: Flow 4 logged in. |
+| 2026-11-06 | 1 | R7, M0-T08 | **Claude's fault, fixed:** stopped recorders kept running through a login. No credentials captured; two account pages stored and wiped. New `recon stop`; private pages never recorded; email, mobile and NID redacted; 2 new tests. **Correction to R7:** the requests differ in `office` (`""` against `" "`) and "Being processed" appears both ways, so the cause of 5,733 against 2,274 is open. eContracts doesn't log out; session ended at midnight. | Next: test the space. Owner: repeat the search Sunday morning and night. |
 
 **Milestone record**
 

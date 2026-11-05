@@ -36,6 +36,8 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 
 - **Flows 2–5 run logged out; Flow 1 runs logged in** (D11). Do logged-in work last.
 - `npm run recon -- watch` records one tab only. A new tab or popup needs its own `--tab N` recording; tab numbers shift, so run `tabs` first. Start the recording **before** asking for the clicks, and give it plenty of time, because the owner may take a while.
+- **`TaskStop` does not stop a recorder on Windows:** the node child survives. Always run `npm run recon -- stop`, and always **before asking the owner to log in**. Login and account pages are skipped by the recorder, but no recording should overlap a login anyway.
+- Compare requests field by field before crediting a cause: a single space in `office` undid a confident conclusion. Print whole rows when comparing; four rows of ten gave a wrong claim about status.
 - The recorder once missed requests with no error, and the cause is unknown. It now prints `LINK LOST` if its connection closes. Confirm a click's request really appears in `network.json`, and fall back to reading the page's inline JS, which often tells you more anyway.
 - The response body in `network.json` is often the quickest source: a list response carries `totalPages` and the rows, so several clicks can be read from one recording.
 - Print structure, not personal values. When reading captures, don't echo field values, account IDs or officials' names. Nothing with those goes into a commit; this repo is **public**.

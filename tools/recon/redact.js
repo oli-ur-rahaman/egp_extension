@@ -6,6 +6,14 @@ export const SENSITIVE_NAME = /pass|pwd|token|secret|otp|captcha|csrf|xsrf|auth|
 
 export const REDACTED = '[REDACTED]';
 
+/** Login and account pages are never recorded, whatever their contents. */
+const PRIVATE_URL = /login|logout|password|updatemobile|inboxmessage|composemail|viewtaskdetails|\/admin\//i;
+
+/** @param {string} url */
+export function isPrivateUrl(url) {
+  return PRIVATE_URL.test(url);
+}
+
 const SENSITIVE_HEADERS = new Set(['cookie', 'set-cookie', 'authorization', 'proxy-authorization', 'x-csrf-token', 'x-xsrf-token']);
 
 /**

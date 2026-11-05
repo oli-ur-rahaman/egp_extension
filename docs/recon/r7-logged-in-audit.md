@@ -1,7 +1,8 @@
 # Recon R7 — Audit of Flows 2–5 logged in
 
 **Asked by the owner, 2026-11-05:** does a logged-in user see anything exceptional on the public pages, compared with logged out?
-**Session:** owner logged in with a PWD officer account; Claude compared structure against the logged-out captures, without echoing personal data. No recording ran during login.
+**Session:** owner logged in with a PWD officer account; Claude compared structure against the logged-out captures, without echoing personal data.
+**Correction:** two recorders were believed stopped but kept running through the second login, because stopping a background job on Windows left its node process alive. A scan of all recordings found no login request and no password, email or token field. They did store two account pages (mobile/NID prompt, Message Box); those bodies were wiped on 2026-11-06. The raw folder is git-ignored and nothing reached the repo. `recon stop` now kills recorders for real, and login and account pages are never recorded.
 **Status:** [~] in progress. Flows 2 and 3 compared; Flows 4 and 5 to do.
 **Limit of this audit:** it covers one account type and PWD. It can't show what other departments or roles see.
 
@@ -9,7 +10,7 @@
 
 | Flow | Filters | List columns | Row count, same search | Detail page | Verdict |
 |---|---|---|---|---|---|
-| 2 Tender Info | Same; Department locked to PWD | Same | **2.5× more logged in** | **Identical**, one public tender | **Login reveals more tenders** |
+| 2 Tender Info | Same; Department locked to PWD | Same | 5,733 against 2,274 pages, **cause under test** | **Identical**, one public tender | **Open** |
 | 3 APP Info | Same; Department **not** locked | Same | **Same:** 1,841 pages | Same labels; not compared on one package | **Nothing extra found** |
 | 4 Contract Info | | | | | |
 | 5 Experience Info | | | | | |
@@ -32,23 +33,27 @@ Route when logged in: login → Update Later → Home → eTenders in the dropdo
 
 **Notice page, tender 1363233:** 35 rows both ways, no label differs, no value differs, no extra links.
 
-**Row access: a login returns more tenders for the same search.** Both requests carry exactly the same fields: status All, Department 21, published 01/01/2023–31/12/2025.
+**Row access: the same search returned different results, cause not yet known.** Status All, Department 21, published 01/01/2023–31/12/2025. **The requests are not identical, as first written: `office` is an empty string logged in and a single space logged out**, because the placeholder values differ. Every other field matches. Being logged in, or that one space, could explain the gap.
 
 | | Pages | Tenders (about) |
 |---|---|---|
 | Logged out | 2,274 | 22,700 |
 | **Logged in** | **5,733** | **57,300** |
 
-Only 2 of the 10 rows on page 1 are shared. The logged-in page shows tenders with the status **"Being processed"**, which didn't appear on the logged-out sample page. So the difference is probably tenders not yet public, though that rests on one page of rows. Also logged in: PWD, status All, no other filter = 17,826 pages. Tender IDs are deliberately not recorded here: the repo is public, and these may not be public records.
+Only 2 of the 10 rows on page 1 are shared. **Correction:** "Being processed" does appear logged out too (5 of 10 rows there, 7 of 10 logged in), so that status alone isn't what separates them, and one of the absent rows is "Contract Awarded". All eight absent rows were published 31-Dec-2025. A tender absent from the list also didn't appear logged out when searched by ID. Re-run logged out on 2026-11-06: still 2,274 pages, so the gap isn't data changing. Also logged in: PWD, status All, no other filter = 17,826 pages. Tender IDs are deliberately not recorded here: the repo is public, and these may not be public records.
 
 **What this changes:**
-- Flow 2 data differs by login state, so D11 ("Flows 2–5 run logged out") is not neutral: for the owner's own department, logged out **misses** about 60% of tenders in this window.
-- Whether those tenders belong in an export is a decision for the owner. They may be restricted to the department, and the ToR's confidentiality clause (§14) and "no data the user couldn't obtain by hand" both apply.
+- If login is the cause, D11 ("Flows 2–5 run logged out") is not neutral: logged out misses about 60% of the owner's department in this window. If the space is the cause, the public page itself hides rows through its own placeholder, and the extension must send the empty value.
+- If login is the cause, whether those tenders belong in an export is a decision for the owner. They may be restricted to the department, and the ToR's confidentiality clause (§14) and "no data the user couldn't obtain by hand" both apply.
 - Not to be tested: altering the locked Department while logged in, to reach other departments' restricted tenders. That would be going beyond what the account is given.
 
 **A "Being processed" notice, opened logged in (one sample):** a full notice, same layout and 35 rows as the public one, with no error. Two differences: the **Tender/Proposal Status row is absent**, and there is **no Documents link**. No extra fields.
 
 **Still to check:** whether that same tender can be found or opened logged out. Also, the status mix across the 5,733 pages: only one page has been sampled, so "the extra tenders are Being processed" is still an inference.
+
+**Session ended at midnight.** Logged in at 23:54 and 23:58, logged out at 00:00 (Bangladesh time), with no logout by the owner. **The owner's view: a system reset at 12 o'clock.** One observation so far; recheck another night. The owner's other theory, that opening eContracts causes it, is **disproved**: logged in again, eContracts opened and the session stayed (Logout link present). Flow 1 needs a login, so a run crossing midnight must expect this.
+
+**Owner's request:** run the 2,274 search on **Sunday, once in the morning and once at night**. Friday and Saturday are holidays, so tonight's unchanged number says little about how fast it moves on a working day.
 
 ## Flow 3 — APP Info
 

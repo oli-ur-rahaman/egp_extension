@@ -6,13 +6,15 @@
 //   npm run recon -- snapshot <label> [--tab N]   save redacted HTML + filter/table summary + screenshot
 //   npm run recon -- watch <label> [--seconds 60] [--tab N]
 //                                                 record network traffic while you click
+//   npm run recon -- stop                         kill every running recorder; run before any login
 // Options: --port 9222 (default), --tab <index from `tabs`> (default: first e-GP tab, else first tab)
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { browserVersion, connect, listPages } from './cdp.js';
-import { redactBody, redactHeaders, snapshotPage } from './redact.js';
+import { isPrivateUrl, redactBody, redactHeaders, snapshotPage } from './redact.js';
+import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const rawDir = path.join(root, 'recon', 'raw');
@@ -107,6 +109,7 @@ async function cmdWatch() {
   const t0 = Date.now();
 
   cdp.on('Network.requestWillBeSent', (p) => {
+    if (isPrivateUrl(p.request.url)) return;
     const ct = p.request.headers['Content-Type'] ?? p.request.headers['content-type'] ?? '';
     requests.set(p.requestId, {
       atMs: Date.now() - t0,
@@ -167,7 +170,15 @@ async function cmdWatch() {
   }
 }
 
-const commands = { ping: cmdPing, tabs: cmdTabs, snapshot: cmdSnapshot, watch: cmdWatch };
+// Stopping a background `npm run` on Windows leaves its node child running, so a
+// recorder can outlive its "stop" and run through a login. This kills them for real.
+async function cmdStop() {
+  const script = `Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -match 'recon' -and $_.CommandLine -match ' watch ' -and $_.ProcessId -ne ${process.pid} } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force; $_.ProcessId }`;
+  const out = execFileSync('powershell', ['-NoProfile', '-Command', script], { encoding: 'utf8' }).trim();
+  console.log(out ? `Stopped recorder process(es): ${out.split(/\s+/).join(', ')}` : 'No recorder was running.');
+}
+
+const commands = { ping: cmdPing, tabs: cmdTabs, snapshot: cmdSnapshot, watch: cmdWatch, stop: cmdStop };
 
 const run = commands[/** @type {keyof typeof commands} */ (command)];
 if (!run) {

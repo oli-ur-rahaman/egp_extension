@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 // M0-AT5: a password or token on a captured page never reaches disk.
 import { beforeEach, describe, expect, it } from 'vitest';
-import { REDACTED, redactBody, redactHeaders, snapshotPage } from '../../tools/recon/redact.js';
+import { REDACTED, isPrivateUrl, redactBody, redactHeaders, snapshotPage } from '../../tools/recon/redact.js';
 
 const SECRET = 'Hunter2-SuperSecret';
 const TOKEN = 'tok-9f8e7d6c5b4a';
@@ -70,6 +70,23 @@ describe('network redaction', () => {
     const out = redactBody(JSON.stringify({ user: { pwd: SECRET }, filters: [{ ministry: 12 }] }), 'application/json');
     expect(out).not.toContain(SECRET);
     expect(out).toContain('"ministry":12');
+  });
+
+  it('redacts the login email, mobile number and NID', () => {
+    const out = redactBody('emailId=officer%40example.gov.bd&txtMobile=01700000000&nid=1234567&ministry=12', 'application/x-www-form-urlencoded');
+    expect(out).not.toContain('officer');
+    expect(out).not.toContain('01700000000');
+    expect(out).not.toContain('1234567');
+    expect(out).toContain('ministry=12');
+  });
+
+  it('treats login and account pages as private', () => {
+    for (const url of ['/LoginSrBean?action=checkLogin', '/Logout.jsp', '/UpdateMobileNid.jsp?x=1', '/resources/common/InboxMessage.jsp', '/admin/ManageAdmin.jsp?userId=1']) {
+      expect(isPrivateUrl(`https://www.eprocure.gov.bd${url}`)).toBe(true);
+    }
+    for (const url of ['/resources/common/AllTenders.jsp?h=t', '/TenderDetailsServlet', '/resources/common/ViewTender.jsp']) {
+      expect(isPrivateUrl(`https://www.eprocure.gov.bd${url}`)).toBe(false);
+    }
   });
 
   it('drops bodies it cannot parse', () => {
