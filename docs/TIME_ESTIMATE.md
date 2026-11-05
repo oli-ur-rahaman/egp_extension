@@ -13,7 +13,7 @@ Shown after the filters and checkerboard are set, directly above **Start**:
 │  ESTIMATE                              │
 │  71,190 contracts · 25 fields ticked   │
 │                                        │
-│  About 2.5–3.5 days                    │
+│  About 3–4.5 days                      │
 │  List 45 min  +  Detail pages 69 h     │
 │                                        │
 │  ⚠ Too long for one sitting            │
@@ -126,7 +126,7 @@ Sprint  Window                     Rows     Time
 - The plan is saved, so it survives a browser restart, like any checkpoint.
 - A window can't be split finer than one day, and date filters may behave oddly at the edges, so **M6 must test** that windows neither overlap nor leave gaps. Each row is deduplicated by its ID anyway.
 - **Combine at the end:** when all sprints are done, one button makes a single workbook from all of them, deduplicated, with an About sheet covering the whole run. Its row count is checked against the sum of the sprints.
-- The portal's Excel limit of about 1 million rows is checked before combining.
+- Excel's limit of about 1 million rows is checked before combining.
 
 **A useful side effect:** sprints with date windows that fit on few pages may also reduce the row loss from page boundaries. That is tested in M6, not assumed.
 
