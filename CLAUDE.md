@@ -6,7 +6,8 @@ PDMS eGP Extractor: a private Chrome MV3 extension that collects report data fro
 
 1. `docs/EXECUTION_PLAN.md`. **§13 "Resume here"** says exactly what to do next; **§12 Progress log** says what has happened. Module sections (§7) carry task IDs (`M#-T##`), automated tests (`M#-AT#`) and the owner's manual checks (`M#-MC#`).
 2. `docs/PROJECT_PLAN.md` for architecture and design decisions.
-3. When documents conflict: ToR > Proposal (`project_scope/*.docx`) > PROJECT_PLAN > EXECUTION_PLAN.
+3. `docs/INSIGHTS.md` for what we have learned about e-GP that shapes the build. **Add to it as soon as something is learned**; the owner asked for this.
+4. When documents conflict: ToR > Proposal (`project_scope/*.docx`) > PROJECT_PLAN > EXECUTION_PLAN.
 
 ## Two PCs
 
