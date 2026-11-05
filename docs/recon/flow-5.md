@@ -5,17 +5,27 @@
 
 ## Client requirement (owner, 2026-11-05)
 
-**D20. Flow 5 scope.** All filters in the panel. **Department and a Contract Start Date window of at most 5 years are mandatory**, unless D21 applies. The palette starts empty (carried over from Flows 3 and 4; to confirm).
+**D20. Flow 5 scope.** All filters in the panel. **Department and a Contract Start Date window of at most 5 years are mandatory**, unless D21 applies. The palette starts empty (owner, on Claude's recommendation). **Tender Type is a dropdown in the panel, default All** (owner), though the page defaults to eTenders.
 
 **D21. Contractor exemption, for every flow that has such a filter.** If the user enters anything in a filter that pinpoints a contractor, the Department and date requirements don't apply, because one contractor has few results.
 
 | Flow | Filters that lift the requirement |
 |---|---|
 | 4 Contract Info | Contract Award to |
-| 5 Experience Info | Contract Awarded To, Company Unique ID, Experience Certificate No (Claude's reading of "etc"; to confirm) |
+| 5 Experience Info | Contract Awarded To, Company Unique ID. Experience Certificate No is **not** a contractor filter (owner): the number is unique and gives one result; how it is treated is in Open |
 | 1, 2, 3 | none: no contractor filter on these pages |
 
-**Being tested:** "anything" also covers a very broad entry such as one letter, under a Contains match. See Open.
+**Tested (recording `r6-experience-contractor`, Tender Type All, Contains, 2026-11-05).** With no filter at all: 18,735 pages.
+
+| Entered in Contract Awarded To | Pages | Rows (about) | Holds up? |
+|---|---|---|---|
+| A firm's full name | 1–3 | up to 30 | yes |
+| Name + Company Unique ID | 2 | up to 20 | yes |
+| A person's first name (`jamal`) | 39 | 390 | yes |
+| `Construction` | 1,922 | 19,200 | **no** |
+| `a` | 15,491 | 155,000 | **no**, 83% of everything |
+
+So the owner's reasoning holds for a contractor and fails for a broad word, because the page's default match is Contains. **Claude's proposal, awaiting the owner's answer:** the exemption applies only while the entry's real result stays at or under **5,000 rows** (the contract's stated scale, D5). Above that, Department and date are required again, with a message saying why. The panel already reads the size from page 1, so this needs no guessing, and no minimum-length rule, which would fail on `ltd`. These searches take 2–6 s each, slower than most.
 
 ## A. Identity
 
@@ -23,7 +33,7 @@
 |---|---|
 | Route | Homepage search dropdown → eExperience → Advanced Search |
 | URL | `/resources/common/SearcheCMS.jsp?v=advSearch`, title "eExperience" |
-| Results on load | Yes. Hidden `#totalPages` = **15,931** at size 10 (≈ 159,000), Tender Type eTenders only |
+| Results on load | Yes. Hidden `#totalPages` = **15,931** at size 10 (≈ 159,000), Tender Type eTenders only. **Tender Type All: 18,735 pages (≈ 187,000)** |
 | Logged-out signature | The login form is on this page too |
 
 ## B. Filters
@@ -47,8 +57,6 @@
 **Cascades:** Department → Procuring Entity (request); Procurement Nature → Method (no request).
 
 **New control type:** a match-mode dropdown paired with a text box (filters 11, 13).
-
-**Open for the owner:** Tender Type defaults to eTenders, so a run would miss eCMS and Manual unless changed. On Flow 2 the owner set Status to default All.
 
 ## C. Search and results
 
@@ -87,9 +95,11 @@
 
 ## Open
 
-- [ ] D21 tested: how many results do broad and narrow contractor entries give?
+- [x] D21 tested: holds for real names and IDs, not broad words. Size limit proposed above
 - [ ] Search on the wire; size 100 with matching totals (use the trap note above)
 - [ ] Volume: PWD + 5-year Contract Start Date window
 - [ ] Detail page fields; palette
 - [ ] Empty result
-- [ ] Owner: Tender Type default; Experience Certificate No as a D21 filter; palette starts empty
+- [x] Owner: Tender Type default All; palette starts empty
+- [ ] Owner: Experience Certificate No needs no Department or date either, like Tender ID, since it gives one result? Claude's reading; to confirm
+- [ ] Owner: the 5,000-row limit on the exemption

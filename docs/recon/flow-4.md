@@ -87,7 +87,7 @@
 | Beneficial ownership (one-to-many) | No., Name, Designation, Ownership %, Country. Holds personal names; can have several rows. **Out of the palette** |
 | Authorised officer | Name, Designation. Personal data; the sanitiser must strip it |
 
-**D21 applies here:** anything entered in Contract Award to lifts the Department and date requirements (owner, 2026-11-05).
+**D21 applies here:** an entry in Contract Award to lifts the Department and date requirements (owner, 2026-11-05). Broad-word limits are in `flow-5.md`.
 
 **Units differ within this flow:** the list shows Crore BDT, the detail shows full BDT with the currency in brackets (e.g. `948782.473 (BDT)`). The parser splits amount from currency.
 
