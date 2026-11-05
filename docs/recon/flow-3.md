@@ -45,6 +45,16 @@ Budget Type ────┴──(POST /APPServlet  funName=getAppProjectAdv)─
 
 `cleartemp()` posts to `/APPServlet` with `param1` = a budget word, `param4` = `getAppProject`, `startDate` = the financial-year text, `funName` = `getAppProjectAdv`, and replaces the Project options with the HTML it gets back.
 
+**Confirmed on the wire (recording `r4-app-pwd-search`, 2026-11-05):**
+
+| Request | Body | Response |
+|---|---|---|
+| `POST /ComboServlet` | `departmentId=21&funName=officeCombo` | `<option>` list, 224 offices + placeholder, ≈12.5 KB |
+| `POST /APPServlet` | `param1=&param4=getAppProject&startDate=2024-2025&funName=getAppProjectAdv` | `<option>` list of projects, very large (≈200 KB) |
+| `POST /SearchServlet` | `action=Search&departmentId=21&office=+&project=&financialYear=2024-2025&budgetType=&procNature=&procType=&appId=&pkgNo=&operation=&value=&value2=&pageNo=1&size=10&cpvCat=` | rows fragment + `totalPages` |
+
+Two details the code alone did not show: the Procuring Entity placeholder is sent as a **single space**, not `0`; and **`userId` is simply absent when logged out**, because the field does not exist on the page, so the servlet tolerates its absence.
+
 **The Flow 1 vocabulary trap repeats here.** `param1` is not the dropdown value: Development becomes `Aid or Grant`, Revenue becomes `Government`, Own fund stays `Own fund`, and nothing selected sends an empty string. `startDate` is the year's **text** (`2025-2026`), not its value.
 
 ## C. Search and results
@@ -58,6 +68,8 @@ Budget Type ────┴──(POST /APPServlet  funName=getAppProjectAdv)─
 | Page size | hidden `#size` = 10, with **no control on the page**. Whether the servlet honours a larger `size` is untested and worth one try: it would cut the request count directly |
 | Validation | `chkappID()` numeric APP ID; `chkdigits1/2()` decimals; `Between` requires both values in the right order |
 | Empty result | expected to be the Flow 2 shape (`#noRecordFound`, pagination hidden); **to confirm** |
+| **`totalPages` arrives in the fragment** | the response contains `<input id="totalPages" value="1841">`, so the sweep reads the page count **from the response**, not from the host page. The page's own script copies it into the DOM; the extension does not need to |
+| Response size | ≈ 8.3 KB for a page of 10 rows |
 | Other actions | `action=WatchList` exists on the same servlet. It is a logged-in feature and out of scope |
 
 ### Result columns (`table#resultTable`)
