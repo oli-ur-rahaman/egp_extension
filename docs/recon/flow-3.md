@@ -134,7 +134,7 @@ So the palette for Flow 3 is about **35 fields plus the lot table**, a little sm
 
 | Selection | `totalPages` at size 10 | Rows |
 |---|---|---|
-| No filter at all, as the page loads | **17,391** | ≈ 174,000 |
+| Financial Year 2025-2026 only: **the page preselects the current year, so this is not "no filter"** | **17,391** | 173,904 exact |
 | PWD + Financial Year 2024-2025 (measured 2026-11-05) | **1,841** | ≈ 18,400 |
 
 At about 3 s per request that is roughly 15 hours for the list alone, before any detail pages. Flow 2's answer was a mandatory department plus a 5-year date window (D13), but **this page has no date filter at all** — the nearest equivalent is Financial Year, which is one year, not a range. A guard for this flow has to be built from Department plus Financial Year.
@@ -152,5 +152,6 @@ At about 3 s per request that is roughly 15 hours for the list alone, before any
 - [x] Multi-lot flattening: not needed — e-GP has no multi-lot packages (D16)
 - [~] `Procuring Entity` (a person's name) on the detail: **off by default** until the owner says otherwise (D17)
 - [x] Empty result shape: `#noRecordFound`, pagination hidden, `totalPages` left stale
-- [~] **The servlet honours `size` above 10.** PWD + FY 2025-2026 with `size=50`: 50 rows, `totalPages` 412, about 42 KB, 583 ms (recording `r4b-size-experiment`, 2026-11-05). Still to check: the largest size it allows, and that no rows are lost or repeated at a larger size.
+- [~] **The servlet honours `size` above 10.** PWD + FY 2025-2026 with `size=50`: 50 rows, `totalPages` 412, about 42 KB, 583 ms (recording `r4b-size-experiment`, 2026-11-05). **Completeness checked** with Financial Year 2025-2026 and no other filter: size 50 = 3,479 pages + 4 rows on the last, size 100 = 1,740 pages + 4 rows on the last, both **173,904 packages**, and the first 50 rows are identical at both sizes. **Size 100 is the working default;** larger sizes were not tried, because the gain shrinks while a failed page costs more.
+- [x] **Deep pages are slower:** page 1 takes about 0.2 s, the last page about 2.3 s, at either size. The rate governor (M8) must not read this as the portal throttling; its latency baseline has to allow for depth.
 - [ ] **Natural key (Q6):** APP ID is **not** unique. The same 50 rows hold only 16 distinct APP IDs, so one APP has many packages. The key must be `pkgId`, from the detail link, or APP ID + Package No.
