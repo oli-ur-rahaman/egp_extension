@@ -804,6 +804,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M3 | **R6 Flow 5 started:** 13 filters, 15,931 pages (eTenders only). **D20:** Department + 5-year Contract Start Date window. **D21:** a contractor filter lifts both requirements on Flows 4 and 5. Search forces size to 10 on this page. | Notes in `docs/recon/flow-5.md`. Testing broad entries against D21. |
 | 2026-11-05 | 1 | M1-T04, M3 | **D21 tested on Flow 5:** a name gives 1–39 pages; `Construction` 1,922; `a` 15,491 of 18,735. Proposed: the exemption holds only up to 5,000 rows. Owner: Tender Type dropdown default All; palette empty; Experience Certificate No is not a contractor filter. | Awaiting the owner on the limit. Next: PWD volume, window check, size 100, detail, empty. |
 | 2026-11-05 | 1 | M1-T04 | **R6 Flow 5 done, so all five flows are mapped logged out.** Size 100 verified: 8,377 at both sizes. Window hides nothing visible. **D22:** the exemption holds up to 5,000 rows. | **New, owner's request: R7 audit of Flows 2–5 logged in**, for anything extra compared with logged out. |
+| 2026-11-05 | 1 | R7, D11 | **R7 audit, Flow 2: same request, logged in returns 5,733 pages against 2,274 logged out**, including "Being processed" tenders. Public notice identical; filters same; Department locked. | D11 needs the owner's review. Notes in `docs/recon/r7-logged-in-audit.md`. |
 
 **Milestone record**
 

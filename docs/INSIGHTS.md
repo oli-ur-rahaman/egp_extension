@@ -67,6 +67,7 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | # | Insight | Status | What the build must do |
 |---|---|---|---|
 | 33 | **Logged in, public pages show only your department; logged out, any department** (owner) | ✅ | Flows 2–5 logged out, Flow 1 logged in (D11). A wrong login state must stop the run with a clear message |
+| 47 | **A login returns more rows for the same request.** Flow 2, PWD, 2023–2025: 2,274 pages logged out, 5,733 logged in, including status "Being processed" (owner's audit) | ✅ Flow 2 | Login state is part of the query. Record it on every run and row. See `recon/r7-logged-in-audit.md` |
 | 34 | The login form is on the homepage, and a post-login page asks for mobile/NID | ✅ | Both are recognisable page states, never mistaken for a site change. Never fill them |
 | 35 | Closing a detail tab doesn't disturb the list's page | ✅ Flow 2 | No need to re-apply filters after a detail |
 | 36 | About 20 quick requests at a time drew no throttling or errors | ✅ small sample | Not evidence for a long run. Keep the pacing |
