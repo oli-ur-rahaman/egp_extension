@@ -30,6 +30,7 @@ out/
 data/raw/
 data/exports/
 *.xlsx
+!docs/samples/*.xlsx
 *.xls
 *.xlsm
 *.csv

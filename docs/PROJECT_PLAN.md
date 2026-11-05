@@ -817,6 +817,7 @@ egp_ext/
 | D20 | Flow 5: all filters in the panel; **Department and a Contract Start Date window of at most 5 years mandatory**, unless D21 applies; Tender Type dropdown defaults to All; palette starts empty | Owner, 2026-11-05 (recon R6). See docs/recon/flow-5.md |
 | D21 | **Contractor exemption, every flow:** anything entered in a filter that pinpoints a contractor lifts the Department and date requirements. Flow 4: Contract Award to. Flow 5: Contract Awarded To, Company Unique ID | Owner, 2026-11-05. Tested: holds for names and IDs, fails for broad words (`a` = 155,000 rows); limited by D22. See docs/recon/flow-5.md |
 | D22 | The D21 exemption, and lookups by a unique number such as Experience Certificate No, hold only while the measured result is at most **5,000 rows**; above that, Department and date are required again, with a message saying why | Owner, 2026-11-05, on Claude's proposal after the test. See docs/recon/flow-5.md |
+| D23 | **Flow 2 runs in whichever login state the user is in.** Logged out: all departments, no LTM. Logged in: own department, with LTM. **Before a logged-out Flow 2 run starts, the panel tells the user that LTM tenders are off limits and to log in to add them.** Every row and file records the login state. Flows 3–5 stay logged out; Flow 1 stays logged in. Revises D11 for Flow 2 | Owner, 2026-11-06, on Claude's recommendation. See docs/recon/r7-logged-in-audit.md |
 
 ### Open — to resolve during Phase 1
 

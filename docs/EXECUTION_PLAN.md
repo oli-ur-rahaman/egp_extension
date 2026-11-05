@@ -812,6 +812,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R7 | **Likely reason for the gap: logged-out Flow 2 hides LTM tenders.** Mymensingh: logged in OTM 473 + LTM 277 = 750; logged out exactly 473. On the sampled page, all 8 hidden are LTM and both shared are OTM; none of 961 logged-out rows is LTM. | §13 rewritten: confirm, finish the audit, owner decides, then stop recon and build. |
 | 2026-11-06 | 1 | R7 | **LTM confirmed logged out:** Method = LTM gives no records, against 277 logged in for the same office. | Next: logged in, OTM should give 2,274; Flows 4 and 5 same search. |
 | 2026-11-06 | 1 | R7 | **Audit answered.** Logged in OTM = 2,272 pages against 2,274 public, so the gap is LTM. Flow 4 7,119 and Flow 5 1,578 are the same both ways. **Only Flow 2 differs.** | Owner's LTM decision next, then build. |
+| 2026-11-06 | 1 | R7, M10 | **D23:** Flow 2 runs in whichever login state the user is in; the panel warns before a logged-out run that LTM is off limits and to log in to add it. **Demo output** `docs/samples/PDMS_output_demo.xlsx`: all five flows and a run report, made-up data. | Awaiting the owner's review of the demo. Next: build. |
 
 **Milestone record**
 
@@ -838,7 +839,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 |---|---|---|---|
 | 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
-| 3 | **Owner decides** (D11 review): do LTM tenders belong in the extension, and how? See below | owner | 1 question |
+| 3 | [x] **Decided: D23.** Owner still to check with PWD whether LTM exports may be shared. **Owner reviews** `docs/samples/PDMS_output_demo.xlsx` | owner | 10 min |
 | 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean) | owner | 2 min |
@@ -849,7 +850,9 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Moved to M6, not recon:** the full-sweep row loss (`flow-2.md`), including trying one big `size` and date windows, and sweeps on Flows 3–5.
 
-**Open owner decisions:** LTM (D11 review) · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Pending inspections, none blocking the build:** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login); a PQ, RFP or PPS notice on Flow 2; a completed record on Flow 5; the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
+
+**Open owner decisions:** demo output questions · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
