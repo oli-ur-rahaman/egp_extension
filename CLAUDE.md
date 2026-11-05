@@ -6,8 +6,9 @@ PDMS eGP Extractor: a private Chrome MV3 extension that collects report data fro
 
 1. `docs/EXECUTION_PLAN.md`. **§13 "Resume here"** says exactly what to do next; **§12 Progress log** says what has happened. Module sections (§7) carry task IDs (`M#-T##`), automated tests (`M#-AT#`) and the owner's manual checks (`M#-MC#`).
 2. `docs/PROJECT_PLAN.md` for architecture and design decisions.
-3. `docs/INSIGHTS.md` for what we have learned about e-GP that shapes the build. **Add to it as soon as something is learned**; the owner asked for this.
-4. When documents conflict: ToR > Proposal (`project_scope/*.docx`) > PROJECT_PLAN > EXECUTION_PLAN.
+3. `docs/TIME_ESTIMATE.md` for the time estimate and sprints (D27); `docs/samples/` for the agreed output format (D24–D26; regenerate with `tools/make-output-demo.py`).
+4. `docs/INSIGHTS.md` for what we have learned about e-GP that shapes the build. **Add to it as soon as something is learned**; the owner asked for this.
+5. When documents conflict: ToR > Proposal (`project_scope/*.docx`) > PROJECT_PLAN > EXECUTION_PLAN.
 
 ## Two PCs
 
@@ -29,12 +30,13 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 
 - The owner drives the browser and Claude observes. Give **numbered clicks for one small step**, then wait for "done". Say exactly what to report back. Don't assume a click happened: a background-task notice is not a reply.
 - The owner knows the portal and the client. Their word on scope overrides the plan, so ask early for each flow: which filters, which fields, what limits the volume. Record each answer as a `D#` decision in `docs/PROJECT_PLAN.md` §8 and in the flow's note, and flag it when it departs from the ToR.
-- Flow 2 set the pattern for what the owner wants: panel filters chosen per flow, a field palette for notice data, and mandatory filters that keep a run a sensible size. Measure a run's size (`totalPages`) before agreeing a limit, and give the time estimate.
+- **Detail-page data is the main purpose of the tool (D25),** not an extra. The two main uses of the output are analysing tenders by a department's PEs, and one contractor's whole journey (D24).
+- Flow 2 set the pattern for what the owner wants: panel filters chosen per flow, a checkerboard for notice data, and mandatory filters that keep a run a sensible size. Measure a run's size (`totalPages`) before agreeing a limit, and give the time estimate.
 - Recommend one option; don't just list them. Plain language, short messages. Say so plainly when a check failed or was skipped.
 
 ## Recon traps (learned the hard way)
 
-- **Flows 2–5 run logged out; Flow 1 runs logged in** (D11). Do logged-in work last.
+- **Login state:** Flow 1 logged in; Flows 3–5 logged out; **Flow 2 in whichever state the user is in** (D23), because logged-out Flow 2 hides LTM tenders. The panel warns before a logged-out Flow 2 run.
 - `npm run recon -- watch` records one tab only. A new tab or popup needs its own `--tab N` recording; tab numbers shift, so run `tabs` first. Start the recording **before** asking for the clicks, and give it plenty of time, because the owner may take a while.
 - **`TaskStop` does not stop a recorder on Windows:** the node child survives. Always run `npm run recon -- stop`, and always **before asking the owner to log in**. Login and account pages are skipped by the recorder, but no recording should overlap a login anyway.
 - Compare requests field by field before crediting a cause: a single space in `office` undid a confident conclusion. Print whole rows when comparing; four rows of ten gave a wrong claim about status.

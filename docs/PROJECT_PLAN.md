@@ -3,7 +3,7 @@
 **Project codename:** `egp_ext`
 **Target portal:** Bangladesh e-GP — `https://www.eprocure.gov.bd`
 **Artifact:** Unpacked Chrome MV3 extension (private distribution, never published to Chrome Web Store)
-**Document status:** v0.1 — Plan of record. Supersedes verbal scope.
+**Document status:** v0.1 — Plan of record, with decisions up to D27 in §8. **Where §1–§7 and §8 disagree, §8 and `docs/recon/` win:** they hold what recon found and what the owner decided (e.g. Tender Info is List + Detail, filters are live, export is About + Data).
 **Last updated:** 2026-09-09
 
 ---
@@ -805,7 +805,7 @@ egp_ext/
 | D8 | No IP rotation in v1; documented extension point only | Recommended (§7.2), pending your final call |
 | D9 | MV3 + Side Panel + vanilla JS + IndexedDB + SheetJS | Architect's call (§3.9) |
 | D10 | All site knowledge externalised to a versioned Site Profile | Architect's call — prerequisite for §6 |
-| D11 | Flows 2–5 run **logged out** (public Advanced Search, all departments); Flow 1 runs logged in (PWD-scoped report) | Owner, 2026-11-04 (recon R2). See docs/recon/flow-1.md |
+| D11 | Flows 2–5 run **logged out** (public Advanced Search, all departments); Flow 1 runs logged in (PWD-scoped report) | Owner, 2026-11-04 (recon R2). See docs/recon/flow-1.md . **Revised for Flow 2 by D23** |
 | D12 | Flow 2: a filter on "All" is left blank and the result pages are swept once; filter values are not looped. Flow 1 still loops offices | Owner, 2026-11-05 (recon R3). See docs/recon/flow-2.md |
 | D13 | Flow 2: Start requires a Department and a Publishing date window of at most **5 years**; each date box carries a "current date" checkbox, ticked by default, so an unset end of the window means today; Tender ID or Reference No. searches are exempt | Owner, 2026-11-05 (span raised from 3 to 5 years). See docs/recon/flow-2.md |
 | D14 | Flow 2: one row per tender, because multi-lot tenders do not exist yet; more than one lot is flagged, never dropped | Owner, 2026-11-05. See docs/recon/flow-2.md |
@@ -821,6 +821,7 @@ egp_ext/
 | D24 | **Purpose of the output (owner's client):** (a) analyse tenders by a department's Procuring Entities; (b) analyse a contractor's whole journey in e-GP, whatever the department or PE. Users may do any other analysis, so the data stays flat and filterable | Owner, 2026-11-06. Shapes every column decision |
 | D25 | **Notice/detail data is the main purpose of the tool, not an extra** (owner: "that is the reason the extension is going to be built"). Flows 2–5 collect list + detail into one row. Before Start, the panel asks whether to collect new-tab data and shows a **checkerboard** of its fields, with the time estimate. Nothing is ticked until the user chooses (D15, D19, D20) | Owner, 2026-11-06. See docs/samples |
 | D26 | **Workbook = "About this grab" + "Data".** About holds what was done, filter conditions, fields chosen, dates, login state, completeness and general statistics, all filled in by the tool, asking the user nothing. Data is one flat table, starting with one **"Filter: …" column per filter**, so every row shows the search it came from. **Departs from the ToR's "single sheet"**, and replaces the separate reconciliation file planned in M10-T02 | Owner, 2026-11-06, owner's guidelines. Flag at acceptance |
+| D27 | **Time estimate before every flow, with warnings and sprints.** Tentative range from a real count; **over 6 hours warns**, over 24 hours is marked unrealistic and needs a tick to start; ranked ways to shorten the run; split into sprints of at most 6 hours, combined at the end. Never by going faster | Owner, 2026-11-06. See docs/TIME_ESTIMATE.md |
 
 ### Open — to resolve during Phase 1
 

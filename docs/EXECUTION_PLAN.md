@@ -33,6 +33,24 @@ This is the **working plan** we follow week by week. It does not replace the oth
 
 ---
 
+## 0a. What has changed since v1.0 (read this first)
+
+Module sections below are the v1.0 plan. These decisions change them. Details are in `PROJECT_PLAN.md` §8.
+
+| Decisions | Change | Modules |
+|---|---|---|
+| D11, D23 | Flow 1 logged in; Flows 3–5 logged out; Flow 2 runs in whichever state the user is in, and the panel warns that LTM tenders are off limits when logged out | M2, M3, M13 |
+| D12 | Flow 2 "All" means blank, one sweep; only Flow 1 loops (offices) | M4 |
+| D13, D15, D19, D20 | Mandatory filters per flow: Department + date window of at most 5 years, or + Financial Year on Flow 3 | M3, M13 |
+| D21, D22 | A contractor filter lifts them, up to 5,000 rows | M3, M13 |
+| D18 | **Live filters:** scan, apply to the real page, rescan; the profile names filters but never their items | M1, M3 |
+| D14, D16 | One row per tender or package; more than one lot is flagged | M7, M9 |
+| D24 | Output's purpose: PE analysis and contractor journey | M9, M10 |
+| D25 | Detail data is the main purpose; checkerboard before Start | M7, M13 |
+| D26 | Workbook = About + Data, with Filter columns. **Departs from the ToR's "single sheet"; flag at acceptance** | M9, M10 |
+| D27 | Time estimate, warnings, sprints (`docs/TIME_ESTIMATE.md`) | M8, M10, M13 |
+| Recon | List size 100 by default; a full sweep **loses rows**, so distinct IDs must equal the computed total | M6, M9 |
+
 ## 1. Things to resolve before Week 1
 
 I found these while cross-reading the documents. Items 1 and 2 are urgent. The rest change scope or schedule and need a decision from you.
@@ -492,6 +510,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | M8-T03 | Login-wall flow: pause → notify "log in again" → poll for the restored session → re-apply filters from the checkpoint → resume | 4 h |
 | M8-T04 | Panel states: Recovering (countdown, attempt n/5, "progress is saved", Retry now) and Login wall | 3 h |
 | M8-T05 | CAPTCHA/block detection → immediate pause, with no retry (R8) | 1 h |
+| M8-T06 | Timing store: measured per-request times per flow; live time left (D27) | 3 h |
 
 - **Automated (fault-injection suite on the mock):** M8-AT1 429, 5xx, hangs, malformed HTML, session drop. Each one is classified correctly and reaches the correct ladder level · M8-AT2 after any fault sequence, the final dataset equals the fault-free dataset · M8-AT3 the governor slows down when injected latency rises · M8-AT4 CAPTCHA signature → pause, zero retries.
 - **Manual:**
@@ -529,11 +548,12 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | Task | Description | Est. |
 |---|---|---|
 | M10-T01 | SheetJS writer with typed cells, a frozen header, autofilter, and column widths | 3 h |
-| M10-T02 | Reconciliation summary. **Decision for you:** a second file, or a second sheet? The ToR says "single sheet, single flat table" for the data, so a separate `*-reconciliation.xlsx` or `.html` is safest. | 2 h |
+| M10-T02 | **Decided, D26: the summary goes on the "About this grab" sheet;** see `docs/samples/`. Was: Reconciliation summary. Decision for you: a second file, or a second sheet? The ToR says "single sheet, single flat table" for the data, so a separate `*-reconciliation.xlsx` or `.html` is safest. | 2 h |
 | M10-T03 | Run manifest (JSON) beside the export: profile version, filter config, counts, warnings | 1 h |
 | M10-T04 | Row-limit guard (1,048,576) with chunked export | 1 h |
 | M10-T05 | File naming `pdms_<flow>_<yyyy-mm-dd_hhmm>.xlsx` via `chrome.downloads` | 1 h |
 | M10-T06 | Stop = export what was collected (marked partial); never discard | 1 h |
+| M10-T07 | Combine sprints into one workbook: dedupe, whole-run About sheet, row-limit check (D27) | 3 h |
 
 - **Automated:** M10-AT1 golden export test (parse it back, compare cell types and values) · M10-AT2 a 50,000-row file is generated under the time budget · M10-AT3 leading-zero IDs survive the round-trip.
 - **Manual:**
@@ -604,6 +624,10 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | M13-T05 | Recovering, Login-wall, Halted (shape changed), and Done states | 4 h |
 | M13-T06 | Accessibility: keyboard, focus rings, ARIA live region, contrast ≥ 4.5:1 | 3 h |
 | M13-T07 | Resume-offer dialog after a restart | 1 h |
+| M13-T08 | Estimate card: count request, time range, warning levels, Start confirmation (D27) | 4 h |
+| M13-T09 | Ways to shorten a run, each with a computed time (D27) | 3 h |
+| M13-T10 | Sprint planner and sprint list (D27) | 5 h |
+| M13-T11 | Checkerboard of detail fields, shown before Start (D25) | 3 h |
 
 - **Automated:** M13-AT1 component tests per state · M13-AT2 automated a11y check (axe) on every state · M13-AT3 no layout shift during a simulated run.
 - **Manual:**
@@ -814,6 +838,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R7 | **Audit answered.** Logged in OTM = 2,272 pages against 2,274 public, so the gap is LTM. Flow 4 7,119 and Flow 5 1,578 are the same both ways. **Only Flow 2 differs.** | Owner's LTM decision next, then build. |
 | 2026-11-06 | 1 | R7, M10 | **D23:** Flow 2 runs in whichever login state the user is in; the panel warns before a logged-out run that LTM is off limits and to log in to add it. **Demo output** `docs/samples/PDMS_output_demo.xlsx`: all five flows and a run report, made-up data. | Awaiting the owner's review of the demo. Next: build. |
 | 2026-11-06 | 1 | M7, M10, M13 | **Owner's output guidelines: D24 purpose, D25 detail data is the main purpose with a checkerboard before Start, D26 About + Data sheets with Filter columns.** Demo rebuilt: five files in `docs/samples/`, made-up data. | Departs from the ToR's single sheet; flag at acceptance. Owner reviews tomorrow. Next: one pre-build check, then build. |
+| 2026-11-06 | 1 | M8, M10, M13 | Owner reviewed the five demo workbooks: **"better now"**. **D27: time estimate before every flow; over 6 hours warns; over 24 hours unrealistic; ways to shorten; sprints of at most 6 hours.** Design in `docs/TIME_ESTIMATE.md`, 5 new tasks added. All documents brought up to date, including §0a. | End of day on the home PC. Next: §13 step 3a, then build. |
 
 **Milestone record**
 
@@ -830,7 +855,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (rewritten 2026-11-06, home PC; valid on either PC)
+### ▶ Resume here (updated 2026-11-06, end of day, home PC; valid on either PC)
 
 **Where we are.** All five report pages are mapped logged out. Decisions D11–D22 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. **The M1 demo is Thu 12 Nov.** Fri and Sat are holidays, so about 4 working days are left.
 
@@ -840,7 +865,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 |---|---|---|---|
 | 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
-| 3 | [x] **Decided: D23–D26.** Owner still to check with PWD whether LTM exports may be shared. **Owner reviews** the five demos in `docs/samples/` | owner | 10 min |
+| 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". Owner still to check with PWD whether LTM exports may be shared | done | |
 | 3a | **The one check before building** (owner wants only the most important): the detail pages, because D25 makes them the main purpose. Open one PQ, one RFP or PPS notice (Flow 2) and one completed record (Flow 5), read their fields. In the same session, take one contractor from Flow 4's detail and search their Tenderer ID in Flow 5's Company Unique ID: same number? | owner clicks | 10 min |
 | 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
@@ -854,7 +879,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** demo output questions · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Open owner decisions:** Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

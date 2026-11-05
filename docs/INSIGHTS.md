@@ -24,6 +24,14 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 50 | The contractor journey depends on one ID across flows. Flow 5 calls it Company Unique ID; Flow 4's detail calls it Tenderer ID. **Whether they're the same number is unconfirmed** | ❓ | Check before relying on it. Names vary, so an ID is the only safe join |
 | 51 | Detail data is the point of the tool (D25), and it's slow: PWD Flow 4 ≈ 59 h for every detail page at 3 s each | ✅ estimate | Show the estimate beside the checkerboard. Resume must be solid for runs lasting days |
 
+## Time and sprints (owner, D27)
+
+| # | Insight | Status | What the build must do |
+|---|---|---|---|
+| 52 | The number of ticked fields doesn't change the time: one detail page holds them all. The choice is detail pages or none | 📖 | Say so on the checkerboard. See `TIME_ESTIMATE.md` |
+| 53 | One request gives the real size of a search, so the estimate rests on facts | ✅ | Count first, then estimate |
+| 54 | Long runs split naturally by date window into sprints of at most 6 hours | 💡 | Test in M6 that windows don't overlap or leave gaps |
+
 ## Speed and load
 
 | # | Insight | Status | What the build must do |
