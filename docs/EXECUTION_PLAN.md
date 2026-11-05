@@ -801,6 +801,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04 | **D19:** Flow 4 keeps all 16 filters; Department + 5-year Contract Sign Date window mandatory; palette starts empty. PWD + window = 7,119 pages ≈ 71,200 contracts. Contract detail read: ~25 fields + ownership table. | Next: size 100, window exclusions, empty result. |
 | 2026-11-05 | 1 | M1-T04 | Flow 4: **size 100 verified**, 71,190 contracts at both sizes. Empty result captured. | Not measured: PWD with no window; the request went out with Department cleared. Retest pending. |
 | 2026-11-05 | 1 | M1-T04 | **R5 Flow 4 done.** Sign-date window hides almost nothing: 13,335 pages with no window or a very wide one (PWD). Beneficial Ownership stays out of the palette. | Next: R6 Flow 5. Full-sweep test on Flows 3 and 4 during M6. |
+| 2026-11-05 | 1 | M1-T04, M3 | **R6 Flow 5 started:** 13 filters, 15,931 pages (eTenders only). **D20:** Department + 5-year Contract Start Date window. **D21:** a contractor filter lifts both requirements on Flows 4 and 5. Search forces size to 10 on this page. | Notes in `docs/recon/flow-5.md`. Testing broad entries against D21. |
 
 **Milestone record**
 
