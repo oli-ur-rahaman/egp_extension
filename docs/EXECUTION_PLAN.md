@@ -810,6 +810,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R7, M0-T08 | **Claude's fault, fixed:** stopped recorders kept running through a login. No credentials captured; two account pages stored and wiped. New `recon stop`; private pages never recorded; email, mobile and NID redacted; 2 new tests. **Correction to R7:** the requests differ in `office` (`""` against `" "`) and "Being processed" appears both ways, so the cause of 5,733 against 2,274 is open. eContracts doesn't log out; session ended at midnight. | Next: test the space. Owner: repeat the search Sunday morning and night. |
 | 2026-11-06 | 1 | R7 | **Space test: logged in with the space still gives 5,733, so the space is not the cause.** Test plan T1–T9 written in `r7-logged-in-audit.md`. | Next: T2, full sweep of one small office both ways. |
 | 2026-11-06 | 1 | R7 | **Likely reason for the gap: logged-out Flow 2 hides LTM tenders.** Mymensingh: logged in OTM 473 + LTM 277 = 750; logged out exactly 473. On the sampled page, all 8 hidden are LTM and both shared are OTM; none of 961 logged-out rows is LTM. | §13 rewritten: confirm, finish the audit, owner decides, then stop recon and build. |
+| 2026-11-06 | 1 | R7 | **LTM confirmed logged out:** Method = LTM gives no records, against 277 logged in for the same office. | Next: logged in, OTM should give 2,274; Flows 4 and 5 same search. |
 
 **Milestone record**
 

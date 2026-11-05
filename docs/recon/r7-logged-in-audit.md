@@ -66,7 +66,9 @@ Only 2 of the 10 rows on page 1 are shared. **Correction:** "Being processed" do
 
 LTM is the Limited Tendering Method, so it would make sense for these not to be listed publicly. **Why the portal does this is an inference;** that it happens is well supported. This replaces the status and date theories: "Being processed" appears both ways because status isn't what decides it. Other restricted methods haven't been ruled out; the logged-out sample also has no RFQ or DPM, for example.
 
-**To confirm:** logged out, Method = LTM should give no records; logged in, Method = OTM should match the logged-out count.
+**Confirmed logged out (owner, 2026-11-06):** PWD + Mymensingh + 2023–2025, Method = LTM gives **no records**, while logged in the same office has 277 LTM tenders. Still to confirm: logged in, Method = OTM should match the logged-out count at PWD level (2,274 pages).
+
+**Fault or design?** Unknown. For design: the rule is consistent across all rows sampled, and limited tendering invites only enlisted firms. For a fault: the logged-out page still offers LTM in its Method dropdown and then returns nothing, with no explanation. Only the portal's owners can settle it (BPPA, or the e-GP help desk).
 
 **The method column is not private on the page:** the logged-out dropdown still offers LTM. What the panel should do follows from the owner's decision.
 
@@ -78,7 +80,7 @@ LTM is the Limited Tendering Method, so it would make sense for these not to be 
 
 | # | Test | How | Answers | Status |
 |---|---|---|---|---|
-| T1 | **Confirm LTM** | Logged out, Method = LTM; logged in, Method = OTM | No records; same count as logged out. Replaces the reverse space test | **next** |
+| T1 | **Confirm LTM** | Logged out, Method = LTM; logged in, Method = OTM | Logged out: no records ✓. Logged in OTM against 2,274: pending. Replaces the reverse space test | **half done** |
 | T2 | The hidden list | Logged in swept: 750. Logged out: count known, 473. Tender-by-tender comparison dropped unless T1 surprises | Count matches LTM exactly | **done enough** |
 | T3 | What the hidden ones share | Answered by the evidence above: method | | **done** |
 | T4 | Do LTM tenders have public contracts? | Flow 4 Method = LTM, both login states. Covered by T7 | Whether Flow 4 hides them too | with T7 |
