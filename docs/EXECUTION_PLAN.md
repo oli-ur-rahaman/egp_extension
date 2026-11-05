@@ -813,6 +813,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R7 | **LTM confirmed logged out:** Method = LTM gives no records, against 277 logged in for the same office. | Next: logged in, OTM should give 2,274; Flows 4 and 5 same search. |
 | 2026-11-06 | 1 | R7 | **Audit answered.** Logged in OTM = 2,272 pages against 2,274 public, so the gap is LTM. Flow 4 7,119 and Flow 5 1,578 are the same both ways. **Only Flow 2 differs.** | Owner's LTM decision next, then build. |
 | 2026-11-06 | 1 | R7, M10 | **D23:** Flow 2 runs in whichever login state the user is in; the panel warns before a logged-out run that LTM is off limits and to log in to add it. **Demo output** `docs/samples/PDMS_output_demo.xlsx`: all five flows and a run report, made-up data. | Awaiting the owner's review of the demo. Next: build. |
+| 2026-11-06 | 1 | M7, M10, M13 | **Owner's output guidelines: D24 purpose, D25 detail data is the main purpose with a checkerboard before Start, D26 About + Data sheets with Filter columns.** Demo rebuilt: five files in `docs/samples/`, made-up data. | Departs from the ToR's single sheet; flag at acceptance. Owner reviews tomorrow. Next: one pre-build check, then build. |
 
 **Milestone record**
 
@@ -839,10 +840,11 @@ Append one line per working block. Demo and feedback dates matter contractually 
 |---|---|---|---|
 | 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
-| 3 | [x] **Decided: D23.** Owner still to check with PWD whether LTM exports may be shared. **Owner reviews** `docs/samples/PDMS_output_demo.xlsx` | owner | 10 min |
+| 3 | [x] **Decided: D23–D26.** Owner still to check with PWD whether LTM exports may be shared. **Owner reviews** the five demos in `docs/samples/` | owner | 10 min |
+| 3a | **The one check before building** (owner wants only the most important): the detail pages, because D25 makes them the main purpose. Open one PQ, one RFP or PPS notice (Flow 2) and one completed record (Flow 5), read their fields. In the same session, take one contractor from Flow 4's detail and search their Tenderer ID in Flow 5's Company Unique ID: same number? | owner clicks | 10 min |
 | 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
-| 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean) | owner | 2 min |
+| 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
 
 **Dated checks that don't block the build:**
 - **Sunday 8 Nov, morning and night** (owner's request): PWD + 01/01/2023–31/12/2025, logged out and logged in. How fast do counts move on a working day?
@@ -850,7 +852,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Moved to M6, not recon:** the full-sweep row loss (`flow-2.md`), including trying one big `size` and date windows, and sweeps on Flows 3–5.
 
-**Pending inspections, none blocking the build:** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login); a PQ, RFP or PPS notice on Flow 2; a completed record on Flow 5; the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
+**Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
 **Open owner decisions:** demo output questions · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 

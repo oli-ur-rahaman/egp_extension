@@ -16,6 +16,14 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 6 | Tender IDs are unique in e-GP (owner). **APP ID is not:** 50 rows held 16 APP IDs, since one APP has many packages | ✅ | Natural key per flow: Tender ID on Flow 2; package ID on Flow 3 |
 | 7 | e-GP has no multi-lot tenders or packages yet (owner) | owner | One row each. If more than one lot ever appears, flag it; never drop it (D14, D16) |
 
+## What the output is for (owner, D24)
+
+| # | Insight | Status | What the build must do |
+|---|---|---|---|
+| 49 | Two main uses: tenders by a department's PEs, and one contractor's whole journey in e-GP | decided | PE and contractor must be clean, consistent columns in every flow |
+| 50 | The contractor journey depends on one ID across flows. Flow 5 calls it Company Unique ID; Flow 4's detail calls it Tenderer ID. **Whether they're the same number is unconfirmed** | ❓ | Check before relying on it. Names vary, so an ID is the only safe join |
+| 51 | Detail data is the point of the tool (D25), and it's slow: PWD Flow 4 ≈ 59 h for every detail page at 3 s each | ✅ estimate | Show the estimate beside the checkerboard. Resume must be solid for runs lasting days |
+
 ## Speed and load
 
 | # | Insight | Status | What the build must do |
