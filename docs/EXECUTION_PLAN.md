@@ -47,7 +47,8 @@ Module sections below are the v1.0 plan. These decisions change them. Details ar
 | D14, D16 | One row per tender or package; more than one lot is flagged | M7, M9 |
 | D24 | Output's purpose: PE analysis and contractor journey | M9, M10 |
 | D25 | Detail data is the main purpose; checkerboard before Start | M7, M13 |
-| D26 | Workbook = About + Data, with Filter columns. **Departs from the ToR's "single sheet"; flag at acceptance** | M9, M10 |
+| D26 | Workbook = About + Data, with Filter columns. Departs from the ToR's "single sheet"; accepted by the owner (D28) | M9, M10 |
+| D28 | The owner holds ToR authority. Claude warns of every deviation; the owner decides | all |
 | D27 | Time estimate, warnings, sprints (`docs/TIME_ESTIMATE.md`) | M8, M10, M13 |
 | Recon | List size 100 by default; a full sweep **loses rows**, so distinct IDs must equal the computed total | M6, M9 |
 
@@ -837,8 +838,9 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R7 | **LTM confirmed logged out:** Method = LTM gives no records, against 277 logged in for the same office. | Next: logged in, OTM should give 2,274; Flows 4 and 5 same search. |
 | 2026-11-06 | 1 | R7 | **Audit answered.** Logged in OTM = 2,272 pages against 2,274 public, so the gap is LTM. Flow 4 7,119 and Flow 5 1,578 are the same both ways. **Only Flow 2 differs.** | Owner's LTM decision next, then build. |
 | 2026-11-06 | 1 | R7, M10 | **D23:** Flow 2 runs in whichever login state the user is in; the panel warns before a logged-out run that LTM is off limits and to log in to add it. **Demo output** `docs/samples/PDMS_output_demo.xlsx`: all five flows and a run report, made-up data. | Awaiting the owner's review of the demo. Next: build. |
-| 2026-11-06 | 1 | M7, M10, M13 | **Owner's output guidelines: D24 purpose, D25 detail data is the main purpose with a checkerboard before Start, D26 About + Data sheets with Filter columns.** Demo rebuilt: five files in `docs/samples/`, made-up data. | Departs from the ToR's single sheet; flag at acceptance. Owner reviews tomorrow. Next: one pre-build check, then build. |
+| 2026-11-06 | 1 | M7, M10, M13 | **Owner's output guidelines: D24 purpose, D25 detail data is the main purpose with a checkerboard before Start, D26 About + Data sheets with Filter columns.** Demo rebuilt: five files in `docs/samples/`, made-up data. | Departs from the ToR's single sheet; accepted by the owner (D28). Owner reviews tomorrow. Next: one pre-build check, then build. |
 | 2026-11-06 | 1 | M8, M10, M13 | Owner reviewed the five demo workbooks: **"better now"**. **D27: time estimate before every flow; over 6 hours warns; over 24 hours unrealistic; ways to shorten; sprints of at most 6 hours.** Design in `docs/TIME_ESTIMATE.md`, 5 new tasks added. All documents brought up to date, including §0a. | End of day on the home PC. Next: §13 step 3a, then build. |
+| 2026-11-06 | 1 | All | **D28: the owner holds ToR authority; Claude warns of every deviation.** ToR "single sheet" change accepted. | Standing rule, in `CLAUDE.md`. |
 
 **Milestone record**
 
@@ -865,7 +867,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 |---|---|---|---|
 | 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
-| 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". Owner still to check with PWD whether LTM exports may be shared | done | |
+| 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **Owner to decide (D28): may LTM tenders be exported and shared?** | done | |
 | 3a | **The one check before building** (owner wants only the most important): the detail pages, because D25 makes them the main purpose. Open one PQ, one RFP or PPS notice (Flow 2) and one completed record (Flow 5), read their fields. In the same session, take one contractor from Flow 4's detail and search their Tenderer ID in Flow 5's Company Unique ID: same number? | owner clicks | 10 min |
 | 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
@@ -879,7 +881,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Open owner decisions:** LTM tenders in exports (the owner decides, D28) · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

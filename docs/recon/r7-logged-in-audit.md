@@ -3,7 +3,7 @@
 **Asked by the owner, 2026-11-05:** does a logged-in user see anything exceptional on the public pages, compared with logged out?
 **Session:** owner logged in with a PWD officer account; Claude compared structure against the logged-out captures, without echoing personal data.
 **Correction:** two recorders were believed stopped but kept running through the second login, because stopping a background job on Windows left its node process alive. A scan of all recordings found no login request and no password, email or token field. They did store two account pages (mobile/NID prompt, Message Box); those bodies were wiped on 2026-11-06. The raw folder is git-ignored and nothing reached the repo. `recon stop` now kills recorders for real, and login and account pages are never recorded.
-**Status:** [x] Audit answered: only Flow 2 differs, and the reason is LTM. Decided: D23. Open: the Sunday and midnight checks; whether exporting LTM tenders is acceptable, for the owner to check with PWD.
+**Status:** [x] Audit answered: only Flow 2 differs, and the reason is LTM. Decided: D23. Open: the Sunday and midnight checks; whether LTM tenders may be exported and shared, which the owner decides (D28).
 **Limit of this audit:** it covers one account type and PWD. It can't show what other departments or roles see.
 
 ## Summary

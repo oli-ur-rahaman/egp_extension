@@ -28,6 +28,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 
 ## Working with the owner
 
+- **The owner holds ToR authority (D28):** the client delegated the decision, and what the owner says applies. **Warn the owner of every deviation from the ToR, Proposal or plan, plainly, when it happens.** The owner decides; record it as a `D#`. Never send them elsewhere for approval.
 - The owner drives the browser and Claude observes. Give **numbered clicks for one small step**, then wait for "done". Say exactly what to report back. Don't assume a click happened: a background-task notice is not a reply.
 - The owner knows the portal and the client. Their word on scope overrides the plan, so ask early for each flow: which filters, which fields, what limits the volume. Record each answer as a `D#` decision in `docs/PROJECT_PLAN.md` §8 and in the flow's note, and flag it when it departs from the ToR.
 - **Detail-page data is the main purpose of the tool (D25),** not an extra. The two main uses of the output are analysing tenders by a department's PEs, and one contractor's whole journey (D24).
