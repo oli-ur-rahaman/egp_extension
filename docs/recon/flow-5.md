@@ -1,7 +1,7 @@
 # Recon R6 — Flow 5: Experience Info (eExperience)
 
 **Session:** R6, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] in progress. Everything below comes from one snapshot and the page's own JavaScript, plus the owner's scope. Not yet seen on the wire: Search, size, detail page, empty result, volume with filters.
+**Status:** [x] R6 done, logged out. Filters, Search, size 100, detail page, empty result, window check and owner's scope are captured. Full-sweep loss is assumed from Flow 2, not tested here. A logged-in comparison follows (R7).
 
 ## Client requirement (owner, 2026-11-05)
 
@@ -25,7 +25,7 @@
 | `Construction` | 1,922 | 19,200 | **no** |
 | `a` | 15,491 | 155,000 | **no**, 83% of everything |
 
-So the owner's reasoning holds for a contractor and fails for a broad word, because the page's default match is Contains. **Claude's proposal, awaiting the owner's answer:** the exemption applies only while the entry's real result stays at or under **5,000 rows** (the contract's stated scale, D5). Above that, Department and date are required again, with a message saying why. The panel already reads the size from page 1, so this needs no guessing, and no minimum-length rule, which would fail on `ltd`. These searches take 2–6 s each, slower than most.
+So the owner's reasoning holds for a contractor and fails for a broad word, because the page's default match is Contains. **Agreed with the owner (D22):** the exemption applies only while the entry's real result stays at or under **5,000 rows** (the contract's stated scale, D5). Above that, Department and date are required again, with a message saying why. The panel already reads the size from page 1, so this needs no guessing, and no minimum-length rule, which would fail on `ltd`. These searches take 2–6 s each, slower than most.
 
 ## A. Identity
 
@@ -91,15 +91,32 @@ So the owner's reasoning holds for a contractor and fails for a broad word, beca
 |---|---|
 | Link | Title in column 4: `/resources/common/VieweCmsDetails.jsp?wcs=<status>&Id=<id>`, `target="_blank"` |
 | Buildable directly | Probably, a plain GET using the row's `Id` and work status (📖) |
-| Fields | Not yet captured |
+| Page | Title "eExperience Work's Status Details". Four `table.formStyle_1` label/value blocks, located by label text |
+
+### Field palette (from the experience detail)
+
+| Group | Fields |
+|---|---|
+| Certificate | Work Experience Certificate No |
+| Organisation | Ministry/Division, Organization Name, PE Office Name, PE Name (holds a person's name; **out of the palette**, as D17) |
+| Tender | Tender ID, Tender Ref No, Package No, Package Name, Procurement Nature, Procurement Method, Work Category, Name of Work, Work Completion Status, Tender Publication Date, Tender Type |
+| Contract | Contract Start Date, Contract End Date, Contract No., Contract Value (Equivalent in BDT) |
+| Progress | Physical Progress (%), Financial Progress (%), Date of Physical Progress, Date of Financial Progress |
+| Company | Company Name, Is JVCA |
+| Comments | Remarks, Comments By PE |
+
+The sample's status is `ongoing`, and that word is in the URL (`wcs=ongoing`), so the link needs the row's work status as well as its `Id`. Sampled once only; a completed record may show more.
 
 ## Open
 
 - [x] D21 tested: holds for real names and IDs, not broad words. Size limit proposed above
-- [ ] Search on the wire; size 100 with matching totals (use the trap note above)
-- [ ] Volume: PWD + 5-year Contract Start Date window
-- [ ] Detail page fields; palette
-- [ ] Empty result
+- [x] Search on the wire: 150–400 ms when no text match is involved, 2–6 s with one
+- [x] **Size 100:** 8,377 rows at both sizes (size 10: 838 pages, 7 on last; size 100: 84 pages, 77 on last)
+- [x] **Volume:** PWD, Tender Type All, no window = 1,578 pages ≈ 15,800. With contract start 03/01/2021 onward = 838 pages. The To date stayed at 31/12/2030 in that test, so this isn't a true 5-year window, but it is an upper bound for one starting then
+- [x] **Window hides nothing visible:** no window and 02/01/2000–31/12/2030 both give 1,578 pages (PWD)
+- [x] Detail page fields; palette
+- [x] Empty: `#noRecordFound` "No Record Found!", with `totalPages` = 1
+- [ ] Sample a completed record's detail page
 - [x] Owner: Tender Type default All; palette starts empty
-- [ ] Owner: Experience Certificate No needs no Department or date either, like Tender ID, since it gives one result? Claude's reading; to confirm
-- [ ] Owner: the 5,000-row limit on the exemption
+- [x] Owner agreed the 5,000-row limit (D22)
+- [ ] Owner: Experience Certificate No needs no Department or date, like Tender ID? Taken as agreed with D22 unless corrected; it has the same size limit

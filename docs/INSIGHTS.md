@@ -57,9 +57,10 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 32 | `N.A.` and `Not applicable` appear as values | ✅ | Export `N.A.` as empty. Decide per field for `Not applicable` |
 | 41 | Units can differ inside one flow: Flow 4's list is Crore BDT, its detail is full BDT with the currency in brackets | ✅ | Split amount from currency. Label units in Excel |
 | 42 | Detail pages have no login form, so its absence proves nothing about login state | ✅ | Check login state on list pages only |
+| 46 | The page's calendar may skip weekends: dates asked for as 01/01/2000 and 01/01/2021 went out as 02/01/2000 and 03/01/2021. Both moved past a Friday or Saturday, on Flows 4 and 5. Cause unconfirmed | 💡 | A window's edge may silently move on the page. The extension sends its own dates and must show the ones actually sent |
 | 45 | **A Contains filter makes "one contractor has few results" true only for real names.** Full name 1–3 pages, `jamal` 39, `Construction` 1,922, `a` 15,491 of 18,735 | ✅ Flow 5 | Limit by the measured result size, not by what the user typed |
 | 44 | A page's own Search can overwrite a field before sending: Flow 5 forces `size` back to 10 | ✅ 📖 | When testing, read the request actually sent. The extension sends its own |
-| 43 | A mandatory window could hide rows with no such date, so measure it: no window against a very wide window. On Flow 4, PWD, both give 13,335 pages, so the sign-date window hides fewer than 10 of about 133,000 contracts | ✅ Flow 4, PWD | Run this check for any new date guard |
+| 43 | A mandatory window could hide rows with no such date, so measure it: no window against a very wide window. On Flow 4, PWD, both give 13,335 pages, so the sign-date window hides fewer than 10 of about 133,000 contracts | ✅ Flows 4, 5, PWD | Run this check for any new date guard |
 
 ## Portal and session
 
