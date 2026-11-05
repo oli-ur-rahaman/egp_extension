@@ -795,6 +795,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M3 | Back on the home PC at `628b676`. **Owner's idea for filters, proposed as D18:** scan live, apply each change to the real page, rescan all; a thin profile only names each filter. | Awaiting the owner's answer. Page-size test on Flow 3 in progress. |
 | 2026-11-05 | 1 | M1-T04, M3, M6-T02 | **D18 accepted by the owner.** **Page size: `/SearchServlet` honours `size=50`** (50 rows, 412 pages for PWD FY 2025-2026). APP ID is not unique: 16 distinct in 50 rows. | Next: largest allowed size and a completeness check. Flow 2's servlet still untested. |
 | 2026-11-05 | 1 | M1-T04, M6-T02, M8 | **Page size verified on `/SearchServlet`:** sizes 50 and 100 give the same 173,904 packages and identical leading rows. Size 100 is the default. Deep pages take ~2.3 s against ~0.2 s, which M8 must not read as throttling. Corrected: 17,391 pages is the preselected year, not "no filter". | Next: same test on Flow 2's `/TenderDetailsServlet`. |
+| 2026-11-05 | 1 | M1-T04, M6, M9 | **`/TenderDetailsServlet` honours size 100:** totals match at both sizes (Service 639, Goods 192,186, Works 444,303; the owner's idea to test the big ones). **Finding: row order is unstable among equal timestamps**, so a sweep could lose rows. Safeguard: distinct IDs must equal the computed total. | Next: full sweep of Service at size 100 to test for loss. |
 
 **Milestone record**
 

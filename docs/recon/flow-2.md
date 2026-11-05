@@ -165,6 +165,24 @@ The first network recording logged neither `/ComboServlet` (main tab) nor `/getD
 - [x] Measured a 3-year window (D13)
 - [x] Category tree (`loadCPVTree`): popup `CPVTree.jsp`, 61 roots, children from `/GetCpvTree`, value = `;`-separated **names**; one root = 27 names, 1,085 chars (captured 2026-11-05)
 
+## Page size and row order (recording `r3c-flow2-size`, 2026-11-05)
+
+`/TenderDetailsServlet` honours `size=100`. Status All, by Procurement Nature:
+
+| Nature | Size 10 | Size 100 | Total, both sizes |
+|---|---|---|---|
+| Service | 64 pages, 9 on last | 7 pages, 39 on last | **639** |
+| Goods | 19,219 pages, 6 on last | 1,922 pages, 86 on last | **192,186** |
+| Works | 44,431 pages, 3 on last | 4,444 pages, 3 on last | **444,303** |
+
+The three add up to 637,128, consistent with about 639,000 in total once Physical Services is included. Requests on status All take about 1–1.7 s at any depth; on Live, about 30–70 ms. No throttling or errors in about 20 requests. **The total is exact and computable:** (pages − 1) × size + rows on the last page.
+
+**Row order is not stable.** Rows are sorted by publication date and time, and **tenders with the same timestamp come back in a different order at different sizes**. Works at 22:00 is reshuffled; Goods swaps positions; Service's last page has one different tender (102648 against 101890) in the same position, with the same total. Requests repeated at the same size were identical.
+
+**Why it matters:** if tied rows reshuffle between pages of one sweep, a row can be returned twice and another never. Dedupe removes the repeat but can't recover the missing one, and silent loss is the worst failure in this project.
+
+**Safeguard for every sweep:** count distinct Tender IDs against the exact total above. A shortfall must never be exported silently. Whether a sweep really loses rows is being tested.
+
 ## Volume (measured 2026-11-05)
 
 | Selection | Pages | Tenders | List sweep alone | With notice pages |
