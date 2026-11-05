@@ -790,6 +790,8 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04, M3, M13 | **D13 confirmed and revised by the owner:** span **5 years** (was 3), window on Publishing dates, each date box gets a **"current date" checkbox ticked by default** so an unset end means today. Department stays mandatory, ID/Reference searches exempt from the window. | Second PC up to date (`npm run verify` green). Next: Category tree (`loadCPVTree`) closes R3, then R4 Flow 3 APP Info. |
 | 2026-11-05 | 1 | M1-T04 | **R3 Flow 2 done.** Category tree captured: popup `CPVTree.jsp`, 61 root categories in the initial HTML, children from `/GetCpvTree?id=…`, ticked nodes expanded by `/GetCpvTree?action=getChildData&cpvdesc=…`. The filter value is a `;`-separated list of category **names**, not codes: one root ("Construction work") = 27 names, 1,085 characters. Names can contain `;`, so the value must never be re-split. | The panel builds its own picker from the same endpoints. Next: R4 Flow 3 APP Info, logged out. |
 | 2026-11-05 | 1 | M1-T04 | **R4 Flow 3 started.** `AdvAPPSearch.jsp` read from its own code in one snapshot: 11 filters including the project's first **numeric comparison** filter (operator + value/value2), two cascades (`/ComboServlet` for office; `/APPServlet getAppProjectAdv` for project, repeating the Flow 1 budget-vocabulary trap), `POST /SearchServlet action=Search` returning an HTML fragment with the same body for page 1 and page N, and a **directly buildable** detail URL `ViewPackageDetail.jsp?appId=&pkgId=`. | **No filter is mandatory** (`chkMinistry`'s checks are commented out), so unfiltered = 17,391 pages ≈ 174,000 rows: the guard must be ours, and this page has no date filter. Four result columns pack two fields into one cell. List is already package-level, so the natural key is (appId, pkgId). Notes in `docs/recon/flow-3.md`. |
+| 2026-11-05 | 1 | M1-T04, M7, M13 | **R4 Flow 3 done.** Package detail read: ~35 fields in four sections, eight `dd-MMM-yyyy` dates, a Lot Details table. Both cascades confirmed on the wire (`/ComboServlet`, `/APPServlet`) plus `/SearchServlet`; **`totalPages` arrives inside the response fragment**. Measured PWD + FY 2024-2025 = **1,841 pages ≈ 18,400 packages** (≈1.5 h list, ≈15 h with details). Empty result captured. **Owner's scope: D15, D16, D17.** | Two cautions: the detail's `Procuring Entity` is a *person's* name (out of the palette by default, sanitiser must strip it), and on an empty result `totalPages` is left **stale**, so emptiness is detected by `#noRecordFound` only. Flow 2's recorder gap is closed: the recorder is sound, the earlier miss was a stale attachment. |
+| 2026-11-05 | 1 | — | Owner moves to the home PC. Handover prompt and next-session plan written into §13. | Remaining: `size` experiment, R5 Flow 4, R6 Flow 5, the logged-in Flow 1 fixture, then step 8 build work. |
 
 **Milestone record**
 
@@ -806,16 +808,26 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (written 2026-11-04; valid on either PC)
+### ▶ Resume here (rewritten 2026-11-05, end of the office-PC session; valid on either PC)
 
-**Where we are (2026-11-05):** M0 done. R0 done. R1 partly done (see step 7). **R2 Flow 1 done** (`docs/recon/flow-1.md`). **R3 Flow 2 nearly done** (`docs/recon/flow-2.md`). Steps 0–2 are done on the home PC. Nothing uncommitted.
+**Where we are.** M0 done. R0 done. R1 partly done (step 7 below). **R2 Flow 1 done** · **R3 Flow 2 done** · **R4 Flow 3 done** — `docs/recon/flow-1.md`, `flow-2.md`, `flow-3.md`. Decisions D11–D17 recorded in `PROJECT_PLAN.md` §8. Nothing uncommitted. Still no `profiles/` and no new `src/` code: everything so far is M0 plus recon.
 
-**Start next session here:**
-1. Ask the owner to confirm the D13 details in `flow-2.md`: the window is Publishing or Closing dates, both From and To are required, and Tender ID / Reference No. searches are exempt from the date window (does Department stay mandatory for those?).
-2. Finish step 3: inspect the Category tree; if practical, sample one PQ, RFP or PPS notice.
-3. Go on to step 4, **Flow 3 APP Info**, logged out. Same method. Ask the owner the same questions early: which filters, which notice fields, mandatory filters to limit volume.
+**The method that made Flow 3 fast.** One `npm run recon -- snapshot` of a page, then read the page's **own JavaScript** out of the capture. That yielded all 11 filters, both cascades, the search POST contract, pagination, the result columns and the detail URL **before asking the owner for a single click**. Clicks were then needed only to confirm the cascades on the wire, to measure volume, and to see an empty result. Use this order on Flows 4 and 5: snapshot and read first, ask for clicks second.
 
-The raw R3 captures are in `recon/raw/` on the home PC only.
+**Start the next session here:**
+
+| Step | Task | Needs the owner? |
+|---|---|---|
+| 1 | **Page `size` experiment** on Flow 3: does `/SearchServlet` honour `size` greater than 10? One search, one request. If it does, every sweep in every flow gets several times faster — the highest-value item outstanding. Owner drives, or agree one scripted request first | one click |
+| 2 | **R5 — Flow 4 Contract Info**, logged out. Snapshot-and-read first. Ask the owner the same four questions: which filters, which detail fields, what limits the volume, what the natural key is | ~30–45 min |
+| 3 | **R6 — Flow 5 Experience Info**, logged out. Same | ~30–45 min |
+| 4 | **Flow 1 fixture**, logged in and therefore last: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. Also capture session expiry (P-0.4), the logout result (P-0.6) and the session cookie **name** to finish R1 | ~10 min |
+| 5 | **Step 8 build work, no browser:** `profiles/schema.json` (M1-T01), the **fixture sanitiser** (M1-T07) — it must strip the Flow 3 detail's person-name field — profile fragments per flow, then the mock server (M1-T08) | no |
+| 6 | **M3 filter mirroring**, which is what the **M1 demo on Thu 12 Nov** actually shows. The spare time won today belongs here | no |
+
+**Open decisions:** Q7 (secret code, needed by Week 9) · D17's person-name field, off until the owner says otherwise · natural keys per flow (Q6) for Flows 4 and 5.
+
+**Not on the office PC:** the raw captures in `recon/raw/` are git-ignored on purpose. Today's office-PC captures (`p3.1`, `p3.4`, `p3.5`, `p3.6`, the recordings) stay on the office PC; everything learned from them is in `flow-3.md`, so nothing is lost.
 
 **Office PC, first time only** (see README):
 1. `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (or use `npm.cmd` instead of `npm`)
@@ -851,8 +863,8 @@ Steps 3–6 can stop at any flow boundary. Each flow is committed on its own, so
 4. [ ] **You:** pick the secret code privately (Q7). It's needed only by Week 9.
 5. [x] ~~**Claude:** M0-T02 … M0-T08.~~ Done 2026-11-04.
 6. [ ] **You:** M0-MC1, MC2 (load `dist/` unpacked, open the panel → "Ready"), MC4 (`git status` clean). MC3 done.
-7. [~] **Together:** R0 ✓ → R1 (partly) → R2 Flow 1 ✓.
-8. [ ] **Together, W2:** R3–R6 (logged out), then filter mirroring on all five pages → **demo M1 on Thu 12 Nov 2026.**
+7. [~] **Together:** R0 ✓ → R1 (partly, step 4 above) → R2 Flow 1 ✓ → R3 Flow 2 ✓ → R4 Flow 3 ✓.
+8. [ ] **Together, W2:** R5 Flow 4 and R6 Flow 5 (logged out), then filter mirroring on all five pages → **demo M1 on Thu 12 Nov 2026.**
 
 ---
 

@@ -1,7 +1,15 @@
 # Recon R4 — Flow 3: APP Info (Annual Procurement Plan)
 
 **Session:** R4, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] list mechanism, both cascades and the package detail page are captured. Left: an empty result, whether a larger page `size` is honoured, and the owner's scope decisions.
+**Status:** [x] R4 done. List mechanism, both cascades, the package detail page, an empty result and the owner's scope are all captured. One optional experiment is left: whether the servlet honours a page `size` larger than 10.
+
+## Client requirement (owner, 2026-11-05)
+
+**D15. Flow 3 scope.** All **11 filters** appear in the panel; this page is well designed, so nothing is hidden. **Department and Financial Year are both mandatory** before a run may start — the owner's judgement that this is guard enough, on a page that has no date filter at all. Measured, that is 1,841 pages ≈ 18,400 packages for PWD in one year: about 1.5 h for the list sweep, and about 15 h if every package detail is fetched. The **field palette therefore starts with nothing ticked**, so the expensive detail pass is always a deliberate choice.
+
+**D16. One row per package; lots are always single** (owner, 2026-11-05). e-GP has no multi-lot packages, so the Lot Details table is always one row and its fields (Lot No., Description, Qty, Unit, Estimated Cost) are plain columns. This extends D14 from Flow 2 to Flow 3, and the same safeguard applies: if a package ever returns more than one lot, the extension **flags the row in the reconciliation report** instead of silently keeping the first.
+
+**D17. Procuring Entity.** The panel reads the entity list per department, which the `/ComboServlet` cascade makes straightforward (confirmed live: 224 offices for PWD). The **detail page's** field of the same name holds a *person's* name, not an office; it stays **out of the palette by default** and is only collected if the owner asks for it explicitly. The office name is already in list column 3, so nothing is lost.
 
 ## A. Identity
 
@@ -67,7 +75,7 @@ Two details the code alone did not show: the Procuring Entity placeholder is sen
 | Pagination | `loadTable()` re-posts the **same** body with a new `pageNo`, so page 1 and page N are one code path. Hidden `#totalPages`; the label reads "Page 1 of 17391"; buttons first/prev/next/last, plus `#dispPage` with `#btnGoto` |
 | Page size | hidden `#size` = 10, with **no control on the page**. Whether the servlet honours a larger `size` is untested and worth one try: it would cut the request count directly |
 | Validation | `chkappID()` numeric APP ID; `chkdigits1/2()` decimals; `Between` requires both values in the right order |
-| Empty result | expected to be the Flow 2 shape (`#noRecordFound`, pagination hidden); **to confirm** |
+| Empty result | **captured.** `<td id="noRecordFound" value="noRecordFound" colspan="7">No Records Found</td>`, and `#pagination` is set to `display: none`. **Trap: `#totalPages` is left stale** at the page-load value (17,391) and the label still reads "Page 1 of 17391", so an empty result must be detected by `#noRecordFound`, never by the page count |
 | **`totalPages` arrives in the fragment** | the response contains `<input id="totalPages" value="1841">`, so the sweep reads the page count **from the response**, not from the host page. The page's own script copies it into the DOM; the extension does not need to |
 | Response size | ≈ 8.3 KB for a page of 10 rows |
 | Other actions | `action=WatchList` exists on the same servlet. It is a logged-in feature and out of scope |
@@ -136,12 +144,12 @@ At about 3 s per request that is roughly 15 hours for the list alone, before any
 ## Open
 
 - [x] Filters, cascades, search contract, pagination, result columns and the detail route, all from `p3.1-app-initial`
-- [ ] Owner's scope decisions: which filters the panel shows, which detail fields matter, what keeps a run a sensible size
+- [x] Owner's scope decisions: see "Client requirement" below
 - [x] Department → Procuring Entity cascade confirmed live: the tree writes `departmentId` = 21 and Procuring Entity goes from 1 option to **225**
 - [x] Financial Year alone repopulates Project (3,351 → **3,015** options), so the cascade fires on the year as well as on Budget Type
 - [x] `totalPages` for a realistic selection: PWD + FY 2024-2025 = **1,841 pages**
 - [x] `ViewPackageDetail.jsp` fields: ~35 in four sections, plus a **Lot Details** table (one-to-many) and eight `dd-MMM-yyyy` dates
-- [ ] **Owner:** how to flatten a package with several lots. Claude's recommendation: one row per package by default; when any lot field is in the palette, one row **per lot** with the package fields repeated, keyed (`appId`, `pkgId`, `lotNo`)
-- [ ] **Owner:** confirm that `Procuring Entity` (a person's name) is wanted at all, since it is personal data
-- [ ] Empty result shape
+- [x] Multi-lot flattening: not needed — e-GP has no multi-lot packages (D16)
+- [~] `Procuring Entity` (a person's name) on the detail: **off by default** until the owner says otherwise (D17)
+- [x] Empty result shape: `#noRecordFound`, pagination hidden, `totalPages` left stale
 - [ ] Does the servlet honour a `size` larger than 10?

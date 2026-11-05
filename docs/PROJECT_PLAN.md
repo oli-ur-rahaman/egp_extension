@@ -809,6 +809,9 @@ egp_ext/
 | D12 | Flow 2: a filter on "All" is left blank and the result pages are swept once; filter values are not looped. Flow 1 still loops offices | Owner, 2026-11-05 (recon R3). See docs/recon/flow-2.md |
 | D13 | Flow 2: Start requires a Department and a Publishing date window of at most **5 years**; each date box carries a "current date" checkbox, ticked by default, so an unset end of the window means today; Tender ID or Reference No. searches are exempt | Owner, 2026-11-05 (span raised from 3 to 5 years). See docs/recon/flow-2.md |
 | D14 | Flow 2: one row per tender, because multi-lot tenders do not exist yet; more than one lot is flagged, never dropped | Owner, 2026-11-05. See docs/recon/flow-2.md |
+| D15 | Flow 3: all 11 filters in the panel; **Department and Financial Year both mandatory** before a run starts; the notice/detail field palette starts empty | Owner, 2026-11-05 (recon R4). See docs/recon/flow-3.md |
+| D16 | Flow 3: one row per package; e-GP has no multi-lot packages, so lot fields are plain columns. More than one lot is flagged, never dropped | Owner, 2026-11-05. Extends D14. See docs/recon/flow-3.md |
+| D17 | Flow 3: the panel fetches the Procuring Entity list per department; the **detail** field of that name is a person's name and stays out of the palette unless the owner asks for it | Owner, 2026-11-05. See docs/recon/flow-3.md |
 
 ### Open — to resolve during Phase 1
 
