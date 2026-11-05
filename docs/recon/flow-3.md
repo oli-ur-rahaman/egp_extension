@@ -73,7 +73,7 @@ Two details the code alone did not show: the Procuring Entity placeholder is sen
 | **Fast path** | Yes, the same shape as Flow 2: a known POST, an HTML fragment back, no clicking |
 | POST body | `action, departmentId, office, project, financialYear, budgetType, procNature, procType, appId, appCode, pkgNo, operation, value, value2, pageNo, size, cpvCat` (plus `userId`, empty when logged out) |
 | Pagination | `loadTable()` re-posts the **same** body with a new `pageNo`, so page 1 and page N are one code path. Hidden `#totalPages`; the label reads "Page 1 of 17391"; buttons first/prev/next/last, plus `#dispPage` with `#btnGoto` |
-| Page size | hidden `#size` = 10, with **no control on the page**. Whether the servlet honours a larger `size` is untested and worth one try: it would cut the request count directly |
+| Page size | hidden `#size` = 10, with **no control on the page**. The servlet **does** honour a larger `size` (see Open), which cuts list requests directly. Detail pages are still one request per row |
 | Validation | `chkappID()` numeric APP ID; `chkdigits1/2()` decimals; `Between` requires both values in the right order |
 | Empty result | **captured.** `<td id="noRecordFound" value="noRecordFound" colspan="7">No Records Found</td>`, and `#pagination` is set to `display: none`. **Trap: `#totalPages` is left stale** at the page-load value (17,391) and the label still reads "Page 1 of 17391", so an empty result must be detected by `#noRecordFound`, never by the page count |
 | **`totalPages` arrives in the fragment** | the response contains `<input id="totalPages" value="1841">`, so the sweep reads the page count **from the response**, not from the host page. The page's own script copies it into the DOM; the extension does not need to |
@@ -152,4 +152,5 @@ At about 3 s per request that is roughly 15 hours for the list alone, before any
 - [x] Multi-lot flattening: not needed — e-GP has no multi-lot packages (D16)
 - [~] `Procuring Entity` (a person's name) on the detail: **off by default** until the owner says otherwise (D17)
 - [x] Empty result shape: `#noRecordFound`, pagination hidden, `totalPages` left stale
-- [ ] Does the servlet honour a `size` larger than 10?
+- [~] **The servlet honours `size` above 10.** PWD + FY 2025-2026 with `size=50`: 50 rows, `totalPages` 412, about 42 KB, 583 ms (recording `r4b-size-experiment`, 2026-11-05). Still to check: the largest size it allows, and that no rows are lost or repeated at a larger size.
+- [ ] **Natural key (Q6):** APP ID is **not** unique. The same 50 rows hold only 16 distinct APP IDs, so one APP has many packages. The key must be `pkgId`, from the detail link, or APP ID + Package No.

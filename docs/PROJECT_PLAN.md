@@ -812,7 +812,7 @@ egp_ext/
 | D15 | Flow 3: all 11 filters in the panel; **Department and Financial Year both mandatory** before a run starts; the notice/detail field palette starts empty | Owner, 2026-11-05 (recon R4). See docs/recon/flow-3.md |
 | D16 | Flow 3: one row per package; e-GP has no multi-lot packages, so lot fields are plain columns. More than one lot is flagged, never dropped | Owner, 2026-11-05. Extends D14. See docs/recon/flow-3.md |
 | D17 | Flow 3: the panel fetches the Procuring Entity list per department; the **detail** field of that name is a person's name and stays out of the palette unless the owner asks for it | Owner, 2026-11-05. See docs/recon/flow-3.md |
-| D18 | **Proposed, awaiting the owner's answer.** Filters are live: on load the panel scans every filter and its items from the page; each change is applied to the real page, then all filters are rescanned. No option lists are stored anywhere. A thin Site Profile entry still names each filter (label, type, rule) for what a scan cannot see: tree popups, operator filters, mandatory rules, hidden filters, and the check that a filter has vanished | Owner's idea, 2026-11-05, with Claude's thin-profile addition. Changes M3 |
+| D18 | Filters are live: on load the panel scans every filter and its items from the page; each change is applied to the real page, then all filters are rescanned. No option lists are stored anywhere. A thin Site Profile entry still names each filter (label, type, rule) for what a scan cannot see: tree popups, operator filters, mandatory rules, hidden filters, and the check that a filter has vanished | Owner's idea with Claude's thin-profile addition, accepted by the owner 2026-11-05. Changes M3 |
 
 ### Open — to resolve during Phase 1
 
