@@ -1,7 +1,7 @@
 # Recon R3 — Flow 2: Tender Info
 
 **Session:** R3, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] nearly done. List, pagination, empty result and two notice types are captured. Left: Category tree, field differences across event types, and owner confirmations under D13.
+**Status:** [x] R3 done. List, pagination, empty result, two notice types and the Category tree are captured; D13 is confirmed by the owner. Left for later, not blocking: field differences across the remaining event types (PQ, RFP, PPS).
 
 ## Client requirement (owner, 2026-11-05)
 
@@ -50,7 +50,7 @@ Every filter is sent on every request. Blank (or `0` where noted) means "no rest
 | 9 | Reference No | text `#refNo` | `refNo` | free text | empty |
 | 10 | From / To Publishing Date | text `#pubDtFrm`, `#pubDtTo` | `pubDtFrm`, `pubDtTo` | `dd/mm/yyyy`, From must be before To | empty |
 | 11 | From / To Closing Date | text `#closeDtFrm`, `#closeDtTo` | `closeDtFrm`, `closeDtTo` | same format | empty |
-| 12 | Category | `#txtaCPV`, filled from `loadCPVTree()` | `cpvCategory` | not yet inspected | empty |
+| 12 | Category | read-only-by-habit text `#txtaCPV` (name `cpvCat`), filled from a **popup tree** via `loadCPVTree()` | `cpvCategory` | a **`;`-separated list of category names** (not codes); see below | empty |
 | 13 | Status tab | links `test(1)` Live, `test(2)` Archive, `test(4)` Cancelled, `test(3)` All; hidden `#viewType` | `viewType` | `Live`, `Archive`, `Cancel`, `AllTenders` | default `Live` |
 
 **Search validation (client-side):** at least one filter must be set; the Status tab doesn't count. `tenderId` must be numeric.
@@ -69,6 +69,28 @@ Department ──(POST /ComboServlet  departmentId, funName=officeCombo → <opt
 ```
 
 No other dependent filters found.
+
+### Category tree (CPV), captured 2026-11-05
+
+The **Select Category** link runs `loadCPVTree()` → `window.open('CPVTree.jsp', 'CPVTree', 'width=700px')`, a **separate popup window**. It is a jsTree with `plugins: themes, json_data, ui, checkbox` and `checkbox.two_state = false`, so **several nodes at any depth can be ticked**.
+
+| Item | Finding |
+|---|---|
+| Popup URL | `/resources/common/CPVTree.jsp` (plain GET, no session) |
+| Root level | **61 categories, already in the popup's initial HTML.** Each node is `<li id="<node id>" cpvcode="45000000" cpvname="Construction work">` |
+| Children | on demand: `GET /GetCpvTree?id=<node id>&searchBy=&action=&keyword=` |
+| Keyword search | form POST to `CPVTree.jsp` with `action=search`, `keyword=<text>`; no match replaces the tree with "No Records Found" |
+| Expansion of a ticked node | `GET /GetCpvTree?action=getChildData&cpvdesc=<category name>` returns that node's descendant **names** as a `;`-joined string |
+| Confirm | `input#btnGetCheckedNode` ("Submit") writes the result into the opener's `#txtaCPV` and closes the popup |
+
+**What the filter value actually is.** Ticking one root node, **"Construction work"**, produced a **1,085-character string of 27 names**: the ticked parent followed by its level-2 descendants, `;`-separated. The search POST sends that whole string as `cpvCategory`. So the portal filters categories **by name, not by code**, and `cpvcode` is decoration.
+
+**Consequences for the extension**
+- The panel needs its own category picker; it must **not** open the portal's popup. It can fetch the same data: the 61 roots from `CPVTree.jsp`, children from `/GetCpvTree?id=…`, and a ticked node's expansion from `/GetCpvTree?action=getChildData&cpvdesc=…`.
+- It must reproduce the portal's string exactly: checked names joined by `"; "`, then `";"`, then the server's expansion string with its trailing separator removed. Simplest safe rule: build the string the same way and send it verbatim; never re-split it.
+- **Parsing trap:** category names can themselves contain `"; "` (e.g. *"Supporting and auxiliary transport services; travel agencies services"*), so splitting the value on `;` is ambiguous. Keep the list as an array of chosen names in our own state and only ever serialise it.
+- The value grows fast: one root category is already ~1 KB. A broad selection could produce a very long POST field. Worth a length guard, and worth measuring once if a user picks many roots.
+- The tree depth is at least 3 (the Submit handler walks level 1, level 2 and their children), and `getChildData` flattens whatever is below a ticked node, so **the extension does not need to walk the tree to the leaves** — ticking a parent is enough.
 
 ## C. Search and results
 
@@ -139,7 +161,7 @@ The first network recording logged neither `/ComboServlet` (main tab) nor `/getD
 - [x] Detail page fields. [x] List page after the detail closes: **stays on page 2** (owner). [ ] Multi-lot sample; other event types
 - [x] Multi-lot: the owner confirms multi-lot tenders don't exist in e-GP yet (D14)
 - [x] Measured a 3-year window (D13)
-- [ ] Category tree (`loadCPVTree`) is listed above; still to inspect
+- [x] Category tree (`loadCPVTree`): popup `CPVTree.jsp`, 61 roots, children from `/GetCpvTree`, value = `;`-separated **names**; one root = 27 names, 1,085 chars (captured 2026-11-05)
 
 ## Volume (measured 2026-11-05)
 
@@ -155,4 +177,4 @@ Estimates assume about 2–3 s per request at a polite pace. The real pace is se
 - The portal's own Search refuses to run with no filter set (the Status tab doesn't count). Its unfiltered list appears only on page load.
 - A sweep this long overlaps new publications, which push rows onto later pages. Dedupe by Tender ID removes the repeats; the sweep must not assume a fixed page count.
 - The panel always knows the size before starting: `totalPages` from page 1 gives the estimate.
-- [ ] Category tree (`loadCPVTree`)
+- [ ] Field differences across the remaining event types (PQ, RFP, PPS)
