@@ -57,7 +57,7 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 32 | `N.A.` and `Not applicable` appear as values | ✅ | Export `N.A.` as empty. Decide per field for `Not applicable` |
 | 41 | Units can differ inside one flow: Flow 4's list is Crore BDT, its detail is full BDT with the currency in brackets | ✅ | Split amount from currency. Label units in Excel |
 | 42 | Detail pages have no login form, so its absence proves nothing about login state | ✅ | Check login state on list pages only |
-| 43 | A mandatory date window can hide rows that have no such date yet, e.g. contracts not yet signed | 💡 being measured | Tell the user what a window can't see |
+| 43 | A mandatory window could hide rows with no such date, so measure it: no window against a very wide window. On Flow 4, PWD, both give 13,335 pages, so the sign-date window hides fewer than 10 of about 133,000 contracts | ✅ Flow 4, PWD | Run this check for any new date guard |
 
 ## Portal and session
 

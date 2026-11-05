@@ -800,6 +800,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-05 | 1 | M1-T04 | **`docs/INSIGHTS.md` created** at the owner's request: 40 findings and ideas across flows. **R5 Flow 4 started:** 16 filters, list POST `/AdvSearchNOAServlet`, 89,586 pages (≈896,000 contracts), detail buildable from the row; all from one snapshot. | Notes in `docs/recon/flow-4.md`. Next: owner's scope; see Search, size and detail on the wire. |
 | 2026-11-05 | 1 | M1-T04 | **D19:** Flow 4 keeps all 16 filters; Department + 5-year Contract Sign Date window mandatory; palette starts empty. PWD + window = 7,119 pages ≈ 71,200 contracts. Contract detail read: ~25 fields + ownership table. | Next: size 100, window exclusions, empty result. |
 | 2026-11-05 | 1 | M1-T04 | Flow 4: **size 100 verified**, 71,190 contracts at both sizes. Empty result captured. | Not measured: PWD with no window; the request went out with Department cleared. Retest pending. |
+| 2026-11-05 | 1 | M1-T04 | **R5 Flow 4 done.** Sign-date window hides almost nothing: 13,335 pages with no window or a very wide one (PWD). Beneficial Ownership stays out of the palette. | Next: R6 Flow 5. Full-sweep test on Flows 3 and 4 during M6. |
 
 **Milestone record**
 
@@ -818,7 +819,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ### ▶ Resume here (rewritten 2026-11-05, end of the office-PC session; valid on either PC)
 
-**Where we are.** M0 done. R0 done. R1 partly done (step 7 below). **R2 Flow 1 done** · **R3 Flow 2 done** · **R4 Flow 3 done** — `docs/recon/flow-1.md`, `flow-2.md`, `flow-3.md`. Decisions D11–D17 recorded in `PROJECT_PLAN.md` §8. Nothing uncommitted. Still no `profiles/` and no new `src/` code: everything so far is M0 plus recon.
+**Where we are.** M0 done. R0 done. R1 partly done (step 7 below). **R2 Flow 1 done** · **R3 Flow 2 done** · **R4 Flow 3 done** · **R5 Flow 4 done** — `docs/recon/flow-1.md` … `flow-4.md`; findings in `docs/INSIGHTS.md`. Decisions D11–D19 recorded in `PROJECT_PLAN.md` §8. Nothing uncommitted. Still no `profiles/` and no new `src/` code: everything so far is M0 plus recon.
 
 **The method that made Flow 3 fast.** One `npm run recon -- snapshot` of a page, then read the page's **own JavaScript** out of the capture. That yielded all 11 filters, both cascades, the search POST contract, pagination, the result columns and the detail URL **before asking the owner for a single click**. Clicks were then needed only to confirm the cascades on the wire, to measure volume, and to see an empty result. Use this order on Flows 4 and 5: snapshot and read first, ask for clicks second.
 
@@ -827,7 +828,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | Step | Task | Needs the owner? |
 |---|---|---|
 | 1 | [x] **Page size done.** Size 100 works on Flows 2 and 3, but **full sweeps lose rows** on Flow 2 (unstable sort; see `flow-2.md`). M6 must include the fix and the count check | done |
-| 2 | **R5 — Flow 4 Contract Info**, logged out. Snapshot-and-read first. Ask the owner the same four questions: which filters, which detail fields, what limits the volume, what the natural key is | ~30–45 min |
+| 2 | [x] **R5 — Flow 4 done** (`docs/recon/flow-4.md`). Natural key still to confirm: `pkgLotId` | done |
 | 3 | **R6 — Flow 5 Experience Info**, logged out. Same | ~30–45 min |
 | 4 | **Flow 1 fixture**, logged in and therefore last: FY 2024-2025, Chattogram PWD Division-1, Generate, `npm run recon -- snapshot p1.4-ptr-results-nonempty`. Also capture session expiry (P-0.4), the logout result (P-0.6) and the session cookie **name** to finish R1 | ~10 min |
 | 5 | **Step 8 build work, no browser:** `profiles/schema.json` (M1-T01), the **fixture sanitiser** (M1-T07) — it must strip the Flow 3 detail's person-name field — profile fragments per flow, then the mock server (M1-T08) | no |

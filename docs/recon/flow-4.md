@@ -1,7 +1,7 @@
 # Recon R5 — Flow 4: Contract Info (eContracts)
 
 **Session:** R5, 2026-11-05 · **Driver:** owner, **logged out** (D11) · **Observer:** Claude over CDP
-**Status:** [~] in progress. Filters, Search on the wire, detail page and owner's scope are captured. Left: size 100 check, empty result, how many contracts the date window excludes.
+**Status:** [x] R5 done. Filters, Search, size 100, detail page, empty result, window check and owner's scope are captured. Full-sweep loss is assumed from Flow 2, not tested here.
 
 ## Client requirement (owner, 2026-11-05)
 
@@ -84,7 +84,7 @@
 | Project and package | Project/Program Code, Project/Program Name, Package No., Package Name |
 | Dates | Date of Advertisement, Notification of Award, Contract Signing, Expected Contract Completion. No date range on Completion |
 | Contract | **Contract Price**, Name of the Economic Operator, Tenderer ID of the Economic Operator |
-| Beneficial ownership (one-to-many) | No., Name, Designation, Ownership %, Country. Holds personal names; can have several rows. **Owner to decide** |
+| Beneficial ownership (one-to-many) | No., Name, Designation, Ownership %, Country. Holds personal names; can have several rows. **Out of the palette** |
 | Authorised officer | Name, Designation. Personal data; the sanitiser must strip it |
 
 **Units differ within this flow:** the list shows Crore BDT, the detail shows full BDT with the currency in brackets (e.g. `948782.473 (BDT)`). The parser splits amount from currency.
@@ -95,7 +95,7 @@
 - [x] Search seen on the wire; volume for a realistic selection; detail page fields
 - [x] `size=100`: PWD + window gives **71,190** at both sizes (size 10: 7,119 pages, 10 on last; size 100: 712 pages, 90 on last). About 1 s per request at any depth, 70 KB at size 100. The first 10 rows held their positions in this one comparison, which does not show the sort is safe
 - [x] Empty: `<td id="noRecordFound" value="noRecordFound">No Record Found!</td>`, with `totalPages` = 1 in the fragment. The wording differs from Flows 2 and 3, so match the id, not the text
-- [ ] How many PWD contracts have no sign date in any window, which the mandatory window would hide
-- [ ] Beneficial ownership in the palette?
+- [x] **The sign-date window hides almost nothing.** PWD with no window = 13,335 pages; PWD with a very wide window (02/01/2000–31/12/2030) = 13,335 pages. Any difference is under one page (fewer than 10 of about 133,000 contracts). Checked for PWD only
+- [x] Beneficial Ownership: **out of the palette** (owner, 2026-11-05, on Claude's recommendation). It holds personal names and can have several rows per contract
 - [ ] Empty result
-- [ ] Does a full sweep lose rows here too? Assumed yes (see `flow-2.md`)
+- [ ] Does a full sweep lose rows here too? Assumed yes (see `flow-2.md`); test during M6
