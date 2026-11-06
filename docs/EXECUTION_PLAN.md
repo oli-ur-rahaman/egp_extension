@@ -864,6 +864,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B2: M1-T07, T08, T10; M2-T01–T04 | **Stage B2 built.** Cleaner (default deny); 41 cleaned pages plus 2 JSON lookups, covering every layout reachable logged out; fake portal with faults (lost rows, block, 500, dropped connection, session end, latency); page-state classifier; fingerprints; visible-only reading (D41). **Tests caught a real leak before any commit:** account links kept their user ID. Fixed. Corrected: both trees answer in JSON. 27 public requests. | **Gaps:** RFQ and framework notices on Flow 2 need a login; Flow 1's empty report is derived, not captured; M2-T05 is in B8. **B2's gate waits for the owner:** spot-check two cleaned pages. |
 | 2026-11-07 | 1 | B3: M3, M13-T01–T03 | **Stage B3 built, on the fake portal.** Side panel; flow detected from the page's address; filters read live from the page; changes written to the real page, then re-read; Department and Category pickers; login state; Flow 2 warning (D37); required rules with named reasons; a vanished filter is named. M1-MC5 passed by the owner. 258 unit and 10 browser tests. **D42: All as the first dropdown item, not a checkbox.** Start stays off: collection is B5. | **Not yet proven live:** page-script cascades. **B3's gate: the owner's live demo on all five pages,** then RFQ and framework captures while logged in. |
 | 2026-11-07 | 1 | B3 | Owner loaded the extension in the controlled Chrome. **D43: the panel now belongs to the tab where the icon was clicked** (owner's request). | Owner confirms on the real browser, then the live demo. |
+| 2026-11-07 | 1 | — | End of day on the home PC. All work pushed. | Resume at §13: B3's live demo, Step 2. |
 
 **Milestone record**
 
@@ -880,9 +881,20 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (updated 2026-11-06, end of day, home PC; valid on either PC)
+### ▶ Resume here (updated 2026-11-07, end of day, home PC; valid on either PC)
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
+
+**Start tomorrow here: B3's live demo, Step 2.** The owner has loaded the extension on the home PC. Nothing below has been checked live yet. Give the owner numbered clicks for one step, then wait for "done".
+
+- **Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
+- **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
+- **Step 4, live demo, logged in:** `npm run recon -- stop` first, then the owner logs in. Flow 1 (two filters, All offices), Flow 2 (no warning, Department fixed). **Check whether a logged-in Flow 4 or 5 lets the user pick another department** (`departmentWhenLoggedIn: notChecked` in the profile; D35 depends on it). Capture RFQ and framework notices for the test bed while logged in.
+- **Then:** B3's gate passes; start stage B4 (engine).
+
+**On the office PC:** `git pull`, `npm ci`, `npm run build`, then load `dist/` via `chrome://extensions` (Developer mode, Load unpacked). `recon/raw/` isn't there, so `npm run fixtures` won't run; the committed fixtures are enough for the tests.
+
+**Sunday 8 Nov is the owner's dated check** (below): the same PWD search, morning and night, logged out and logged in.
 
 **Do these in order:**
 
