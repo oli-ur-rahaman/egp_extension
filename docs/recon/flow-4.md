@@ -99,7 +99,9 @@
 
 So the palette needs one field mapped from several labels, and "Tenderer ID" can be empty on older contracts.
 
-**The split isn't clean by date.** Tender 1149044, signed 05-Jan-2026, has the older fields **and** the Beneficial Ownership table, but no Tenderer ID: a third variant. Date alone doesn't predict the layout, so the parser reads whatever labels are present. **D31:** template columns follow the latest layout; older-only fields become extra columns.
+**The split isn't clean by date.** Tender 1149044, signed 05-Jan-2026, has the older fields **and** the Beneficial Ownership table, but no Tenderer ID: a third variant. Date alone doesn't predict the layout, so the parser reads whatever labels are present. **D31:** template columns follow the latest layout; older-only fields become extra columns. Of four samples, only the two signed in Oct–Nov 2026 have a Tenderer ID; an LTM one signed Dec 2025 has Contract No and no ownership table.
+
+**Tenderer ID = Flow 5 Company Unique ID** (tender 1344082, exact match). **Ongoing work is on this page**, and a logged-out LTM contract too (tender 1154014).
 
 **D21 applies here:** an entry in Contract Award to lifts the Department and date requirements (owner, 2026-11-05). Broad-word limits are in `flow-5.md`.
 

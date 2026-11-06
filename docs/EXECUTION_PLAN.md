@@ -847,6 +847,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | M0-T08, §13 3a | `snapshot` writes page text first; its screenshot is optional after 8 s, following one 2-minute hang; `stop` also ends a stuck snapshot. ID check: a Tenderer ID from a contract awarded this week gave no Flow 5 rows, which proves nothing, since a new contract may have no experience record yet. | Retrying the other way: from a Flow 5 row to its contract. |
 | 2026-11-06 | 1 | §13 3a, M7 | **Flow 4 detail has two layouts:** older contracts lack Tenderer ID and have other fields. Completed Flow 5 work is on Flow 4 (tender 907857, same value). Completed Flow 5 detail: same 28 labels. | Still to answer: Tenderer ID = Company Unique ID, on a newer contract; ongoing work on Flow 4. |
 | 2026-11-06 | 1 | §13 3a, M10 | **D31:** columns follow the latest layout; older-only fields are extra columns. A third contract layout found, so date doesn't predict it. Flow 5 logged out lists an LTM record. | Still to answer: Tenderer ID = Company Unique ID; ongoing work on Flow 4. |
+| 2026-11-06 | 1 | §13 3a, M10 | **Pre-build check finished.** Tenderer ID = Company Unique ID. Ongoing and LTM contracts are on Flow 4. Flow 4 demo rebuilt under D31: latest layout + 10 `Older:` columns. | **Recon stops. Next: §13 step 4, build.** |
 
 **Milestone record**
 
@@ -874,7 +875,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
 | 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **D29: LTM tenders are collected and exported.** | done | |
-| 3a | **The one check before building** (owner wants only the most important): the detail pages, because D25 makes them the main purpose. Open one PQ, one RFP or PPS notice (Flow 2) and one completed record (Flow 5), read their fields. In the same session, take one contractor from Flow 4's detail and search their Tenderer ID in Flow 5's Company Unique ID: same number? | owner clicks | 10 min |
+| 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
 | 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
