@@ -22,9 +22,21 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 |---|---|---|---|
 | 49 | Two main uses: tenders by a department's PEs, and one contractor's whole journey in e-GP | decided | PE and contractor must be clean, consistent columns in every flow |
 | 50 | The contractor journey depends on one ID across flows. Flow 5 calls it Company Unique ID; Flow 4's detail calls it Tenderer ID, **only on newer contracts**: older ones have no such field. **They are the same number** (one exact match, 2026-11-06). Tender ID also links the same contract across Flows 4 and 5: same company, Contract No and value on one sample | ✅ | Join on Company Unique ID where present; for contracts with no Tenderer ID, go through Tender ID into Flow 5 |
-| 56 | LTM work is public elsewhere: a logged-out LTM record on Flow 5, and the same tender's contract on Flow 4, though Flow 2 hides LTM tenders | ✅ one tender | Don't generalise "LTM is hidden" beyond Flow 2 |
+| 56 | LTM work is public elsewhere: a logged-out LTM record on Flow 5, and the same tender's contract on Flow 4, though Flow 2 hides LTM tenders. Confirmed widely by R8 | ✅ | Don't generalise "LTM is hidden" beyond Flow 2 |
 | 55 | **A detail page can have several layouts** at the same URL (three seen): Flow 4 older contracts have Contract No, tender counts and supplier location; newer ones have Tenderer ID and Beneficial Ownership | ✅ | One palette field maps from several labels; a missing label is empty, never a failure. Fail-loud must not fire on a known layout |
 | 51 | Detail data is the point of the tool (D25), and it's slow: PWD Flow 4 ≈ 59 h for every detail page at 3 s each | ✅ estimate | Show the estimate beside the checkerboard. Resume must be solid for runs lasting days |
+
+## What changes a detail page's format (R8, `recon/r8-format-study.md`)
+
+| # | Insight | Status | What the build must do |
+|---|---|---|---|
+| 57 | Flow 2: Nature, and for Services the notice kind (REOI, RFP, RFA), PPS for Physical Services; Status removes a little; amendments add a block | ✅ 223 pages | One tick per meaning; the profile maps label variants |
+| 58 | Flow 3: Nature, and Method for the RFQ family. Not year, budget or type | ✅ 69 pages, Services thin | Same |
+| 59 | Flow 4: contract date, with a mixed period Oct–Dec 2025. Not method | ✅ 280 pages | Read labels; never assume by date |
+| 60 | Flow 5: uniform, 28 labels. **Work Status doesn't change it.** Only a late-2025 ownership table | ✅ 103 pages | Simplest parser |
+| 61 | **Logged-out Flow 2 lists only 7 of 16 methods;** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing | ✅ | The D30 warning should cover more than LTM |
+| 62 | **Flows 4 and 5 list those methods logged out:** LTM 19,677 pages on Flow 4 | ✅ | For a contractor's journey, Flows 4 and 5 are complete where Flow 2 isn't |
+| 63 | Flow 2's Framework Agreement filter returns nothing for Yes or No; on Flow 4 it works | ✅ | Warn in the panel, or hide it there |
 
 ## Time and sprints (owner, D27)
 

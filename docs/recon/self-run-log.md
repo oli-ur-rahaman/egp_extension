@@ -36,6 +36,8 @@ For each flow and filter value, it shows the pages logged out and logged in, and
 | 1 | 2026-11-06 12:13 | home | logged out | Flow 2, test | 8 | Tool worked | Size limit reached as intended |
 | 2 | 2026-11-06 12:14–12:20 | home | logged out | Flows 2–5 | 74 | **Stopped early, tool fault** | Link went quiet; the tool exited with code 0. Fixed: a time limit on each call, reconnects, and a stated stop reason |
 | 3 | 2026-11-06 12:26–13:13 | home | logged out | Flows 2–5, resumed | 665 | **Stopped by its safety rule; tool fault on two flows** | Flows 2 and 4 complete. A Flow 5 search took 54 s, over the 20 s limit, and it stopped as designed. **Flows 3 and 5 opened 0 detail pages:** their links use single quotes, which the tool didn't accept. Their page counts stand; their samples are redone in run 4 |
-| 4 | 2026-11-06 13:30– | home | logged out | Flows 3 and 5 only | running, at most 400 | running | Waits 15 min first, for the portal's sake. 2 rows per list. Flow 5 single-factor samples use Tender Type eTenders, since All is the slow query |
+| 4 | 2026-11-06 13:30–13:51 | home | logged out | Flows 3 and 5 only | 282 | **FINISHED**, no link problems | Waited 15 min first, for the portal's sake. 2 rows per list. Flow 5 single-factor samples used Tender Type eTenders, since All is the slow query |
 
-**Deviation from the study plan:** the plan said at most 900 requests in a run. Each run holds to that, but runs 1–4 together come to about 1,150, because of the tool fault.
+**Deviation from the study plan:** the plan said at most 900 requests in a run. Each run holds to that, but runs 1–4 together came to 1,029, because of the tool fault.
+
+**Results:** `r8-format-study.md`.

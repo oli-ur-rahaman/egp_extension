@@ -851,6 +851,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8 | **R8 format study started, on the owner's request, run by Claude alone:** which factors change the detail-page layout on Flows 2-5. Read-only, logged out, about 3 s apart, at most 900 requests, stops itself on any block. | Plan in `docs/recon/r8-format-study.md`. Tool: `tools/recon/study.js`. |
 | 2026-11-06 | 1 | R8 | Owner asked for a self-run test log, to compare logged in with logged out later. **`docs/recon/self-run-log.md` and `tools/recon/study-compare.js` added;** `study.js` now takes `--state` and refuses a mismatch. | Current run continues on the earlier code; its results move to `recon/raw/study/logged-out/` when done. |
 | 2026-11-06 | 1 | R8 | Run 3 stopped on a 54 s Flow 5 response, as designed. Flows 2 and 4 complete. Flows 3 and 5 opened nothing, because of a quote bug in the tool; fixed. | Run 4 redoes them after a 15-minute rest. |
+| 2026-11-06 | 1 | R8, M7, M13 | **R8 format study done, logged out:** 675 pages, 1,029 requests. Flow 2 Nature and notice kind; Flow 3 Nature and RFQ method; Flow 4 contract date; Flow 5 uniform, Work Status no effect. **Logged-out Flow 2 hides 9 of 16 methods, not just LTM;** Flows 4 and 5 show them. | Results in `docs/recon/r8-format-study.md`. Awaiting the owner: checkerboard by meaning; warning wording; logged-in repeat. |
 
 **Milestone record**
 
@@ -891,7 +892,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Open owner decisions:** checkerboard by meaning (R8) · D30 warning wording, now 9 hidden methods · logged-in repeat of R8 · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
