@@ -370,6 +370,7 @@
       "additionalProperties": false,
       "properties": {
         "key": { "type": "string" },
+        "fallback": { "type": "string" },
         "confirmedByOwner": { "type": "boolean" },
         "note": { "type": "string" }
       }

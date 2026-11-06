@@ -112,6 +112,18 @@ describe("the owner's decisions", () => {
     expect(byId('budget_type').warnWhen.state).toBe('loggedIn');
   });
 
+  it('uses Tender ID as the unique ID wherever a page has one (D39)', () => {
+    expect(flows.tender_info.naturalKey.key).toBe('tender_id');
+    expect(flows.contract_info.naturalKey.key).toBe('tender_id');
+    expect(flows.experience_info.naturalKey.key).toBe('tender_id');
+    // Some Flow 5 records have no Tender ID, so they need their own ID or they would be lost.
+    expect(flows.experience_info.naturalKey.fallback).toBe('record_id');
+    // Flow 3 has no Tender ID to use: a plan comes before its tender.
+    const keys3 = flows.app_info.list.columns.flatMap((c) => c.parts.map((p) => p.key));
+    expect(keys3).not.toContain('tender_id');
+    expect(flows.app_info.naturalKey.key).toBe('package_id');
+  });
+
   it('uses 100 rows a page on every list', () => {
     for (const flow of Object.values(DETAIL_FLOWS)) expect(flow.list.request.defaultSize).toBe(100);
   });

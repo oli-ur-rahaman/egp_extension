@@ -20,6 +20,8 @@ The owner works from two PCs and syncs through GitHub. Anything needed to contin
 
 Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]` `[~]` `[x]` `[!]`) and add a line to §12 Progress log (date, week, task IDs, result, notes). This is how the other PC knows what happened.
 
+**Also update the owner's atlas in the same turn** (owner, 2026-11-07): the "Progress log" sheet of the private e-GP Portal Atlas artifact, https://claude.ai/artifact/NTUYHCyYNW4HLYavtYz27Y. Read it by URL with the Artifact tool, edit, and publish to that URL. It holds counts and labels only.
+
 ## Hard rules
 
 - No portal URL, CSS selector or column mapping outside `profiles/` and `tests/`. The `egp/no-site-knowledge` lint rule enforces it.
@@ -36,6 +38,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - **Detail-page data is the main purpose of the tool (D25),** not an extra. The two main uses of the output are analysing tenders by a department's PEs, and one contractor's whole journey (D24).
 - Flow 2 set the pattern for what the owner wants: panel filters chosen per flow, a checkerboard for notice data, and mandatory filters that keep a run a sensible size. Measure a run's size (`totalPages`) before agreeing a limit, and give the time estimate.
 - Recommend one option; don't just list them. Plain language, short messages. Say so plainly when a check failed or was skipped.
+- **Speak in what the owner sees on the page, with evidence they can check:** the page, the label, a tender ID to open. Read a real example before describing a field; never present a guess as fact.
 
 ## Recon traps (learned the hard way)
 

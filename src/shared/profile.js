@@ -162,7 +162,9 @@ export function checkConsistency(profile) {
     }
     const listKeys = (flow.list?.columns ?? []).flatMap((/** @type {any} */ c) => c.parts.map((/** @type {any} */ p) => p.key));
     problems.push(...duplicates(listKeys, 'list key', flowId));
-    if (flow.naturalKey && !listKeys.includes(flow.naturalKey.key)) problems.push(`${flowId}: naturalKey "${flow.naturalKey.key}" isn't a list key`);
+    for (const key of [flow.naturalKey?.key, flow.naturalKey?.fallback]) {
+      if (key && !listKeys.includes(key)) problems.push(`${flowId}: naturalKey "${key}" isn't a list key`);
+    }
 
     if (flow.detail) {
       const clusterIds = flow.detail.clusters.map((/** @type {any} */ c) => c.id);

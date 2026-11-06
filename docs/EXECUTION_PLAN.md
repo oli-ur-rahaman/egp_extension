@@ -352,7 +352,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 - **Manual (You):**
   - [ ] M1-MC1 R0–R6 completed together
   - [ ] M1-MC2 You read each recon note and confirm it matches the portal and the business meaning
-  - [ ] M1-MC3 You confirm the **natural key** columns per flow (Q6)
+  - [~] M1-MC3 You confirm the **natural key** columns per flow (Q6): Tender ID (D39); exceptions for Flows 3 and 5 await the owner
   - [ ] M1-MC4 You confirm Tender Info detail content (X3)
   - [ ] M1-MC5 You spot-check two sanitised fixtures and see no personal data
 - **Exit:** profile v1.0.0 committed; Q1–Q6 answered; mock server covers every P-n state.
@@ -859,6 +859,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8 | **PWD like-for-like done:** Flows 3, 4, 5 identical both ways, on all 106 filter values and 358 same-record pairs. Flow 2's gap (5,536 pages) equals the hidden methods. Budget Type on logged-in Flow 2 confirmed broken. | **Recon complete.** Awaiting the owner: build plan approval, D35. |
 | 2026-11-06 | 1 | R8, docs | **Owner approved `BUILD_PLAN.md` (D36) and either login state on Flows 3–5 (D35).** Owner asked for a visual summary of the recon before building: private artifact "e-GP Portal Atlas". Re-reading the data for it corrected one finding (Flow 4 shows 11 of 16 methods, Flow 5 shows 7, not all) and added insights 69–72. | **B1 waits for the owner's word after reading the atlas.** D33 wording flagged: TSTM, DC and CSO may be unused. |
 | 2026-11-06 | 1 | B1: M1-T01, T05, T06 | **Stage B1 built:** `profiles/schema.json`, `profiles/eprocure.gov.bd.json` v1.0.0 (5 flows, 54 panel filters, 24 clusters, 173 detail fields, every label from 1,767 study pages accounted for), `src/shared/profile.js` (3-layer merge, own schema check, consistency check), `tools/recon/label-census.js`, 46 new tests. **D37** warning wording. **D38: Flow 4 has 15 filters; Category is commented out of the page (E22).** Selectors checked once against saved pages; full proof is M1-AT5 in B2. | **B1's gate waits for the owner:** cluster and column lists in the atlas, sheet 11. Three questions there. Then B2. |
+| 2026-11-07 | 1 | B1, M1-MC3 | **D39: Tender ID is the unique ID** (owner). Checked on saved rows: no repeats on Flows 2, 4, 5. Flow 3 has none, and 24 of 284 Flow 5 rows have none: exceptions proposed. **D38 confirmed by the owner.** Query table: real title read, 4 public examples all empty. Atlas now carries a progress log (owner's request). | B1's gate still waits for 4 answers. Then B2. |
 
 **Milestone record**
 
@@ -902,7 +903,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Open owner decisions:** Q7 secret code, by Week 9 · the 4 answers on atlas sheet 11: Flow 3 Package ID, Flow 5 rows with no Tender ID, Queries and Replies table, official's name and contact details.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

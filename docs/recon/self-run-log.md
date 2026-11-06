@@ -47,6 +47,8 @@ For each flow and filter value, it shows the pages logged out and logged in, and
 | 9 | 2026-11-06 15:31–15:36 | home | logged in | Flow 5 | 84 | **FINISHED**, no link problems | All 169 filter values complete. Compared in `r8-format-study.md` |
 | 10 | 2026-11-06 15:51–17:12 | home | logged out, PWD only | Flows 2–5 | 793 | **FINISHED**, no link problems | Owner's request. Claude pressed Logout first. 5 s pace. Results in `recon/raw/study/logged-out-pwd/`. Compare: `study-compare.js logged-out-pwd logged-in`. Written up in `r8-format-study.md` |
 
+| 11 | 2026-11-07 | home | logged out | Flow 2, 4 public notices | 5 | **Done** | Owner asked for evidence on the Query table. One notice read twice (first read returned nothing to the script). 5 s apart on the last three. No block |
+
 **Deviation from the study plan:** the plan said at most 900 requests in a run. Each run holds to that, but runs 1–4 together came to 1,029, because of the tool fault.
 
 **Total, runs 1–10:** about 2,740 requests.

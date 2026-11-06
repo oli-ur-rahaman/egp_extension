@@ -242,7 +242,7 @@
           }
         ]
       },
-      "naturalKey": { "key": "tender_id", "confirmedByOwner": false, "note": "Owner: tender IDs are unique in e-GP. M1-MC3 still to tick." },
+      "naturalKey": { "key": "tender_id", "confirmedByOwner": true, "note": "D39. 1,789 saved rows, no repeats." },
       "detail": {
         "open": {
           "method": "POST",
@@ -331,7 +331,7 @@
         "ignored": [
           { "reason": "personal", "note": "People's names and contact details (D17, r8).", "labels": ["Name of Official Inviting Tender/Proposal", "Name of Official Inviting", "Name of Official Inviting REOI", "Name of Official Inviting RFP", "Contact details of Official Inviting Tender/Proposal", "Contact details of Official Inviting", "Contact details of Official Inviting REOI", "Contact details of Official Inviting RFP", "PE Name", "Designation"] },
           { "reason": "attachments", "note": "Amendment files. Attachments are out of scope. Action appears logged in only.", "labels": ["File Name", "File Description", "File Size (in KB)", "Action"] },
-          { "reason": "notInScopeYet", "note": "Pre-tender questions and answers: in no cluster yet. Raised with the owner (D31).", "labels": ["Query", "Response"] },
+          { "reason": "notInScopeYet", "note": "The portal's 'Pre - Tender/Proposal Meeting all Queries and Replies' table. On 8 of 573 pages; the 4 opened all said 'No Record Found.' Awaiting the owner.", "labels": ["Query", "Response"] },
           { "reason": "structure", "labels": ["S. No."] }
         ]
       }
@@ -415,7 +415,7 @@
           }
         ]
       },
-      "naturalKey": { "key": "package_id", "confirmedByOwner": false, "note": "APP ID isn't unique: one APP has many packages. M1-MC3 still to tick." },
+      "naturalKey": { "key": "package_id", "confirmedByOwner": false, "note": "This page has no Tender ID: a plan comes before its tender. APP ID isn't unique either. Awaiting the owner (D39)." },
       "detail": {
         "open": {
           "method": "GET",
@@ -576,7 +576,7 @@
           { "cell": 8, "header": "Value (Cr. BDT)", "split": "none", "parts": [{ "key": "value_crore", "header": "Value (Crore BDT)", "index": 0, "type": "money", "unit": "Crore BDT" }] }
         ]
       },
-      "naturalKey": { "key": "contract_id", "confirmedByOwner": false, "note": "Proposed: pkgLotId from the link. Tender ID may repeat. M1-MC3 still to tick." },
+      "naturalKey": { "key": "tender_id", "confirmedByOwner": true, "note": "D39. 211 saved rows, no repeats. Two rows sharing an ID are both kept and flagged, never dropped." },
       "detail": {
         "open": {
           "method": "GET",
@@ -738,9 +738,10 @@
           },
           {
             "cell": 4, "header": "Tender/Proposal ID, Ref No., Title & Publishing Date", "split": "br", "linkSelector": "a[href*=\"VieweCmsDetails\"]",
-            "note": "The first line holds ID and Ref No. together. Exact splitting is settled against saved pages in B5.",
+            "note": "The first line holds ID and Ref No. together, split at the comma. The ID can be '-' or absent. Exact splitting is settled against saved pages in B5.",
             "parts": [
-              { "key": "tender_id_ref", "header": "Tender/Proposal ID and Ref No.", "index": 0, "type": "id" },
+              { "key": "tender_id", "header": "Tender/Proposal ID", "index": "0:beforeComma", "type": "id" },
+              { "key": "reference_no", "header": "Ref No.", "index": "0:afterComma", "type": "id" },
               { "key": "title", "header": "Title", "index": 1, "type": "text" },
               { "key": "publishing_date", "header": "Publishing Date", "index": 2, "type": "date" },
               { "key": "record_id", "header": "Record ID", "index": "link:Id", "type": "id" }
@@ -760,7 +761,7 @@
           { "cell": 10, "header": "Work Status", "split": "none", "parts": [{ "key": "work_status", "header": "Work Status", "index": 0, "type": "text" }] }
         ]
       },
-      "naturalKey": { "key": "record_id", "confirmedByOwner": false, "note": "Proposed: Id from the link. M1-MC3 still to tick." },
+      "naturalKey": { "key": "tender_id", "fallback": "record_id", "confirmedByOwner": true, "note": "D39. 260 saved rows with an ID, no repeats. 24 of 284 rows have no Tender ID, so they use the record's own ID; the fallback awaits the owner." },
       "detail": {
         "open": {
           "method": "GET",
@@ -780,8 +781,8 @@
         ],
         "fields": [
           { "id": "certificate_no_detail", "header": "Experience Certificate No", "cluster": "certificate", "type": "id", "sameAs": "certificate_no", "prefer": "list", "labels": ["Work Experience Certificate No"] },
-          { "id": "tender_id", "header": "Tender ID", "cluster": "certificate", "type": "id", "labels": ["Tender ID"] },
-          { "id": "tender_ref", "header": "Tender Ref No", "cluster": "certificate", "type": "id", "labels": ["Tender Ref No"] },
+          { "id": "tender_id_detail", "header": "Tender/Proposal ID", "cluster": "certificate", "type": "id", "sameAs": "tender_id", "prefer": "list", "labels": ["Tender ID"] },
+          { "id": "tender_ref", "header": "Ref No.", "cluster": "certificate", "type": "id", "sameAs": "reference_no", "prefer": "detail", "labels": ["Tender Ref No"] },
           { "id": "publication_date", "header": "Tender Publication Date", "cluster": "certificate", "type": "date", "sameAs": "publishing_date", "prefer": "list", "labels": ["Tender Publication Date"] },
           { "id": "tender_type", "header": "Tender Type", "cluster": "certificate", "type": "text", "labels": ["Tender Type"] },
 

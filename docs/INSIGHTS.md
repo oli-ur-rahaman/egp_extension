@@ -49,6 +49,9 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 73 | **A control can exist only inside an HTML comment.** Flow 4 Category looked real from reading the page's source. The check that found it: test each selector against the saved page | ✅ | Prove selectors on saved pages (M1-AT5), not by reading source |
 | 74 | **"PE Name" means different things.** On Flows 2 and 4, Procuring Entity Name is the office (on Flow 2 it matches the list's office 3 of 3 times, and no sample shows a personal title). On Flow 3, Procuring Entity, and on Flow 5, PE Name, hold a person's name | ✅ small sample | Fields on 2 and 4; left out on 3 and 5 |
 | 75 | Flows 4 and 5 keep a header row inside the results table body | ✅ | Find rows by their key, never by position |
+| 76 | **Tender ID didn't repeat in saved rows:** Flow 2 1,789, Flow 4 211, Flow 5 260. **Flow 3 has no Tender ID, and 24 of 284 Flow 5 rows have none:** their cell starts with `-` or has no ID | ✅ small samples | Tender ID as the key (D39), with those exceptions. Test on full sweeps in B5 |
+| 77 | **The Query and Response table is titled "Pre – Tender/Proposal Meeting all Queries and Replies".** On 8 of 573 sampled pages. All 4 public ones opened say "No Record Found." No filled one has been seen | ✅ | Left out unless the owner wants it |
+| 78 | **The inviting official's block sits at the end of the notice:** Name, Designation, Address, Contact details. Present on most notices (474 of 573 with the Tender/Proposal wording) | ✅ | Name and contact details left out as personal |
 
 ## Time and sprints (owner, D27)
 
