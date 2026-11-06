@@ -11,7 +11,7 @@
 | ID | Where | What's wrong | Evidence | Deliberate? | How to check | What the extension does | If fixed | Status · last checked |
 |---|---|---|---|---|---|---|---|---|
 | **E1** | Flow 2 Framework Agreement | Yes and No both return nothing, in both login states, though framework tenders exist | 0 pages each way; same filter on Flow 4: Yes 161, No 44,642 | No | Flow 2 search with Framework = Yes | Warns beside the filter | Remove the warning; the filter becomes usable | 🔴 2026-11-06 |
-| **E2** | Flow 2 Budget Type, **logged in** | Every value returns the unfiltered total | PWD: Development, Revenue, Own Fund all 8,913 pages. Logged out it works | No | Logged in, PWD, Budget = Own Fund: is it fewer than the total? | Warns when logged in | Remove the warning | 🔴 2026-11-06 |
+| **E2** | Flow 2 Budget Type, **logged in** | Every value returns the unfiltered total | PWD logged in: all three 8,913 pages. PWD logged out: 780, 2,562, 36 | No | Logged in, PWD, Budget = Own Fund: is it fewer than the total? | Warns when logged in | Remove the warning | 🔴 2026-11-06 |
 | **E3** | Flow 1 Programme, Project | Choosing one often returns nothing | Owner's report; all-zero result in R2 | No | Flow 1, one office, one Programme with known work | Hides both filters (owner's decision) | Consider showing them | 🔴 2026-11-04 |
 | **E4** | Flow 1 Quarter | The option "Q2 and Q3 and Q4" has a typo in its code, so it sends its text and not a date range | Page code, R2 | No | Read the option's value | Quarter is hidden and left as the page has it | Could offer Quarter | 🔴 2026-11-04 |
 | **E5** | Flow 1 PE Office | Changing it doesn't refresh the Project list, which depends on it | Page code, R2 | No | Change office; does a request fire? | Project is hidden | Could offer Project | 🔴 2026-11-04 |
@@ -20,7 +20,7 @@
 
 | ID | Where | What's wrong | Evidence | Deliberate? | How to check | What the extension does | If fixed | Status · last checked |
 |---|---|---|---|---|---|---|---|---|
-| **E6** | Flow 2, logged out | **Lists only 7 of 16 methods.** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing, though the Method dropdown offers them, with no message | R8; logged in, PWD has LTM 5,022, RFQU 465, RFQ 43, RFQL 8, DPM 2 pages | **Hiding: possibly. Offering them with no message: no** | Logged out, Method = LTM | Warns at the start of the flow (D33) | Remove or narrow the warning; logged-out runs become complete | 🔴 2026-11-06 |
+| **E6** | Flow 2, logged out | **Lists only 7 of 16 methods.** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing, though the Method dropdown offers them, with no message | R8, like for like: PWD 3,377 pages logged out, 8,913 logged in. The gap is LTM 5,022, RFQU 465, RFQ 43, RFQL 8, DPM 2 | **Hiding: possibly. Offering them with no message: no** | Logged out, Method = LTM | Warns at the start of the flow (D33) | Remove or narrow the warning; logged-out runs become complete | 🔴 2026-11-06 |
 | **E7** | Flow 2 notice | A cancelled tender's notice can refuse with "This tender is not exists or You are un-authorized" | 1 of 14 cancelled sampled | Possibly | Reopen a cancelled notice | Records it on that row; continues | Fields fill normally | 🔴 2026-11-06 |
 
 ## Lists and paging

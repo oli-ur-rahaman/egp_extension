@@ -129,7 +129,28 @@ Flow 1 has no detail page, so no checkerboard.
 - **A logged-out notice can be refused:** one cancelled tender returned only "This tender is not exists or You are un-authorized to access information". So that's a normal per-row outcome, and must not stop a run.
 - Framework Agreement returns 0 for Yes and No logged in too, though framework tenders exist. So that filter is broken on Flow 2 either way.
 
-**Logged-out re-run for PWD:** first skipped, then run at the owner's request (`self-run-log.md`, run 10). Results follow when done.
+### Like for like: PWD logged out against PWD logged in
+
+Run at the owner's request (`self-run-log.md`, run 10): the same 169 filter values, at a 5 s pace.
+
+| Flow | Same page count | Same record, same labels | Verdict |
+|---|---|---|---|
+| **2** | 37 of 63 | 49 of 51 | **Differs, because of hidden methods** |
+| **3** | **19 of 19** | **51 of 51** | No difference |
+| **4** | **43 of 43** | **236 of 236** | No difference |
+| **5** | **44 of 44** | **71 of 71** | No difference |
+
+**So logging in changes nothing on Flows 3, 4 and 5, for PWD.** The stronger evidence supports either login state (D35).
+
+**On Flow 2, the whole gap is the hidden methods.** PWD total: 3,377 pages logged out, 8,913 logged in, so a gap of 5,536. The hidden methods logged in: LTM 5,022 + RFQU 465 + RFQ 43 + RFQL 8 + DPM 2 = 5,540. That accounts for it, within rounding. OTM, OSTETM and IC have the same counts both ways.
+
+**Budget Type on logged-in Flow 2 is confirmed broken:** logged out, PWD gives Development 780, Revenue 2,562, Own Fund 36. Logged in, all three give the full 8,913.
+
+**One small difference within a record:** 2 of 51 Flow 2 notices show an extra **Action** column logged in. It's a table heading, on OSTETM and LTM notices. What it holds isn't read yet. It's the only same-record difference in 409 comparisons.
+
+**"Being processed" notices** have a status row in about a third of cases either way (8 of 29, 15 of 46), so login doesn't explain that.
+
+**No refused pages** in this run, so the "un-authorized" notice remains a rare case.
 
 ## Not yet known
 
