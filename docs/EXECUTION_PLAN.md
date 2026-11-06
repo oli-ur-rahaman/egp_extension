@@ -848,6 +848,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | §13 3a, M7 | **Flow 4 detail has two layouts:** older contracts lack Tenderer ID and have other fields. Completed Flow 5 work is on Flow 4 (tender 907857, same value). Completed Flow 5 detail: same 28 labels. | Still to answer: Tenderer ID = Company Unique ID, on a newer contract; ongoing work on Flow 4. |
 | 2026-11-06 | 1 | §13 3a, M10 | **D31:** columns follow the latest layout; older-only fields are extra columns. A third contract layout found, so date doesn't predict it. Flow 5 logged out lists an LTM record. | Still to answer: Tenderer ID = Company Unique ID; ongoing work on Flow 4. |
 | 2026-11-06 | 1 | §13 3a, M10 | **Pre-build check finished.** Tenderer ID = Company Unique ID. Ongoing and LTM contracts are on Flow 4. Flow 4 demo rebuilt under D31: latest layout + 10 `Older:` columns. | **Recon stops. Next: §13 step 4, build.** |
+| 2026-11-06 | 1 | R8 | **R8 format study started, on the owner's request, run by Claude alone:** which factors change the detail-page layout on Flows 2-5. Read-only, logged out, about 3 s apart, at most 900 requests, stops itself on any block. | Plan in `docs/recon/r8-format-study.md`. Tool: `tools/recon/study.js`. |
 
 **Milestone record**
 
