@@ -826,6 +826,9 @@ egp_ext/
 | D29 | **LTM tenders are collected and exported** on Flow 2 when the user is logged in. They can only be reached that way, for the account's own department. Rows stay marked by method and login state | Owner, 2026-11-06, under D28. These tenders are not listed publicly |
 | D30 | **Refines D23: a logged-out Flow 2 begins with a choice, at the very beginning of the flow, before any filter is set:** "This page won't capture LTM tenders. Logging in can give both LTM and OTM, for your own department. Proceed?" Proceed continues; otherwise the user logs in. The choice is the user's; the tool only informs | Owner, 2026-11-06 |
 | D31 | **Template columns follow the portal's latest layout and wording.** Fields found only on older layouts become extra columns, or merge into an existing column where the meaning is the same. Anything that doesn't fit is raised with the owner | Owner, 2026-11-06 |
+| D32 | **The checkerboard is 5–6 clusters per flow, one tick each,** because opening a page costs the time, not the number of fields read. Clusters and their fields are in docs/recon/r8-format-study.md | Owner, 2026-11-06. Refines D25 |
+| D33 | **Warning wording, replacing D30's:** "This page won't list tenders by LTM and 8 other methods. Logging in may show more, for your own department. Proceed?" Shown at the very beginning of a logged-out Flow 2 | Owner, 2026-11-06 |
+| D34 | **Order of work: finish the logged-in study, then write a full build plan, then build.** Departs from the plan's schedule: the **M1 demo of Thu 12 Nov is at risk** | Owner, 2026-11-06, under D28 |
 
 ### Open — to resolve during Phase 1
 

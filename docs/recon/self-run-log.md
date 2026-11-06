@@ -19,6 +19,8 @@ Then, once the owner has logged in:
 ```
 node tools/recon/study.js --state logged-in --department 21 --limit 900
 ```
+**The owner logs in, not Claude (2026-11-06).** The owner offered their credentials, with full permission; Claude declined, because a password read here would end up in session records. The tool re-checks the session every 30 requests, and on a lost session it stops and resumes after the owner logs in again.
+
 `--department` must be the account's **own** department. On Flow 2, a login locks the Department, and the tool won't send anything else (see "Not to be tested" in `r7-logged-in-audit.md`). The tool checks the page's login state first and refuses to run if it doesn't match `--state`.
 
 **Compare:**

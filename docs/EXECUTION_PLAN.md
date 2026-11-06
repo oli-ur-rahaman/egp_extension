@@ -852,6 +852,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8 | Owner asked for a self-run test log, to compare logged in with logged out later. **`docs/recon/self-run-log.md` and `tools/recon/study-compare.js` added;** `study.js` now takes `--state` and refuses a mismatch. | Current run continues on the earlier code; its results move to `recon/raw/study/logged-out/` when done. |
 | 2026-11-06 | 1 | R8 | Run 3 stopped on a 54 s Flow 5 response, as designed. Flows 2 and 4 complete. Flows 3 and 5 opened nothing, because of a quote bug in the tool; fixed. | Run 4 redoes them after a 15-minute rest. |
 | 2026-11-06 | 1 | R8, M7, M13 | **R8 format study done, logged out:** 675 pages, 1,029 requests. Flow 2 Nature and notice kind; Flow 3 Nature and RFQ method; Flow 4 contract date; Flow 5 uniform, Work Status no effect. **Logged-out Flow 2 hides 9 of 16 methods, not just LTM;** Flows 4 and 5 show them. | Results in `docs/recon/r8-format-study.md`. Awaiting the owner: checkerboard by meaning; warning wording; logged-in repeat. |
+| 2026-11-06 | 1 | R8, M13 | **D32:** checkerboard of 5–6 clusters per flow. **D33:** Flow 2 warning wording. **D34:** logged-in study, then a build plan, then build; M1 demo at risk. `study.js` now re-checks a logged-in session every 30 requests. | Owner logs in; Claude runs the study. |
 
 **Milestone record**
 
@@ -880,7 +881,8 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
 | 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **D29: LTM tenders are collected and exported.** | done | |
 | 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
-| 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
+| 3b | **R8 logged in** (D34): the owner logs in; Claude runs `study.js --state logged-in --department 21`, and also a logged-out run for the same department, then `study-compare.js`. **Then write a full build plan** | owner logs in; Claude runs | ~1 h |
+| 4 | **Then build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
 
@@ -892,7 +894,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** checkerboard by meaning (R8) · D30 warning wording, now 9 hidden methods · logged-in repeat of R8 · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Open owner decisions:** Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

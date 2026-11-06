@@ -86,9 +86,24 @@ Within the new layout, the completion date is labelled either "Expected" or "Pro
 
 ### Design consequence: the checkerboard
 
-The fields shouldn't be a list of page labels: there would be about 100 on Flow 2 alone. **Proposal, for the owner's decision:** one tick per **meaning**, and the Site Profile maps every label variant to it. So "Closing Date" reads Tender/Proposal Closing, EOI Closing or plain Closing. A tick that doesn't apply to a record leaves that cell empty, with no error. Fields that exist only for some records say so beside the tick: "Services only". A label the tool has never seen doesn't stop the run and doesn't go missing: it's listed in the About sheet.
+The fields shouldn't be a list of page labels: there would be about 100 on Flow 2 alone. **One tick per cluster (D32, below),** and the Site Profile maps every label variant to its field. So "Closing Date" reads Tender/Proposal Closing, EOI Closing or plain Closing. A tick that doesn't apply to a record leaves that cell empty, with no error. Fields that exist only for some records say so beside the tick: "Services only". A label the tool has never seen doesn't stop the run and doesn't go missing: it's listed in the About sheet.
 
 **The filters already tell the panel what to expect:** if the user picks Nature = Works on Flow 2, it can hide Services-only ticks.
+
+### Decided: the checkerboard is 5–6 clusters (D32)
+
+**One tick per cluster, not per field** (owner, 2026-11-06). Opening a page is what costs time, whether 1 field or 100 are read, so fine-grained ticks would save nothing. Each cluster reads all its label variants. A field that doesn't apply to a record stays empty. An unknown label is listed on the About sheet.
+
+| Flow | Cluster 1 | Cluster 2 | Cluster 3 | Cluster 4 | Cluster 5 | Cluster 6 |
+|---|---|---|---|---|---|---|
+| **2 Notice** | **Identity:** App ID, Event Type, Invitation for, Reference/REOI/RFA/PPS No., Amendments | **Organisation:** Ministry, Division, Organization, PE Name, Code, District | **Procurement and funding:** Nature, Type, Method, Contract Type, Budget, Source of Funds, Development Partner, Project, Package, Category | **Dates:** publication, document selling, pre-tender meeting, closing, opening, security, validity | **Terms and money:** eligibility, brief description, experience, foreign firm, evaluation type, document and payment terms, prices, security | **Lot or service, and official:** lot or phasing of service, location, start and completion, inviting official's designation and address |
+| **3 Package** | **Identity:** APP ID, APP Code, Financial Year, Advance Procurement | **Organisation:** Ministry, Division, Organization, PE Office and Code, District | **Procurement and funding:** Nature, Type, Method, Budget, Source of Fund, Partners, Project, Approving Authority, Emergency, PQ, Service Type | **Package:** Package No., Description, Estimated Cost, Category, Package Type | **Lot:** Lot No., Description, Qty, Unit, Estimated Cost | **Planned dates:** Tender, RFQ, REOI and RFP date blocks, Total Time to Signing |
+| **4 Contract** | **Identity:** Award for, Tender ID, Ref. No., Package No. and Name, Contract No, Brief Description | **Organisation:** Ministry, Agency, PE Name, Code, District | **Procurement and funding:** Method, Budget and Source, Partner, Project | **Dates:** advertisement, award, signing, proposed start, completion | **Contract and contractor:** Price, Currency, Operator or Supplier name, Tenderer ID, addresses, delivery location | **Competition and compliance:** tenders Sold, Received, Responsive; Security and Signing in due time; Authorised Officer's designation |
+| **5 Experience** | **Certificate and tender:** Certificate No, Tender ID, Ref No, Publication, Tender Type | **Organisation:** Ministry, Organization, PE Office | **Work:** Package, Nature, Method, Category, Name of Work | **Contract:** Contract No, Start, End, Value | **Progress:** Status, Physical and Financial Progress, and their dates | **Company and comments:** Company Name, Is JVCA, Remarks, Comments By PE |
+
+Left out of every cluster, as already decided: people's names in the PE Name fields (D17), and Beneficial Ownership (D19). Officials' names stay out unless the owner asks.
+
+Flow 1 has no detail page, so no checkerboard.
 
 ## Not yet known
 

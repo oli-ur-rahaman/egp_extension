@@ -210,10 +210,21 @@ async function main() {
   }
 
   const flows = [flow2(), flow3(), flow4(), flow5()].filter((f) => ONLY.includes(f.id));
+  // A session can end mid-run, and public searches still answer normally afterwards, which would quietly mix
+  // logged-out data into a logged-in run. So a logged-in run re-checks every 30 requests, and stops if it has ended.
+  let lastCheck = 0;
+  async function checkSession() {
+    if (STATE !== 'logged-in' || used - lastCheck < 30) return;
+    lastCheck = used;
+    const r = await request({ method: 'GET', url: '/resources/common/AllTenders.jsp?h=t' });
+    if (r && !/Logout\.jsp/.test(r.text)) await stop('session ended. Log in again and rerun: it resumes where it stopped');
+  }
+
   for (const f of flows) {
     for (const [name, make] of f.strata) {
       const id = `${f.id}|${name}`;
       if (doneStrata.has(id)) continue;
+      await checkSession();
       const first = await request({ method: 'POST', url: f.list, body: make(1) });
       if (!first) continue;
       const tp = totalPages(first.text) || (/noRecordFound/.test(first.text) ? 0 : 1);
