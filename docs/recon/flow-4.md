@@ -97,7 +97,9 @@
 | Name, Location of Supplier/Contractor/Consultant; Location of Delivery/Works/Service | Name of the Economic Operator |
 | Was the Performance Security provided in due time? Was the Contract Signed in due time? | |
 
-So the palette needs one field mapped from several labels, and "Tenderer ID" can be empty on older contracts. The point at which the layout changes is unknown.
+So the palette needs one field mapped from several labels, and "Tenderer ID" can be empty on older contracts.
+
+**The split isn't clean by date.** Tender 1149044, signed 05-Jan-2026, has the older fields **and** the Beneficial Ownership table, but no Tenderer ID: a third variant. Date alone doesn't predict the layout, so the parser reads whatever labels are present. **D31:** template columns follow the latest layout; older-only fields become extra columns.
 
 **D21 applies here:** an entry in Contract Award to lifts the Department and date requirements (owner, 2026-11-05). Broad-word limits are in `flow-5.md`.
 

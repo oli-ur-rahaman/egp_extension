@@ -825,6 +825,7 @@ egp_ext/
 | D28 | **The owner holds ToR authority:** the client has delegated the decision, and what the owner says applies. **Claude warns the owner of every deviation from the ToR, Proposal or plan, when it happens;** the owner decides, and it is recorded here. No approval is sought elsewhere | Owner, 2026-11-06 |
 | D29 | **LTM tenders are collected and exported** on Flow 2 when the user is logged in. They can only be reached that way, for the account's own department. Rows stay marked by method and login state | Owner, 2026-11-06, under D28. These tenders are not listed publicly |
 | D30 | **Refines D23: a logged-out Flow 2 begins with a choice, at the very beginning of the flow, before any filter is set:** "This page won't capture LTM tenders. Logging in can give both LTM and OTM, for your own department. Proceed?" Proceed continues; otherwise the user logs in. The choice is the user's; the tool only informs | Owner, 2026-11-06 |
+| D31 | **Template columns follow the portal's latest layout and wording.** Fields found only on older layouts become extra columns, or merge into an existing column where the meaning is the same. Anything that doesn't fit is raised with the owner | Owner, 2026-11-06 |
 
 ### Open — to resolve during Phase 1
 
