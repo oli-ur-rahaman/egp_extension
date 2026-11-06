@@ -6,9 +6,25 @@ import { loadProfile } from '../shared/profile.js';
 
 const startedAt = Date.now();
 
+// D43: the panel belongs to the tab where the user clicked the icon. It's off everywhere else, including new tabs,
+// and stays on that tab as the user moves between pages in it.
+const PANEL_PATH = chrome.runtime.getManifest().side_panel?.default_path ?? '';
+
 chrome.sidePanel
-  .setPanelBehavior({ openPanelOnActionClick: true })
+  .setPanelBehavior({ openPanelOnActionClick: false })
   .catch((err) => console.error('[sw] setPanelBehavior failed', err));
+chrome.sidePanel
+  .setOptions({ enabled: false })
+  .catch((err) => console.error('[sw] setOptions failed', err));
+
+chrome.action.onClicked.addListener((tab) => {
+  if (tab.id === undefined) return;
+  // Both calls start within the click: Chrome only lets a panel open from a user's gesture, so neither may wait for the other.
+  chrome.sidePanel
+    .setOptions({ tabId: tab.id, path: PANEL_PATH, enabled: true })
+    .catch((err) => console.error('[sw] setOptions failed', err));
+  chrome.sidePanel.open({ tabId: tab.id }).catch((err) => console.error('[sw] open failed', err));
+});
 
 /** @type {Promise<any> | null} */
 let profilePromise = null;

@@ -59,7 +59,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - Never open `project_scope/id and pass.txt`.
 - Run `npm run verify` before every commit, not just lint.
 - Shell: backticks inside a double-quoted `node -e` or `sed` string run as commands, and regex backslashes get mangled. Write helper scripts to the scratchpad with the Write tool and pass the repo as the working directory. `require()` resolves relative to the script, so read files with `fs` and `process.cwd()`.
-- `tools/launch-chrome.ps1 -WithExtension` relies on `--load-extension`, which regular Chrome is believed to have removed in version 137. Untested; if the icon doesn't appear, load `dist/` once via `chrome://extensions`.
+- `tools/launch-chrome.ps1 -WithExtension` doesn't load the extension: tested on Chrome 156, the flag is ignored. Load `dist/` once via `chrome://extensions` (Developer mode, Load unpacked). After a rebuild, press the extension's reload button there.
 
 ## Layout and commands
 
