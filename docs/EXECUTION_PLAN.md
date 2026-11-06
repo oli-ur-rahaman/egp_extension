@@ -854,6 +854,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8, M7, M13 | **R8 format study done, logged out:** 675 pages, 1,029 requests. Flow 2 Nature and notice kind; Flow 3 Nature and RFQ method; Flow 4 contract date; Flow 5 uniform, Work Status no effect. **Logged-out Flow 2 hides 9 of 16 methods, not just LTM;** Flows 4 and 5 show them. | Results in `docs/recon/r8-format-study.md`. Awaiting the owner: checkerboard by meaning; warning wording; logged-in repeat. |
 | 2026-11-06 | 1 | R8, M13 | **D32:** checkerboard of 5–6 clusters per flow. **D33:** Flow 2 warning wording. **D34:** logged-in study, then a build plan, then build; M1 demo at risk. `study.js` now re-checks a logged-in session every 30 requests. | Owner logs in; Claude runs the study. |
 | 2026-11-06 | 1 | R8, M2, M7 | Logged-in run refused at the start. **Opening a portal page directly in a new tab appears to have ended the owner's session.** Tool now uses the owner's own tab. | Owner logs in again and opens eTenders Advanced Search. |
+| 2026-11-06 | 1 | R8, all | **R8 logged in done:** login changes which records you reach, not a page's fields; new RFQ and framework notice layouts; Budget Type filter does nothing on logged-in Flow 2. **`docs/BUILD_PLAN.md` written**, stages B1–B11, gates not dates. | Awaiting the owner's approval of the plan, then B1. |
 
 **Milestone record**
 
@@ -882,8 +883,9 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
 | 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **D29: LTM tenders are collected and exported.** | done | |
 | 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
-| 3b | **R8 logged in** (D34): the owner logs in; Claude runs `study.js --state logged-in --department 21`, and also a logged-out run for the same department, then `study-compare.js`. **Then write a full build plan** | owner logs in; Claude runs | ~1 h |
-| 4 | **Then build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
+| 3b | [x] **R8 logged in done** (D34). The logged-out PWD re-run was skipped as not worth about 1,000 requests | done | |
+| 3c | **Owner approves `docs/BUILD_PLAN.md`**, which now governs the build order | owner | |
+| 4 | **Then build, stage B1:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
 

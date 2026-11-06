@@ -1,7 +1,7 @@
 # Recon R8 — What changes the format of the new-tab pages?
 
 **Asked by the owner, 2026-11-06:** the detail pages opened from Flows 2–5 aren't uniform. Which filter options and row attributes change their format, on all four flows? The checkerboard (D25) and the template (D31) depend on the answer. The owner handed this study to Claude to run alone.
-**Status:** [x] done, logged out. Results below. A logged-in repeat is optional.
+**Status:** [x] done, logged out and logged in. Results below.
 
 ## Ground rules
 
@@ -105,7 +105,32 @@ Left out of every cluster, as already decided: people's names in the PE Name fie
 
 Flow 1 has no detail page, so no checkerboard.
 
+## Results, logged in (2026-11-06, PWD account, Department 21)
+
+**Sampled:** all 169 filter values, 560 detail pages. Same filters and pace as logged out. Two network failures during power cuts stopped it safely; it resumed each time, and the session survived.
+
+**Login doesn't change a page's fields: it changes which records you can reach.** The same record seen both ways had identical labels (10 of 10: Flow 2 3, Flow 3 2, Flow 4 5).
+
+| Flow | Finding |
+|---|---|
+| **2** | Login reveals methods hidden from the public, for PWD, in pages at size 20: **LTM 5,022, RFQU 465, RFQ 43, RFQL 8, DPM 2**. OTM is 3,373. TSTM, DC, SSS and CSO are 0, but PWD may simply have none, so this doesn't say whether login reveals them |
+| **3, 4, 5** | No new kinds of field except rare ones below. Earlier same-search counts matched (`r7-logged-in-audit.md`) |
+
+**New layouts, seen only because the login reached them:**
+
+- **RFQ notices** (34 pages; RFQ, RFQU, RFQL): RFQ No., RFQ Publication, and plain Closing, Opening and Document labels. A fifth notice kind.
+- **Framework notices** (Goods (Framework Agreement), LTM): a **List of PE Offices for Framework Contract** table (Office Name, PE Name, Designation, Lead Office). On Flows 2 and 3.
+- **Flow 5 JVCA records** (1 page): Role In JVCA, Lead Partner Share (%), Amount.
+- Not seen logged in only because PWD has few of them: REOI and RFP. Those labels are logged-out-only for that reason, **not** because of login.
+
+**Other findings:**
+
+- **On Flow 2 logged in, the Budget Type filter appears to do nothing:** Development, Revenue and Own Fund all give 8,913 pages, the unfiltered total. Logged out it works (12,897, 15,911, 3,160). The tool sends it the same way. Warn in the panel.
+- **A logged-out notice can be refused:** one cancelled tender returned only "This tender is not exists or You are un-authorized to access information". So that's a normal per-row outcome, and must not stop a run.
+- Framework Agreement returns 0 for Yes and No logged in too, though framework tenders exist. So that filter is broken on Flow 2 either way.
+
+**Not done:** the logged-out re-run for PWD. It would only sharpen page counts, and the same-search audit already showed Flow 2's gap and the others' equality. Skipped to save the portal about 1,000 requests.
+
 ## Not yet known
 
-- Whether a login changes any of this. Repeat the study logged in (`self-run-log.md`).
-- Whether logging in reveals all 9 hidden methods on Flow 2. One earlier logged-in recording held LTM and RFQU.
+- Whether login reveals TSTM, DC, SSS and CSO.

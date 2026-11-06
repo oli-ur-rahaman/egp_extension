@@ -38,6 +38,11 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 62 | **Flows 4 and 5 list those methods logged out:** LTM 19,677 pages on Flow 4 | ✅ | For a contractor's journey, Flows 4 and 5 are complete where Flow 2 isn't |
 | 63 | Flow 2's Framework Agreement filter returns nothing for Yes or No; on Flow 4 it works | ✅ | Warn in the panel, or hide it there |
 
+| 65 | **Login changes which records you reach, not a page's fields:** 10 of 10 same-record pairs had identical labels | ✅ | One parser for both states |
+| 66 | More layouts, seen logged in: RFQ notices; framework notices with a PE offices table; Flow 5 JVCA records | ✅ | Add to the profile and test bed |
+| 67 | On logged-in Flow 2, the Budget Type filter appears to do nothing: all values give the unfiltered 8,913 pages | ✅ | Warn in the panel when logged in |
+| 68 | A notice can refuse with "not exists or un-authorized" | ✅ once | A recorded per-row outcome, never a stop |
+
 ## Time and sprints (owner, D27)
 
 | # | Insight | Status | What the build must do |

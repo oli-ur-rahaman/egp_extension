@@ -4,6 +4,7 @@ PDMS eGP Extractor: a private Chrome MV3 extension that collects report data fro
 
 ## Read first
 
+0. `docs/BUILD_PLAN.md`: the stages and gates of the build, once approved.
 1. `docs/EXECUTION_PLAN.md`. **§13 "Resume here"** says exactly what to do next; **§12 Progress log** says what has happened. Module sections (§7) carry task IDs (`M#-T##`), automated tests (`M#-AT#`) and the owner's manual checks (`M#-MC#`).
 2. `docs/PROJECT_PLAN.md` for architecture and design decisions.
 3. `docs/TIME_ESTIMATE.md` for the time estimate and sprints (D27); `docs/samples/` for the agreed output format (D24–D26; regenerate with `tools/make-output-demo.py`).
