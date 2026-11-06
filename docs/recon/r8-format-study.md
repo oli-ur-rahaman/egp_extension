@@ -129,7 +129,7 @@ Flow 1 has no detail page, so no checkerboard.
 - **A logged-out notice can be refused:** one cancelled tender returned only "This tender is not exists or You are un-authorized to access information". So that's a normal per-row outcome, and must not stop a run.
 - Framework Agreement returns 0 for Yes and No logged in too, though framework tenders exist. So that filter is broken on Flow 2 either way.
 
-**Not done:** the logged-out re-run for PWD. It would only sharpen page counts, and the same-search audit already showed Flow 2's gap and the others' equality. Skipped to save the portal about 1,000 requests.
+**Logged-out re-run for PWD:** first skipped, then run at the owner's request (`self-run-log.md`, run 10). Results follow when done.
 
 ## Not yet known
 

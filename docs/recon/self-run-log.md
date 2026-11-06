@@ -29,7 +29,7 @@ node tools/recon/study-compare.js
 ```
 For each flow and filter value, it shows the pages logged out and logged in, and which field labels occur only on one side. Then record the result below.
 
-**Expect one difference by design:** a logged-out run covers all departments, and a logged-in one may be limited to the account's department on some flows. The compare tool flags those filter values, so they aren't mistaken for login effects. Use `--department 21` on the logged-out run as well for a strict like-for-like count; that needs a separate results folder, which the tool doesn't have yet.
+**Expect one difference by design:** a logged-out run covers all departments, and a logged-in one may be limited to the account's department on some flows. The compare tool flags those filter values, so they aren't mistaken for login effects. Use `--department 21` on the logged-out run as well for a strict like-for-like count; add `--label pwd` to keep its results apart.
 
 ## Run log
 
@@ -45,6 +45,7 @@ For each flow and filter value, it shows the pages logged out and logged in, and
 | 7 | 2026-11-06 14:19–15:10 | home | logged in | Flows 2, 3, 4 and part of 5 | about 800 | **Stopped: network lost in a power cut** | 3 failed requests in a row. Data intact. Session survived |
 | 8 | 2026-11-06 15:21–15:23 | home | logged in | Flow 5 | about 30 | **Stopped: network lost in a power cut** | Same |
 | 9 | 2026-11-06 15:31–15:36 | home | logged in | Flow 5 | 84 | **FINISHED**, no link problems | All 169 filter values complete. Compared in `r8-format-study.md` |
+| 10 | 2026-11-06 15:55– | home | logged out, PWD only | Flows 2–5 | running | running | Owner's request. Claude pressed Logout first. 5 s pace, gentler than before. Results in `recon/raw/study/logged-out-pwd/`. Compare: `study-compare.js logged-out-pwd logged-in` |
 
 **Deviation from the study plan:** the plan said at most 900 requests in a run. Each run holds to that, but runs 1–4 together came to 1,029, because of the tool fault.
 

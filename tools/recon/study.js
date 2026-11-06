@@ -2,7 +2,7 @@
 // Format study (docs/recon/r8-format-study.md): which factors change the detail-page layout on Flows 2-5?
 // Read-only and logged out. One request at a time, paced, with hard stops. Stores labels, never values.
 //
-//   node tools/recon/study.js --state logged-out|logged-in [--department 21] [--limit 900] [--only 2,3,4,5] [--port 9222]
+//   node tools/recon/study.js --state logged-out|logged-in [--department 21] [--label pwd] [--pace 3000] [--rows 4] [--limit 900] [--only 2,3,4,5] [--port 9222]
 // Resumable: results append to recon/raw/study/<state>/samples.jsonl, and sampled strata are skipped on restart.
 // Refuses to run if the page's login state doesn't match --state. See docs/recon/self-run-log.md.
 
@@ -18,7 +18,9 @@ const STATE = arg('state', '');
 if (!['logged-out', 'logged-in'].includes(STATE)) { console.error('--state logged-out or --state logged-in is required'); process.exit(1); }
 const DEPT = String(arg('department', ''));
 if (STATE === 'logged-in' && !DEPT) { console.error('A logged-in run needs --department with the account\'s own department'); process.exit(1); }
-const outDir = path.join(root, 'recon', 'raw', 'study', STATE);
+// --label keeps a variant apart, e.g. logged-out for one department: recon/raw/study/logged-out-pwd/.
+const LABEL = arg('label', '');
+const outDir = path.join(root, 'recon', 'raw', 'study', LABEL ? `${STATE}-${LABEL}` : STATE);
 const samplesFile = path.join(outDir, 'samples.jsonl');
 const doneFile = path.join(outDir, 'strata-done.jsonl');
 const stopFile = path.join(outDir, 'stopped.txt');
@@ -28,7 +30,7 @@ const LIMIT = Number(arg('limit', 900));
 const ONLY = String(arg('only', '2,3,4,5')).split(',');
 const PORT = Number(arg('port', 9222));
 const ROWS_PER_LIST = Number(arg('rows', 4));
-const PACE_MS = 3000;
+const PACE_MS = Number(arg('pace', 3000));
 const SLOW_MS = 20000;
 const BASE = 'https://www.eprocure.gov.bd';
 

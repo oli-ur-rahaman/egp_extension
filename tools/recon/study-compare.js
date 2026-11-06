@@ -9,8 +9,11 @@ const read = (state, file) => {
   const f = path.join(root, 'recon', 'raw', 'study', state, file);
   return existsSync(f) ? readFileSync(f, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
 };
-const O = { samples: read('logged-out', 'samples.jsonl'), strata: read('logged-out', 'strata-done.jsonl'), runs: read('logged-out', 'run.jsonl') };
-const I = { samples: read('logged-in', 'samples.jsonl'), strata: read('logged-in', 'strata-done.jsonl'), runs: read('logged-in', 'run.jsonl') };
+// Usage: node tools/recon/study-compare.js [leftFolder] [rightFolder]. Default: logged-out, logged-in.
+const [L, R] = [process.argv[2] || 'logged-out', process.argv[3] || 'logged-in'];
+const load = (x) => ({ samples: read(x, 'samples.jsonl'), strata: read(x, 'strata-done.jsonl'), runs: read(x, 'run.jsonl') });
+const O = load(L);
+const I = load(R);
 if (!O.strata.length || !I.strata.length) {
   console.log(`Need both runs on this PC. Logged-out filter values: ${O.strata.length}. Logged-in filter values: ${I.strata.length}.`);
   process.exit(0);
