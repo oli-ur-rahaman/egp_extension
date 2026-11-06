@@ -1,0 +1,349 @@
+{
+  "shared/home-logged-out": {
+    "kind": "state",
+    "state": "loggedOut",
+    "fragment": false,
+    "fingerprint": "5c6b7487",
+    "bytes": 39090
+  },
+  "shared/account-prompt": {
+    "kind": "state",
+    "state": "accountPrompt",
+    "fragment": false,
+    "fingerprint": "fb98f909",
+    "bytes": 24759
+  },
+  "shared/department-tree-popup": {
+    "kind": "state",
+    "state": "treePopup",
+    "fragment": false,
+    "fingerprint": "078e47e3",
+    "bytes": 11315
+  },
+  "flow1/filter": {
+    "flow": "procurement_transaction_report",
+    "kind": "filterPage",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "92e0d923",
+    "bytes": 77042
+  },
+  "flow1/report": {
+    "flow": "procurement_transaction_report",
+    "kind": "report",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "ca08a530",
+    "bytes": 108297
+  },
+  "flow2/filter": {
+    "flow": "tender_info",
+    "kind": "filterPage",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "bc10345f",
+    "bytes": 54630
+  },
+  "flow2/filter-logged-in": {
+    "flow": "tender_info",
+    "kind": "filterPage",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "7f270a7c",
+    "bytes": 50769
+  },
+  "flow2/notice-works": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "tender",
+    "fragment": false,
+    "fingerprint": "317c0410",
+    "bytes": 20511
+  },
+  "flow2/notice-reoi": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "reoi",
+    "fragment": false,
+    "fingerprint": "3507cd9a",
+    "bytes": 19884
+  },
+  "flow2/notice-goods": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "goods",
+    "fragment": false,
+    "fingerprint": "0616676d",
+    "bytes": 18064
+  },
+  "flow2/notice-rfa": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "rfa",
+    "fragment": false,
+    "fingerprint": "342e251f",
+    "bytes": 17263
+  },
+  "flow2/notice-rfp": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "rfp",
+    "fragment": false,
+    "fingerprint": "8da16c8f",
+    "bytes": 17241
+  },
+  "flow2/notice-pps": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "pps",
+    "fragment": false,
+    "fingerprint": "d230db4e",
+    "bytes": 17961
+  },
+  "flow2/notice-amendment": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "amendment",
+    "fragment": false,
+    "fingerprint": "84a1cea5",
+    "bytes": 29918
+  },
+  "flow2/notice-cancelled": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "cancelled",
+    "fragment": false,
+    "fingerprint": "49981a4e",
+    "bytes": 17542
+  },
+  "flow2/notice-refused": {
+    "flow": "tender_info",
+    "kind": "detail",
+    "outcome": "REFUSED",
+    "layout": "refused",
+    "keepRefusal": true,
+    "fragment": false,
+    "fingerprint": "6009ad86",
+    "bytes": 1847
+  },
+  "flow3/filter": {
+    "flow": "app_info",
+    "kind": "filterPage",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "938ff3f9",
+    "bytes": 118145
+  },
+  "flow3/package-works": {
+    "flow": "app_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "works",
+    "fragment": false,
+    "fingerprint": "12c2d2dd",
+    "bytes": 24635
+  },
+  "flow3/package-goods": {
+    "flow": "app_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "goods",
+    "fragment": false,
+    "fingerprint": "846af7cd",
+    "bytes": 23196
+  },
+  "flow3/package-rfq": {
+    "flow": "app_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "rfq",
+    "fragment": false,
+    "fingerprint": "846af7cd",
+    "bytes": 22874
+  },
+  "flow3/package-services": {
+    "flow": "app_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "services",
+    "fragment": false,
+    "fingerprint": "bbd0b282",
+    "bytes": 26899
+  },
+  "flow3/package-physical": {
+    "flow": "app_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "physical",
+    "fragment": false,
+    "fingerprint": "846af7cd",
+    "bytes": 24118
+  },
+  "flow3/package-framework": {
+    "flow": "app_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "framework",
+    "fragment": false,
+    "fingerprint": "89763e31",
+    "bytes": 25259
+  },
+  "flow4/filter": {
+    "flow": "contract_info",
+    "kind": "filterPage",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "6d9db76b",
+    "bytes": 54912
+  },
+  "flow4/contract-new": {
+    "flow": "contract_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "new",
+    "fragment": false,
+    "fingerprint": "fc13680b",
+    "bytes": 10950
+  },
+  "flow4/contract-old": {
+    "flow": "contract_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "old",
+    "fragment": false,
+    "fingerprint": "36bedded",
+    "bytes": 9757
+  },
+  "flow4/contract-mixed": {
+    "flow": "contract_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "mixed",
+    "fragment": false,
+    "fingerprint": "fc13680b",
+    "bytes": 12359
+  },
+  "flow5/filter": {
+    "flow": "experience_info",
+    "kind": "filterPage",
+    "outcome": "OK",
+    "fragment": false,
+    "fingerprint": "f61fdedb",
+    "bytes": 55203
+  },
+  "flow5/experience-plain": {
+    "flow": "experience_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "plain",
+    "fragment": false,
+    "fingerprint": "19370cb7",
+    "bytes": 7280
+  },
+  "flow5/experience-ownership": {
+    "flow": "experience_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "ownership",
+    "fragment": false,
+    "fingerprint": "73c88ce0",
+    "bytes": 9896
+  },
+  "flow5/experience-jvca": {
+    "flow": "experience_info",
+    "kind": "detail",
+    "outcome": "OK",
+    "layout": "jvca",
+    "fragment": false,
+    "fingerprint": "94eb9198",
+    "bytes": 9137
+  },
+  "flow2/list": {
+    "flow": "tender_info",
+    "kind": "list",
+    "outcome": "OK",
+    "fragment": true,
+    "fingerprint": "ad39b7d8",
+    "bytes": 8884
+  },
+  "flow2/list-empty": {
+    "flow": "tender_info",
+    "kind": "list",
+    "outcome": "EMPTY",
+    "fragment": true,
+    "fingerprint": "22a58c58",
+    "bytes": 244
+  },
+  "flow3/list": {
+    "flow": "app_info",
+    "kind": "list",
+    "outcome": "OK",
+    "fragment": true,
+    "fingerprint": "404c2750",
+    "bytes": 42011
+  },
+  "flow3/list-empty": {
+    "flow": "app_info",
+    "kind": "list",
+    "outcome": "EMPTY",
+    "fragment": true,
+    "fingerprint": "418cf101",
+    "bytes": 148
+  },
+  "flow4/list": {
+    "flow": "contract_info",
+    "kind": "list",
+    "outcome": "OK",
+    "fragment": true,
+    "fingerprint": "5dee660a",
+    "bytes": 6874
+  },
+  "flow4/list-empty": {
+    "flow": "contract_info",
+    "kind": "list",
+    "outcome": "EMPTY",
+    "fragment": true,
+    "fingerprint": "1cb6cc9d",
+    "bytes": 192
+  },
+  "flow5/list": {
+    "flow": "experience_info",
+    "kind": "list",
+    "outcome": "OK",
+    "fragment": true,
+    "fingerprint": "fb6ddd1e",
+    "bytes": 9751
+  },
+  "flow5/list-empty": {
+    "flow": "experience_info",
+    "kind": "list",
+    "outcome": "EMPTY",
+    "fragment": true,
+    "fingerprint": "1fe07575",
+    "bytes": 195
+  },
+  "shared/office-combo": {
+    "kind": "lookup",
+    "state": "officeCombo",
+    "fragment": true,
+    "fingerprint": "312f19a8",
+    "bytes": 12650
+  },
+  "flow1/report-empty": {
+    "flow": "procurement_transaction_report",
+    "kind": "report",
+    "outcome": "EMPTY",
+    "fragment": false,
+    "derived": true,
+    "fingerprint": "9ac1fce0",
+    "bytes": 105606
+  }
+}

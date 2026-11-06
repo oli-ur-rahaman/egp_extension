@@ -48,6 +48,7 @@ For each flow and filter value, it shows the pages logged out and logged in, and
 | 10 | 2026-11-06 15:51–17:12 | home | logged out, PWD only | Flows 2–5 | 793 | **FINISHED**, no link problems | Owner's request. Claude pressed Logout first. 5 s pace. Results in `recon/raw/study/logged-out-pwd/`. Compare: `study-compare.js logged-out-pwd logged-in`. Written up in `r8-format-study.md` |
 
 | 11 | 2026-11-07 | home | logged out | Flow 2, 4 public notices | 5 | **Done** | Owner asked for evidence on the Query table. One notice read twice (first read returned nothing to the script). 5 s apart on the last three. No block |
+| 12 | 2026-11-07 | home | logged out | Public saved pages for the test bed, one per layout | 27 | **FINISHED** three times, no block | `tools/recon/capture-fixtures.js`. Claude opened and closed the debug Chrome. About 5 s pace. Raw pages in `recon/raw/fixtures/`. Repeat: `npm run chrome`, then `node tools/recon/capture-fixtures.js`; it skips what's saved |
 
 **Deviation from the study plan:** the plan said at most 900 requests in a run. Each run holds to that, but runs 1–4 together came to 1,029, because of the tool fault.
 

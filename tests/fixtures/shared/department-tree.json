@@ -1,0 +1,472 @@
+[
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Anti-Corruption Commission",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_1075",
+   "dname": "Anti-Corruption Commission"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Bangladesh Parliament Secretariat",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_1146",
+   "dname": "Bangladesh Parliament Secretariat"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Cabinet Division",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_159",
+   "dname": "Cabinet Division"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Election Commission Secretariat",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_117",
+   "dname": "Election Commission Secretariat"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Agriculture",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_38",
+   "dname": "Ministry of Agriculture"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of chittagong Hill Tract's Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_243",
+   "dname": "Ministry of chittagong Hill Tract's Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Civil Aviation & Tourism",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_142",
+   "dname": "Ministry of Civil Aviation & Tourism"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Commerce",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_69",
+   "dname": "Ministry of Commerce"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Cultural Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_123",
+   "dname": "Ministry of Cultural Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Defence",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_166",
+   "dname": "Ministry of Defence"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Disaster Management & Relief",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_145",
+   "dname": "Ministry of Disaster Management & Relief"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Education",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_40",
+   "dname": "Ministry of Education"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Energy, Power and Mineral Resources",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_11",
+   "dname": "Ministry of Energy, Power and Mineral Resources"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Environment, Forest and Climate Change",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_153",
+   "dname": "Ministry of Environment, Forest and Climate Change"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Expatriates' Welfare and Overseas Employment",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_80",
+   "dname": "Ministry of Expatriates' Welfare and Overseas Employment"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Finance",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_45",
+   "dname": "Ministry of Finance"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Fisheries & Livestock",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_157",
+   "dname": "Ministry of Fisheries & Livestock"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Food",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_50",
+   "dname": "Ministry of Food"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Foreign Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_513",
+   "dname": "Ministry of Foreign Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Health and Family Welfare",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_58",
+   "dname": "Ministry of Health and Family Welfare"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Home Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_275",
+   "dname": "Ministry of Home Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Housing and Public Works",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_20",
+   "dname": "Ministry of Housing and Public Works"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Industries",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_111",
+   "dname": "Ministry of Industries"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Information And Broadcasting",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_62",
+   "dname": "Ministry of Information And Broadcasting"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Labour and Employment",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_192",
+   "dname": "Ministry of Labour and Employment"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Land",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_129",
+   "dname": "Ministry of Land"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Law, Justice and Parliamentary Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_220",
+   "dname": "Ministry of Law, Justice and Parliamentary Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Liberation War Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_1015",
+   "dname": "Ministry of Liberation War Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Local Government, Rural Development and Co-operatives",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_3",
+   "dname": "Ministry of Local Government, Rural Development and Co-operatives"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Planning",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_14",
+   "dname": "Ministry of Planning"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Post, Telecommunications & Information Technology",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_54",
+   "dname": "Ministry of Post, Telecommunications & Information Technology"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Primary and Mass Education",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_30",
+   "dname": "Ministry of Primary and Mass Education"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Public Administration",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_52",
+   "dname": "Ministry of Public Administration"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Railways",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_162",
+   "dname": "Ministry of Railways"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Religious Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_205",
+   "dname": "Ministry of Religious Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Road Transport and Bridges",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_8",
+   "dname": "Ministry of Road Transport and Bridges"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Science and Technology",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_176",
+   "dname": "Ministry of Science and Technology"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Shipping",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_97",
+   "dname": "Ministry of Shipping"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Social Welfare",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_356",
+   "dname": "Ministry of Social Welfare"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Textiles & Jute",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_103",
+   "dname": "Ministry of Textiles & Jute"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Water Resources",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_6",
+   "dname": "Ministry of Water Resources"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Women and Children Affairs",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_150",
+   "dname": "Ministry of Women and Children Affairs"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Ministry of Youth & Sports",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_147",
+   "dname": "Ministry of Youth & Sports"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Office of the Comptroller and Auditor General of Bangladesh",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_865",
+   "dname": "Office of the Comptroller and Auditor General of Bangladesh"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "President's Office",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_1084",
+   "dname": "President's Office"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Prime Minister's Office",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_113",
+   "dname": "Prime Minister's Office"
+  }
+ },
+ {
+  "pdeptid": "pdeptid_2",
+  "data": "Supreme Court of Bangladesh",
+  "state": "closed",
+  "attr": {
+   "dtype": "Ministry",
+   "id": "deptid_1217",
+   "dname": "Supreme Court of Bangladesh"
+  }
+ }
+]

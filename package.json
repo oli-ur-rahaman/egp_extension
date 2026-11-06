@@ -18,7 +18,9 @@
     "vendor": "node tools/vendor.js",
     "verify": "npm run lint && npm run typecheck && npm test && npm run build",
     "chrome": "powershell -ExecutionPolicy Bypass -File tools/launch-chrome.ps1",
-    "recon": "node tools/recon/recon.js"
+    "recon": "node tools/recon/recon.js",
+    "mock": "node tests/mock-server/server.js",
+    "fixtures": "node tools/fixtures/make-fixtures.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

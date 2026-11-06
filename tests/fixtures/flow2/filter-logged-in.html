@@ -1,0 +1,515 @@
+<!doctype html>
+<html><head>
+        
+        <meta http-equiv="Content-Type" content="xxxx/xxxx; xxxxxxx=xxx-9">
+        <title>Advanced Search for eTenders/eProposals</title>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+    </head>
+    <body>
+        <div class="mainDiv">
+            
+            <div class="dashboard_div">
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form id="frmAfterLoginTop" name="frmAfterLoginTop" method="POST">
+    <input type="hidden" name="hiddenUserType" id="hiddenUserType">
+</form>
+
+
+
+
+
+
+
+
+
+
+
+<div class="topHeader">
+    <table width="100%" cellspacing="0">
+        <tbody><tr valign="top">
+            <td><div id="ddtopmenubar" class="topMenu_1">
+                    <ul>
+                        
+                        <li><a title="Xxxx" href="/Index.jsp" id="headTabHomePage"><img alt="Xxxx" src="/resources/images/Dashboard/HomeIcn.png">Xxxx</a></li>
+                        
+                        <li><a title="Xxxxxxx Xxx" href="/resources/common/InboxMessage.jsp" id="headTabMsgBox"><img alt="Xxxxxxx Xxx" src="/resources/images/Dashboard/msgBoxIcn.png">Xxxxxxx Xxx</a></li>
+                        <li><a title="Xxxxxxx" href="#" id="headTabContent"><img alt="Xxxxxxx" src="/resources/images/Dashboard/DocLibIcn_1.png">Xxxxxxx</a></li>
+                        
+                        <li><a title="Xxxxxx Xxxxx" rel="" href="#" id="headTabMngUser"><img alt="Xxxxxx Xxxxx" src="/resources/images/Dashboard/committeeIcn.png">Xxxxxx Xxxxx</a></li>
+                        <li><a title="Xxxxxx" href="javascript:void(0);" rel="ddsubmenu4" id="headTabReport"><img src="/resources/images/Dashboard/reportIcn.png">Xxxxxxx</a></li>
+                        <li><a title="Xx Xxxxxxx" href="#" rel="ddsubmenu3" id="headTabMyAcc"><img alt="Xx Xxxxxxx" src="/resources/images/Dashboard/myAccountIcn.png">Xx Xxxxxxx</a></li>
+                        <li><a title="Xxxx" rel="helpsubmenubankuser" href="#" id="headTabHelp"><img alt="Xxxx" src="/resources/images/Dashboard/helpIcn.png">Xxxx</a></li>
+                                
+                    </ul>
+                </div>
+                
+                
+                
+                
+                 
+                
+                
+                <ul id="ddsubmenu4" class="ddsubmenustyle">
+                </ul>
+                
+                
+                <table width="100%" cellspacing="6" class="loginInfoBar">
+                    <tbody><tr>
+                        <td align="left" id="lblTime" style="font-weight: bold">Xxxxxxxx, 99 Xxx, 9999 99:99:99 XXX</td>
+                        <td align="center">
+                            
+                            <b>Last Login :</b> Xxxxxxxx, 9 Xxx, 9999 99:99:99
+                            
+                        </td>
+                        <td align="right">
+                            <img alt="Logout" src="/resources/images/Dashboard/userIcn.png" class="linkIcon_1"><b>Xxxxxxx,</b>
+                            Xxxxxxx Xxxxx Xxxxxxx  &nbsp;|&nbsp;
+                            <img src="/resources/images/Dashboard/logoutIcn.png" class="linkIcon_1" alt="Logout">
+                            <a href="/Logout.jsp" title="Logout">Logout</a>
+                            <input type="hidden" id="curDate" value=""></td>
+                    </tr>
+                </tbody></table></td>
+            <td width="141"><img src="/resources/images/Dashboard/e-GP.gif" width="141" height="64" alt="x-XX"></td>
+        </tr>
+    </tbody></table>
+</div>
+
+<div>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tbody><tr>
+            <td width="79%">
+                <div id="cascadeDiv" style="font-weight: bold"></div>
+                
+        <marquee behavior="scroll" scrollamount="3" style="height:25px; line-height:25px; color:#ff0000; font-size: 14px; font-weight: bold;">
+            
+        </marquee>
+        </td>
+        <td width="1%"></td>
+        <td width="20%" align="right">
+            <div class="ReadMore">
+                <strong><a href="/resources/common/ViewMarqueeList.jsp">Xxxx Xxx Xxxxxxxxxxxxx</a>&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+            </div>
+        </td>
+        </tr>
+    </tbody></table>
+</div>
+
+
+
+
+ 
+                    
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody><tr valign="top">
+                            <td class="contentArea">
+                                
+
+                                
+                                <div class="t_space">
+                                    
+                                    <div class="pageHead_1">All Tenders/Proposals
+                                    
+                                        <span style="float: right;"><a class="action-button-savepdf" href="javascript:void(0);">Save as PDF</a></span>
+                                    
+                                    </div>
+                                    <div class="formBg_1 t_space">
+                                        <form id="alltenderFrm" action="" method="post">
+
+
+
+                                            <table border="0" cellspacing="10" cellpadding="0" class="formStyle_1" width="100%">
+                                                <tbody><tr>
+                                                    <td class="ff">Select Ministry/Division/Organization :</td>
+                                                      <td colspan="3"><input type="hidden" name="viewType" id="viewType" value="Live">
+                                                    Xxxxxx Xxxxx Xxxxxxxxxx (XXX)<input type="hidden" id="txtdepartment" name="depName" value=""><input type="hidden" id="txtdepartmentid" name="depId" value="21"><input type="hidden" id="uTypeId" name="uTypeId" value="5">
+
+                                                </td></tr>
+                                                <tr>
+                                                    <td class="ff">Procuring Entity :</td>
+                                                    <td colspan="3">
+                                                        <select name="office" class="formTxtBox_1" id="cmbOffice" style="width:305px;"><option value="">-- Select Office --</option>
+                                                        <option value="933">Chattogram PWD Division-1,Chattogram</option><option value="934">PWD Resource Division, Dhaka</option><option value="935">Shere Bangla Nagar PWD Division-1, Dhaka</option><option value="936">Medical College PWD Division, Dhaka</option><option value="937">PWD EM Division-5, Dhaka</option><option value="938">PWD EM Division-8, Dhaka</option><option value="939">Cox's Bazar PWD Division</option><option value="940">Noakhali PWD Division</option><option value="941">Sylhet PWD Division</option><option value="942">Rajshahi PWD Division-2</option><option value="943">Rangpur PWD Division</option><option value="944">Khulna PWD Division-1</option><option value="945">Invalid Gazipur</option><option value="946">Barisal PWD Division</option><option value="947">Dinajpur PWD Division</option><option value="948">Munshiganj PWD Division</option><option value="949">Manikganj PWD Division</option><option value="950">Sirajganj PWD Division</option><option value="951">Natore PWD Division</option><option value="952">Jessore PWD Division</option><option value="989">INVALID 5</option><option value="1125">PWD EM Division-1, Dhaka</option><option value="1178">PWD EM Division-2, Dhaka</option><option value="1179">PWD EM Division-3, Dhaka</option><option value="1180">PWD EM Division-4, Dhaka</option><option value="1181">PWD EM Division-6, Dhaka</option><option value="1182">PWD EM Division-7, Dhaka</option><option value="1184">Office of The Chief Engineer of Public Works</option><option value="1220">Chattogram PWD EM Division-2</option><option value="1221">Narayangonj PWD Division, Narayangonj</option><option value="1226">Dhaka PWD Zone, Dhaka</option><option value="1229">Dhaka PWD Circle-1, Dhaka</option><option value="1230">Dhaka PWD Division-1, Dhaka</option><option value="1231">Dhaka PWD Division-2, Segunbagicha,Dhaka</option><option value="1232">City PWD Division, Abdul Gani Road, Dhaka</option><option value="1233">Dhaka PWD Circle-2, Dhaka</option><option value="1234">Dhaka PWD Division-3, Dhaka</option><option value="1235">Dhaka PWD Division-4, Dhaka</option><option value="1236">Eden Bhabon PWD Division, Bangladesh Secretariate, Dhaka</option><option value="1237">Invalid DMC PWD Div</option><option value="1238">Dhaka PWD Circle-3, Sere-e-Bangla Nagar, Dhaka</option><option value="1239">Shere Bangla Nagar PWD Division-2, Dhaka</option><option value="1240">Shere Bangla Nagar PWD Division-3, Dhaka</option><option value="1241">Mohakhali PWD Division, Mohakhali, Dhaka</option><option value="1242">Dhaka PWD Circle-4, Dhaka</option><option value="1243">Motijheel PWD Division, Segunbagicha, Dhaka</option><option value="1244">Azimpur PWD Division, New Market, Dhaka</option><option value="1245">Norshingdi PWD Division, Norshingdi</option><option value="1246">Invalid Munshiganj</option><option value="1247">Savar PWD Circle, Allenbari, Tejgaon, Dhaka</option><option value="1248">Mirpur PWD Division, Dhaka</option><option value="1249">Savar PWD Division, Dhaka</option><option value="1250">Gazipur PWD Division, Gazipur</option><option value="1251">Office of the Additional Chief Engineer(EM) of PWD, Dhaka</option><option value="1252">PWD EM Circle-1, Purtha Bhabon, Dhaka</option><option value="1253">PWD EM Circle-2, Dhaka</option><option value="1254">PWD EM Circle-3, Dhaka</option><option value="1255">Chattogram PWD Zone,Chattogram</option><option value="1256">Chattogram PWD Circle-1, Chattogram</option><option value="1257">Rangamati PWD Division, Rangamati</option><option value="1258">Chattogram PWD Circle-2, Chattogram</option><option value="1259">Chattogram PWD Division-3, Chattogram</option><option value="1260">Bandarban PWD Division, Bandarban</option><option value="1261">Chattogram PWD EM Circle,Chattogram</option><option value="1262">Cumilla PWD Circle, Cumilla</option><option value="1263">Cumilla PWD Division, Cumilla</option><option value="1264">Laksmipur PWD Division, Laksmipur</option><option value="1265">Khulna PWD Zone, Khulna</option><option value="1266">Khulna PWD Circle, Khulna</option><option value="1267">Satkhira PWD Division, Satkhira</option><option value="1268">INVALID OFFICE</option><option value="1269">INVALID</option><option value="1270">Invalid Barguna PWD Division, Barguna</option><option value="1271">PWD Training Academy &amp; Testing Laboratory</option><option value="1304">Wood 2</option><option value="1305">Invalid EM Workshop</option><option value="1306">PWD Maintenance Division, Dhaka</option><option value="1395">Bhola PWD Division</option><option value="1396">khagrachari pwd division</option><option value="1397">Rajshahi PWD Division-1</option><option value="1398">Sherpur PWD Division</option><option value="1552">Arboriculture pwd division</option><option value="1553">Invalid PWD Dhaka Division-3</option><option value="1556">Kishoreganj pwd division</option><option value="1560">Jamalpur pwd division</option><option value="1562">Netrokona pwd division</option><option value="1564">invalid ctg div1</option><option value="1565">Chattogram PWD Division -2, Chattogram</option><option value="1566">Invalid ctg div3</option><option value="1567">Chattogram  PWD  Division-4</option><option value="1568">Brammanbaria pwd division</option><option value="1569">Chandpur pwd division</option><option value="1570">Feni pwd division</option><option value="1571">Chapai Nawabganj pwd division</option><option value="1572">Pabna PWD Division, Pabna</option><option value="1573">Naogaon  pwd division</option><option value="1575">Bogra pwd division</option><option value="1576">Invalid Sirajgonj</option><option value="1577">Joypurhat pwd division</option><option value="1578">Kurigram PWD Division</option><option value="1579">Gaibandha PWD Division</option><option value="1580">Nilphamari PWD Division,Nilphamari</option><option value="1585">Mymensingh PWD Division, Mymensingh</option><option value="1596">Invalid PWD Trainining Academy</option><option value="1600">Khulna PWD Division-2</option><option value="1605">Thakurgaon PWD Division</option><option value="1634">Panchagarh PWD Division</option><option value="1635">Lalmonirhat PWD Division</option><option value="1636">Bagerhat PWD Division</option><option value="1637">Narail PWD Division</option><option value="1638">Jhenaidah PWD Division</option><option value="1639">Magura PWD Division</option><option value="1640">Chuadanga PWD Division</option><option value="1641">Meherpur PWD Division</option><option value="1644">Faridpur PWD Division</option><option value="1645">Rajbari PWD Division</option><option value="1646">Patuakhali PWD Division</option><option value="1647">Barguna  PWD Division</option><option value="1648">Perojpur PWD Division</option><option value="1649">Jhalokathi PWD Division</option><option value="1650">Gopalganj PWD Division</option><option value="1651">Madaripur PWD Division</option><option value="1655">Shariatpur PWD Division</option><option value="1657">Sunamganj PWD Division</option><option value="1658">Moulvibazar PWD Division</option><option value="1659">Hobiganj PWD Division</option><option value="1664">Chattogram Maintenance Division</option><option value="1665">PWD EM Workshop Division</option><option value="1667">PWD Wood Workshop Division</option><option value="1669">Rajshahi PWD Zone</option><option value="1670">Rangpur PWD Zone</option><option value="1671">Sylhet PWD Zone</option><option value="1672">Barisal PWD Zone</option><option value="1676">Rajshahi PWD Circle</option><option value="1677">Bogra PWD Circle</option><option value="1678">Rangpur PWD Circle</option><option value="1679">Jessore PWD Circle</option><option value="1680">Barisal PWD Circle</option><option value="1681">Sylhet PWD Circle</option><option value="1682">PWD EM P&amp;D Circle</option><option value="1683">Office of Additional Chief Engineer (Est &amp; Coord) of PWD</option><option value="1684">PWD Health Wing</option><option value="1685">PWD Planning &amp; Special Project</option><option value="1705">Kushtia PWD Division</option><option value="1741">Invalid EM-5 Dhk</option><option value="1871">Chattogram PWD EM Division 1</option><option value="1909">Invalid Gopalgonj</option><option value="2246">Tangail PWD Division</option><option value="2251">Invalid Satkhira</option><option value="2252">invalid satkhira</option><option value="2259">Maintenance Circle , Dhaka</option><option value="2420">PWD Mymensingh Circle</option><option value="2433">Invalid Division</option><option value="2434">PWD Survey Division</option><option value="2482">Urban Building Safety Project (UBSP)</option><option value="2637">Project Division 2</option><option value="2821">Invalid 4</option><option value="3578">EM Division of Uttora Apartment Project</option><option value="3579">Project Circle 1</option><option value="4232">Project Division 1</option><option value="4278">Chief Judicial Megistrate Court Building Project</option><option value="4663">Project Division 4</option><option value="5113">Population Project Cell</option><option value="5114">Audit and Monitoring Circle</option><option value="6475">Office of the Superintending Engineer (Devlopment)</option><option value="6605">Reserve</option><option value="6657">PWD EM PnD  Division 2</option><option value="6697">Population Project Cell (PPC)</option><option value="6905">PECU Circle</option><option value="6943">Planning and Special Project</option><option value="8438">PWD EM Circle 2, Dhaka</option><option value="9604">Gopalgonj PWD Zone</option><option value="9605">Mymensingh PWD Zone</option><option value="9606">Dhaka PWD metropolitan Zone</option><option value="9607">PWD EM P&amp;D Zone, Dhaka</option><option value="9608">Gopalganj PWD Circle</option><option value="9609">Tangail PWD Circle</option><option value="9610">Dinajpur PWD Circle</option><option value="9611">Pabna PWD Circle</option><option value="9612">Rangamati PWD Circle</option><option value="9643">PWD EM Division-9, Dhaka</option><option value="9644">PWD EM Division-10, Dhaka</option><option value="9645">PWD EM Division-11, Dhaka</option><option value="9710">PWD EM MIS Division 2</option><option value="9711">PWD MIS Circle</option><option value="13001">PWD EM Circle-4, Dhaka</option><option value="13479">Khulna P&amp;D Office</option><option value="13669">PWD EM MIS Division 3</option><option value="15352">EM Planning Circle</option><option value="15353">EM Design Circle</option><option value="15433">EM Planning Division1</option><option value="15559">Rajshahi PWD EM P&amp;D Division</option><option value="15576">EM Planning Division 2</option><option value="15577">EM Planning Division3</option><option value="16144">PWD EM Design Division 3</option><option value="16152">Project Division 5, Dhaka</option><option value="16203">PWD EM P&amp;D Division-3, Dhaka</option><option value="16231">PWD Project Circle-2, Dhaka</option><option value="16510">PWD EM MIS Division 1</option><option value="16747">PWD EM Design Division-2,Dhaka</option><option value="17028">PWD Design Division-6, Dhaka</option><option value="17216">Mymensingh PWD EM P&amp;D Division</option><option value="17343">PWD EM Wood Workshop Division ( Special Unit)</option><option value="17583">Office of the Executive Engineer(O &amp; M)</option><option value="19543">PWD Procurement Unit,Public Works Department</option><option value="19684">Construction of 123 Nos flats for government employees Project</option><option value="19781">PWD Design Division-5, Dhaka</option><option value="21867">Office of the Project Director of 112 Flat, Agargaon</option><option value="21882">PWD EM P&amp;D Division, Chattogram</option><option value="22363">PWD Plumbing Unit-3, Dhaka</option><option value="22673">Chattogram PWD EM  Zone,Chattogram</option><option value="23004">PWD Design Zone</option><option value="26020">Dhaka PWD Circle-5, Dhaka</option><option value="26396">PWD EM Design Division 1</option><option value="26514">Dhaka PWD Division-5, Dhaka</option><option value="26985">Pabna PWD EM Division, Pabna</option><option value="27137">Rajshahi PWD EM Division, Rajshahi</option><option value="27156">Khulna PWD EM Division, Khulna</option><option value="28527">Establishment-1, Office of the Chief Engineer, Public Works Department</option><option value="28962">Sher-E-Bangla Nagar PWD Division-4, Dhaka</option><option value="29886">PWD EM Division-12, Dhaka</option><option value="29913">PWD EM Division-13, Dhaka</option><option value="30829">PWD EM PnD Division-1, Dhaka</option><option value="31343">PWD Monitoring Division, Dhaka</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="22%" class="ff">Budget Type : </td>
+                                                    <td width="38%">
+                                                        <select name="budgetType" id="budgetType" class="formTxtBox_1" style="width:208px;"><option value="" selected="selected">-- Select Budget Type --</option>
+                                                            <option value="Development">Development</option>
+                                                            <option value="Revenue">Revenue</option>
+                                                            <option value="Own Fund">Own Fund</option>
+                                                        </select>
+                                                    </td>
+                                                    <td width="15%" class="ff"></td>
+                                                    <td width="25%">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="22%" class="ff">Procurement Nature : </td>
+                                                    <td width="38%">
+                                                        <select name="procNature" id="procNature" class="formTxtBox_1" style="width:208px;"><option value="" selected="selected">-- Select Nature --</option>
+                                                            <option value="1">Goods</option>
+                                                            <option value="2">Works</option>
+                                                            <option value="3">Service</option>
+                                                            <option value="4">Physical Services</option>
+                                                        </select>
+                                                    </td>
+                                                    <td width="15%" class="ff"></td>
+                                                    <td width="25%">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ff">Procurement Type :</td>
+                                                    <td>
+                                                        <select name="procType" class="formTxtBox_1" id="cmbType" style="width:208px;"><option value="">-- Select Type --</option>
+                                                            <option value="NCT">NCT</option>
+                                                            <option value="ICT">ICT</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="ff">Procurement Method :</td>
+                                                    <td><select name="procMethod" class="formTxtBox_1" id="cmbProcMethod" style="width:208px;"><option value="0" selected="selected">- Select Procurement Method -</option>
+                                                            
+                                                                <option value="1">RFQ</option>
+                                                            
+                                                                <option value="2">OTM</option>
+                                                            
+                                                                <option value="3">LTM</option>
+                                                            
+                                                                <option value="5">TSTM</option>
+                                                            
+                                                                <option value="6">QCBS</option>
+                                                            
+                                                                <option value="7">LCS</option>
+                                                            
+                                                                <option value="8">SFB</option>
+                                                            
+                                                                <option value="9">DC</option>
+                                                            
+                                                                <option value="10">SBCQ</option>
+                                                            
+                                                                <option value="11">SSS</option>
+                                                            
+                                                                <option value="12">IC</option>
+                                                            
+                                                                <option value="13">CSO</option>
+                                                            
+                                                                <option value="14">DPM</option>
+                                                            
+                                                                <option value="15">OSTETM</option>
+                                                            
+                                                                <option value="16">RFQU</option>
+                                                            
+                                                                <option value="17">RFQL</option>
+                                                            
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ff">Tender/Proposal ID :</td>
+                                                    <td>
+                                                        <input name="tenderId" id="tenderId" type="text" class="formTxtBox_1" style="width:202px;">
+                                                        <span class="reqF_1" id="msgTenderId"></span>
+                                                    </td>
+                                                    <td class="ff">Reference No :</td>
+                                                    <td><input name="refNo" id="refNo" type="text" class="formTxtBox_1" style="width:202px;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ff">From Publishing Date :</td>
+                                                    <td><input name="pubDtFrm" id="pubDtFrm" type="text" class="formTxtBox_1" style="width:100px;" readonly="readonly">&nbsp;
+                                                        <a href="javascript:void(0);" title="Xxxxxxxx"><img id="pubDtFrmImg" src="../images/Dashboard/calendarIcn.png" alt="Xxxxxx x Xxxx" border="0" style="vertical-align:middle;"></a>
+                                                        <span id="dtErrPub" class="reqF_1"><br></span>
+                                                    </td>
+                                                    <td class="ff">To Publishing Date :</td>
+                                                    <td><input name="pubDtTo" id="pubDtTo" type="text" class="formTxtBox_1" style="width:100px;" readonly="readonly">&nbsp;
+                                                        <a href="javascript:void(0);" title="Xxxxxxxx"><img id="pubDtToImg" src="../images/Dashboard/calendarIcn.png" alt="Xxxxxx x Xxxx" border="0" style="vertical-align:middle;"></a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ff">From Closing Date :</td>
+                                                    <td><input name="closeDtFrm" id="closeDtFrm" type="text" class="formTxtBox_1" style="width:100px;" readonly="readonly">&nbsp;
+                                                        <a href="javascript:void(0);" title="Xxxxxxxx"><img id="closeDtFrmImg" src="../images/Dashboard/calendarIcn.png" alt="Xxxxxx x Xxxx" border="0" style="vertical-align:middle;"></a>
+                                                        <span id="dtErrClose" class="reqF_1"><br></span>
+                                                    </td>
+                                                    <td class="ff">To Closing Date :</td>
+                                                    <td><input name="closeDtTo" id="closeDtTo" type="text" class="formTxtBox_1" style="width:100px;" readonly="readonly">&nbsp;
+                                                        <a href="javascript:void(0);" title="Xxxxxxxx"><img id="closeDtToImg" src="../images/Dashboard/calendarIcn.png" alt="Xxxxxx x Xxxx" border="0" style="vertical-align:middle;"></a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ff">Category :</td>
+                                                    <td>
+                                                        <input name="cpvCat" id="txtaCPV" type="text" class="formTxtBox_1" style="width:202px;">
+                                                        <a href="javascript:void(0);" class="action-button-select">Xxxxxx Xxxxxxxx</a>
+                                                    </td>
+                                                    <td class="ff">Framework Agreement :</td>
+                                                    <td>
+                                                        <select name="isFrame" class="formTxtBox_1" id="cmbIsFrame" style="width:205px;"><option selected="selected" value="0">- Select -</option>
+                                                            <option value="1">Yes</option>
+                                                            <option value="2">No</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td colspan="4" class="t-align-center">
+                                                        
+                                                        <label class="formBtn_1 t_space"><input type="button" name="search" id="btnSearch" value="Search"></label>&nbsp;&nbsp;
+                                                        <label class="formBtn_1 t_space"><input type="reset" name="btnReset" id="btnReset" value=""></label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="t-align-center" colspan="4">
+                                                        <div id="valAll" class="reqF_1"></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody></table>
+                                        </form>
+                                    </div>
+
+                                    <div id="resultDiv" style="">
+                                        <div class="tableHead_1 t_space">eTender/eProposal Search Results</div>
+                                        <ul class="tabPanel_1 t_space">
+                                            <li><a href="javascript:void(0);" id="linkPending" class="sMenu">Live</a></li>
+                                            <li><a href="javascript:void(0);" id="linkApproved">Archive</a></li>
+                                            <li><a href="javascript:void(0);" id="linkCancel">Cancelled</a></li>
+                                            <li><a href="javascript:void(0);" id="linkRejected">All</a></li>
+                                        </ul>
+                                        <div id="progressBar" class="tableHead_1 t_space" align="center" style="visibility: visible; display: none;">
+                                                <img id="theImg" alt="xxx" src="/resources/images/loading.gif">
+                                            </div><input type="hidden" id="totalPages" value="72"><table id="resultTable" width="100%" cellspacing="0" class="tableList_3" cols="@0,6"><thead><tr>
+                                                <th width="4%" class="t-align-center">S.<br>No.</th>
+                                                <th width="15%" class="t-align-center header">Tender/Proposal ID,<br>
+                                                    Reference No</th>
+                                                <th width="22%" class="t-align-center header">Procurement Nature,
+                                                    <br>Title</th>
+                                                <th width="30%" class="t-align-center header">Ministry, Division, Organization, PE</th>
+                                                <th width="10%" class="t-align-center header">Type, <br>
+                                                    Method</th>
+                                                <th width="19%" class="t-align-center header">Publishing Date and Time, <br>
+                                                    Closing Date and Time</th>
+                                                    
+                                            </tr></thead><tbody><tr><td class="t-align-center">1</td><td class="t-align-center">1368159,<br>XXX/99-99/XX.XXXX-9,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_0" id="viewtenderform_0" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1368159"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_0"><p>
+	Xxxxxx xxx xxxxxxxxxx xx xxxxxxx xxxxxxx xxx xxxxx xxxxxx xxxxx, xxxxxxxxx xxxxx xxxxx xxx xxxxxxxx xxxxx, xx xxx xxx xxxxxxxx xx 999-Xxx Xxxxxxxx Xxxxxxxx, Xxxxxxxx, xx xxx xxxxxxxx xx xxx xxxxxxxxx Xxxxx Xxxxxxxx'x xxxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> RFQU</td><td class="t-align-center">05-Nov-2026 23:30,<br>10-Nov-2026 12:30</td></tr><tr><td class="t-align-center">2</td><td class="t-align-center">1368151,<br>XXX/99-99/XX.XXXX-9,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_1" id="viewtenderform_1" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1368151"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_1"><p>Xxxxxxxx, xxxxxxxx, xxx xxxxx xxxxx xxx xxxxxxxx xxxxx xx xxx 999-xxx Xxxxxxxx Xxxxxxxx xxxxxxxx, Xxxxxxxx, xx xxx xxxxxxxx xx xxx xxxxx xx xxx Xxxxxxxxx Xxxxx Xxxxxxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> RFQU</td><td class="t-align-center">05-Nov-2026 23:10,<br>10-Nov-2026 12:30</td></tr><tr><td class="t-align-center">3</td><td class="t-align-center">1368109,<br>Xxxxx/XXX-XX-XXXX-99/9999-99,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_2" id="viewtenderform_2" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1368109"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_2"><p>Xxxxxxxxxxxx xx x xxxxxx xxx xxxxxxxx xx xxx Xxxx Xxxxxxxx Xxxxxxxx xx Xxxxxxxxx xxxxxxxx. XX 9999-99</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> LTM</td><td class="t-align-center">05-Nov-2026 23:00,<br>12-Nov-2026 15:00</td></tr><tr><td class="t-align-center">4</td><td class="t-align-center">1368146,<br>XXX/99-99/XX.XXXX-9,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_3" id="viewtenderform_3" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1368146"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_3"><p>Xxxxxx xxx xxxxxxxxxx xxxxx xx XXX xxxxx, xxxxxxx' xxxxxx xxxxx xxxxx xxxx xxxxx xxxxx xxx xxxxxxxx xxxxx xx 999-xxx Xxxxxxxx Xxxxxxxx, Xxxxxxxx xx xxx xxxxxxxx xx xxx xxxxx xx xxx Xxxxxxxxx Xxxxx Xxxxxxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> RFQU</td><td class="t-align-center">05-Nov-2026 23:00,<br>10-Nov-2026 12:30</td></tr><tr><td class="t-align-center">5</td><td class="t-align-center">1365999,<br>XXX'x xxx xx.999 xx.99/99/99,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_4" id="viewtenderform_4" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1365999"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_4"><p>Xxxxxxxxxxxx xx xxx xxxxxxx xxx (xxxxxx xxx xxxxxxx xxxx) xxxxxx xxxxx xxx xxxxxxx xxxxxx 'Xxxxxxxxx xxxxxxxx xxxxxx xxxxxxxx xxxxxxx xx xxxxxxx xxxxxxxx xx 99 xxxx xxx xxxxxxx xx 99-xxx xxxxxx xxxxxxxx xxxxxxx xx xxxxxxxx xxxxxxxxxxxx xxxxxxxxx (9xx xxxxxxx)'.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> OTM</td><td class="t-align-center">05-Nov-2026 22:30,<br>19-Nov-2026 15:00</td></tr><tr><td class="t-align-center">6</td><td class="t-align-center">1365370,<br>XXX'x xxx xx.999 xx.99/99/99,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_5" id="viewtenderform_5" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1365370"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_5"><p>Xxxxx, xxxxxxxx, xxx xxxxxxxxxx xxxxxx xxxx xxxxxxxxx xxxxxxxx xxxx xx xxx xxxxxxxxx xx xxx Xxxxxxxxx Xxxxxxxx xx Xxxxxxxx Xxxxxxxx Xxxxxx Xxxxx Xxxxxxxxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> LTM</td><td class="t-align-center">05-Nov-2026 22:00,<br>17-Nov-2026 15:00</td></tr><tr><td class="t-align-center">7</td><td class="t-align-center">1360656,<br>XXX'x xxx xx.999 xx.99/99/99,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_6" id="viewtenderform_6" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1360656"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_6"><p>Xxxxxxxxxx, xxxxxx xxx xxxxxxxx xxxxxxxxxx xx xxx Xxxxxx Xxxxxxxxxxx XX xxxx xxx xxx Xxxxxxxx Xxxxx Xxxxx xxx Xxxxxxxx Xxxxxxxxxx Xxxxxxxxxx Xxxxxxxx xx xxx Xxxxxxxx Xxxxxxxx Xxxxx Xxxxx, xxxxxxxxx xxxxxxxxx xxxxxxxxxx xxxxxx xxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxxx XXX Xxxxxxxx</td><td class="t-align-center">NCT,<br> LTM</td><td class="t-align-center">05-Nov-2026 22:00,<br>17-Nov-2026 15:00</td></tr><tr><td class="t-align-center">8</td><td class="t-align-center">1366922,<br>XXX/99-99/XXX/XX/XX/XXX-99,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_7" id="viewtenderform_7" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1366922"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_7"><p>Xxxxxxxxx xxxxxxx xxx xxxxxxxx xxxx xxxxxxxxx xxxxxxxxxx xx xxxxxxx xxx xxxxxxxxx xx Xxxxx 999 xxx 999 xx xxx 9xx xxxxx xx Xxxxx Xxxxxxx Xxxxxxx Xxxxxxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxx Xxxxxxx XXX Xxxxxxxx, Xxxxx</td><td class="t-align-center">NCT,<br> LTM</td><td class="t-align-center">05-Nov-2026 22:00,<br>16-Nov-2026 16:00</td></tr><tr><td class="t-align-center">9</td><td class="t-align-center">1366923,<br>XXX/99-99/XXX/XX/XX/XXXX-999,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_8" id="viewtenderform_8" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1366923"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_8"><p>Xxxxxxxxxx xx xxxx xxx xxxxxx xx XXXX Xxxxx Xx. 9 xx xxx 9xx xxxxx xx xxx xxxx xxxxxxxx xx Xxxxx Xxxxxxx Xxxxxxx Xxxxxxxx xxx xxxxxxx xxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxx Xxxxxxx XXX Xxxxxxxx, Xxxxx</td><td class="t-align-center">NCT,<br> LTM</td><td class="t-align-center">05-Nov-2026 22:00,<br>16-Nov-2026 16:00</td></tr><tr><td class="t-align-center">10</td><td class="t-align-center">1366927,<br>XXX/99-99/XXX/XX/XX/XXXX-999,<br><label style="color: red;font-weight: bold;">Live</label></td><td class="t-align-left">Works,<br><form name="viewtenderform_9" id="viewtenderform_9" method="POST" action="/resources/common/ViewTender.jsp" target="_blank"><input type="hidden" name="id" value="1366927"><input type="hidden" name="h" value="t"><a href="javascript:void(0);"><span id="tenderBrief_9"><p>Xxxxxxxx xx xxxxx xxxx xx Xx. Xxxxx Xxxxx Xxxx xx Xxxxx Xxxxxxx Xxxxxxx, xxxxxxxxxxxx xx xxx xxxxx xxxx, xxxxxxxx xx xxxxx xxx xxxxxxxxxx xxx, xxxxxxx xx xxxxxxx, xxxxxx xx xxxxx, xxxxxx xx xxxxxxxx xxxx xx Xxxxxxx Xxxxx Xxxx Xxx xxx xxxxxxxxx xxxxx.</p>
+</span></a></form></td><td class="t-align-left">Xxxxxxxx xx Xxxxxxx xxx Xxxxxx Xxxxx,<br> Xxxxxx Xxxxx Xxxxxxxxxx (XXX),<br> Xxxxxxx Xxxxxxx XXX Xxxxxxxx, Xxxxx</td><td class="t-align-center">NCT,<br> LTM</td><td class="t-align-center">05-Nov-2026 22:00,<br>16-Nov-2026 16:00</td></tr></tbody></table>
+                                        <table width="100%" border="0" id="pagination" cellspacing="0" cellpadding="0" class="pagging_1">
+                                            <tbody><tr>
+                                                <td align="left">Page <span id="pageNoTot">1</span> of <span id="pageTot">72</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                 
+                                                 Total Records : <input type="text" name="size" id="size" value="10" style="width:70px;">
+                                                 
+                                                </td>
+                                                <td align="center"><input name="textfield3" type="text" id="dispPage" value="1" class="formTxtBox_1" style="width:20px;">
+                                                    &nbsp;
+                                                    <label class="formBtn_1">
+                                                        <input type="submit" name="button" id="btnGoto" value="Go To Page">
+                                                    </label></td>
+                                                <td class="prevNext-container"><ul>
+                                                        <li>x <a disabled="true" href="javascript:void(0)" id="btnFirst" style="color: gray;">First</a></li>
+                                                        <li>x <a disabled="true" href="javascript:void(0)" id="btnPrevious" style="color: gray;">Previous</a></li>
+                                                        <li><a href="javascript:void(0)" id="btnNext" style="color: rgb(51, 51, 51);">Next</a> x</li>
+                                                        <li><a href="javascript:void(0)" id="btnLast" style="color: rgb(51, 51, 51);">Last</a> x</li>
+                                                    </ul></td>
+                                            </tr>
+                                        </tbody></table>
+                                        <div align="center">
+                                            <input type="hidden" id="pageNo" value="1">
+                                            
+                                        </div>
+                                       <form id="formstyle" action="" method="post" name="formstyle">
+
+                                           <input type="hidden" name="pdfBuffer" id="pdfBuffer" value="">
+                                           
+                                           <input type="hidden" name="fileName" id="fileName" value="">
+                                            <input type="hidden" name="id" id="id" value="AllTenders">
+                                        </form>
+                                        <div>&nbsp;</div>
+                                    </div>
+                                </div>
+
+                                
+                            </td>
+                        </tr>
+                    </tbody></table>
+
+                    
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0" class="footerCss">
+    <tbody><tr valign="top">
+        <td><table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td align="center" style="padding-top: 10px;">
+                    
+                        <a href="/Index.jsp">Xxxx</a> &nbsp;|&nbsp;
+                    
+
+                    
+                        <a href="/aboutUs.jsp">Xxxxx x-XX</a> &nbsp;|&nbsp;
+                    
+
+                    
+                        <a href="/contactUs.jsp">Xxxxxxx Xx</a> &nbsp;|&nbsp;
+                    
+
+                    <a href="/SubscribeToRSS.jsp">XXX Xxxx</a> &nbsp;|&nbsp;
+
+                    
+                        <a href="/TermsNConditions.jsp">Xxxxx xxx Xxxxxxxxxx</a> &nbsp;|&nbsp;
+                    
+                    
+                        <a href="/ServiceLevel.jsp">Xxxxxxx Xxxxx</a> 
+                     &nbsp;|&nbsp;
+                    
+                        <a href="/PrivacyPolicy.jsp">Xxxxxxxxxx xxx Xxxxxxx Xxxxxx </a>
+                    
+                    
+                     &nbsp;|&nbsp; 
+                        <a href="/NewFeature.jsp">Xxx Xxxxxxxx</a>
+                    
+                   
+
+                </td>
+            </tr>
+            
+            <tr>
+                <td align="center" style=" line-height: 16px;">
+                    <div class="msg">
+                        Xxxx xxxxxx xx 9999 x 999 xxx xxxxx xxxxxxxxxx. Xxxxxxxx Xxxxxx &amp; Xxxxxxxxx xx XXXX: Xxxxxxxxx Xxxx 999.x xx xxxxx xxx Xxxxxxx Xxxxxxx 999.x xx xxxxx xxx Xxxxxx Xxxxxx 999.x xx xxxxx
+                    </div>
+                </td>
+            </tr>
+            
+           <tr>
+                <td height="10"></td>
+            </tr>
+            <tr>
+                <td width="64%" align="center" style="padding-bottom: 0px; padding-top: 0px; font-weight: normal; line-height: 18px;">
+                         <strong> Xxxxxxxxx x 9999 Xxxxxxxxxx Xxxxxx Xxxxxxxxxxx Xxxxxxxxx (XXXX). Xxx Xxxxxx Xxxxxxxx. </strong><br>
+                     XXXX, Xxxxxxxx xx Xxxxxxxx, Xxxxxxxxxx xx xxx Xxxxxx'x Xxxxxxxx xx Xxxxxxxxxx
+                </td>
+            </tr>
+            <tr>
+                <td height="10"></td>
+            </tr>
+
+        </tbody></table></td>
+        <td width="100">
+                              
+		<table width="135" border="0" cellpadding="2" cellspacing="0" title="Xxxxx xx Xxxxxx - Xxxx xxxx xxxxx XxxxXxxx XXX xxx xxxxxx x-xxxxxxxx xxx xxxxxxxxxxxx xxxxxxxxxxxxxx.">
+		<tbody><tr>
+			<td width="135" align="center" valign="top"><br>
+			<a href="https://www.digicert.com/what-is-ssl-tls-https/" target="_blank" style="color:#000000; text-decoration:none; font:bold 7px verdana,sans-serif; letter-spacing:.5px; text-align:center; margin:0px; padding:0px;"></a></td>
+		</tr>
+		</tbody></table>
+            
+        </td>
+    </tr>
+</tbody></table>
+
+
+
+
+                </div>
+            </div>
+        
+    
+    
+    
+        
+        
+        
+        
+        
+        
+
+
+        
+        
+        
+        
+        
+        
+
+    
+
+
+<ul id="ddsubmenu4" class="ddsubmenustyle" style="z-index: 2000; left: 0px; top: 0px; visibility: hidden;">
+                    <li><a href="/report/AppMIS.jsp">Xxxxxxxxxxx Xxxxxxxxxx</a></li>
+                    <li><a href="/officer/SearchPackageReport.jsp">Xxxxxx Xxxxxxxxxxx Xxxx</a></li>
+                    <li><a href="/report/ProcTransReport.jsp">Xxxxxxxxxxx Xxxxxxxxxxx Xxxxxx</a></li>
+                    <li><a href="/admin/PromiseIndicator.jsp">XXXXXX Xxxxxx</a></li>
+                    <li><a href="/admin/PromiseOverallReport.jsp">XXXXXX Xxxxxxx Xxxxxx</a></li>
+                    <li><a href="/resources/common/AllTenders.jsp?h=">XXX9 Xxxxxx</a></li>
+                </ul><ul id="ddsubmenu3" class="ddsubmenustyle" style="z-index: 2000; left: 0px; top: 0px; visibility: hidden;">
+                    
+                    <li><a href="/admin/ViewManageAdmin.jsp?userId=&amp;userTypeid=&amp;msg=">Xxxx Xxxxxxx</a></li>
+                    <li><a href="/admin/ManageAdmin.jsp?userId=&amp;userTypeid=">Xxxx Xxxxxxx</a></li>
+                    
+                    <li><a href="/admin/ChangePassword.jsp?fromWhere=">Xxxxxx Xxxxxxxx</a></li>
+                    <li><a href="/admin/ChangeHintQusAns.jsp?fromWhere=">Xxxxxx Xxxx Xxxxxxxx xxx Xxxxxx</a></li>
+                    <li><a href="/admin/UserPreference.jsp?fromWhere=">Xxxxxxxxxx</a></li>
+                </ul><ul id="helpsubmenubankuser" class="ddsubmenustyle" style="z-index: 2000; left: 0px; top: 0px; visibility: hidden;">
+                    <li><a href="/resources/common/Help.jsp?pageName=" target="_blank">Xxxx Xxxx</a></li>
+                    <li><a href="/resources/common/userManual.jsp">Xxxx Xxxxxx</a></li>
+                </ul></body></html>

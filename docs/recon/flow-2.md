@@ -58,7 +58,7 @@ Every filter is sent on every request. Blank (or `0` where noted) means "no rest
 ### Department tree
 
 - The icon opens `/resources/common/DeptTree.jsp?operation=homeallTenders` in a popup (jsTree).
-- Branches load on demand: `/getDataForTree?id=<node id or 0>&showPrNd=false`. Each node is `<li id="deptid_<id>" dname="<name>" dtype="Ministry|…">`.
+- Branches load on demand: `/getDataForTree?id=<node id or 0>&showPrNd=false`. **The answer is JSON** (corrected 2026-11-07; the `<li>` is how the page draws it): a list of `{ pdeptid, data, state, attr: { id: "deptid_<id>", dname, dtype } }`.
 - Selecting **any** node writes `dname` and the id back to the main page, calls `window.opener.loadOffice()`, and closes the popup. The extension doesn't need the popup: it can read the tree from that endpoint and show its own picker.
 - Node-selection depth is the user's choice, so a whole ministry can presumably be chosen. To verify.
 
@@ -77,8 +77,8 @@ The **Select Category** link runs `loadCPVTree()` → `window.open('CPVTree.jsp'
 | Item | Finding |
 |---|---|
 | Popup URL | `/resources/common/CPVTree.jsp` (plain GET, no session) |
-| Root level | **61 categories, already in the popup's initial HTML.** Each node is `<li id="<node id>" cpvcode="45000000" cpvname="Construction work">` |
-| Children | on demand: `GET /GetCpvTree?id=<node id>&searchBy=&action=&keyword=` |
+| Root level | **61 categories, from `GET /GetCpvTree?id=0&searchBy=&action=&keyword=`, in JSON** (corrected 2026-11-07): `{ data, state, attr: { id, cpvcode, cpvname } }`. The page's script draws them as a list |
+| Children | on demand: the same request with `id=<node id>` |
 | Keyword search | form POST to `CPVTree.jsp` with `action=search`, `keyword=<text>`; no match replaces the tree with "No Records Found" |
 | Expansion of a ticked node | `GET /GetCpvTree?action=getChildData&cpvdesc=<category name>` returns that node's descendant **names** as a `;`-joined string |
 | Confirm | `input#btnGetCheckedNode` ("Submit") writes the result into the opener's `#txtaCPV` and closes the popup |
@@ -86,7 +86,7 @@ The **Select Category** link runs `loadCPVTree()` → `window.open('CPVTree.jsp'
 **What the filter value actually is.** Ticking one root node, **"Construction work"**, produced a **1,085-character string of 27 names**: the ticked parent followed by its level-2 descendants, `;`-separated. The search POST sends that whole string as `cpvCategory`. So the portal filters categories **by name, not by code**, and `cpvcode` is decoration.
 
 **Consequences for the extension**
-- The panel needs its own category picker; it must **not** open the portal's popup. It can fetch the same data: the 61 roots from `CPVTree.jsp`, children from `/GetCpvTree?id=…`, and a ticked node's expansion from `/GetCpvTree?action=getChildData&cpvdesc=…`.
+- The panel needs its own category picker; it must **not** open the portal's popup. It can fetch the same data: roots and children from `/GetCpvTree?id=…`, and a ticked node's expansion from `/GetCpvTree?action=getChildData&cpvdesc=…`.
 - It must reproduce the portal's string exactly: checked names joined by `"; "`, then `";"`, then the server's expansion string with its trailing separator removed. Simplest safe rule: build the string the same way and send it verbatim; never re-split it.
 - **Parsing trap:** category names can themselves contain `"; "` (e.g. *"Supporting and auxiliary transport services; travel agencies services"*), so splitting the value on `;` is ambiguous. Keep the list as an array of chosen names in our own state and only ever serialise it.
 - The value grows fast: one root category is already ~1 KB. A broad selection could produce a very long POST field. Worth a length guard, and worth measuring once if a user picks many roots.

@@ -1,0 +1,755 @@
+<!doctype html>
+<html><head>
+        
+        <meta http-equiv="Content-Type" content="xxxx/xxxx; xxxxxxx=XXX-9">
+        <title>Procurement Transaction Report (Nature Wise)</title>
+        
+        
+                
+        
+        
+        
+        
+    </head>
+    <body>
+        
+        <div class="mainDiv">
+            <div class="fixDiv">
+                
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form id="frmAfterLoginTop" name="frmAfterLoginTop" method="POST">
+    <input type="hidden" name="hiddenUserType" id="hiddenUserType">
+</form>
+
+
+
+
+
+
+
+
+
+
+
+<div class="topHeader">
+    <table width="100%" cellspacing="0">
+        <tbody><tr valign="top">
+            <td><div id="ddtopmenubar" class="topMenu_1">
+                    <ul>
+                        
+                        <li><a title="Xxxx" href="/Index.jsp" id="headTabHomePage"><img alt="Xxxx" src="/resources/images/Dashboard/HomeIcn.png">Xxxx</a></li>
+                        
+                        <li><a title="Xxxxxxx Xxx" href="/resources/common/InboxMessage.jsp" id="headTabMsgBox"><img alt="Xxxxxxx Xxx" src="/resources/images/Dashboard/msgBoxIcn.png">Xxxxxxx Xxx</a></li>
+                        <li><a title="Xxxxxxx" href="#" id="headTabContent"><img alt="Xxxxxxx" src="/resources/images/Dashboard/DocLibIcn_1.png">Xxxxxxx</a></li>
+                        
+                        <li><a title="Xxxxxx Xxxxx" rel="" href="#" id="headTabMngUser"><img alt="Xxxxxx Xxxxx" src="/resources/images/Dashboard/committeeIcn.png">Xxxxxx Xxxxx</a></li>
+                        <li><a title="Xxxxxx" href="javascript:void(0);" rel="ddsubmenu4" id="headTabReport" class="selected"><img src="/resources/images/Dashboard/reportIcn.png">Xxxxxxx</a></li>
+                        <li><a title="Xx Xxxxxxx" href="#" rel="ddsubmenu3" id="headTabMyAcc"><img alt="Xx Xxxxxxx" src="/resources/images/Dashboard/myAccountIcn.png">Xx Xxxxxxx</a></li>
+                        <li><a title="Xxxx" rel="helpsubmenubankuser" href="#" id="headTabHelp"><img alt="Xxxx" src="/resources/images/Dashboard/helpIcn.png">Xxxx</a></li>
+                                
+                    </ul>
+                </div>
+                
+                
+                
+                
+                 
+                
+                
+                <ul id="ddsubmenu4" class="ddsubmenustyle">
+                </ul>
+                
+                
+                <table width="100%" cellspacing="6" class="loginInfoBar">
+                    <tbody><tr>
+                        <td align="left" id="lblTime" style="font-weight: bold">Xxxxxxxxx, 99 Xxx, 9999 99:99:99 XXX</td>
+                        <td align="center">
+                            
+                            <b>Last Login :</b> Xxxxxxxxx, 9 Xxx, 9999 99:99:99
+                            
+                        </td>
+                        <td align="right">
+                            <img alt="Logout" src="/resources/images/Dashboard/userIcn.png" class="linkIcon_1"><b>Xxxxxxx,</b>
+                            Xxxxxxx Xxxxx Xxxxxxx  &nbsp;|&nbsp;
+                            <img src="/resources/images/Dashboard/logoutIcn.png" class="linkIcon_1" alt="Logout">
+                            <a href="/Logout.jsp" title="Logout">Logout</a>
+                            <input type="hidden" id="curDate" value=""></td>
+                    </tr>
+                </tbody></table></td>
+            <td width="141"><img src="/resources/images/Dashboard/e-GP.gif" width="141" height="64" alt="x-XX"></td>
+        </tr>
+    </tbody></table>
+</div>
+
+<div>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tbody><tr>
+            <td width="79%">
+                <div id="cascadeDiv" style="font-weight: bold"></div>
+                
+        <marquee behavior="scroll" scrollamount="3" style="height:25px; line-height:25px; color:#ff0000; font-size: 14px; font-weight: bold;">
+            
+        </marquee>
+        </td>
+        <td width="1%"></td>
+        <td width="20%" align="right">
+            <div class="ReadMore">
+                <strong><a href="/resources/common/ViewMarqueeList.jsp">Xxxx Xxx Xxxxxxxxxxxxx</a>&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+            </div>
+        </td>
+        </tr>
+    </tbody></table>
+</div>
+
+
+
+
+
+                
+                <div class="contentArea_1">                    
+                    <div class="pageHead_1">Procurement Transaction Report (Nature Wise)
+                        
+                        <span style="float: right;">
+                            <a href="javascript:void(0);" id="print" class="action-button-view">Print</a>
+                            &nbsp;&nbsp;
+                            
+                            <a class="action-button-savepdf" id="saveASPDF" href="/TorRptServlet?uTypeId=&amp;action=&amp;generate=&amp;financialyear=&amp;quater=&amp;depId=&amp;offId=&amp;program=&amp;project=&amp;quatername=&amp;depName=&amp;offName=&amp;programname=&amp;projectname=&amp;cmbBudType=&amp;budgetType=">Save As PDF</a>
+                        </span>
+                        
+                    </div>
+                    
+                    <div class="formBg_1 t_space">
+                        <form method="post" action="ProcTransReport.jsp">
+                            <input type="hidden" name="budgetType" id="budgetType"><table width="100%" cellspacing="8" cellpadding="0" class="formStyle_1">
+                                <tbody><tr>
+                                    <td width="15%" class="ff" align="left">By Financial Year :<span class="mandatory">*</span></td>
+                                    <td width="35%" align="left">
+                                        <select name="financialyear" class="formTxtBox_1" id="cmbFinancialYear" style="width:200px;"><option value="0">Please Select Financial Year</option>
+                                            <option value="2010-2011">2010-2011</option><option value="2011-2012">2011-2012</option><option value="2012-2013">2012-2013</option><option value="2013-2014">2013-2014</option><option value="2014-2015">2014-2015</option><option value="2015-2016">2015-2016</option><option value="2016-2017">2016-2017</option><option value="2017-2018">2017-2018</option><option value="2018-2019">2018-2019</option><option value="2019-2020">2019-2020</option><option value="2020-2021">2020-2021</option><option value="2021-2022">2021-2022</option><option value="2022-2023">2022-2023</option><option value="2023-2024">2023-2024</option><option value="2024-2025">2024-2025</option><option value="2025-2026">2025-2026</option><option value="2026-2027">2026-2027</option><option value="2027-2028">2027-2028</option>
+                                        </select>
+                                    </td>
+                                    <td width="15%" class="ff" align="left">By Quarter :</td>
+                                    <td width="35%" align="left">
+                                        <select name="quater" id="quater" style="width:200px;" class="formTxtBox_1"><option value="0-07-1_undefined-06-30">All Four Quarter</option><option value="0-07-1_0-09-30">Q1</option><option value="0-10-1_0-12-31">Q2</option><option value="undefined-01-1_undefined-03-31">Q3</option><option value="undefined-04-1_undefined-06-30">Q4</option><option value="0-07-1_0-12-31">Q1 and Q2</option><option value="0-10-1_undefined-03-31">Q2 and Q3</option><option value="undefined-01-1_undefined-06-30">Q3 and Q4</option><option value="0-07-1_undefined-03-31">Q1 and Q2 and Q3</option><option value="" 0-10-1_undefined-06-30="">Q2 and Q3 and Q4</option></select>
+                                        <input type="hidden" name="quatername" id="quatername">
+                                    </td>
+                                </tr>                                
+                                <tr>
+                                    <td class="ff t-align-left">Ministry / Division / Organization : </td>
+                                    <td class="t-align-left">
+                                        Xxxxxx Xxxxx Xxxxxxxxxx (XXX)<input type="hidden" id="txtdepartment" name="depName" value=""><input type="hidden" id="txtdepartmentid" name="depId" value="21">
+                                    </td>
+                                    <td class="ff t-align-left">PE Office :</td>
+                                    <td class="t-align-left">
+                                        
+                                        <select id="cmboffice" style="width: 200px;" class="formTxtBox_1" name="offId"><option value="933" selected="">Chattogram PWD Division-1,Chattogram</option><option value="934">PWD Resource Division, Dhaka</option><option value="935">Shere Bangla Nagar PWD Division-1, Dhaka</option><option value="936">Medical College PWD Division, Dhaka</option><option value="937">PWD EM Division-5, Dhaka</option><option value="938">PWD EM Division-8, Dhaka</option><option value="939">Cox's Bazar PWD Division</option><option value="940">Noakhali PWD Division</option><option value="941">Sylhet PWD Division</option><option value="942">Rajshahi PWD Division-2</option><option value="943">Rangpur PWD Division</option><option value="944">Khulna PWD Division-1</option><option value="945">Invalid Gazipur</option><option value="946">Barisal PWD Division</option><option value="947">Dinajpur PWD Division</option><option value="948">Munshiganj PWD Division</option><option value="949">Manikganj PWD Division</option><option value="950">Sirajganj PWD Division</option><option value="951">Natore PWD Division</option><option value="952">Jessore PWD Division</option><option value="989">INVALID 5</option><option value="1125">PWD EM Division-1, Dhaka</option><option value="1178">PWD EM Division-2, Dhaka</option><option value="1179">PWD EM Division-3, Dhaka</option><option value="1180">PWD EM Division-4, Dhaka</option><option value="1181">PWD EM Division-6, Dhaka</option><option value="1182">PWD EM Division-7, Dhaka</option><option value="1184">Office of The Chief Engineer of Public Works</option><option value="1220">Chattogram PWD EM Division-2</option><option value="1221">Narayangonj PWD Division, Narayangonj</option><option value="1226">Dhaka PWD Zone, Dhaka</option><option value="1229">Dhaka PWD Circle-1, Dhaka</option><option value="1230">Dhaka PWD Division-1, Dhaka</option><option value="1231">Dhaka PWD Division-2, Segunbagicha,Dhaka</option><option value="1232">City PWD Division, Abdul Gani Road, Dhaka</option><option value="1233">Dhaka PWD Circle-2, Dhaka</option><option value="1234">Dhaka PWD Division-3, Dhaka</option><option value="1235">Dhaka PWD Division-4, Dhaka</option><option value="1236">Eden Bhabon PWD Division, Bangladesh Secretariate, Dhaka</option><option value="1237">Invalid DMC PWD Div</option><option value="1238">Dhaka PWD Circle-3, Sere-e-Bangla Nagar, Dhaka</option><option value="1239">Shere Bangla Nagar PWD Division-2, Dhaka</option><option value="1240">Shere Bangla Nagar PWD Division-3, Dhaka</option><option value="1241">Mohakhali PWD Division, Mohakhali, Dhaka</option><option value="1242">Dhaka PWD Circle-4, Dhaka</option><option value="1243">Motijheel PWD Division, Segunbagicha, Dhaka</option><option value="1244">Azimpur PWD Division, New Market, Dhaka</option><option value="1245">Norshingdi PWD Division, Norshingdi</option><option value="1246">Invalid Munshiganj</option><option value="1247">Savar PWD Circle, Allenbari, Tejgaon, Dhaka</option><option value="1248">Mirpur PWD Division, Dhaka</option><option value="1249">Savar PWD Division, Dhaka</option><option value="1250">Gazipur PWD Division, Gazipur</option><option value="1251">Office of the Additional Chief Engineer(EM) of PWD, Dhaka</option><option value="1252">PWD EM Circle-1, Purtha Bhabon, Dhaka</option><option value="1253">PWD EM Circle-2, Dhaka</option><option value="1254">PWD EM Circle-3, Dhaka</option><option value="1255">Chattogram PWD Zone,Chattogram</option><option value="1256">Chattogram PWD Circle-1, Chattogram</option><option value="1257">Rangamati PWD Division, Rangamati</option><option value="1258">Chattogram PWD Circle-2, Chattogram</option><option value="1259">Chattogram PWD Division-3, Chattogram</option><option value="1260">Bandarban PWD Division, Bandarban</option><option value="1261">Chattogram PWD EM Circle,Chattogram</option><option value="1262">Cumilla PWD Circle, Cumilla</option><option value="1263">Cumilla PWD Division, Cumilla</option><option value="1264">Laksmipur PWD Division, Laksmipur</option><option value="1265">Khulna PWD Zone, Khulna</option><option value="1266">Khulna PWD Circle, Khulna</option><option value="1267">Satkhira PWD Division, Satkhira</option><option value="1268">INVALID OFFICE</option><option value="1269">INVALID</option><option value="1270">Invalid Barguna PWD Division, Barguna</option><option value="1271">PWD Training Academy &amp; Testing Laboratory</option><option value="1304">Wood 2</option><option value="1305">Invalid EM Workshop</option><option value="1306">PWD Maintenance Division, Dhaka</option><option value="1395">Bhola PWD Division</option><option value="1396">khagrachari pwd division</option><option value="1397">Rajshahi PWD Division-1</option><option value="1398">Sherpur PWD Division</option><option value="1552">Arboriculture pwd division</option><option value="1553">Invalid PWD Dhaka Division-3</option><option value="1556">Kishoreganj pwd division</option><option value="1560">Jamalpur pwd division</option><option value="1562">Netrokona pwd division</option><option value="1564">invalid ctg div1</option><option value="1565">Chattogram PWD Division -2, Chattogram</option><option value="1566">Invalid ctg div3</option><option value="1567">Chattogram  PWD  Division-4</option><option value="1568">Brammanbaria pwd division</option><option value="1569">Chandpur pwd division</option><option value="1570">Feni pwd division</option><option value="1571">Chapai Nawabganj pwd division</option><option value="1572">Pabna PWD Division, Pabna</option><option value="1573">Naogaon  pwd division</option><option value="1575">Bogra pwd division</option><option value="1576">Invalid Sirajgonj</option><option value="1577">Joypurhat pwd division</option><option value="1578">Kurigram PWD Division</option><option value="1579">Gaibandha PWD Division</option><option value="1580">Nilphamari PWD Division,Nilphamari</option><option value="1585">Mymensingh PWD Division, Mymensingh</option><option value="1596">Invalid PWD Trainining Academy</option><option value="1600">Khulna PWD Division-2</option><option value="1605">Thakurgaon PWD Division</option><option value="1634">Panchagarh PWD Division</option><option value="1635">Lalmonirhat PWD Division</option><option value="1636">Bagerhat PWD Division</option><option value="1637">Narail PWD Division</option><option value="1638">Jhenaidah PWD Division</option><option value="1639">Magura PWD Division</option><option value="1640">Chuadanga PWD Division</option><option value="1641">Meherpur PWD Division</option><option value="1644">Faridpur PWD Division</option><option value="1645">Rajbari PWD Division</option><option value="1646">Patuakhali PWD Division</option><option value="1647">Barguna  PWD Division</option><option value="1648">Perojpur PWD Division</option><option value="1649">Jhalokathi PWD Division</option><option value="1650">Gopalganj PWD Division</option><option value="1651">Madaripur PWD Division</option><option value="1655">Shariatpur PWD Division</option><option value="1657">Sunamganj PWD Division</option><option value="1658">Moulvibazar PWD Division</option><option value="1659">Hobiganj PWD Division</option><option value="1664">Chattogram Maintenance Division</option><option value="1665">PWD EM Workshop Division</option><option value="1667">PWD Wood Workshop Division</option><option value="1669">Rajshahi PWD Zone</option><option value="1670">Rangpur PWD Zone</option><option value="1671">Sylhet PWD Zone</option><option value="1672">Barisal PWD Zone</option><option value="1676">Rajshahi PWD Circle</option><option value="1677">Bogra PWD Circle</option><option value="1678">Rangpur PWD Circle</option><option value="1679">Jessore PWD Circle</option><option value="1680">Barisal PWD Circle</option><option value="1681">Sylhet PWD Circle</option><option value="1682">PWD EM P&amp;D Circle</option><option value="1683">Office of Additional Chief Engineer (Est &amp; Coord) of PWD</option><option value="1684">PWD Health Wing</option><option value="1685">PWD Planning &amp; Special Project</option><option value="1705">Kushtia PWD Division</option><option value="1741">Invalid EM-5 Dhk</option><option value="1871">Chattogram PWD EM Division 1</option><option value="1909">Invalid Gopalgonj</option><option value="2246">Tangail PWD Division</option><option value="2251">Invalid Satkhira</option><option value="2252">invalid satkhira</option><option value="2259">Maintenance Circle , Dhaka</option><option value="2420">PWD Mymensingh Circle</option><option value="2433">Invalid Division</option><option value="2434">PWD Survey Division</option><option value="2482">Urban Building Safety Project (UBSP)</option><option value="2637">Project Division 2</option><option value="2821">Invalid 4</option><option value="3578">EM Division of Uttora Apartment Project</option><option value="3579">Project Circle 1</option><option value="4232">Project Division 1</option><option value="4278">Chief Judicial Megistrate Court Building Project</option><option value="4663">Project Division 4</option><option value="5113">Population Project Cell</option><option value="5114">Audit and Monitoring Circle</option><option value="6475">Office of the Superintending Engineer (Devlopment)</option><option value="6605">Reserve</option><option value="6657">PWD EM PnD  Division 2</option><option value="6697">Population Project Cell (PPC)</option><option value="6905">PECU Circle</option><option value="6943">Planning and Special Project</option><option value="8438">PWD EM Circle 2, Dhaka</option><option value="9604">Gopalgonj PWD Zone</option><option value="9605">Mymensingh PWD Zone</option><option value="9606">Dhaka PWD metropolitan Zone</option><option value="9607">PWD EM P&amp;D Zone, Dhaka</option><option value="9608">Gopalganj PWD Circle</option><option value="9609">Tangail PWD Circle</option><option value="9610">Dinajpur PWD Circle</option><option value="9611">Pabna PWD Circle</option><option value="9612">Rangamati PWD Circle</option><option value="9643">PWD EM Division-9, Dhaka</option><option value="9644">PWD EM Division-10, Dhaka</option><option value="9645">PWD EM Division-11, Dhaka</option><option value="9710">PWD EM MIS Division 2</option><option value="9711">PWD MIS Circle</option><option value="13001">PWD EM Circle-4, Dhaka</option><option value="13479">Khulna P&amp;D Office</option><option value="13669">PWD EM MIS Division 3</option><option value="15352">EM Planning Circle</option><option value="15353">EM Design Circle</option><option value="15433">EM Planning Division1</option><option value="15559">Rajshahi PWD EM P&amp;D Division</option><option value="15576">EM Planning Division 2</option><option value="15577">EM Planning Division3</option><option value="16144">PWD EM Design Division 3</option><option value="16152">Project Division 5, Dhaka</option><option value="16203">PWD EM P&amp;D Division-3, Dhaka</option><option value="16231">PWD Project Circle-2, Dhaka</option><option value="16510">PWD EM MIS Division 1</option><option value="16747">PWD EM Design Division-2,Dhaka</option><option value="17028">PWD Design Division-6, Dhaka</option><option value="17216">Mymensingh PWD EM P&amp;D Division</option><option value="17343">PWD EM Wood Workshop Division ( Special Unit)</option><option value="17583">Office of the Executive Engineer(O &amp; M)</option><option value="19543">PWD Procurement Unit,Public Works Department</option><option value="19684">Construction of 123 Nos flats for government employees Project</option><option value="19781">PWD Design Division-5, Dhaka</option><option value="21867">Office of the Project Director of 112 Flat, Agargaon</option><option value="21882">PWD EM P&amp;D Division, Chattogram</option><option value="22363">PWD Plumbing Unit-3, Dhaka</option><option value="22673">Chattogram PWD EM  Zone,Chattogram</option><option value="23004">PWD Design Zone</option><option value="26020">Dhaka PWD Circle-5, Dhaka</option><option value="26396">PWD EM Design Division 1</option><option value="26514">Dhaka PWD Division-5, Dhaka</option><option value="26985">Pabna PWD EM Division, Pabna</option><option value="27137">Rajshahi PWD EM Division, Rajshahi</option><option value="27156">Khulna PWD EM Division, Khulna</option><option value="28527">Establishment-1, Office of the Chief Engineer, Public Works Department</option><option value="28962">Sher-E-Bangla Nagar PWD Division-4, Dhaka</option><option value="29886">PWD EM Division-12, Dhaka</option><option value="29913">PWD EM Division-13, Dhaka</option><option value="30829">PWD EM PnD Division-1, Dhaka</option><option value="31343">PWD Monitoring Division, Dhaka</option>
+                                        </select>
+                                        <input type="hidden" id="offName" value="" name="offName">
+                                        
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="ff">By Programme :</td>
+                                    <td>
+                                        <select name="program" id="program" style="width:200px;" class="formTxtBox_1"><option value="0">Please Select Programme</option>
+                                            <option value="225">10 HP centrifugal pump motor set for 216 nos. Flat building project at Halisahar ,Chittagong.</option><option value="170">10 Town  Installation</option><option value="1687">119 nos solar street light (30 watt) Installation at kendua pourashava, netrokona, FY_2021-2022</option><option value="2268">1st &amp; 2nd trence Tender</option><option value="412">2016-17 ADP Shahzadpur</option><option value="1019">2018-2019 Sreemangal Paurashava</option><option value="1251">2019-20 Sreemangal Paurashava</option><option value="1066">2019-2020 Sreemangal Paurashava</option><option value="1661">2020-2021</option><option value="1665">2020-21</option><option value="1700">2021-2022 Annual Development Program</option><option value="2180">2022-2023_ADP and Revenue</option><option value="2258">2022-23ADP</option><option value="4735">2026-2027 ADP Special</option><option value="688">250 KVA generator</option><option value="4590">3 Union Parishad Renovation</option><option value="167">37 Dist.Town Water Supply Project</option><option value="285">37 District town water supply project</option><option value="12">3rd Shitalakhya Bridge Construction Project</option><option value="40">4-Laining of Madaripur(Mostofapur)-Shariatpur-Road Via Kazirtak Bridge</option><option value="4">4-Laning of Gabtoli Swarighat(Badamtoli) Road</option><option value="1384">40 Pourashava and GC</option><option value="190">40 Pourashavas &amp; Growth Centre Water Supply &amp; Environmental Sanitation</option><option value="622">40 Pourashavas and Growth Centres Water Supply and Envirornmental Sanitation Project (II Phase).</option><option value="47">4936 Gopal</option><option value="49">4936 Raj</option><option value="2390">4th Health Population and Nutrition Sector Program (HPNSP)</option><option value="744">7 INMAS</option><option value="89">8-Lanning of Jatrabari-katchpur Road (Polder Road)</option><option value="2665">A 23-24</option><option value="2906">A 24-25</option><option value="1988">A D P</option><option value="1981">A Novel Bio-mass Drived Na-K-ion Battery Prototype for the Next Generation Low Cost Energy Storage System</option><option value="1235">A.D.P</option><option value="1346">A.D.P-2019-20</option><option value="1347">A.D.P-2020-21</option><option value="2485">Ab. Alim Malla</option><option value="846">Abasik Building and Hall Repairing</option><option value="1096">Abasik Building Repair and maintenance</option><option value="390">Academic and Infractural Development of Jessore University of Science &amp; Technology</option><option value="1853">Accelerating and Strengthening Skills for Economic Transformation (ASSET)</option><option value="4470">Accelerating genetic gain in wheat through hybrid breeding in Bangladesh, Ethiopia and Pakistan</option><option value="4718">Action Research on Extension of Ecologically Friendly Agriculture Technology through Village based Organization</option><option value="787">Active  Pharmaceutical Ingredient ( API) Industrial Park ( 3rd Revised)</option><option value="1556">AD B</option><option value="1412">AD P</option><option value="444">ADB</option><option value="3159">ADB</option><option value="706">ADB (JICA), Nageswari, Kurigram</option><option value="1345">ADB 2020 2021</option><option value="2302">ADB 2021 2022</option><option value="4556">ADB Project SRSVDT (2024-29)</option><option value="1541">ADB-21</option><option value="1159">ADB_Haluaghat</option><option value="364">Administration</option><option value="421">Administration (SID)</option><option value="310">ADP</option><option value="461">ADP</option><option value="1121">ADP</option><option value="1586">ADP</option><option value="1344">ADP</option><option value="4587">ADP</option><option value="4535">ADP</option><option value="4533">ADP</option><option value="4594">ADP</option><option value="4595">ADP</option><option value="4622">ADP</option><option value="4645">ADP</option><option value="4661">ADP</option><option value="4709">ADP</option><option value="4765">ADP</option><option value="3151">ADP</option><option value="3214">ADP</option><option value="3078">ADP</option><option value="3079">ADP</option><option value="3090">ADP</option><option value="3104">ADP</option><option value="3140">ADP</option><option value="2930">ADP</option><option value="2954">ADP</option><option value="3024">ADP</option><option value="3058">ADP</option><option value="4469">ADP</option><option value="4457">ADP</option><option value="4493">ADP</option><option value="4511">ADP</option><option value="4419">ADP</option><option value="3271">ADP</option><option value="3302">ADP</option><option value="3313">ADP</option><option value="3318">ADP</option><option value="3362">ADP</option><option value="2926">ADP</option><option value="2278">ADP    22-23</option><option value="2645">ADP   2023-24</option><option value="1245">ADP  2019-2020</option><option value="1578">ADP  2020-2021</option><option value="2674">ADP  Fund</option><option value="2911">ADP  Mohanganj 2024-25</option><option value="4623">ADP  Special</option><option value="2861">ADP &amp; RDP</option><option value="1134">ADP &amp; Revenue</option><option value="1852">ADP &amp; REVENUE 2021-22</option><option value="2662">ADP &amp; Revenue Budget Development Project</option><option value="565">ADP &amp; Revenue, Sarail, Brahmanbaria</option><option value="2691">ADP &amp; Revenue_2023-2024</option><option value="3270">ADP &amp; SPE</option><option value="2883">ADP &amp; UDF Jhenaidah sadar</option><option value="1975">ADP &amp; UPDF_2021-2022</option><option value="2543">ADP &amp; WON FUND</option><option value="519">ADP &amp;Upazila Development Fund</option><option value="949">ADP ( Development Aid )</option><option value="797">ADP ( Gowaingha) 2018-2019</option><option value="359">ADP ( Surplus Revenue) Belkuchi 2016-2017</option><option value="578">ADP (17-18)</option><option value="873">ADP (18-19)</option><option value="1233">ADP (19-20)</option><option value="549">ADP (2017-18)</option><option value="1058">ADP (2018-19)</option><option value="1152">ADP (2019-2020)</option><option value="1783">ADP (2021-2022)</option><option value="2089">ADP (2022-2023)</option><option value="2126">ADP (2022-23)</option><option value="2274">ADP (2022-23) &amp; Upazila Development Bugget, Jhenaidah Sadar.</option><option value="2146">ADP (2022-23).</option><option value="2579">ADP (2023-2024)</option><option value="2577">ADP (2023-24)</option><option value="2797">ADP (2024-2025)</option><option value="3069">ADP (2025-2026)</option><option value="398">ADP (5010) &amp; UZP Development Fund (3482), Palashbari, Gaibandha.</option><option value="999">ADP (Block Fund)</option><option value="2802">ADP (Block Garnt) Haziganj</option><option value="2709">ADP (Block Grant)</option><option value="2708">ADP (Dev)</option><option value="2801">ADP (Dev) Haziganj</option><option value="597">ADP (Mohanpur), 17-18</option><option value="950">ADP (Mohanpur), 18-19</option><option value="869">ADP (Moulvibazar Sadar Upazila)</option><option value="1281">ADP (nawabganj) 2019-20</option><option value="681">ADP (Rajibpur Upazila Parishad)</option><option value="613">ADP (Sreemangal Upazila Parishad)</option><option value="394">ADP (Surplus Revenue) Parbatipur 2016-17</option><option value="1584">ADP (Surplus Revenue-2020-2021)Fulbari,Dinajpur</option><option value="1871">ADP (Surplus Revenue-2021-2022)Fulbari,Dinajpur</option><option value="541">ADP (Upazila Parishad)</option><option value="2533">ADP -2023-2024</option><option value="2523">ADP -2023-24</option><option value="4474">ADP -2025-26</option><option value="2137">ADP -22-23</option><option value="1596">ADP 01</option><option value="1639">ADP 02</option><option value="1208">ADP 1</option><option value="1401">ADP 2</option><option value="1510">ADP 20-21</option><option value="607">ADP 2017-18</option><option value="629">ADP 2017-18  Gangachara, Rangpur</option><option value="640">ADP 2017-18  Gangachara, Rangpur</option><option value="732">ADP 2017-18 tendering</option><option value="550">ADP 2017-2018 Madhabpur Pourashava</option><option value="639">ADP 2017-2018 Niamatpur</option><option value="425">ADP 2017-2018 Sherpur</option><option value="998">ADP 2018-19 Madhabpur Pourashava</option><option value="866">ADP 2018-19, Kishoreganj, Nilphamari</option><option value="776">ADP 2018-2019</option><option value="1029">ADP 2018-2019 Barlekha Pourashava</option><option value="1006">ADP 2018-2019 Kulaura Pourashava</option><option value="816">ADP 2018-2019 Madhabpur Pourashava</option><option value="899">ADP 2018-2019 Niamatpur</option><option value="871">ADP 2019</option><option value="1087">ADP 2019-20 Madhabpur Pourashava</option><option value="1231">ADP 2019-20, Kishoreganj, Nilphamari</option><option value="898">ADP 2019-2019 Niamatpur</option><option value="1164">ADP 2019-2020</option><option value="1340">ADP 2019-2020 Barlekha Pourashava</option><option value="1116">ADP 2019-2020 Madhabpur Pourashava</option><option value="1353">ADP 2020-2021</option><option value="1450">ADP 2020-2021 Chunarughat Pourashava</option><option value="1431">ADP 2020-2021 Kulaura Pourashava</option><option value="1362">ADP 2020-2021 Madhabpur Pourashava</option><option value="1446">ADP 2020-2021 Mirsarai Pourashava</option><option value="1515">ADP 2020-2021 Sreemongal Pourashava</option><option value="1496">ADP 2020-2021, Barura,Cumilla</option><option value="1367">ADP 2020-21</option><option value="1387">ADP 2020-21, Kishoreganj, Nilphamari</option><option value="1507">ADP 2020-21, Taraganj, Rangpur</option><option value="1782">ADp 2021-2022</option><option value="2009">ADP 2021-2022 Chunarughat Pourashava</option><option value="1947">ADP 2021-2022 Haimchar</option><option value="1995">ADP 2021-2022 Kulaura Pourashava</option><option value="1819">ADP 2021-2022 Upazila Development Fund</option><option value="1784">ADP 2021-2022.</option><option value="1788">ADP 2021-22</option><option value="1195">ADP 2021-22</option><option value="1831">ADP 2021-22 Madhabpur Pourashava</option><option value="1927">ADP 2021-22 Sreebordi</option><option value="1911">ADP 2021-22, Kishoreganj, Nilphamari</option><option value="1963">ADP 2022</option><option value="2095">ADP 2022-2023</option><option value="2314">ADP 2022-2023 Chunarughat Pourashava</option><option value="2011">ADP 2022-2023 Madhabpur Pourashava</option><option value="2092">ADP 2022-2023 Sreemongal Pourashava</option><option value="2917">ADP 2022-2025</option><option value="2112">ADP 2022-23</option><option value="2321">ADP 2022-23.</option><option value="2414">ADP 2023-2024</option><option value="2686">ADP 2023-2024 Chunarughat Pourashava</option><option value="2465">ADP 2023-2024 Moulvibazar Pourashava</option><option value="2567">ADP 2023-2024 Niamatpur</option><option value="2503">ADP 2023-2024 Shaistajanj Pourashava</option><option value="2519">ADP 2023-2024 Sreemangal Pourashava</option><option value="2633">ADP 2023-2024.</option><option value="2427">ADP 2023-24</option><option value="2670">ADP 2023-24 KULAURA POURASHAVA</option><option value="2626">ADP 2024</option><option value="2788">ADP 2024 - 25</option><option value="2796">ADP 2024-2025</option><option value="3006">ADP 2024-2025 Chunarughat Pourashava</option><option value="2912">ADP 2024-2025 Shyestaganj Pourashava</option><option value="2850">ADP 2024-2025 Sreemangal Pourashava</option><option value="3010">ADP 2024-2025 Zakiganj Paurashava</option><option value="2952">ADP 2024-25</option><option value="2972">ADP 2024-25</option><option value="2999">ADP 2024-25</option><option value="2723">ADP 2024-25</option><option value="2793">ADP 2024-25 KULAURA POURASHAVA</option><option value="2846">ADP 2024.2025.</option><option value="2771">ADP 2024_25</option><option value="2878">ADP 2025</option><option value="2935">ADP 2025</option><option value="4413">ADP 2025-2026</option><option value="4505">ADP 2025-2026 Chunarughat Pourashava</option><option value="4628">ADP 2025-2026 Mirsharai Pourashava</option><option value="4631">ADP 2025-2026 Moulvibazar Pourashava</option><option value="3227">ADP 2025-2026 Shyestaganj Pourashava</option><option value="3043">ADP 2025-2026 Zakiganj Pourashava</option><option value="3200">ADP 2025-25</option><option value="3289">ADP 2025-26</option><option value="3352">ADP 2025-26</option><option value="3333">ADP 2025-26</option><option value="4458">ADP 2025-26</option><option value="4460">ADP 2025-26</option><option value="4414">ADP 2025-26</option><option value="4424">ADP 2025-26</option><option value="4385">ADP 2025-26</option><option value="3045">ADP 2025-26 KULAURA POURASHAVA</option><option value="4759">ADP 2026-2027</option><option value="4668">ADP 2026-2027</option><option value="4696">ADP 2026-2027 Moulvibazar Pourashava</option><option value="4644">ADP 2026-2027 Zakiganj Pourashava</option><option value="4697">ADP 2026-27</option><option value="4675">ADP 2026-27</option><option value="4716">ADP 2026-27</option><option value="4758">ADP 2026-27</option><option value="4638">ADP 2026-27 KULAURA POURASHAVA</option><option value="1940">ADP 21-22</option><option value="1844">ADP 21-22</option><option value="2116">ADP 22-23</option><option value="2257">ADP 22-23 (with UDF)</option><option value="2158">ADP 23</option><option value="2661">ADP 23--24</option><option value="2496">ADP 23-24</option><option value="2658">ADP 24</option><option value="2823">ADP 24---25</option><option value="2822">ADP 24--25</option><option value="2770">ADP 24-25</option><option value="3004">ADP 24-25 (Upazila Development Assistance)</option><option value="2874">adp 24-25 magura sadar</option><option value="2856">ADP 24-25 Maintenance</option><option value="3348">ADP 25---26</option><option value="3353">ADP 25--26</option><option value="3351">ADP 25--26</option><option value="3228">ADP 25-26</option><option value="2571">ADP 38614</option><option value="417">ADP allocation 2016-17, Faridganj</option><option value="2657">ADP and Dev Budget (2023-24), Sadar, Jhenaidah</option><option value="3359">Adp and Development</option><option value="1928">ADP and Development fund, 2021-2022</option><option value="1551">ADP and Revenue</option><option value="3285">ADP and REVENUE</option><option value="1736">ADP and Salami Fund</option><option value="1616">ADP and UDF</option><option value="2941">ADP and UDF</option><option value="1617">ADP and UDF (own)</option><option value="1615">ADP and UUF</option><option value="2994">ADP Anwara 2024-25</option><option value="3026">ADP Anwara 2025-26</option><option value="4410">ADP Assasuni</option><option value="677">ADP Atrai 2017-18</option><option value="2811">ADP Beanibazar 2024-25</option><option value="3366">ADP Beanibazar 2025-26</option><option value="358">ADP Belkuchi (Maint.) 2016-2017</option><option value="357">ADP Belkuchi 2016-2017</option><option value="1329">ADP Bhairab Paurashava</option><option value="1386">ADP Bhairab Paurashava-2020-21</option><option value="1710">ADP Bhairab Paurashava-2021-22</option><option value="698">ADP BhurungamariKurigram</option><option value="1987">ADP Boda 2021-22</option><option value="2318">ADP CHARBHADRASAN</option><option value="650">ADP Chirirbndar</option></select>
+                                        <input type="hidden" name="programname" id="programname">
+                                    </td>
+                                    <td class="ff">By Project :</td>
+                                    <td>
+                                        <select name="project" id="project" style="width:200px;" class="formTxtBox_1"><option value="0">Please Select Project</option>
+                                            <option value="11821">"Carbon Emission Reduction and Environmental Development of Banshkhali Municipality to Reduce Greenhouse Gas Emission" Project Funded By (BCCT).</option><option value="3474">"Climate Resilient Rural Road Rehabilitation of Bhanga Upazila, District: Faridpur" under Climate Change Trust Fund</option><option value="15459">"Completion of Construction Works of 3rd Academic and Central Laboratory Building (10 Storied Building with 10 Storied Foundation) and Other Buildings at Noakhali Science and Technology University" Project</option><option value="6361">"Construction of Counter Terrorism and Transnational Crime centre of Bangladesh Police"</option><option value="8701">"Ecosystem-based Approaches to Adaptation (EbA) in the Drought-Prone Barind Tract and Haor Wetland Area" (BWDB Part)</option><option value="2822">"Establishment of 05 (Five) Institute of Marine Technology (IMT) at Munshiganj, Faridpur,Chandpur,Sirajganj and Bagerhat (3rd Revised).</option><option value="9453">"Establishment of deep tube wells for supply of potable water in drought prone areas of Feni district through the use of renewable energy (solar) to cope with the effects of climate change" Project.</option><option value="411">"Establishment of Fire Service &amp; Civil Defense Stations in 156 important  Upazilla/Places of the country" in which one at Dhobaura, Mymensingh.</option><option value="11859">"Local Government Covid-19 Response &amp; Recovery Project(Kazipur Pourashava)"</option><option value="14548">"Preparation of Strategic  Plan for Barishal Metropolitan Area" project</option><option value="16194">"Replacement and reconstruction of unusable structures of Dhaka Medical College"</option><option value="12411">"Upgradation of Barisal Abdur Rab Serniabat Stadium in the international standard and development of existing district swimming pool''.</option><option value="4115">(1) Construction of boundary wall with grill and 01 No. gate at river bank graveyard under Haluaghat Pourashava, Dist - Mymensingh. (2) Improvement of road by single layer brick flate soling at central Crematory road (L= 52.00m, W=3.00m) and resetting of RCC Palisading beside road under Haluaghat Pourashava,  Dist - Mymensingh.</option><option value="4194">(1) Construction of boundary wall with grill and 01 No. gate at river bank graveyard under Haluaghat Pourashava, Dist - Mymensingh. (2) Improvement of road by single layer brick flate soling at central Crematory road (L= 52.00m, W=3.00m) and resetting of RCC Palisading beside road under Haluaghat Pourashava, Dist - Mymensingh.</option><option value="2261">(A) BC Reparing and Maintaince work a) Bijoysing Circuit house, Kutirhat road b) Modhupur Khirod shah road &amp; c) Hazart Phagla miah road at w#11,12,13&amp;15. (B) Construction of RCC drain and Cross drain work Inside of Govt Zia Mohilla College at w#13, (C) Improvement of B.C Road work in Hazi Badsha Miah road at word no-12, (D) Construction of Road side RCC Retaining wall, RCC drain and CC Road work at Soadagorpara at  w#18 under Feni Pourashava.</option><option value="9570">(A) Gorkhai Poccim para Sattar House to Eid Gah Mart  Road C C Dara Unnayan  at word no-03 under durgapur pourashava , Rajshahi.( Ch: 00-135m). (B) Gorkhai Main Road to A Rahman House Road C C Dara Unnayan  at word no-03 under durgapur pourashava , Rajshahi.( Ch: 00-55.00m). A&amp;B= total=190.00m</option><option value="9569">(A) Horipur Main Road to Hozrat house Road.( Ch: 00-67.00m). (B) Durgapur A. Rosid house Road to Sazzad house Road. ( Ch: 00-65.00m) (C) Durgapur Main Road  to Eyahiya house Road Ch: 00-41.00m) , Rajshahi.  (D) Durgapur Hakim Master house Road  to Azahar Chairman house Road C( Ch: 00-156.00m).(E) Durgapur  purbo par jama morzid boundary wall at word no-07 under durgapur pourashava,Rajshahi.(Ch:00-20.00m) Total=L=329.00m</option><option value="964">(a) Improvement of Carpeting Road from Durlovpur Uttarpara Jamtola H/O Pro. Md. Tofazzal Hossain-H/O Amjad Hossain Road at Ch. 00-450m (b) Improvement of Carpeting Road from Durlovpur Pucca Road Jam Tree-Durlovpur Road Ch. 00-1664m District: Jhenaidah</option><option value="9573">(A)Dhorampur moddo para Main Road to A Rahman house Road  ( Ch: 00-67.00m). (B) Dhorampur moddo para Main Road to Dr. Babul House Road (Ch: 00-16.00). (C) Dhorampur moddo para Main Road to Zamal House Road ( Ch: 00-19.00m). (D) Dhorampur Silal para Rosid house to Kamal &amp; Akram House Road C C Dara Unnayan ( Ch: 00-107.00m). (E) Dhorampur Poccim para Roich house Purbo Side &amp; Dhorampur Sc hool Filed Pocim  mata Protection Wall at word no-09 under durgapur pourashava , Rajshahi.L=75.00m</option><option value="1562">(ADP-01-REVENUE)upazila parishad baundary wall raiganj.sirajganj.</option><option value="1564">(ADP-01-REVENUE)upazila parishad maintaince of quater &amp; others  raiganj.sirajganj.</option><option value="12980">(ADP/ 2024-2025)</option><option value="15875">(Special Progect)</option><option value="12877">(UDF) Upazila Development FUND</option><option value="10425">(UGDP)Upazila Governess and Development Project</option><option value="238">- Construction of Jamalganj-Sunamganj Road</option><option value="10232">-Upazila Govarnce &amp; Development Project-(UGDP)</option><option value="10915">.Local Government COVID-19 Response &amp; Recovery Project (LGCRRP), Homna Paurashava, Cumilla</option><option value="9438">.Upazila Governance and Development</option><option value="1767">:  	Up-gradation of Chapainawabganj District Hospital from 100 to 250 Bed</option><option value="2457">: Construction of Bangladesh Public Service Commission Complex (from 7th to 10th floor) at Sher -e -bangla  Nagar,  Dhaka (3rd Phase)</option><option value="2963">: Construction of Railway Overpass at Gatepar  area rail crossing in Jamalpur Town</option><option value="15147">: Development of Non-Enzymatic Electrochemical Sensors for the Sensitive and Selective Detection of Antibiotic Drugs in Clinical and Environmental Samples</option><option value="2850">: Infrastructure Development of Cultural Institute for Khagrachari Small Ethnic Group.</option><option value="3928">:Normalizing Furnace Repair, maintenance (including required materials) work &amp; Furnace Survey Report by any competent certified body at Heat Treatment Section (National Tubes Ltd 8Ã???Ã??Ã?Â¢?Ã??Ã?Â¯Ã??Ã?Â¿Ã??Ã?Â½ Mill)</option><option value="2404">0000</option><option value="14989">01 No 2000kg 10 stop passenger Lift at Kurmitola General Hospital, Dhaka.</option><option value="15803">1 Appraisal Cum Dev Well (Begumganj 5) &amp; 2 Exploratory Well (Begumganj 6 and Sunetra2) Drilling Project</option><option value="10049">1 Exploration Well (Srikail North-1A) and 2 Appraisal cum Development Well( Sundalpur-3 &amp; Begumgonj-4 (West) Drilling Project</option><option value="12944">1.	Construction of Box Culvert on the Road of Nunir Haor 2.	Development of the Road from Muti Member's House to Yakub Mia's House 3.	Development of the Road from Mr. Selim's House beside Rahela GPS to Gias Uddin's House</option><option value="12938">1.	Construction of Drain from Humaipur Bazar's Stair to Adel Member,s House. 2.	Construction of CC Road From Uzaikhali Morshid Mia's Land to Natun Bari 3.	Construction of the Rest Part of the Retaining Wall of Hospital Ground</option><option value="12939">1.	Construction of Maizchar GPS Connecting Foot-bridge 2.	Placement of Ring Pipe along Canel of Aynargope Bura Gasch to flow Water 3.	Construction of Box Culvert beside the Land of Mr. Alim Uddin of Purakanda, North Side</option><option value="12941">1.	Construction of Ramp and Road from Usmanpur to Haor 2.	Development of HBB Road from Shahpur Sekandar Mohajon's House to Shahpur Graveyard  3.	Setting of CC camera around the Abdul Mannan Swapon School and College Campus 4.	Development of Road from Kazi Bari to Borokhatula EidGah 5.	Development of Shosher Dighi Road by Brick Soling</option><option value="12940">1.	Construction of Road from Zoaria Islam Uddin's House to Mazlu Rahman Master's House 2.	 Construction of Culvert at Nalpara, Gazaria 3.	Development of Road from Gazaria GPS to Abdur Rahim's House 4.	Development of Road from the Opposite of Mrittika School to Gazaria Bill Par  5.	Construction of Slab of Old Culvert on Zoaria-Kalasuti Road</option><option value="12953">1.	Development of Gayanpur GPS front 200m Road by RCC 2.	Development of the Road from Baligao Golapâ??s House to Graveyard  3.	Development of Road from Bajitpur-Ruderpudda Road to Mir Jalil House  4.	Development of Road from Nokla-Shorishapur Road to Jamal Uddin House</option><option value="12946">1.	Development of Gayanpur GPS front 200m Road by RCC 2.	Distribution of Bench/Furniture to the various Educational Institutions 3.	Development of Road from Bajitpur-Ruderpudda Road to Mir Jalil House  4.	Development of Road from Nokla-Shorishapur Road to Jamal Uddin House</option><option value="12943">1.	Development of Road from Mirzapur Main Road to Badshah Mia's House by RCC 2.	Construction of Guide-wall beside the Road from Gazirchar Main Road to Babu Nangar Faruq Mia's House 3.	Repairing of the Road form Mirzapur Cross-road to Ferdous Mia's House 4.	Development of the Road from Deputy Bari to Eidgha</option><option value="12945">1.	Development of Road from Mr. Ali's House to Satani Mosque by Brick Soling 2.	Development of Road from Board Bazar-MP Ghat Road to Chengahati Shahpur Bridge Approach by HBB 3.	Repairing of Ayetullah GPS front Road by RCC 4.	Development of Dighirpar Rishipara GPS Connecting Road by Brick Soling</option><option value="12942">1.	Development of Road from Sujatpur Mosque at CnB Raod to Community Clinic near Ashinol by Brick Soling 2.	Development of Road from Indurdair Meher Ali's House to Milon Mia's House by Brick Soling 3.	Development of Road from Macshimpur Shukkur Ali's House to Sekandar Mia's House by CC 4.	Development of Road from Puargao Natun Bazar to Sararchar-Pirijpur paved Road</option><option value="8048">1.	Supply and Repair of Different Types of Spare Parts for 3(three) nos. Skid Steer Loader.</option><option value="504">1.	Supply of Electrical Goods for the maintenance of PWD E/M Subdivision 15 &amp; 16, Dhaka, adjacent quarters and Wood Workshop buildings.</option><option value="12008">1. Boliardi Manik Mia's House - Community Clinic's Road Pallasiding 2. Ghahotia, Gajirchar West Para Jam e Mosque AC Setting 3. Construction of Boundary Wall and Gate of Pirijpur Union Parishad 4. Construction of Drain in Boliardi Ashroyon Project 5. Baliardi Moddhapara Enam' House front Ramp/Ghatla Construction 6. Usmanpur 3 no. Ward's Road Development by HBB</option><option value="10558">1. Boundary Wall and Gate Construction of Koilag UP 2. Road from Koilag Chourasta to Holdivita Mosque 3. Ghatla Construction in front of Kadongi River and Koilag Rahela Mistu Mia's House 4. Road from Hilchia Prosit Paul House to Tapon Bonik House</option><option value="10559">1. Guide Wall beside the road from Dilalpur Fulbaria Khoyrat Mia,s House to Khaled Mia's House 2. Road of Boliardi East Para Last End 3. Road from Ghagotia Iqbal Mia's House to Golap Mia's House 4. Road of Middle Ghagotia Mosque</option><option value="12153">1. Heroic Freedom Fighter Shahjahan Mia's House front Protection Work 2. Khaanar para Zakir Mia's House Road Soling 3. Sorisha pur Zakir Mia's House Road Soling 4. Pudda Govt. Primary School Road U-Drain and Palasiding Wall 5. Duaygao Nayem Uddin's House front U-Drain 6. Kamerbali GPS Connecting road</option><option value="12154">1. Humaipur Afjal Road to Faruk Mia's House road and U-Drain 2. Hospital Front Protection Work 3. Banaul Govt. Primary School's Protection Work 4. Jalal Mia's House Ghatla 5. Nama Gosaypur Graveyardâ??s Wall 6. Parkachua Islam Uddin's House Front Ghatla 7. Humaipur Hindupara Wall Repair and Work 8. Jaforpur Hazi Gaffar Mia's House to Kashem Ali's House Road</option><option value="10557">1. Pukka Ghatla Construction at Shri Shri Rokkha Kali Mondir, Boali Shibpur 2. Repair of Broken Wall of Humaipur Hospital Playground 3. Guide Wall from Ujaikhali South end Siri Ghatla to Main Road 4. Road from Satani Kentu Mia's House to Boiler of Habib Mia 5. Ghatla Construction in front of Shishu Mia's House at Maizchar UP ward no. 02</option><option value="12009">1. Purbo Kutubpur GPS Connecting Road Development 2. Purbo Kutubpur Kadir Bhuiyan's House to Gang Par Jahir Mia's House Road Side Palasiding 3. Nurpur Joynal Mia's House to Sararchar CnB Road Development 4. Teghoria Kamal's House to Nazrul's House Road Development</option><option value="12152">1. Rahela Sarkar Bari Madrasa Road Soling 2. Dilalpur UP's Bahernagar Molla Bari's Pond's Protection Wall 3. Bagpara Madrasa to Sayem Uddin's House road 4. Moddhohati Chengabon Graveyardâ??s Wall's remaining part</option><option value="2434">1. Repair &amp; maintenance of DPHE, Panchagarh Office Cum-godown under Reveinue Budget during the year 2017-2018,   2. Repair &amp; maintenance (Renovation) of Boundary wall under DPHE, Panchagarh,   3. patent stone of roof at DPHE, Panchagarh IB under Reveinue Budget during the year 2017-2018).</option><option value="10556">1. Road from 6no. Ward's East Kutubpur Mr. Taher's House to Nokla Shorishapur UZR 2. Road Beside East Pirijpur Sondo Mia's House to Last Border of Pirijpur UP 3. Road from Sararchar-Bajitpur C&amp;B Road to Kashipur via Nurpur, Siddique Mia's House</option><option value="798">1.5 Million Consumer Connection through Rural Electrification Expansion</option><option value="106">1.8 Million Consumer Connection Through Rural Electrification</option><option value="342">10 Town Power Distribution System Development Project</option><option value="8965">119 nos solar street light</option><option value="13469">180333</option><option value="13458">2</option><option value="12556">2 Appraisal cum Development Well( Sundalpur-4 &amp; Sreekail-5) and 2 Exploration Well (Sundalpur South-1 &amp; Jamalpur-1) Drilling Project</option><option value="10047">2 Nos Exploration Wells (Tobgi-1 &amp; Illisha-1) and 1 No Appraisal cum Development Well ( Bhola North-2) Project</option><option value="503">2.	Electrical repair, change and other works for the regular maintenance of different flats of 1800sqft Govt. higher officialsâ?? resident  Purto Nibash â?? 3, Gulshan, Dhaka.</option><option value="8049">2.	Supply of New and Refilling of Old Fire Extinguisher.</option><option value="2811">2. Establishment of 11 secondary schools  &amp; 6 Colleges (Government) in Dhaka Metropolitan City (3rd Revised).</option><option value="15087">2000 Hp Rig Procurement Project</option><option value="14980">2000kg 10-stop 01 No passenger Lift of Kurmitola General Hospital, Dhaka.</option><option value="10610">2022-2023_ADP and Revenue</option><option value="12231">2023-2024_ADP and Revenue</option><option value="16187">2026-2027 Derai Pourashava</option><option value="16068">2026-2027 Sreemongal Pourashava</option><option value="10763">224087000</option><option value="9181">224317400</option><option value="8353">224324400</option><option value="9046">224338100</option><option value="1831">23rd Dhaka International Trade Fair (DITF) - 2018</option><option value="3035">24th Dhaka International Trade Fair (DITF)- 2019</option><option value="9345">26th Dhaka International Trade Fair (DITF) - 2022</option><option value="12378">2D Siesmic Survey Over Exploration Block 6B South &amp; 10</option><option value="13047">2D Siesmic Survey Over Exploration Block 7 &amp; 9</option><option value="15859">3 Exploratory Wells (Srikail Deep-1, Mubarakpur Deep-1 and Fenchuganj South-1) Drilling Project</option><option value="2001">3 nos Scheme Implementation</option><option value="1862">3-storey Vertical Extension of DTE Building Including Connectivities and Utilities.</option><option value="8050">3.	Supply of Different Types of Parts and Repairing works for Beamlifter.</option><option value="9187">3.765 km Permanent River Bank Protection Work to Protect Bir Shrestho Captain Mohiuddin Jahangir Bridge from Erosion of the Sugandha River</option><option value="320">37 Dist.Town Water Supply Project</option><option value="7780">37 District Town Water Supply Project</option><option value="2986">37 District Town Water Supply Project (DPHE)</option><option value="9341">37 DTWSP Project (DPHE)</option><option value="16149">3D Seismic Survey over Charfesson Project</option><option value="10170">3D Siesmic Survey Over-Zakigonj &amp; Patharia West Structure</option><option value="14860">4 Appraisal cum Development Well( Shahbazpur 5,7 &amp; Bhola North-3,4) and 1 Exploration Well (Shahbazpur North East-1) Drilling Project</option><option value="3243">4 Laning of Chittagong-Rangamati National Highway (N-106) (Hathazari-Raozan Portion)</option><option value="8870">4 Laning of Cumilla (Tomsom Bridge)-Noakhali (Begumgonj) Regional Highway Project</option><option value="4300">4 Laning of cumilla (Tomson Bridge) - Noakhali (Begumgonj) Regional Highway Project</option><option value="7961">4 Laning of Karnafuly Tunnel Connection Road (Shikolbaha Anowara Road) including Anowara Upazila Head Quater Link Road</option><option value="14861">4 Nos Appraisal cum Development Well( Shahbazpur 5,7 &amp; Bhola North-3,4) and 1 No Exploration Well (Shahbazpur North East-1) Drilling Project</option><option value="626">4 Nos institutions building construction &amp; manufacturing of furniture works</option><option value="573">4-Laining of Madaripur (Mostofapur)- Shariatpur-Road Via Kazitkat Bridge</option><option value="69">4-Laining of Madaripur(Mostafapur)-Shariatpur-Road Via Kazirtak Bridge</option><option value="12297">4-Landing of 3.00 KM Panchagarh Town Portion Road of National Highway (N-5) for Ensuring Road Safety.</option><option value="3024">4-Laning of Comilla (Tomsom Bridge)-Noakhali (Begamganj) Regional Highway Project</option><option value="728">4-Laning of Madaripur(Mostafapur)-Shariatpur Road via Kazirtack Bridge</option><option value="14">4-Lanning of Gabtoli Swarighat (Badamtoli) Road</option><option value="10">4-Lanning of Gabtoli Swarighat(Badamtoli) Road</option><option value="4078">4.	Construction of footpath  at the side of road from Jhoha Chattar  to end point of jubery Bhabon</option><option value="8046">40 Pourashava &amp; Growth Centers Water Supply and Environmental Sanitation Project (II Phase)</option><option value="425">40 Pourashavas &amp; Growth Centre Water Supply and Environmental Sanitation Project(Phase-II)</option><option value="2405">40 Pourashavas and Growth Centres Water Supply and Envirornmental Sanitation Project (II Phase).</option><option value="1368">46.00.0000.064.14.080.16-1003, Date: 26-09-2016, 46.00.0000.064.14.080.16.1536, Date: 21.11.16</option><option value="2586">46.00.0000.064.14.080.16-104, Date: 31-01-2018</option><option value="1024">4906</option><option value="92">4936 Gopal</option><option value="100">4936/raj</option><option value="1999">5 nos Scheme Implementation</option><option value="1324">5-5041-5342</option><option value="11676">50 Nos. BG &amp; 50 Nos. MG PASSENGER CARRIAGES REHABILITATION PROJECT FOR BANGLAEDESH RAILWAY WESTERN ZONE.</option><option value="16217">500 nos. Tree Plantation of Behalf of UNO office &amp; 500 nos. Tree Plantation of Behalf of UE office</option><option value="2000">6 nos Scheme Implementation</option><option value="10239">6th and 7th Floor Vertical Extension of Bangladesh Coast Guard Head Quarters Building.</option><option value="282">8-Lanning of Jatrabari-Katchpur Road</option><option value="193">8-Lanning of Jatrabari-katchpur Road (Polder Road)</option><option value="15044">A Comparative bioactivity profiling of leaves, peel and flower of the pointed ground (T. dioca R) and Ivy ground (C. grandis) and assessment their anti-diabetic activities on the experiment animal (Swiss albino mice).</option><option value="12879">A D P</option><option value="15125">A First principles Investigation of structural, Electronic,Optical and Mechanical properties of Cubic Perovskite CuMgX3 (X= Cl,Br)</option><option value="14627">A Laboratory Experiment on Artificial Intelligence-driven Tools in Higher Education: Paradigm Transformation and Academic Enhancement</option><option value="13288">A Modern 4 (Four) Storied Dakbanglow Project</option><option value="13394">A Multi-Faceted Strategic Framework for Small Animal Health: Integrating Research, Capacity Building, and Zoonosis Prevention through Collaborative Networks in Bangladesh</option><option value="12014">A New Construction of RCC Drain in 496.00 m</option><option value="9907">A Novel Bio-mass Drived Na-K-ion Battery Prototype for the Next Generation Low Cost Energy Storage System</option><option value="8587">A Pilot Project on Preparation of Comprehensive Development Plan for Nine Upazilas</option><option value="14636">A Study on the Foreign Policy of Bangladesh to Address the Challenges of Globalization in the Domains of National Security, Climate Change and Labor Migration</option><option value="9622">a) Construction of  CC Road  St.from Gias Uddin Rice Mill Este  Sise to  Abubokr Siddque House  at Muktagacha Muktagachaca Pourashava .W-03, Ch. 0.00+60 m  b) Construction of  RCC Palasaiding Arfan Ali Govt Primary School North Side  at  Paikashimul Under Muktagachaca Pourashava .W-05, Ch. 0.00+22 m c) Construction of  Brick Drain  &amp;  Slab St.from Mr. Humayon kabir House  to  Existing Brick Drain at Attani bazar Paratongi Muktagachaca Pourashava .W-04, Ch. 0.00+38 m</option><option value="15466">a) Construction of  road from Ainuls house via 1 no post to Bangaltila Launch Ghat in South Kalabunia at 3 no Aimachhara Union in Barkal Upazila  and b) Construction of  road from Taktanala Government Primary School to  Farua Border Road, 1 no ward at 3 no Farua union under Belaichari Upazila.</option><option value="11470">A) Construction of Connecting Road to 88 no. West Kukrarai Government Primary School, Bajitpur, Kishoregnaj. B) Repairing of Nauga Nilokhi Cummuninty Clinic and Koilag-Peuri Cummuninty Clinic under Bajitpur Upazila</option><option value="2884">A) Construction of RCC drain,RCC Road and CC Road work at Rampur Foyez Box Road and BC Reparing and Maintaince work at Weaz Uddin road(Start from Talukdar Bhoban to Jahanara manson) at ward no-16.Under Feni Pourashava.B) Construction of Semi-Pucca Sheed Building (Rest room for Public) work in Feni model Thana at w #02.under Feni Pourashava.</option><option value="16216">A) Construction of Road/Drain of Noahata Baitul Mamur Mosque at Baliardi B) Construction of Road of Deputy Bari at Gazirchar C) Construction of Road from Bajitpur Choiki Adalot to Bar Building</option><option value="14584">A) Improvement of RCC Road Work of Upazila Parishad Old Hall Room front to Shimul Quarter Road B) Construction of Drain at Upazila Parishad Old Hall Room front to Shimul Quarter under Katiadi Upazila, Kishoreganj District</option><option value="16215">A) Repair of Sararchar to Kuliarchar Road B) Repair of Rahela to Beparipara Road C) Repair of Masimpur to RobirBazar Road D) Construction of Agarpur-Sararchar Road to Sukkur Ali's House Road E) Soling of Road from Sararchar Bazar to Madrasa Road</option><option value="9571">A) Shalgoria Main Road to Asraf house Road (B) Shalgoria Sonar para Main Road to A. Razzak house  Road.(C) Shalgoria Purbopara Main Road to  Kalam   (D) Dhopa para Main Road to Ohad house Road (E) Shalgoria Main Road to A. Kuddus House  Road   (F) Shalgoria Main Road to Alauddins house  Road C C Dara Unnayan  at word no-02 under durgapur pourashava , Rajshahi..Total,L=Road=220.00m</option><option value="9585">A) Shalgoria Main Road to Asraf house Road (B) Shalgoria Sonar para Main Road to A. Razzak house Road.(C) Shalgoria Purbopara Main Road to Kalam (D) Dhopa para Main Road to Ohad house Road (E) Shalgoria Main Road to A. Kuddus House Road (F) Shalgoria Main Road to Alauddins house Road C C Dara Unnayan at word no-02 under durgapur pourashava , Rajshahi..Total,L=Road=220.00m</option><option value="7718">a)Development  of  Earth Filling &amp; 125mm Brick Drain Mym Road St. From Abdul Houqe House to MrShohel House at Moniram Bari Ward no- 08,  ch. 0+150m,b)Development of Earth Filling work St. From Kashem Ali College Road Box Culvert to Mr. Shirajul Islam  House at Kandigong Ward no- 07, Ch. 0+140m,c)Development of Earth Work Shohid Babor Ali Road  St.From  Altab Ali  House to Mr Nijum Uddin House at Nandibari Ward no-09, Under Muktagacha Pourashava ch. 0+285m</option><option value="6619">A.D.P</option><option value="7973">Ã?????Ã????Ã???Ã??Ã?Â¢??Construction of Godowns at Chattogram, Sylhet &amp; Rangpur Regional Offices to increase TCBÃ?????Ã????Ã???Ã??Ã?Â¢??s Buffer stock CapacityÃ?????Ã????Ã???Ã??Ã?Â¢?Ã????Ã???Ã??Ã?Â¯Ã????Ã???Ã??Ã?Â¿Ã????Ã???Ã??Ã?Â½.</option><option value="6566">â??Performance-Based Operation for 4 (four) years and Strengthening of 4-lane Dhaka-Chattagram National Highway (N-1) (Dhaudkandi-Chattagram Portion)</option><option value="8229">â??Removal Of Drainage Congestion From Kobadak  River Basin (Phase-2)â?�</option><option value="7829">â??Upazila Governance and Development Project-UGDP</option><option value="10192">à¦�à¦¤à¦¿à¦¹à¦¾à¦¸à¦¿à¦? à¦°à§?à¦? à¦?à¦¾à¦°à§�à¦¡à§?à¦¨ -à¦�à¦° à¦ªà§�à¦°à¦¤à§�à¦¨à¦¤à¦¾à¦¤à§�à¦¤à§�à¦¬à¦¿à¦? à¦¸à¦?à¦¸à§�à¦?à¦¾à¦°-à¦¸à¦?à¦°à¦?à§�à¦·à¦£ à¦�à¦¬à¦? à¦¢à¦¾à¦?à¦¾ à¦®à¦¹à¦¾à¦¨à¦?à¦° à¦?à¦¾à¦¦à§�à¦?à¦° à¦¸à§�à¦¥à¦¾à¦ªà¦¨</option><option value="10402">Abasik Building Repair and Maintanance</option><option value="16012">Abasik Building Repair and Maintanance 2026-27</option><option value="4253">Abasik Building Repair and maintenance</option><option value="14952">Abasik Building Repair and Maintenance (2025-26)</option><option value="8452">ABP,JICA</option><option value="15701">AC Land office reapair works 2025-26</option><option value="803">Academic &amp; Infrastructural Development of the University of Chittagong (2nd Revised)</option><option value="1402">Academic and Infractural Development of Jessore University of Science &amp; Technology</option><option value="10387">Accelerating and Strengthening Skills for Economic Transformation</option><option value="9458">Accelerating and Strengthening Skills for Economic Transformation (ASSET)</option><option value="15409">Accelerating genetic gain in wheat through hybrid breeding in Bangladesh, Ethiopia and Pakistan</option><option value="12418">Accelerating Transport and Trade Connectivity in Eastern South Asia (ACCESS)- Bangladesh Phase 1: (BLPA Component</option><option value="2952">Access to Information-ll Project</option><option value="9093">Accommodation for Judicial Officers at Azimpur, Dhaka(1st revised)</option><option value="2906">Accommodation for Judicial Officers at Azimpur, Dhaka.</option><option value="9244">According to the intention of the Minister</option><option value="7727">Accreditation of BRRI Central Laboratory</option><option value="4095">Accreditation of Plant Pathology Laboratory, BARI</option><option value="12200">Acquisition of Land for the construction of necessary infrastructure for the extension facilities for visitors to the Mausoleum complex of father of the nation Bangabandhu Sheikh Mujibur Rahman at Tungipara, Gopalganj.</option><option value="16097">Action Research on Extension of Ecologically Friendly Agriculture Technology through Village based Organization</option><option value="15322">Action Research Project on Community-based Agricultural Mechanization for Increasing Crop Productivity and Enhancing Socio-Economic Development of Rural Farmers</option><option value="9134">Action Research Project on Construction of Co-operative based  Multistoried Palli Janapad Housing with Modern Urban    Amenities for Livelihood Improvement of the Rural People.</option><option value="12868">Activating Village Courts in Bangladesh Phase III Project</option><option value="3040">Active  Pharmaceutical Ingredient ( API) Industrial Park ( 3rd Revised)</option><option value="8118">AD P</option><option value="10376">AD-</option><option value="12810">Adaptation Initiative for Climate Vulnerable Offshore Small Islands and Riverine Charland in Bangladesh</option><option value="13522">Adaptation Initiative for Climate Vulnerable Offshore Small Islands and Riverine Charland in Bangladesh</option><option value="14902">Adaptation Project  to Address the Impacts of Climate Change on the Biodiversity of Saint Martins Island (Livestock Component)</option><option value="15806">Adaptation project on onion storage at Farmers' level based on participation to mitigate the adverse effects of climate change in onion growing areas of Bangladesh</option><option value="10124">Adaptation to Climate Change through Climate -Smart Technologies in Khulna Agriculture Region Project</option><option value="9850">Adaption, validation, multiplication and maintenance of Lilium genotypes in Bangladesh</option><option value="10544">ADB</option><option value="1344">ADB</option><option value="1689">ADB</option><option value="1603">ADB</option><option value="15042">ADB</option><option value="13044">ADB</option><option value="7709">ADB (2019-2020)</option><option value="15026">ADB 25-26</option><option value="9838">ADB-(21-22)</option><option value="12362">ADB-2024/2025</option><option value="10303">ADB: 2022-2023</option><option value="11193">ADB:2023-2024</option><option value="6443">ADB_Haluaghat</option><option value="11616">ADB_Haluaghat/Zaica/2023-2024</option><option value="13287">ADB_Haluaghat/Zaica/2025-2026</option><option value="1400">ADF, 16-17, Fatikchari</option><option value="2375">ADF, 2017-18, Fatikchari</option><option value="15622">Adopting and Implementing Hybrid-Blended Teaching-Learning Method: Transforming Academic Practices</option><option value="3507">Adoption of Innovative technology: Seed to fattening of mud crab (Scylla olivacea)  and health management in Bangladesh condition</option><option value="3513">ADP</option><option value="3521">ADP</option><option value="3484">ADP</option><option value="3495">ADP</option><option value="3562">ADP</option><option value="3573">ADP</option><option value="3593">ADP</option><option value="3604">ADP</option><option value="3329">ADP</option><option value="3357">ADP</option><option value="3358">ADP</option><option value="3418">ADP</option><option value="3424">ADP</option><option value="3425">ADP</option><option value="3452">ADP</option><option value="3053">ADP</option><option value="3137">ADP</option><option value="3244">ADP</option><option value="3172">ADP</option><option value="2965">ADP</option><option value="2817">ADP</option><option value="2791">ADP</option><option value="2724">ADP</option><option value="2579">ADP</option><option value="2572">ADP</option><option value="2554">ADP</option><option value="2591">ADP</option><option value="2612">ADP</option><option value="2446">ADP</option><option value="6433">ADP</option><option value="6495">ADP</option><option value="6526">ADP</option><option value="4293">ADP</option><option value="6359">ADP</option><option value="6357">ADP</option><option value="6369">ADP</option><option value="6373">ADP</option><option value="6330">ADP</option><option value="6341">ADP</option><option value="7816">ADP</option><option value="7802">ADP</option><option value="7783">ADP</option><option value="7791">ADP</option><option value="7768">ADP</option><option value="7774">ADP</option><option value="6562">ADP</option><option value="6536">ADP</option><option value="6541">ADP</option><option value="6551">ADP</option><option value="6605">ADP</option><option value="6614">ADP</option><option value="6628">ADP</option><option value="6643">ADP</option><option value="4114">ADP</option><option value="4172">ADP</option><option value="3944">ADP</option><option value="3981">ADP</option><option value="3689">ADP</option><option value="3698">ADP</option><option value="3750">ADP</option><option value="3768">ADP</option><option value="3805">ADP</option><option value="3829">ADP</option><option value="3830">ADP</option><option value="3844">ADP</option><option value="3904">ADP</option><option value="3906">ADP</option><option value="2384">ADP</option><option value="2394">ADP</option><option value="2398">ADP</option><option value="2341">ADP</option><option value="2277">ADP</option><option value="2133">ADP</option><option value="2158">ADP</option><option value="1994">ADP</option><option value="1949">ADP</option><option value="1387">ADP</option><option value="1442">ADP</option><option value="1453">ADP</option><option value="1454">ADP</option><option value="1333">ADP</option><option value="1285">ADP</option><option value="1229">ADP</option><option value="1232">ADP</option><option value="1639">ADP</option><option value="1643">ADP</option><option value="1574">adp</option><option value="1496">adp</option><option value="1534">ADP</option><option value="1659">ADP</option><option value="1675">ADP</option><option value="1725">ADP</option><option value="1760">ADP</option></select>
+                                        <input type="hidden" name="projectname" id="projectname">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ff">Budget  Type  :</td>
+                                    <td><select name="cmbBudType" class="formTxtBox_1" id="cmbBudType" style="width:200px;"><option value="0" selected="selected">--Select Budget Type--</option>
+                                            <option value="1">Development</option>
+                                            <option value="2">Revenue</option>
+                                            <option value="3">Own Fund</option>
+                                        </select></td>
+                                        
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="t-align-center">
+                                        <label class="formBtn_1"><input type="submit" value="Generate" id="generate" name="generate"></label>
+                                        <label class="anchorLink l_space">
+                                            
+                                            <a href="ProcTransReport.jsp" style="text-decoration: none; color: #fff;">Reset</a>
+                                        </label>
+
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </form>
+                    </div>
+                    
+                    
+                    <div id="print_area">
+                        <div class="formStyle_1 t_space ff">
+                            
+                            <h3>Search Criteria : By Financial Year : 2024-2025
+                                , By Quarter : , Ministry / Division / Organization : Public Works Department (PWD), PE Office : Chattogram PWD Division-1,Chattogram
+                            </h3>
+                        </div>
+                        <div>
+                            
+                            
+                            <div class="inner-tableHead t_space">Xxxxxxxxxxx Xxxxxx</div>
+                            <table class="tableList_3" cellspacing="0" width="100%" id="tab1">
+                                <tbody><tr>
+                                    <th width="7%" rowspan="3" valign="middle">Sr. No </th>
+                                    <th width="13%" rowspan="3" valign="middle">Method of<br>
+                                        Procurement</th>
+                                    <th colspan="16">Procurements </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" valign="top">Total Contract Package/Lot planned as per Proc. Plan (No.)</th>
+                                    <th colspan="2" valign="top">Total planned amount as per Proc. Plan (Crore BDT)</th>
+                                    <th colspan="2" valign="top">Total Tender on Live</th>
+                                    <th colspan="2" valign="top">Total Tender on Being Evaluated</th>
+                                    <th colspan="2" valign="top">Total Contract Package/Lot  awarded/contract signed (No.)</th>
+                                    <th colspan="2" valign="top">Total Contracted amount (Crore BDT)</th>
+                                    <th colspan="2" valign="top">Progress as against planned No. of package/Lot (%)</th>
+                                    <th colspan="2" valign="top">Progress as against planned amount (%)</th>
+                                </tr>
+                                <tr>
+                                    <th width="5%" valign="top">National</th>
+                                    <th width="8%" valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National<br>
+		(Col 11/3)*100
+                                    </th>
+                                    <th valign="top">International<br>
+		(Col 12/4)*100
+                                    </th>
+                                    <th valign="top">National<br>
+		(Col 13/5)*100
+                                    </th>
+                                    <th valign="top">International<br>
+		(Col 14/6)*100
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                    <th>5</th>
+                                    <th>6</th>
+                                    <th>7</th>
+                                    <th>8</th>
+                                    <th>9</th>
+                                    <th>10</th>
+                                    <th>11</th>
+                                    <th>12</th>
+                                    <th>13</th>
+                                    <th>14</th>
+                                    <th>15</th>
+                                    <th>16</th>
+                                    <th>17</th>
+                                    <th>18</th>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="text-align: left;" id="t1col1_1">0.000</td>
+                                    <td style="text-align: left;" id="t1col2_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col3_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col4_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col5_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col6_1">0.000</td>
+
+                                    <td style="text-align: right;" id="t1col7_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col8_1">0.000</td>
+
+                                    <td style="text-align: right;" id="t1col9_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col10_1">0.000</td>
+
+                                    <td style="text-align: right;" id="t1col11_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col12_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col13_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col14_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col15_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col16_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col17_1">0.000</td>
+                                    <td style="text-align: right;" id="t1col18_1">0.000</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="text-align: left;" id="t1col1_2">0.000</td>
+                                    <td style="text-align: left;" id="t1col2_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col3_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col4_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col5_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col6_2">0.000</td>
+
+                                    <td style="text-align: right;" id="t1col7_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col8_2">0.000</td>
+
+                                    <td style="text-align: right;" id="t1col9_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col10_2">0.000</td>
+
+                                    <td style="text-align: right;" id="t1col11_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col12_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col13_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col14_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col15_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col16_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col17_2">0.000</td>
+                                    <td style="text-align: right;" id="t1col18_2">0.000</td>
+                                </tr>
+                                
+                                <tr>
+                                    <th colspan="2" align="left">Total Development Budget<input type="hidden" id="tab1cnt" value="3"></th>
+                                    <th style="text-align: right;" id="t1total1">0.000</th>
+                                    <th style="text-align: right;" id="t1total2">0.000</th>
+                                    <th style="text-align: right;" id="t1total3">0.000</th>
+                                    <th style="text-align: right;" id="t1total4">0.000</th>
+                                    <th style="text-align: right;" id="t1total5">0.000</th>
+                                    <th style="text-align: right;" id="t1total6">0.000</th>
+                                    <th style="text-align: right;" id="t1total7">0.000</th>
+                                    <th style="text-align: right;" id="t1total8">0.000</th>
+                                    <th style="text-align: right;" id="t1total9">0.000</th>
+                                    <th style="text-align: right;" id="t1total10">0.000</th>
+                                    <th style="text-align: right;" id="t1total11">0.000</th>
+                                    <th style="text-align: right;" id="t1total12">0.000</th>
+                                    <th style="text-align: right;" id="t1total13">0.000</th>
+                                    <th style="text-align: right;" id="t1total14">0.000</th>
+                                    <th style="text-align: right;" id="t1total15">0.000</th>
+                                    <th style="text-align: right;" id="t1total16">0.000</th>
+                                </tr>
+                            </tbody></table>
+                            
+
+                            
+                            
+                            <div class="inner-tableHead t_space">Xxxxxxx Xxxxxx</div>
+                            <table class="tableList_3" cellspacing="0" width="100%" id="tab2">
+                                <tbody><tr>
+                                    <th width="7%" rowspan="3" valign="middle">Sr. No </th>
+                                    <th width="13%" rowspan="3" valign="middle">Method of<br>
+                                        Procurement</th>
+                                    <th colspan="16">Procurements </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" valign="top">Total Contract Package/Lot planned as per Proc. Plan (No.)</th>
+                                    <th colspan="2" valign="top">Total planned amount as per Proc. Plan (Crore BDT)</th>
+                                    <th colspan="2" valign="top">Total Tender on Live</th>
+                                    <th colspan="2" valign="top">Total Tender on Being Evaluated</th>
+                                    <th colspan="2" valign="top">Total Contract Package/Lot  awarded/contract signed (No.)</th>
+                                    <th colspan="2" valign="top">Total Contracted amount (Crore BDT)</th>
+                                    <th colspan="2" valign="top">Progress as against planned No. of package/Lot (%)</th>
+                                    <th colspan="2" valign="top">Progress as against planned amount (%)</th>
+                                </tr>
+                                <tr>
+                                    <th width="5%" valign="top">National</th>
+                                    <th width="8%" valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National<br>
+		(Col 11/3)*100
+                                    </th>
+                                    <th valign="top">International<br>
+		(Col 12/4)*100
+                                    </th>
+                                    <th valign="top">National<br>
+		(Col 13/5)*100
+                                    </th>
+                                    <th valign="top">International<br>
+		(Col 14/6)*100
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                    <th>5</th>
+                                    <th>6</th>
+                                    <th>7</th>
+                                    <th>8</th>
+                                    <th>9</th>
+                                    <th>10</th>
+                                    <th>11</th>
+                                    <th>12</th>
+                                    <th>13</th>
+                                    <th>14</th>
+                                    <th>15</th>
+                                    <th>16</th>
+                                    <th>17</th>
+                                    <th>18</th>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="text-align: left;" id="t2col1_1">0.000</td>
+                                    <td style="text-align: left;" id="t2col2_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col3_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col4_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col5_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col6_1">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col7_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col8_1">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col9_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col10_1">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col11_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col12_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col13_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col14_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col15_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col16_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col17_1">0.000</td>
+                                    <td style="text-align: right;" id="t2col18_1">0.000</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="text-align: left;" id="t2col1_2">0.000</td>
+                                    <td style="text-align: left;" id="t2col2_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col3_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col4_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col5_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col6_2">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col7_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col8_2">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col9_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col10_2">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col11_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col12_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col13_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col14_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col15_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col16_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col17_2">0.000</td>
+                                    <td style="text-align: right;" id="t2col18_2">0.000</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="text-align: left;" id="t2col1_3">0.000</td>
+                                    <td style="text-align: left;" id="t2col2_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col3_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col4_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col5_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col6_3">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col7_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col8_3">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col9_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col10_3">0.000</td>
+
+                                    <td style="text-align: right;" id="t2col11_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col12_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col13_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col14_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col15_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col16_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col17_3">0.000</td>
+                                    <td style="text-align: right;" id="t2col18_3">0.000</td>
+                                </tr>
+                                
+                                <tr>
+                                    <th colspan="2" align="left">Total Revenue Budget<input type="hidden" id="tab2cnt" value="4"></th>
+                                    <th style="text-align: right;" id="t2total1">0.000</th>
+                                    <th style="text-align: right;" id="t2total2">0.000</th>
+                                    <th style="text-align: right;" id="t2total3">0.000</th>
+                                    <th style="text-align: right;" id="t2total4">0.000</th>
+                                    <th style="text-align: right;" id="t2total5">0.000</th>
+                                    <th style="text-align: right;" id="t2total6">0.000</th>
+                                    <th style="text-align: right;" id="t2total7">0.000</th>
+                                    <th style="text-align: right;" id="t2total8">0.000</th>
+                                    <th style="text-align: right;" id="t2total9">0.000</th>
+                                    <th style="text-align: right;" id="t2total10">0.000</th>
+                                    <th style="text-align: right;" id="t2total11">0.000</th>
+                                    <th style="text-align: right;" id="t2total12">0.000</th>
+                                    <th style="text-align: right;" id="t2total13">0.000</th>
+                                    <th style="text-align: right;" id="t2total14">0.000</th>
+                                    <th style="text-align: right;" id="t2total15">0.000</th>
+                                    <th style="text-align: right;" id="t2total16">0.000</th>
+                                </tr>
+                            </tbody></table>
+                            
+
+                            
+                            
+                            <div class="inner-tableHead t_space">Own Fund</div>
+                            <table class="tableList_3" cellspacing="0" width="100%" id="tab3">
+                                <tbody><tr>
+                                    <th width="7%" rowspan="3" valign="middle">Sr. No </th>
+                                    <th width="13%" rowspan="3" valign="middle">Method of<br>
+                                        Procurement</th>
+                                    <th colspan="16">Procurements </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" valign="top">Total Contract Package/Lot planned as per Proc. Plan (No.)</th>
+                                    <th colspan="2" valign="top">Total planned amount as per Proc. Plan (Crore BDT)</th>
+                                    <th colspan="2" valign="top">Total Tender on Live</th>
+                                    <th colspan="2" valign="top">Total Tender on Being Evaluated</th>
+                                    <th colspan="2" valign="top">Total Contract Package/Lot  awarded/contract signed (No.)</th>
+                                    <th colspan="2" valign="top">Total Contracted amount (Crore BDT)</th>
+                                    <th colspan="2" valign="top">Progress as against planned No. of package/Lot (%)</th>
+                                    <th colspan="2" valign="top">Progress as against planned amount (%)</th>
+                                </tr>
+                                <tr>
+                                    <th width="5%" valign="top">National</th>
+                                    <th width="8%" valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National</th>
+                                    <th valign="top">International</th>
+                                    <th valign="top">National<br>
+		(Col 11/3)*100
+                                    </th>
+                                    <th valign="top">International<br>
+		(Col 12/4)*100
+                                    </th>
+                                    <th valign="top">National<br>
+		(Col 13/5)*100
+                                    </th>
+                                    <th valign="top">International<br>
+		(Col 14/6)*100
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                    <th>5</th>
+                                    <th>6</th>
+                                    <th>7</th>
+                                    <th>8</th>
+                                    <th>9</th>
+                                    <th>10</th>
+                                    <th>11</th>
+                                    <th>12</th>
+                                    <th>13</th>
+                                    <th>14</th>
+                                    <th>15</th>
+                                    <th>16</th>
+                                    <th>17</th>
+                                    <th>18</th>
+                                </tr>
+                                
+                                <tr>
+                                    <th colspan="2" align="left">Total Own Fund<input type="hidden" id="tab3cnt" value="1"></th>
+                                    <th style="text-align: right;" id="t3total1">0.000</th>
+                                    <th style="text-align: right;" id="t3total2">0.000</th>
+                                    <th style="text-align: right;" id="t3total3">0.000</th>
+                                    <th style="text-align: right;" id="t3total4">0.000</th>
+                                    <th style="text-align: right;" id="t3total5">0.000</th>
+                                    <th style="text-align: right;" id="t3total6">0.000</th>
+                                    <th style="text-align: right;" id="t3total7">0.000</th>
+                                    <th style="text-align: right;" id="t3total8">0.000</th>
+                                    <th style="text-align: right;" id="t3total9">0.000</th>
+                                    <th style="text-align: right;" id="t3total10">0.000</th>
+                                    <th style="text-align: right;" id="t3total11">0.000</th>
+                                    <th style="text-align: right;" id="t3total12">0.000</th>
+                                    <th style="text-align: right;" id="t3total13">0.000</th>
+                                    <th style="text-align: right;" id="t3total14">0.000</th>
+                                    <th style="text-align: right;" id="t3total15">0.000</th>
+                                    <th style="text-align: right;" id="t3total16">0.000</th>
+                                </tr>
+                                <tr style="border-color: #ffffff;">
+                                    <td colspan="14"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" align="left">GRAND TOTAL</th>
+                                    <th style="text-align: right;" id="total1">0.000</th>
+                                    <th style="text-align: right;" id="total2">0.000</th>
+                                    <th style="text-align: right;" id="total3">0.000</th>
+                                    <th style="text-align: right;" id="total4">0.000</th>
+                                    <th style="text-align: right;" id="total5">0.000</th>
+                                    <th style="text-align: right;" id="total6">0.000</th>
+                                    <th style="text-align: right;" id="total7">0.000</th>
+                                    <th style="text-align: right;" id="total8">0.000</th>
+                                    <th style="text-align: right;" id="total9">0.000</th>
+                                    <th style="text-align: right;" id="total10">0.000</th>
+                                    <th style="text-align: right;" id="total11">0.000</th>
+                                    <th style="text-align: right;" id="total12">0.000</th>
+                                    <th style="text-align: right;" id="total13">0.000</th>
+                                    <th style="text-align: right;" id="total14">0.000</th>
+                                    <th style="text-align: right;" id="total15">0.000</th>
+                                    <th style="text-align: right;" id="total16">0.000</th>
+                                </tr>
+                            </tbody></table>
+                            
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+        
+        
+        <div align="center">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0" class="footerCss">
+    <tbody><tr valign="top">
+        <td><table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tbody><tr>
+                <td align="center" style="padding-top: 10px;">
+                    
+                        <a href="/Index.jsp">Xxxx</a> &nbsp;|&nbsp;
+                    
+
+                    
+                        <a href="/aboutUs.jsp">Xxxxx x-XX</a> &nbsp;|&nbsp;
+                    
+
+                    
+                        <a href="/contactUs.jsp">Xxxxxxx Xx</a> &nbsp;|&nbsp;
+                    
+
+                    <a href="/SubscribeToRSS.jsp">XXX Xxxx</a> &nbsp;|&nbsp;
+
+                    
+                        <a href="/TermsNConditions.jsp">Xxxxx xxx Xxxxxxxxxx</a> &nbsp;|&nbsp;
+                    
+                    
+                        <a href="/ServiceLevel.jsp">Xxxxxxx Xxxxx</a> 
+                     &nbsp;|&nbsp;
+                    
+                        <a href="/PrivacyPolicy.jsp">Xxxxxxxxxx xxx Xxxxxxx Xxxxxx </a>
+                    
+                    
+                     &nbsp;|&nbsp; 
+                        <a href="/NewFeature.jsp">Xxx Xxxxxxxx</a>
+                    
+                   
+
+                </td>
+            </tr>
+            
+            <tr>
+                <td align="center" style=" line-height: 16px;">
+                    <div class="msg">
+                        Xxxx xxxxxx xx 9999 x 999 xxx xxxxx xxxxxxxxxx. Xxxxxxxx Xxxxxx &amp; Xxxxxxxxx xx XXXX: Xxxxxxxxx Xxxx 999.x xx xxxxx xxx Xxxxxxx Xxxxxxx 999.x xx xxxxx xxx Xxxxxx Xxxxxx 999.x xx xxxxx
+                    </div>
+                </td>
+            </tr>
+            
+           <tr>
+                <td height="10"></td>
+            </tr>
+            <tr>
+                <td width="64%" align="center" style="padding-bottom: 0px; padding-top: 0px; font-weight: normal; line-height: 18px;">
+                         <strong> Xxxxxxxxx x 9999 Xxxxxxxxxx Xxxxxx Xxxxxxxxxxx Xxxxxxxxx (XXXX). Xxx Xxxxxx Xxxxxxxx. </strong><br>
+                     XXXX, Xxxxxxxx xx Xxxxxxxx, Xxxxxxxxxx xx xxx Xxxxxx'x Xxxxxxxx xx Xxxxxxxxxx
+                </td>
+            </tr>
+            <tr>
+                <td height="10"></td>
+            </tr>
+
+        </tbody></table></td>
+        <td width="100">
+                              
+		<table width="135" border="0" cellpadding="2" cellspacing="0" title="Xxxxx xx Xxxxxx - Xxxx xxxx xxxxx XxxxXxxx XXX xxx xxxxxx x-xxxxxxxx xxx xxxxxxxxxxxx xxxxxxxxxxxxxx.">
+		<tbody><tr>
+			<td width="135" align="center" valign="top"><br>
+			<a href="https://www.digicert.com/what-is-ssl-tls-https/" target="_blank" style="color:#000000; text-decoration:none; font:bold 7px verdana,sans-serif; letter-spacing:.5px; text-align:center; margin:0px; padding:0px;"></a></td>
+		</tr>
+		</tbody></table>
+            
+        </td>
+    </tr>
+</tbody></table>
+
+
+
+</div>
+        
+    
+       
+
+<ul id="ddsubmenu4" class="ddsubmenustyle" style="z-index: 2000; left: 0px; top: 0px; visibility: hidden;">
+                    <li><a href="/report/AppMIS.jsp">Xxxxxxxxxxx Xxxxxxxxxx</a></li>
+                    <li><a href="/officer/SearchPackageReport.jsp">Xxxxxx Xxxxxxxxxxx Xxxx</a></li>
+                    <li><a href="/report/ProcTransReport.jsp">Xxxxxxxxxxx Xxxxxxxxxxx Xxxxxx</a></li>
+                    <li><a href="/admin/PromiseIndicator.jsp">XXXXXX Xxxxxx</a></li>
+                    <li><a href="/admin/PromiseOverallReport.jsp">XXXXXX Xxxxxxx Xxxxxx</a></li>
+                    <li><a href="/resources/common/AllTenders.jsp?h=">XXX9 Xxxxxx</a></li>
+                </ul><ul id="ddsubmenu3" class="ddsubmenustyle" style="z-index: 2000; left: 0px; top: 0px; visibility: hidden;">
+                    
+                    <li><a href="/admin/ViewManageAdmin.jsp?userId=&amp;userTypeid=&amp;msg=">Xxxx Xxxxxxx</a></li>
+                    <li><a href="/admin/ManageAdmin.jsp?userId=&amp;userTypeid=">Xxxx Xxxxxxx</a></li>
+                    
+                    <li><a href="/admin/ChangePassword.jsp?fromWhere=">Xxxxxx Xxxxxxxx</a></li>
+                    <li><a href="/admin/ChangeHintQusAns.jsp?fromWhere=">Xxxxxx Xxxx Xxxxxxxx xxx Xxxxxx</a></li>
+                    <li><a href="/admin/UserPreference.jsp?fromWhere=">Xxxxxxxxxx</a></li>
+                </ul><ul id="helpsubmenubankuser" class="ddsubmenustyle" style="z-index: 2000; left: 0px; top: 0px; visibility: hidden;">
+                    <li><a href="/resources/common/Help.jsp?pageName=" target="_blank">Xxxx Xxxx</a></li>
+                    <li><a href="/resources/common/userManual.jsp">Xxxx Xxxxxx</a></li>
+                </ul></body></html>

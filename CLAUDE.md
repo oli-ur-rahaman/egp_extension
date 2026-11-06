@@ -39,7 +39,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - Flow 2 set the pattern for what the owner wants: panel filters chosen per flow, a checkerboard for notice data, and mandatory filters that keep a run a sensible size. Measure a run's size (`totalPages`) before agreeing a limit, and give the time estimate.
 - Recommend one option; don't just list them. Plain language, short messages. Say so plainly when a check failed or was skipped.
 - **Officials' names, addresses and numbers are public official data, and are collected (D40).** Don't treat them as a security matter in the output. Only this public repo's test files stay cleaned.
-- **Before saying a page has something, check a user can see it:** content can sit in the page's code but be hidden (E23).
+- **What a user can't see doesn't exist for this tool (D41).** Before saying a page has something, check a user can see it; hidden content isn't collected or raised with the owner.
 - **Speak in what the owner sees on the page, with evidence they can check:** the page, the label, a tender ID to open. Read a real example before describing a field; never present a guess as fact.
 
 ## Recon traps (learned the hard way)
@@ -65,4 +65,4 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 
 `src/background` service worker · `src/content` content scripts · `src/panel` side panel · `src/shared` bus, schemas · `profiles/` Site Profile · `vendor/` pinned libs (hash-checked) · `tests/unit|golden|e2e|fixtures|mock-server` · `tools/` build, vendor, recon, launch-chrome.
 
-`npm run verify` (lint + typecheck + unit + build) must be green before any commit. `npm run e2e` needs `npm run build` first.
+`npm run verify` (lint + typecheck + unit + build) must be green before any commit. `npm run e2e` needs `npm run build` first. `npm run mock` runs the fake portal. `npm run fixtures` rebuilds `tests/fixtures/` from the git-ignored `recon/raw/`, so it only runs on the PC holding it.

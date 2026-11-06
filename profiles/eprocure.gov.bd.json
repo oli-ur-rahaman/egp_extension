@@ -19,10 +19,9 @@
       "method": "GET",
       "params": ["id"],
       "fixed": { "showPrNd": "false" },
-      "nodeSelector": "li[id^=\"deptid_\"]",
       "nodeAttributes": ["id", "dname", "dtype"],
-      "answer": "treeHtml",
-      "note": "The node id has the prefix deptid_. id=0 gives the top level. The panel shows its own picker and never opens the portal's popup."
+      "answer": "treeJson",
+      "note": "A JSON list. Each node holds attr.id (prefix deptid_), attr.dname, attr.dtype, pdeptid and state. id=0 gives the top level. The panel shows its own picker and never opens the portal's popup."
     },
     "officeCombo": {
       "url": "/ComboServlet",
@@ -37,19 +36,14 @@
       "fixed": { "objectId": "136", "funName": "stateComboNOA" },
       "answer": "optionsHtml"
     },
-    "categoryTreeRoots": {
-      "url": "/resources/common/CPVTree.jsp",
-      "method": "GET",
-      "nodeSelector": "li[cpvname]",
-      "nodeAttributes": ["id", "cpvcode", "cpvname"],
-      "answer": "treeHtml"
-    },
-    "categoryTreeChildren": {
+    "categoryTree": {
       "url": "/GetCpvTree",
       "method": "GET",
       "params": ["id"],
       "fixed": { "searchBy": "", "action": "", "keyword": "" },
-      "answer": "treeHtml"
+      "nodeAttributes": ["id", "cpvcode", "cpvname"],
+      "answer": "treeJson",
+      "note": "A JSON list. id=0 gives the 61 top-level categories. Each node holds attr.id, attr.cpvcode, attr.cpvname, data and state."
     },
     "categoryExpansion": {
       "url": "/GetCpvTree",
@@ -143,7 +137,7 @@
         "url": "/resources/common/AllTenders.jsp?h=t",
         "title": "Advanced Search for eTenders/eProposals",
         "route": ["Home", "Search dropdown: eTenders", "Advanced Search"],
-        "identity": ["#cmbSearchTab", "#cmbProcMethod", "#pubDtFrm", "#viewType"]
+        "identity": ["#cmbProcMethod", "#pubDtFrm", "#viewType"]
       },
       "filters": [
         { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree", "note": "Hidden and fixed to the account's department when logged in." },
@@ -169,7 +163,7 @@
             { "role": "to", "selector": "#closeDtTo", "requestField": "closeDtTo", "empty": "" }
           ]
         },
-        { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCategory", "empty": "", "source": "categoryTreeRoots" },
+        { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCategory", "empty": "", "source": "categoryTree" },
         {
           "id": "status", "label": "Status", "control": "tabs", "panel": true, "selector": "#viewType", "requestField": "viewType", "default": "AllTenders",
           "choices": [
@@ -333,7 +327,7 @@
         "ignored": [
           { "reason": "attachments", "note": "File lists. Attachments are out of scope. Action is the download button.", "labels": ["File Name", "File Description", "File Size (in KB)", "Action"] },
           { "reason": "hidden", "note": "Hidden on the page by the portal (E23): users can't see it. Only in the page's code.", "labels": ["Query", "Response"] },
-          { "reason": "structure", "labels": ["S. No."] }
+          { "reason": "structure", "note": "Standing sentences at the end of every notice, styled like labels.", "labels": ["S. No.", "The procuring entity reserves the right to accept or reject all Tenders/Proposals / Pre-Qualifications / EOIs", "Note: Bank will update the payment transactions only at the end of the day, so the tenderers should make sure the securities and other payments are made at least one day before the submission date."] }
         ]
       }
     },
@@ -346,7 +340,7 @@
         "url": "/resources/common/AdvAPPSearch.jsp",
         "title": "Advanced Search for Annual Procurement Plan",
         "route": ["Home", "Search dropdown: Annual Procurement Plans", "Advanced Search"],
-        "identity": ["#cmbSearchTab", "#cmbYear", "#txtPkgNo", "#cmbOperator"]
+        "identity": ["#cmbYear", "#txtPkgNo", "#cmbOperator"]
       },
       "filters": [
         { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree" },
@@ -367,7 +361,7 @@
           ],
           "note": "Between needs both values, and value2 must be the larger."
         },
-        { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCat", "empty": "", "source": "categoryTreeRoots" }
+        { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCat", "empty": "", "source": "categoryTree" }
       ],
       "rules": { "required": ["department", "financial_year"], "decisions": ["D15", "D16", "D17", "D35"] },
       "list": {
@@ -508,7 +502,7 @@
         "url": "/resources/common/AdvSearchNOA.jsp",
         "title": "Advanced Search for eContracts",
         "route": ["Home", "Search dropdown: eContracts", "Advanced Search"],
-        "identity": ["#cmbSearchTab", "#contractSigneDateFrom", "#txtContractAwardTo"]
+        "identity": ["#contractSigneDateFrom", "#txtContractAwardTo"]
       },
       "filters": [
         { "id": "department", "label": "Select Ministry/Division/Agency", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree" },
@@ -652,7 +646,7 @@
         "url": "/resources/common/SearcheCMS.jsp?v=advSearch",
         "title": "eExperience",
         "route": ["Home", "Search dropdown: eExperience", "Advanced Search"],
-        "identity": ["#cmbSearchTab", "#packageType", "#cmbWorkStatus", "#txtTendererId"]
+        "identity": ["#packageType", "#cmbWorkStatus", "#txtTendererId"]
       },
       "filters": [
         { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree" },

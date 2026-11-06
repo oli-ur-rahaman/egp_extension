@@ -53,6 +53,9 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 77 | **The Queries and Replies table is hidden on the page (E23):** it sits inside `display: none`, found from the owner's copy of tender 1235555. Users never see it. **The study's labels included table headers without checking whether they were hidden,** so a label on the census isn't proof that it's visible. All 4 opened said "No Record Found." | ✅ | Parser skips hidden cells, table headers too. Stays out |
 | 78 | **The inviting official's block sits at the end of the notice,** under "Procuring Entity Details": Name, Designation, Address (Address, City, Thana, District, Country), Contact details (Phone No, Fax No). On 474 of 573 samples with the Tender/Proposal wording | ✅ | Collected (D40). Address and contact values are small inner tables |
 | 79 | The Action column on file tables is the **download button** (owner's copy) | ✅ | Nothing to collect |
+| 80 | **The department and category trees answer in JSON.** Earlier notes described how the page draws them, not the data | ✅ | The panel reads the JSON. Read the wire, not the drawn page |
+| 81 | The search dropdown (`#cmbSearchTab`) is absent from the logged-in Flow 2 page, so it can't be a landmark | ✅ | Removed from page identity |
+| 82 | Every notice ends with two standing sentences styled as labels | ✅ | Listed as not fields, so they aren't reported as unknown |
 
 ## Time and sprints (owner, D27)
 

@@ -1,0 +1,551 @@
+[
+ {
+  "data": "Agricultural, horticultural, hunting and related products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "01000000",
+   "id": 1,
+   "cpvname": "Agricultural, horticultural, hunting and related products"
+  }
+ },
+ {
+  "data": "Forestry and logging products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "02000000",
+   "id": 170,
+   "cpvname": "Forestry and logging products"
+  }
+ },
+ {
+  "data": "Fish, fishing products and other by-products of the fishing industry",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "05000000",
+   "id": 196,
+   "cpvname": "Fish, fishing products and other by-products of the fishing industry"
+  }
+ },
+ {
+  "data": "Coal, lignite, peat and other coal-related products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "10000000",
+   "id": 226,
+   "cpvname": "Coal, lignite, peat and other coal-related products"
+  }
+ },
+ {
+  "data": "Petroleum, natural gas, oil and associated products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "11000000",
+   "id": 242,
+   "cpvname": "Petroleum, natural gas, oil and associated products"
+  }
+ },
+ {
+  "data": "Uranium and thorium ores",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "12000000",
+   "id": 247,
+   "cpvname": "Uranium and thorium ores"
+  }
+ },
+ {
+  "data": "Metal ores",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "13000000",
+   "id": 250,
+   "cpvname": "Metal ores"
+  }
+ },
+ {
+  "data": "Mining, quarrying and other associated products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "14000000",
+   "id": 261,
+   "cpvname": "Mining, quarrying and other associated products"
+  }
+ },
+ {
+  "data": "Food products and beverages",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "15000000",
+   "id": 345,
+   "cpvname": "Food products and beverages"
+  }
+ },
+ {
+  "data": "Tobacco, tobacco goods and supplies",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "16000000",
+   "id": 839,
+   "cpvname": "Tobacco, tobacco goods and supplies"
+  }
+ },
+ {
+  "data": "Textiles and textile articles",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "17000000",
+   "id": 847,
+   "cpvname": "Textiles and textile articles"
+  }
+ },
+ {
+  "data": "Clothing and accessories",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "18000000",
+   "id": 1026,
+   "cpvname": "Clothing and accessories"
+  }
+ },
+ {
+  "data": "Leather, leather products and footwear",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "19000000",
+   "id": 1154,
+   "cpvname": "Leather, leather products and footwear"
+  }
+ },
+ {
+  "data": "Wood, wood products, cork products, basketware and wickerwork",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "20000000",
+   "id": 1219,
+   "cpvname": "Wood, wood products, cork products, basketware and wickerwork"
+  }
+ },
+ {
+  "data": "Various types of pulp, paper and paper products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "21000000",
+   "id": 1276,
+   "cpvname": "Various types of pulp, paper and paper products"
+  }
+ },
+ {
+  "data": "Various types of printed matter and articles for printing",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "22000000",
+   "id": 1360,
+   "cpvname": "Various types of printed matter and articles for printing"
+  }
+ },
+ {
+  "data": "Petroleum products and fuels",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "23000000",
+   "id": 1465,
+   "cpvname": "Petroleum products and fuels"
+  }
+ },
+ {
+  "data": "Chemicals, chemical products and man-made fibres",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "24000000",
+   "id": 1511,
+   "cpvname": "Chemicals, chemical products and man-made fibres"
+  }
+ },
+ {
+  "data": "Rubber, plastic and film products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "25000000",
+   "id": 2000,
+   "cpvname": "Rubber, plastic and film products"
+  }
+ },
+ {
+  "data": "Non-metallic mineral products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "26000000",
+   "id": 2229,
+   "cpvname": "Non-metallic mineral products"
+  }
+ },
+ {
+  "data": "Basic metals and associated products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "27000000",
+   "id": 2354,
+   "cpvname": "Basic metals and associated products"
+  }
+ },
+ {
+  "data": "Fabricated products and materials",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "28000000",
+   "id": 2516,
+   "cpvname": "Fabricated products and materials"
+  }
+ },
+ {
+  "data": "Machinery, equipment, appliances, apparatus and associated products",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "29000000",
+   "id": 3074,
+   "cpvname": "Machinery, equipment, appliances, apparatus and associated products"
+  }
+ },
+ {
+  "data": "Office and computing machinery, equipment and supplies",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "30000000",
+   "id": 3984,
+   "cpvname": "Office and computing machinery, equipment and supplies"
+  }
+ },
+ {
+  "data": "Electrical machinery, apparatus, equipment and consumables",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "31000000",
+   "id": 4252,
+   "cpvname": "Electrical machinery, apparatus, equipment and consumables"
+  }
+ },
+ {
+  "data": "Radio, television, communication, telecommunication and related equipment and apparatus",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "32000000",
+   "id": 4524,
+   "cpvname": "Radio, television, communication, telecommunication and related equipment and apparatus"
+  }
+ },
+ {
+  "data": "Medical and laboratory devices, optical and precision devices, watches and clocks, pharmaceuticals and related medical consumables",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "33000000",
+   "id": 4753,
+   "cpvname": "Medical and laboratory devices, optical and precision devices, watches and clocks, pharmaceuticals and related medical consumables"
+  }
+ },
+ {
+  "data": "Motor vehicles, trailers and vehicle parts",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "34000000",
+   "id": 5243,
+   "cpvname": "Motor vehicles, trailers and vehicle parts"
+  }
+ },
+ {
+  "data": "Transport equipment",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "35000000",
+   "id": 5394,
+   "cpvname": "Transport equipment"
+  }
+ },
+ {
+  "data": "Manufactured goods, furniture, handicrafts, special-purpose products and associated consumables",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "36000000",
+   "id": 5528,
+   "cpvname": "Manufactured goods, furniture, handicrafts, special-purpose products and associated consumables"
+  }
+ },
+ {
+  "data": "Recovered secondary raw materials",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "37000000",
+   "id": 5788,
+   "cpvname": "Recovered secondary raw materials"
+  }
+ },
+ {
+  "data": "Electricity, gas, nuclear energy and fuels, steam, hot water and other sources of energy",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "40000000",
+   "id": 5791,
+   "cpvname": "Electricity, gas, nuclear energy and fuels, steam, hot water and other sources of energy"
+  }
+ },
+ {
+  "data": "Collected and purified water",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "41000000",
+   "id": 5811,
+   "cpvname": "Collected and purified water"
+  }
+ },
+ {
+  "data": "Construction work",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "45000000",
+   "id": 5815,
+   "cpvname": "Construction work"
+  }
+ },
+ {
+  "data": "Repair, maintenance and installation services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "50000000",
+   "id": 6612,
+   "cpvname": "Repair, maintenance and installation services"
+  }
+ },
+ {
+  "data": "Retail trade services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "52000000",
+   "id": 6922,
+   "cpvname": "Retail trade services"
+  }
+ },
+ {
+  "data": "Hotel and restaurant services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "55000000",
+   "id": 6932,
+   "cpvname": "Hotel and restaurant services"
+  }
+ },
+ {
+  "data": "Land transport services and transport via pipeline services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "60000000",
+   "id": 6967,
+   "cpvname": "Land transport services and transport via pipeline services"
+  }
+ },
+ {
+  "data": "Water transport services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "61000000",
+   "id": 7027,
+   "cpvname": "Water transport services"
+  }
+ },
+ {
+  "data": "Air transport services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "62000000",
+   "id": 7047,
+   "cpvname": "Air transport services"
+  }
+ },
+ {
+  "data": "Supporting and auxiliary transport services; travel agencies services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "63000000",
+   "id": 7071,
+   "cpvname": "Supporting and auxiliary transport services; travel agencies services"
+  }
+ },
+ {
+  "data": "Postal and telecommunications services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "64000000",
+   "id": 7150,
+   "cpvname": "Postal and telecommunications services"
+  }
+ },
+ {
+  "data": "Public utilities",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "65000000",
+   "id": 7193,
+   "cpvname": "Public utilities"
+  }
+ },
+ {
+  "data": "Financial intermediation services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "66000000",
+   "id": 7207,
+   "cpvname": "Financial intermediation services"
+  }
+ },
+ {
+  "data": "Services auxiliary to financial intermediation",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "67000000",
+   "id": 7261,
+   "cpvname": "Services auxiliary to financial intermediation"
+  }
+ },
+ {
+  "data": "Real estate services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "70000000",
+   "id": 7299,
+   "cpvname": "Real estate services"
+  }
+ },
+ {
+  "data": "Computer and related services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "72000000",
+   "id": 7335,
+   "cpvname": "Computer and related services"
+  }
+ },
+ {
+  "data": "Research and development services and related consultancy services.",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "73000000",
+   "id": 7432,
+   "cpvname": "Research and development services and related consultancy services."
+  }
+ },
+ {
+  "data": "Architectural, engineering, construction, legal, accounting and other professional services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "74000000",
+   "id": 7442,
+   "cpvname": "Architectural, engineering, construction, legal, accounting and other professional services"
+  }
+ },
+ {
+  "data": "Administration, defence and social security services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "75000000",
+   "id": 7770,
+   "cpvname": "Administration, defence and social security services"
+  }
+ },
+ {
+  "data": "Services related to the oil and gas industry",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "76000000",
+   "id": 7827,
+   "cpvname": "Services related to the oil and gas industry"
+  }
+ },
+ {
+  "data": "Agricultural, forestry and horticultural services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "77000000",
+   "id": 7863,
+   "cpvname": "Agricultural, forestry and horticultural services"
+  }
+ },
+ {
+  "data": "Printing, publishing and related services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "78000000",
+   "id": 7901,
+   "cpvname": "Printing, publishing and related services"
+  }
+ },
+ {
+  "data": "Education services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "80000000",
+   "id": 7960,
+   "cpvname": "Education services"
+  }
+ },
+ {
+  "data": "Health and social work services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "85000000",
+   "id": 8005,
+   "cpvname": "Health and social work services"
+  }
+ },
+ {
+  "data": "Sewage- and refuse-disposal services, sanitation and environmental services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "90000000",
+   "id": 8075,
+   "cpvname": "Sewage- and refuse-disposal services, sanitation and environmental services"
+  }
+ },
+ {
+  "data": "Membership organisation services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "91000000",
+   "id": 8159,
+   "cpvname": "Membership organisation services"
+  }
+ },
+ {
+  "data": "Recreational, cultural and sporting services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "92000000",
+   "id": 8172,
+   "cpvname": "Recreational, cultural and sporting services"
+  }
+ },
+ {
+  "data": "Miscellaneous services",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "93000000",
+   "id": 8260,
+   "cpvname": "Miscellaneous services"
+  }
+ },
+ {
+  "data": "Private households with employed persons",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "95000000",
+   "id": 8312,
+   "cpvname": "Private households with employed persons"
+  }
+ },
+ {
+  "data": "Services provided by extra-territorial organisations and bodies",
+  "state": "closed",
+  "attr": {
+   "cpvcode": "99000000",
+   "id": 8322,
+   "cpvname": "Services provided by extra-territorial organisations and bodies"
+  }
+ }
+]

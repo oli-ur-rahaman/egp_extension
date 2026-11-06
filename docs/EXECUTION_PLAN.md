@@ -343,10 +343,10 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | M1-T04 | **R3–R6** Flows 2–5 → `flow-2..5.md` + fragments + fixtures | 10 h |
 | M1-T05 | [x] Merge the fragments into `profiles/eprocure.gov.bd.json` **v1.0.0** | 2 h |
 | M1-T06 | [x] Profile loader with a 3-layer merge (shipped → override → session) and schema validation at load | 3 h |
-| M1-T07 | **Fixture sanitiser**: strips names, emails, phone numbers, tokens and hidden `__VIEWSTATE`-style blobs where they're not needed; leaves a structural copy | 3 h |
-| M1-T08 | **Mock eGP server** (`tests/mock-server/`): replays fixtures, simulates cascades, pagination, empty results, detail pages, and a configurable latency | 6 h |
+| M1-T07 | [x] **Fixture sanitiser**: strips names, emails, phone numbers, tokens and hidden `__VIEWSTATE`-style blobs where they're not needed; leaves a structural copy | 3 h |
+| M1-T08 | [x] **Mock eGP server** (`tests/mock-server/`): replays fixtures, simulates cascades, pagination, empty results, detail pages, and a configurable latency | 6 h |
 | M1-T09 | Record answers to Q1–Q6 in `PROJECT_PLAN.md` §8; record the extraction-path decision (fast path vs UI path) per flow | 1 h |
-| M1-T10 | Structural fingerprint baseline per fixture (DOM-skeleton hash + landmarks) | 2 h |
+| M1-T10 | [x] Structural fingerprint baseline per fixture (DOM-skeleton hash + landmarks) | 2 h |
 
 - **Automated (Claude):** M1-AT1 profile validates against the schema · M1-AT2 the mock server serves every fixture and every cascade transition · M1-AT3 a sanitiser test proves no planted PII or token survives · M1-AT4 the loader merges layers in the correct priority · M1-AT5 every profile selector resolves on its fixture.
 - **Manual (You):**
@@ -366,10 +366,10 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 | Task | Description | Est. |
 |---|---|---|
-| M2-T01 | Page classifier content script, driven by the `pageAssert` and `sentinel` profile entries | 4 h |
-| M2-T02 | Settle detection (DOM-quiet + expected landmark) with a time budget → `TIMEOUT` | 3 h |
-| M2-T03 | `SHAPE_CHANGED` evidence capture: sanitised snippet, expected vs found | 3 h |
-| M2-T04 | Signatures for login wall, expiry and error, built from **real** R1 captures (W7) | 2 h |
+| M2-T01 | [x] Page classifier content script, driven by the `pageAssert` and `sentinel` profile entries | 4 h |
+| M2-T02 | [x] Settle detection (DOM-quiet + expected landmark) with a time budget → `TIMEOUT` | 3 h |
+| M2-T03 | [x] `SHAPE_CHANGED` evidence capture: sanitised snippet, expected vs found | 3 h |
+| M2-T04 | [x] Signatures for login wall, expiry and error, built from **real** R1 captures (W7) | 2 h |
 | M2-T05 | Latency-based `RATE_LIMITED` heuristic hooked to the governor (W7) | 2 h |
 
 - **Automated:** M2-AT1 every fixture classifies to its expected outcome (table-driven) · M2-AT2 a mutated fixture (column renamed or removed) → `SHAPE_CHANGED`, never `OK` · M2-AT3 an empty fixture → `EMPTY`, never `SHAPE_CHANGED`.
@@ -861,6 +861,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | B1: M1-T01, T05, T06 | **Stage B1 built:** `profiles/schema.json`, `profiles/eprocure.gov.bd.json` v1.0.0 (5 flows, 54 panel filters, 24 clusters, 173 detail fields, every label from 1,767 study pages accounted for), `src/shared/profile.js` (3-layer merge, own schema check, consistency check), `tools/recon/label-census.js`, 46 new tests. **D37** warning wording. **D38: Flow 4 has 15 filters; Category is commented out of the page (E22).** Selectors checked once against saved pages; full proof is M1-AT5 in B2. | **B1's gate waits for the owner:** cluster and column lists in the atlas, sheet 11. Three questions there. Then B2. |
 | 2026-11-07 | 1 | B1, M1-MC3 | **D39: Tender ID is the unique ID** (owner). Checked on saved rows: no repeats on Flows 2, 4, 5. Flow 3 has none, and 24 of 284 Flow 5 rows have none: exceptions proposed. **D38 confirmed by the owner.** Query table: real title read, 4 public examples all empty. Atlas now carries a progress log (owner's request). | B1's gate still waits for 4 answers. Then B2. |
 | 2026-11-07 | 1 | B1, M1-MC3 | **Owner settled B1's questions.** Flow 3 uses Package ID; manual experience shows Manual in the Tender ID column (D39). **D40: officials' details are collected**, reversing my exclusions. **E23: the Queries and Replies table is hidden on the page**; I had described it as visible content, from labels the study didn't check for hiding. | M1-MC3 done. B1 waits only for the owner's word to start B2. |
+| 2026-11-07 | 1 | B2: M1-T07, T08, T10; M2-T01–T04 | **Stage B2 built.** Cleaner (default deny); 41 cleaned pages plus 2 JSON lookups, covering every layout reachable logged out; fake portal with faults (lost rows, block, 500, dropped connection, session end, latency); page-state classifier; fingerprints; visible-only reading (D41). **Tests caught a real leak before any commit:** account links kept their user ID. Fixed. Corrected: both trees answer in JSON. 27 public requests. | **Gaps:** RFQ and framework notices on Flow 2 need a login; Flow 1's empty report is derived, not captured; M2-T05 is in B8. **B2's gate waits for the owner:** spot-check two cleaned pages. |
 
 **Milestone record**
 
@@ -891,8 +892,9 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
 | 3b | [x] **R8 done:** logged out, logged in, and PWD like for like (D34) | done | |
 | 3c | [x] **Owner approved `docs/BUILD_PLAN.md`** (D36) and D35. Next: owner reads the atlas and says to start B1 | done | |
-| 4 | [x] **B1 built** (M1-T01, T05, T06). [~] **Owner's gate:** questions answered 2026-11-07; waits for the word to start B2 (atlas, sheet 11) | owner | |
-| 4a | **Stage B2 test bed:** fixture sanitiser (M1-T07), mock server (M1-T08), fingerprints (M1-T10), M1-AT5 selectors resolve on fixtures | Claude | no browser |
+| 4 | [x] **B1 built** (M1-T01, T05, T06). [x] **Owner's gate:** passed 2026-11-07 | owner | |
+| 4a | [x] **B2 built.** [ ] **Owner's gate (M1-MC5):** spot-checks two cleaned pages for personal data | owner | 5 min |
+| 4b | **Stage B3 live filters and panel:** the first demo. Capture RFQ and framework notices at the first logged-in check | Claude, then owner | |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
 
@@ -904,7 +906,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · the owner's word to start B2.
+**Open owner decisions:** Q7 secret code, by Week 9 · B2's spot-check.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
