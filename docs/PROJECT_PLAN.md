@@ -823,6 +823,7 @@ egp_ext/
 | D26 | **Workbook = "About this grab" + "Data".** About holds what was done, filter conditions, fields chosen, dates, login state, completeness and general statistics, all filled in by the tool, asking the user nothing. Data is one flat table, starting with one **"Filter: …" column per filter**, so every row shows the search it came from. **Departs from the ToR's "single sheet"; the owner has accepted that (D28)**, and it replaces the separate reconciliation file planned in M10-T02 | Owner, 2026-11-06, owner's guidelines |
 | D27 | **Time estimate before every flow, with warnings and sprints.** Tentative range from a real count; **over 6 hours warns**, over 24 hours is marked unrealistic and needs a tick to start; ranked ways to shorten the run; split into sprints of at most 6 hours, combined at the end. Never by going faster | Owner, 2026-11-06. See docs/TIME_ESTIMATE.md |
 | D28 | **The owner holds ToR authority:** the client has delegated the decision, and what the owner says applies. **Claude warns the owner of every deviation from the ToR, Proposal or plan, when it happens;** the owner decides, and it is recorded here. No approval is sought elsewhere | Owner, 2026-11-06 |
+| D29 | **LTM tenders are collected and exported** on Flow 2 when the user is logged in. They can only be reached that way, for the account's own department. Rows stay marked by method and login state | Owner, 2026-11-06, under D28. These tenders are not listed publicly |
 
 ### Open — to resolve during Phase 1
 

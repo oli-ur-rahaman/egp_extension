@@ -49,6 +49,7 @@ Module sections below are the v1.0 plan. These decisions change them. Details ar
 | D25 | Detail data is the main purpose; checkerboard before Start | M7, M13 |
 | D26 | Workbook = About + Data, with Filter columns. Departs from the ToR's "single sheet"; accepted by the owner (D28) | M9, M10 |
 | D28 | The owner holds ToR authority. Claude warns of every deviation; the owner decides | all |
+| D29 | LTM tenders are collected and exported on logged-in Flow 2 runs | M7, M10 |
 | D27 | Time estimate, warnings, sprints (`docs/TIME_ESTIMATE.md`) | M8, M10, M13 |
 | Recon | List size 100 by default; a full sweep **loses rows**, so distinct IDs must equal the computed total | M6, M9 |
 
@@ -841,6 +842,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | M7, M10, M13 | **Owner's output guidelines: D24 purpose, D25 detail data is the main purpose with a checkerboard before Start, D26 About + Data sheets with Filter columns.** Demo rebuilt: five files in `docs/samples/`, made-up data. | Departs from the ToR's single sheet; accepted by the owner (D28). Owner reviews tomorrow. Next: one pre-build check, then build. |
 | 2026-11-06 | 1 | M8, M10, M13 | Owner reviewed the five demo workbooks: **"better now"**. **D27: time estimate before every flow; over 6 hours warns; over 24 hours unrealistic; ways to shorten; sprints of at most 6 hours.** Design in `docs/TIME_ESTIMATE.md`, 5 new tasks added. All documents brought up to date, including §0a. | End of day on the home PC. Next: §13 step 3a, then build. |
 | 2026-11-06 | 1 | All | **D28: the owner holds ToR authority; Claude warns of every deviation.** ToR "single sheet" change accepted. | Standing rule, in `CLAUDE.md`. |
+| 2026-11-06 | 1 | M7, M10 | **D29: LTM tenders are collected and exported** (logged in, own department only). | Next: §13 step 3a. |
 
 **Milestone record**
 
@@ -859,7 +861,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ### ▶ Resume here (updated 2026-11-06, end of day, home PC; valid on either PC)
 
-**Where we are.** All five report pages are mapped logged out. Decisions D11–D22 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. **The M1 demo is Thu 12 Nov.** Fri and Sat are holidays, so about 4 working days are left.
+**Where we are.** All five report pages are mapped logged out. Decisions D11–D29 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. **The M1 demo is Thu 12 Nov.** Fri and Sat are holidays, so about 4 working days are left.
 
 **Do these in order:**
 
@@ -867,7 +869,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 |---|---|---|---|
 | 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
 | 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
-| 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **Owner to decide (D28): may LTM tenders be exported and shared?** | done | |
+| 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **D29: LTM tenders are collected and exported.** | done | |
 | 3a | **The one check before building** (owner wants only the most important): the detail pages, because D25 makes them the main purpose. Open one PQ, one RFP or PPS notice (Flow 2) and one completed record (Flow 5), read their fields. In the same session, take one contractor from Flow 4's detail and search their Tenderer ID in Flow 5's Company Unique ID: same number? | owner clicks | 10 min |
 | 4 | **Stop recon. Build:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
@@ -881,7 +883,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** LTM tenders in exports (the owner decides, D28) · Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
+**Open owner decisions:** Q7 secret code, by Week 9 · natural keys, proposed: Flow 2 Tender ID, Flow 3 package ID, Flow 4 `pkgLotId`, Flow 5 certificate number or `Id`.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
