@@ -2,8 +2,9 @@
 // Format study (docs/recon/r8-format-study.md): which factors change the detail-page layout on Flows 2-5?
 // Read-only and logged out. One request at a time, paced, with hard stops. Stores labels, never values.
 //
-//   node tools/recon/study.js [--limit 900] [--only 2,3,4,5] [--port 9222]
-// Resumable: results append to recon/raw/study/samples.jsonl, and sampled strata are skipped on restart.
+//   node tools/recon/study.js --state logged-out|logged-in [--department 21] [--limit 900] [--only 2,3,4,5] [--port 9222]
+// Resumable: results append to recon/raw/study/<state>/samples.jsonl, and sampled strata are skipped on restart.
+// Refuses to run if the page's login state doesn't match --state. See docs/recon/self-run-log.md.
 
 import { appendFile, mkdir, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -12,12 +13,17 @@ import { fileURLToPath } from 'node:url';
 import { connect } from './cdp.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const outDir = path.join(root, 'recon', 'raw', 'study');
+const arg = (name, dflt) => { const i = process.argv.indexOf('--' + name); return i > 0 ? process.argv[i + 1] : dflt; };
+const STATE = arg('state', '');
+if (!['logged-out', 'logged-in'].includes(STATE)) { console.error('--state logged-out or --state logged-in is required'); process.exit(1); }
+const DEPT = String(arg('department', ''));
+if (STATE === 'logged-in' && !DEPT) { console.error('A logged-in run needs --department with the account\'s own department'); process.exit(1); }
+const outDir = path.join(root, 'recon', 'raw', 'study', STATE);
 const samplesFile = path.join(outDir, 'samples.jsonl');
 const doneFile = path.join(outDir, 'strata-done.jsonl');
 const stopFile = path.join(outDir, 'stopped.txt');
+const runFile = path.join(outDir, 'run.jsonl');
 
-const arg = (name, dflt) => { const i = process.argv.indexOf('--' + name); return i > 0 ? process.argv[i + 1] : dflt; };
 const LIMIT = Number(arg('limit', 900));
 const ONLY = String(arg('only', '2,3,4,5')).split(',');
 const PORT = Number(arg('port', 9222));
@@ -36,7 +42,7 @@ const totalPages = (html) => Number((html.match(/id="totalPages"[^>]*value="(\d+
 
 // ---- Flow definitions: how to search, and how to read a row's link and attributes (labels only).
 function flow2() {
-  const body = (o) => ({ funName: 'AllTenders', departmentId: '', viewType: 'AllTenders', office: '', procNature: '', budgetType: '', procType: '', procMethod: '0', tenderId: '', refNo: '', pubDtFrm: '', pubDtTo: '', closeDtFrm: '', closeDtTo: '', cpvCategory: '', isFrame: '0', pageNo: '1', size: '20', h: 't', ...o });
+  const body = (o) => ({ funName: 'AllTenders', departmentId: DEPT, viewType: 'AllTenders', office: '', procNature: '', budgetType: '', procType: '', procMethod: '0', tenderId: '', refNo: '', pubDtFrm: '', pubDtTo: '', closeDtFrm: '', closeDtTo: '', cpvCategory: '', isFrame: '0', pageNo: '1', size: '20', h: 't', ...o });
   const s = [];
   for (const v of ['Live', 'Archive', 'Cancel']) s.push([`status=${v}`, { viewType: v }]);
   for (const [v, n] of NATURES) s.push([`nature=${n}`, { procNature: v }]);
@@ -57,7 +63,7 @@ function flow2() {
   };
 }
 function flow3() {
-  const body = (o) => ({ action: 'Search', departmentId: '', office: ' ', project: ' ', financialYear: ' ', budgetType: '', procNature: '', procType: '', appId: '', appCode: '', pkgNo: '', operation: '', value: '', value2: '', pageNo: '1', size: '20', cpvCat: '', ...o });
+  const body = (o) => ({ action: 'Search', departmentId: DEPT, office: ' ', project: ' ', financialYear: ' ', budgetType: '', procNature: '', procType: '', appId: '', appCode: '', pkgNo: '', operation: '', value: '', value2: '', pageNo: '1', size: '20', cpvCat: '', ...o });
   const s = [];
   for (const y of ['2026-2027', '2025-2026', '2024-2025', '2022-2023', '2020-2021', '2018-2019', '2016-2017', '2014-2015', '2012-2013', '2010-2011']) s.push([`fy=${y}`, { financialYear: y }]);
   for (const [, n] of NATURES) s.push([`nature=${n}`, { procNature: n }]);
@@ -73,7 +79,7 @@ function flow3() {
   };
 }
 function flow4() {
-  const body = (o) => ({ keyword: '', officeId: ' ', contractAwardTo: '', noaDt: '', stateName: ' ', departmentId: '', tenderId: '', contractNo: '', contractDtFrom: '', contractDtTo: '', tenderRefNo: '', contractAmount: '', advDt: '', procurementMethod: '', isFrame: '0', budgetType: '', pageNo: '1', size: '20', ...o });
+  const body = (o) => ({ keyword: '', officeId: ' ', contractAwardTo: '', noaDt: '', stateName: ' ', departmentId: DEPT, tenderId: '', contractNo: '', contractDtFrom: '', contractDtTo: '', tenderRefNo: '', contractAmount: '', advDt: '', procurementMethod: '', isFrame: '0', budgetType: '', pageNo: '1', size: '20', ...o });
   const s = [];
   for (const [v, n] of METHODS) s.push([`method=${n}`, { procurementMethod: v }]);
   for (const v of ['Development', 'Revenue', 'Own Fund']) s.push([`budget=${v}`, { budgetType: v }]);
@@ -90,7 +96,7 @@ function flow4() {
   };
 }
 function flow5() {
-  const body = (o) => ({ action: 'geteCMSList', keyword: '', officeId: ' ', contractAwardTo: '', contractStartDtFrom: '', contractStartDtTo: '', contractEndDtFrom: '', contractEndDtTo: '', departmentId: '', tenderId: '', procurementMethod: '', procurementNature: '', contAwrdSearchOpt: 'Contains', exCertSearchOpt: 'Contains', exCertificateNo: '', tendererId: '', procType: '', statusTab: 'All', pageNo: '1', size: '20', workStatus: 'All', ...o });
+  const body = (o) => ({ action: 'geteCMSList', keyword: '', officeId: ' ', contractAwardTo: '', contractStartDtFrom: '', contractStartDtTo: '', contractEndDtFrom: '', contractEndDtTo: '', departmentId: DEPT, tenderId: '', procurementMethod: '', procurementNature: '', contAwrdSearchOpt: 'Contains', exCertSearchOpt: 'Contains', exCertificateNo: '', tendererId: '', procType: '', statusTab: 'All', pageNo: '1', size: '20', workStatus: 'All', ...o });
   const s = [];
   for (const tab of ['eTenders', 'eCMS', 'OffLine', 'All']) for (const w of ['All', 'Completed', 'Ongoing']) s.push([`tab=${tab}+work=${w}`, { statusTab: tab, workStatus: w }]);
   for (const n of ['Goods', 'Works', 'Service', 'Physical Services']) s.push([`nature=${n}`, { procurementNature: n }]);
@@ -143,11 +149,46 @@ async function main() {
   if (existsSync(samplesFile)) for (const l of (await readFile(samplesFile, 'utf8')).split('\n')) if (l) seen.add(JSON.parse(l).flow + ':' + JSON.parse(l).key);
   if (existsSync(doneFile)) for (const l of (await readFile(doneFile, 'utf8')).split('\n')) if (l) doneStrata.add(JSON.parse(l).id);
 
-  const res = await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent(BASE + '/resources/common/AllTenders.jsp?h=t')}`, { method: 'PUT' });
-  const tab = await res.json();
-  const cdp = connect(tab.webSocketDebuggerUrl);
-  await cdp.opened;
-  await sleep(6000);
+  // A pending promise doesn't keep Node alive: without this, a dead link ends the process with exit code 0,
+  // which looks like success. Now the only ways out are FINISHED or a stated stop reason.
+  setInterval(() => {}, 60000);
+
+  let tab = null;
+  let cdp = null;
+  let reconnects = 0;
+  async function attach() {
+    if (tab) await fetch(`http://127.0.0.1:${PORT}/json/close/${tab.id}`).catch(() => {});
+    const res = await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent(BASE + '/resources/common/AllTenders.jsp?h=t')}`, { method: 'PUT' });
+    tab = await res.json();
+    cdp = connect(tab.webSocketDebuggerUrl);
+    await cdp.opened;
+    await sleep(6000);
+  }
+  /** One CDP call with a time limit. A dead or stuck link rebuilds the tab, up to 5 times in a run. */
+  async function send(method, params) {
+    const attempt = () => Promise.race([
+      cdp.send(method, params),
+      cdp.closed.then((why) => { throw new Error('link closed: ' + why); }),
+      sleep(45000).then(() => { throw new Error('no reply in 45 s'); }),
+    ]);
+    try {
+      return await attempt();
+    } catch (e) {
+      console.log(`LINK PROBLEM at request ${used}: ${e.message}`);
+      if (++reconnects > 5) await stop('link lost more than 5 times: ' + e.message);
+      await attach();
+  const probe = await send('Runtime.evaluate', { expression: "({ loginForm: !!document.getElementById('txtPassword'), logout: !!document.querySelector('a[href*=\"Logout\"]') })", returnByValue: true });
+  const actual = probe.result.value.logout && !probe.result.value.loginForm ? 'logged-in' : 'logged-out';
+  if (actual !== STATE) await stop(`page is ${actual} but --state says ${STATE}`);
+  await appendFile(runFile, JSON.stringify({ started: new Date().toISOString(), state: STATE, department: DEPT, limit: LIMIT, only: ONLY }) + '\n');
+      return attempt();
+    }
+  }
+  await attach();
+  const probe = await send('Runtime.evaluate', { expression: "({ loginForm: !!document.getElementById('txtPassword'), logout: !!document.querySelector('a[href*=\"Logout\"]') })", returnByValue: true });
+  const actual = probe.result.value.logout && !probe.result.value.loginForm ? 'logged-in' : 'logged-out';
+  if (actual !== STATE) await stop(`page is ${actual} but --state says ${STATE}`);
+  await appendFile(runFile, JSON.stringify({ started: new Date().toISOString(), state: STATE, department: DEPT, limit: LIMIT, only: ONLY }) + '\n');
 
   let failures = 0;
   async function request(req) {
@@ -157,7 +198,7 @@ async function main() {
     const body = req.body ? new URLSearchParams(req.body).toString() : null;
     const t0 = Date.now();
     const expr = `(async () => { const r = await fetch(${JSON.stringify(req.url)}, { method: ${JSON.stringify(req.method)}, credentials: 'same-origin', ${body !== null ? `headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: ${JSON.stringify(body)},` : ''} }); return { status: r.status, url: r.url, text: await r.text() }; })()`;
-    const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true });
+    const { result, exceptionDetails } = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true });
     const ms = Date.now() - t0;
     if (exceptionDetails || !result.value) { if (++failures >= 3) await stop('3 failures in a row: ' + (exceptionDetails && exceptionDetails.text)); return null; }
     const { status, text, url } = result.value;
@@ -195,7 +236,7 @@ async function main() {
           const got = await request(r.open);
           n++;
           if (!got) continue;
-          const parsed = await cdp.send('Runtime.evaluate', { expression: `(${readLabels.toString()})(${JSON.stringify(got.text)})`, returnByValue: true });
+          const parsed = await send('Runtime.evaluate', { expression: `(${readLabels.toString()})(${JSON.stringify(got.text)})`, returnByValue: true });
           const labels = parsed.result.value;
           await appendFile(samplesFile, JSON.stringify({ flow: f.id, stratum: name, page, key: r.key, attrs: r.attrs, ms: got.ms, title: labels.title, visible: labels.visible, hidden: labels.hidden, tableHeaders: labels.tableHeaders }) + '\n');
           opened++;
@@ -205,9 +246,10 @@ async function main() {
       console.log(`${id}: pages ${tp}, opened ${opened}, requests so far ${used}`);
     }
   }
-  console.log('FINISHED. Requests used:', used);
+  console.log('FINISHED. Requests used:', used, '| link problems:', reconnects);
+  await fetch(`http://127.0.0.1:${PORT}/json/close/${tab.id}`).catch(() => {});
   cdp.close();
   process.exit(0);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => { console.error('STOPPED with an error:', e); process.exit(1); });

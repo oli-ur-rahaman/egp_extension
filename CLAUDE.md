@@ -37,6 +37,8 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 
 ## Recon traps (learned the hard way)
 
+- **Log every self-run flow test in `docs/recon/self-run-log.md`** (owner, 2026-11-06), including failed ones, so runs can be repeated logged in and compared (`tools/recon/study.js`, `study-compare.js`). A run that only waits on the portal must end with FINISHED or a stated stop reason: an exit code of 0 alone proves nothing.
+
 - **Login state:** Flow 1 logged in; Flows 3–5 logged out; **Flow 2 in whichever state the user is in** (D23), because logged-out Flow 2 hides LTM tenders. The panel warns before a logged-out Flow 2 run.
 - `npm run recon -- watch` records one tab only. A new tab or popup needs its own `--tab N` recording; tab numbers shift, so run `tabs` first. Start the recording **before** asking for the clicks, and give it plenty of time, because the owner may take a while.
 - **`TaskStop` does not stop a recorder on Windows:** the node child survives. Always run `npm run recon -- stop`, and always **before asking the owner to log in**. Login and account pages are skipped by the recorder, but no recording should overlap a login anyway.
