@@ -46,6 +46,9 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 70 | **Flow 3 across all years is about 1.26 million packages,** the largest list once the preselected year is removed | ✅ | Financial Year stays mandatory (D15) |
 | 71 | **Flow 5 is thin for recent contracts:** eTenders, start year 2023 817 pages, 2024 153, 2026 7 (size 20) | ✅ | For recent work, the contractor journey leans on Flow 4 |
 | 72 | **Page counts depend on the size they were taken at.** R8 used 20, the flow notes 10 | ✅ | Always record the size beside a page count |
+| 73 | **A control can exist only inside an HTML comment.** Flow 4 Category looked real from reading the page's source. The check that found it: test each selector against the saved page | ✅ | Prove selectors on saved pages (M1-AT5), not by reading source |
+| 74 | **"PE Name" means different things.** On Flows 2 and 4, Procuring Entity Name is the office (on Flow 2 it matches the list's office 3 of 3 times, and no sample shows a personal title). On Flow 3, Procuring Entity, and on Flow 5, PE Name, hold a person's name | ✅ small sample | Fields on 2 and 4; left out on 3 and 5 |
+| 75 | Flows 4 and 5 keep a header row inside the results table body | ✅ | Find rows by their key, never by position |
 
 ## Time and sprints (owner, D27)
 

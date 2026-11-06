@@ -50,7 +50,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - Look at breakdowns before asking for more clicks: the LTM answer was already in a printed table.
 - The recorder once missed requests with no error, and the cause is unknown. It now prints `LINK LOST` if its connection closes. Confirm a click's request really appears in `network.json`, and fall back to reading the page's inline JS, which often tells you more anyway.
 - The response body in `network.json` is often the quickest source: a list response carries `totalPages` and the rows, so several clicks can be read from one recording.
-- Print structure, not personal values. When reading captures, don't echo field values, account IDs or officials' names. Nothing with those goes into a commit; this repo is **public**.
+- Print structure, not personal values. When reading captures, don't echo field values, account IDs or officials' names. A "skeleton" of a cell's HTML still prints its text: print booleans and counts instead. Nothing with those goes into a commit; this repo is **public**.
 - Never open `project_scope/id and pass.txt`.
 - Run `npm run verify` before every commit, not just lint.
 - Shell: backticks inside a double-quoted `node -e` or `sed` string run as commands, and regex backslashes get mangled. Write helper scripts to the scratchpad with the Write tool and pass the repo as the working directory. `require()` resolves relative to the script, so read files with `fs` and `process.cwd()`.

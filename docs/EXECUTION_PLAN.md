@@ -337,12 +337,12 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 | Task | Description | Est. |
 |---|---|---|
-| M1-T01 | `profiles/schema.json`: flows, filters (`dependsOn`, `children`, `skipOptionPatterns`, fallbacks), search (`mode: xhr / postback`), results, pagination, detail, pageAssert, sentinel signatures | 4 h |
+| M1-T01 | [x] `profiles/schema.json`: flows, filters (`dependsOn`, `children`, `skipOptionPatterns`, fallbacks), search (`mode: xhr / postback`), results, pagination, detail, pageAssert, sentinel signatures | 4 h |
 | M1-T02 | **R1** portal shell session → `docs/recon/00-portal-shell.md` | 2 h |
 | M1-T03 | **R2** Flow 1 → `docs/recon/flow-1.md` + profile fragment + fixtures | 3 h |
 | M1-T04 | **R3–R6** Flows 2–5 → `flow-2..5.md` + fragments + fixtures | 10 h |
-| M1-T05 | Merge the fragments into `profiles/eprocure.gov.bd.json` **v1.0.0** | 2 h |
-| M1-T06 | Profile loader with a 3-layer merge (shipped → override → session) and schema validation at load | 3 h |
+| M1-T05 | [x] Merge the fragments into `profiles/eprocure.gov.bd.json` **v1.0.0** | 2 h |
+| M1-T06 | [x] Profile loader with a 3-layer merge (shipped → override → session) and schema validation at load | 3 h |
 | M1-T07 | **Fixture sanitiser**: strips names, emails, phone numbers, tokens and hidden `__VIEWSTATE`-style blobs where they're not needed; leaves a structural copy | 3 h |
 | M1-T08 | **Mock eGP server** (`tests/mock-server/`): replays fixtures, simulates cascades, pagination, empty results, detail pages, and a configurable latency | 6 h |
 | M1-T09 | Record answers to Q1–Q6 in `PROJECT_PLAN.md` §8; record the extraction-path decision (fast path vs UI path) per flow | 1 h |
@@ -858,6 +858,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8 | **Owner asked for the logged-out PWD re-run after all,** at a gentler pace; running. **`docs/EGP_LIMITATIONS.md` started,** a list of portal faults to re-audit. | Build plan approval and the Flows 3–5 login question still open. |
 | 2026-11-06 | 1 | R8 | **PWD like-for-like done:** Flows 3, 4, 5 identical both ways, on all 106 filter values and 358 same-record pairs. Flow 2's gap (5,536 pages) equals the hidden methods. Budget Type on logged-in Flow 2 confirmed broken. | **Recon complete.** Awaiting the owner: build plan approval, D35. |
 | 2026-11-06 | 1 | R8, docs | **Owner approved `BUILD_PLAN.md` (D36) and either login state on Flows 3–5 (D35).** Owner asked for a visual summary of the recon before building: private artifact "e-GP Portal Atlas". Re-reading the data for it corrected one finding (Flow 4 shows 11 of 16 methods, Flow 5 shows 7, not all) and added insights 69–72. | **B1 waits for the owner's word after reading the atlas.** D33 wording flagged: TSTM, DC and CSO may be unused. |
+| 2026-11-06 | 1 | B1: M1-T01, T05, T06 | **Stage B1 built:** `profiles/schema.json`, `profiles/eprocure.gov.bd.json` v1.0.0 (5 flows, 54 panel filters, 24 clusters, 173 detail fields, every label from 1,767 study pages accounted for), `src/shared/profile.js` (3-layer merge, own schema check, consistency check), `tools/recon/label-census.js`, 46 new tests. **D37** warning wording. **D38: Flow 4 has 15 filters; Category is commented out of the page (E22).** Selectors checked once against saved pages; full proof is M1-AT5 in B2. | **B1's gate waits for the owner:** cluster and column lists in the atlas, sheet 11. Three questions there. Then B2. |
 
 **Milestone record**
 
@@ -888,7 +889,8 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
 | 3b | [x] **R8 done:** logged out, logged in, and PWD like for like (D34) | done | |
 | 3c | [x] **Owner approved `docs/BUILD_PLAN.md`** (D36) and D35. Next: owner reads the atlas and says to start B1 | done | |
-| 4 | **Then build, stage B1:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
+| 4 | [x] **B1 built** (M1-T01, T05, T06). [ ] **Owner's gate:** reads the field lists in the atlas, sheet 11, and answers its 3 questions | owner | |
+| 4a | **Stage B2 test bed:** fixture sanitiser (M1-T07), mock server (M1-T08), fingerprints (M1-T10), M1-AT5 selectors resolve on fixtures | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
 

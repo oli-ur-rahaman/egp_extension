@@ -1,0 +1,823 @@
+{
+  "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
+  "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
+  "profileVersion": "1.0.0",
+  "capturedAt": "2026-11-06",
+  "pageStates": {
+    "loginForm": "#txtPassword",
+    "logoutLink": "a[href*=\"Logout\"]",
+    "sessionCheckUrl": "/resources/common/AllTenders.jsp?h=t",
+    "neverFill": ["#txtEmailId", "#txtPassword", "#txtMobile", "#otpTxt"],
+    "accountPrompt": { "urlContains": "UpdateMobileNid.jsp", "signature": "#btnUpdateLater" },
+    "sessionEnded": { "urlContains": "SessionTimedOut.jsp" },
+    "block": { "textPattern": "captcha|access denied|too many requests|temporarily blocked|forbidden", "statuses": [403, 429] },
+    "slowResponseMs": 60000
+  },
+  "sharedSources": {
+    "departmentTree": {
+      "url": "/getDataForTree",
+      "method": "GET",
+      "params": ["id"],
+      "fixed": { "showPrNd": "false" },
+      "nodeSelector": "li[id^=\"deptid_\"]",
+      "nodeAttributes": ["id", "dname", "dtype"],
+      "answer": "treeHtml",
+      "note": "The node id has the prefix deptid_. id=0 gives the top level. The panel shows its own picker and never opens the portal's popup."
+    },
+    "officeCombo": {
+      "url": "/ComboServlet",
+      "method": "POST",
+      "params": ["departmentId"],
+      "fixed": { "funName": "officeCombo" },
+      "answer": "optionsHtml"
+    },
+    "districtCombo": {
+      "url": "/ComboServlet",
+      "method": "POST",
+      "fixed": { "objectId": "136", "funName": "stateComboNOA" },
+      "answer": "optionsHtml"
+    },
+    "categoryTreeRoots": {
+      "url": "/resources/common/CPVTree.jsp",
+      "method": "GET",
+      "nodeSelector": "li[cpvname]",
+      "nodeAttributes": ["id", "cpvcode", "cpvname"],
+      "answer": "treeHtml"
+    },
+    "categoryTreeChildren": {
+      "url": "/GetCpvTree",
+      "method": "GET",
+      "params": ["id"],
+      "fixed": { "searchBy": "", "action": "", "keyword": "" },
+      "answer": "treeHtml"
+    },
+    "categoryExpansion": {
+      "url": "/GetCpvTree",
+      "method": "GET",
+      "params": ["cpvdesc"],
+      "fixed": { "action": "getChildData" },
+      "answer": "namesText",
+      "note": "Filters use category names, joined with '; '. Names can contain '; ', so keep chosen names as a list and never split the string."
+    },
+    "appProjectCombo": {
+      "url": "/APPServlet",
+      "method": "POST",
+      "params": ["param1", "startDate"],
+      "fixed": { "param4": "getAppProject", "funName": "getAppProjectAdv" },
+      "valueMap": { "Development": "Aid or Grant", "Revenue": "Government", "Own fund": "Own fund" },
+      "answer": "optionsHtml",
+      "note": "param1 is the budget word from valueMap; empty when none is chosen. startDate is the financial year's text."
+    }
+  },
+  "flows": {
+    "procurement_transaction_report": {
+      "number": 1,
+      "name": "Procurement Transaction Report",
+      "pattern": "report",
+      "login": { "policy": "required", "departmentWhenLoggedIn": "locked" },
+      "page": {
+        "url": "/report/ProcTransReport.jsp",
+        "title": "Procurement Transaction Report (Nature Wise)",
+        "route": ["Log in", "Update Later", "Reports", "Procurement Transaction Report"],
+        "identity": ["#cmbFinancialYear", "#cmboffice", "#generate"]
+      },
+      "filters": [
+        { "id": "financial_year", "label": "By Financial Year", "control": "select", "panel": true, "selector": "#cmbFinancialYear", "requestField": "financialyear", "empty": "0" },
+        { "id": "pe_office", "label": "PE Office", "control": "select", "panel": true, "selector": "#cmboffice", "requestField": "offId", "mirrorField": "offName", "allMeansLoop": true, "note": "The page has no 'all offices' option. The panel adds All, which loops through every office read live (D12)." },
+        { "id": "quarter", "label": "By Quarter", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#quater", "requestField": "quater", "mirrorField": "quatername", "note": "Owner hides it. One option has a typo in its value (E4)." },
+        { "id": "programme", "label": "By Programme", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#program", "requestField": "program", "mirrorField": "programname", "empty": "0", "note": "Owner hides it: often returns nothing (E3)." },
+        { "id": "project", "label": "By Project", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#project", "requestField": "project", "mirrorField": "projectname", "empty": "0", "note": "Owner hides it: often returns nothing (E3, E5)." },
+        { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#cmbBudType", "requestField": "cmbBudType", "mirrorField": "budgetType", "empty": "0", "note": "Left unset, the report returns all three budgets at once." }
+      ],
+      "rules": { "required": ["financial_year", "pe_office"], "decisions": ["D11", "D12"] },
+      "report": {
+        "request": {
+          "url": "/report/ProcTransReport.jsp",
+          "method": "POST",
+          "fixed": { "generate": "Generate" },
+          "fromPage": ["depName", "depId"]
+        },
+        "tables": [
+          { "number": 1, "selector": "#tab1", "budgetType": "Development", "totalLabel": "Total Development Budget" },
+          { "number": 2, "selector": "#tab2", "budgetType": "Revenue", "totalLabel": "Total Revenue Budget" },
+          { "number": 3, "selector": "#tab3", "budgetType": "Own Fund", "totalLabel": "Total Own Fund", "grandTotalLabel": "GRAND TOTAL" }
+        ],
+        "cell": "t{table}col{col}_{row}",
+        "totalCell": "t{table}total{col}",
+        "columns": [
+          { "col": 2, "key": "method_label", "header": "Method of Procurement", "type": "text" },
+          { "col": 3, "key": "planned_packages_national", "header": "Planned packages, National (No.)", "type": "number" },
+          { "col": 4, "key": "planned_packages_international", "header": "Planned packages, International (No.)", "type": "number" },
+          { "col": 5, "key": "planned_amount_national", "header": "Planned amount, National (Crore BDT)", "type": "money", "unit": "Crore BDT" },
+          { "col": 6, "key": "planned_amount_international", "header": "Planned amount, International (Crore BDT)", "type": "money", "unit": "Crore BDT" },
+          { "col": 7, "key": "live_national", "header": "Tenders live, National", "type": "number" },
+          { "col": 8, "key": "live_international", "header": "Tenders live, International", "type": "number" },
+          { "col": 9, "key": "being_evaluated_national", "header": "Tenders being evaluated, National", "type": "number" },
+          { "col": 10, "key": "being_evaluated_international", "header": "Tenders being evaluated, International", "type": "number" },
+          { "col": 11, "key": "awarded_packages_national", "header": "Awarded packages, National (No.)", "type": "number" },
+          { "col": 12, "key": "awarded_packages_international", "header": "Awarded packages, International (No.)", "type": "number" },
+          { "col": 13, "key": "contracted_amount_national", "header": "Contracted amount, National (Crore BDT)", "type": "money", "unit": "Crore BDT" },
+          { "col": 14, "key": "contracted_amount_international", "header": "Contracted amount, International (Crore BDT)", "type": "money", "unit": "Crore BDT" },
+          { "col": 15, "key": "progress_packages_national", "header": "Progress against planned packages, National (%)", "type": "percent", "formula": "col11/col3*100" },
+          { "col": 16, "key": "progress_packages_international", "header": "Progress against planned packages, International (%)", "type": "percent", "formula": "col12/col4*100" },
+          { "col": 17, "key": "progress_amount_national", "header": "Progress against planned amount, National (%)", "type": "percent", "formula": "col13/col5*100" },
+          { "col": 18, "key": "progress_amount_international", "header": "Progress against planned amount, International (%)", "type": "percent", "formula": "col14/col6*100" }
+        ],
+        "rowKinds": ["method", "budget_total", "grand_total"],
+        "methodLabelPattern": "^(?<method>[^()]+)\\((?<nature>[^)]+)\\)$",
+        "notApplicableText": "N.A.",
+        "empty": "allZero",
+        "checks": ["methodRowsSumToBudgetTotal", "budgetTotalsSumToGrandTotal", "percentsMatchFormula"]
+      }
+    },
+    "tender_info": {
+      "number": 2,
+      "name": "Tender Info",
+      "pattern": "listDetail",
+      "login": {
+        "policy": "either",
+        "departmentWhenLoggedIn": "locked",
+        "startWarning": { "state": "loggedOut", "text": "This page won't list LTM and some other methods. Logging in may show more, for your own department. Proceed?" }
+      },
+      "page": {
+        "url": "/resources/common/AllTenders.jsp?h=t",
+        "title": "Advanced Search for eTenders/eProposals",
+        "route": ["Home", "Search dropdown: eTenders", "Advanced Search"],
+        "identity": ["#cmbSearchTab", "#cmbProcMethod", "#pubDtFrm", "#viewType"]
+      },
+      "filters": [
+        { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree", "note": "Hidden and fixed to the account's department when logged in." },
+        { "id": "procuring_entity", "label": "Procuring Entity", "control": "select", "panel": true, "selector": "#cmbOffice", "requestField": "office", "empty": "", "dependsOn": ["department"], "source": "officeCombo" },
+        { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": true, "selector": "#budgetType", "requestField": "budgetType", "empty": "", "warnWhen": { "state": "loggedIn", "text": "When you're logged in, the portal ignores this filter (E2)." } },
+        { "id": "procurement_nature", "label": "Procurement Nature", "control": "select", "panel": true, "selector": "#procNature", "requestField": "procNature", "empty": "" },
+        { "id": "procurement_type", "label": "Procurement Type", "control": "select", "panel": true, "selector": "#cmbType", "requestField": "procType", "empty": "" },
+        { "id": "procurement_method", "label": "Procurement Method", "control": "select", "panel": true, "selector": "#cmbProcMethod", "requestField": "procMethod", "empty": "0" },
+        { "id": "framework", "label": "Framework Agreement", "control": "select", "panel": true, "selector": "#cmbIsFrame", "requestField": "isFrame", "empty": "0", "warnWhen": { "state": "always", "text": "On this page the portal returns nothing for Yes or No (E1)." } },
+        { "id": "tender_id", "label": "Tender/Proposal ID", "control": "text", "panel": true, "selector": "#tenderId", "requestField": "tenderId", "empty": "" },
+        { "id": "reference_no", "label": "Reference No", "control": "text", "panel": true, "selector": "#refNo", "requestField": "refNo", "empty": "" },
+        {
+          "id": "publishing_date", "label": "Publishing Date", "control": "dateRange", "panel": true, "typedFormat": "dd/mm/yyyy", "sendFormat": "dd/mm/yyyy",
+          "parts": [
+            { "role": "from", "selector": "#pubDtFrm", "requestField": "pubDtFrm", "empty": "" },
+            { "role": "to", "selector": "#pubDtTo", "requestField": "pubDtTo", "empty": "" }
+          ]
+        },
+        {
+          "id": "closing_date", "label": "Closing Date", "control": "dateRange", "panel": true, "typedFormat": "dd/mm/yyyy", "sendFormat": "dd/mm/yyyy",
+          "parts": [
+            { "role": "from", "selector": "#closeDtFrm", "requestField": "closeDtFrm", "empty": "" },
+            { "role": "to", "selector": "#closeDtTo", "requestField": "closeDtTo", "empty": "" }
+          ]
+        },
+        { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCategory", "empty": "", "source": "categoryTreeRoots" },
+        {
+          "id": "status", "label": "Status", "control": "tabs", "panel": true, "selector": "#viewType", "requestField": "viewType", "default": "AllTenders",
+          "choices": [
+            { "label": "All", "value": "AllTenders" },
+            { "label": "Live", "value": "Live" },
+            { "label": "Archive", "value": "Archive" },
+            { "label": "Cancelled", "value": "Cancel" }
+          ],
+          "note": "Tabs on the page, a dropdown in the panel, default All. The page itself defaults to Live."
+        }
+      ],
+      "rules": {
+        "required": ["department", "publishing_date"],
+        "window": { "filter": "publishing_date", "maxYears": 5, "currentDateCheckboxes": true },
+        "exemptions": [{ "anyOf": ["tender_id", "reference_no"], "lifts": ["publishing_date"], "maxRows": 5000 }],
+        "decisions": ["D12", "D13", "D14", "D22", "D23", "D29", "D37"]
+      },
+      "list": {
+        "request": {
+          "url": "/TenderDetailsServlet",
+          "method": "POST",
+          "fixed": { "funName": "AllTenders", "h": "t" },
+          "pageField": "pageNo",
+          "sizeField": "size",
+          "defaultSize": 100
+        },
+        "rows": "#resultTable > tbody > tr",
+        "totalPages": "#totalPages",
+        "rowCount": "#cntTenBrief",
+        "empty": { "selector": "#noRecordFound", "note": "An empty result carries no totalPages." },
+        "dateFormat": "dd-MMM-yyyy HH:mm",
+        "columns": [
+          {
+            "cell": 2, "header": "Tender/Proposal ID, Reference No", "split": "br",
+            "parts": [
+              { "key": "tender_id", "header": "Tender/Proposal ID", "index": 0, "type": "id" },
+              { "key": "reference_no", "header": "Reference No", "index": 1, "type": "id" },
+              { "key": "status", "header": "Status", "index": -1, "type": "text" }
+            ]
+          },
+          {
+            "cell": 3, "header": "Procurement Nature, Title", "split": "br",
+            "parts": [
+              { "key": "procurement_nature", "header": "Procurement Nature", "index": 0, "type": "text" },
+              { "key": "title", "header": "Title", "index": 1, "type": "text" }
+            ]
+          },
+          {
+            "cell": 4, "header": "Ministry, Division, Organization, PE", "split": "br",
+            "note": "Three or four levels, depending on the department. First is Ministry, last is PE.",
+            "parts": [
+              { "key": "ministry", "header": "Ministry", "index": 0, "type": "text" },
+              { "key": "middle_levels", "header": "Division and Organization", "index": "middle", "type": "text" },
+              { "key": "procuring_entity", "header": "Procuring Entity", "index": -1, "type": "text" }
+            ]
+          },
+          {
+            "cell": 5, "header": "Type, Method", "split": "br",
+            "parts": [
+              { "key": "procurement_type", "header": "Procurement Type", "index": 0, "type": "text" },
+              { "key": "procurement_method", "header": "Procurement Method", "index": 1, "type": "text" }
+            ]
+          },
+          {
+            "cell": 6, "header": "Publishing and Closing Date and Time", "split": "br",
+            "parts": [
+              { "key": "publishing_datetime", "header": "Publishing Date and Time", "index": 0, "type": "datetime" },
+              { "key": "closing_datetime", "header": "Closing Date and Time", "index": 1, "type": "datetime" }
+            ]
+          }
+        ]
+      },
+      "naturalKey": { "key": "tender_id", "confirmedByOwner": false, "note": "Owner: tender IDs are unique in e-GP. M1-MC3 still to tick." },
+      "detail": {
+        "open": {
+          "method": "POST",
+          "url": "/resources/common/ViewTender.jsp",
+          "params": [{ "name": "id", "from": "input[name=\"id\"]" }],
+          "fixed": { "h": "t" }
+        },
+        "pageTitle": "View IFT /PQ / REOI / RFP / PPS Notice Details",
+        "labelCell": "td.ff",
+        "refusalText": "This tender is not exists or You are un-authorized to access information for this tender",
+        "dateFormats": ["dd-MMM-yyyy HH:mm", "dd-MMM-yyyy"],
+        "clusters": [
+          { "id": "identity", "name": "Identity" },
+          { "id": "organisation", "name": "Organisation" },
+          { "id": "procurement", "name": "Procurement and funding" },
+          { "id": "dates", "name": "Dates" },
+          { "id": "terms", "name": "Terms and money" },
+          { "id": "lot_official", "name": "Lot or service, and official" }
+        ],
+        "fields": [
+          { "id": "tender_id_detail", "header": "Tender/Proposal ID", "cluster": "identity", "type": "id", "sameAs": "tender_id", "prefer": "list", "labels": ["Tender/Proposal ID"] },
+          { "id": "app_id", "header": "App ID", "cluster": "identity", "type": "id", "labels": ["App ID"] },
+          { "id": "event_type", "header": "Event Type", "cluster": "identity", "type": "text", "labels": ["Event Type"] },
+          { "id": "invitation_for", "header": "Invitation for", "cluster": "identity", "type": "text", "labels": ["Invitation for"] },
+          { "id": "selection_of", "header": "For selection of", "cluster": "identity", "type": "text", "onlyFor": "Services", "labels": ["Request for expression of interest for selection of", "RFP for selection of", "PPS for selection of"] },
+          { "id": "invitation_reference", "header": "Invitation Reference No.", "cluster": "identity", "type": "id", "labels": ["Invitation Reference No.", "REOI No.", "RFA No.", "RFP No.", "PPS No.", "RFQ No."] },
+          { "id": "status_detail", "header": "Status", "cluster": "identity", "type": "text", "sameAs": "status", "prefer": "list", "labels": ["Tender/Proposal Status"] },
+          { "id": "retendered_id", "header": "Re-Tendered ID", "cluster": "identity", "type": "id", "labels": ["Re-Tendered ID"] },
+          { "id": "reoi_proposal_id", "header": "REOI Proposal ID", "cluster": "identity", "type": "id", "onlyFor": "Services", "labels": ["REOI Proposal ID"] },
+          { "id": "amendments", "header": "Amendments", "cluster": "identity", "type": "repeatedBlock", "labels": ["Amendment / Corrigendum Text", "Amendment / Corrigendum/ Addendum No.", "Field Name", "Old Value", "New Value"], "labelPatterns": ["^Amendment / Corrigendum No\\. : \\d+$"] },
+
+          { "id": "ministry_detail", "header": "Ministry", "cluster": "organisation", "type": "text", "sameAs": "ministry", "prefer": "detail", "labels": ["Ministry"] },
+          { "id": "division", "header": "Division", "cluster": "organisation", "type": "text", "labels": ["Division"] },
+          { "id": "organization", "header": "Organization", "cluster": "organisation", "type": "text", "labels": ["Organization"] },
+          { "id": "pe_name", "header": "Procuring Entity Name", "cluster": "organisation", "type": "text", "labels": ["Procuring Entity Name"] },
+          { "id": "pe_code", "header": "Procuring Entity Code", "cluster": "organisation", "type": "id", "labels": ["Procuring Entity Code"] },
+          { "id": "pe_district", "header": "Procuring Entity District", "cluster": "organisation", "type": "text", "labels": ["Procuring Entity District"] },
+
+          { "id": "nature_detail", "header": "Procurement Nature", "cluster": "procurement", "type": "text", "sameAs": "procurement_nature", "prefer": "list", "labels": ["Procurement Nature"] },
+          { "id": "type_detail", "header": "Procurement Type", "cluster": "procurement", "type": "text", "sameAs": "procurement_type", "prefer": "list", "labels": ["Procurement Type"] },
+          { "id": "method_detail", "header": "Procurement Method", "cluster": "procurement", "type": "text", "sameAs": "procurement_method", "prefer": "list", "labels": ["Procurement Method"] },
+          { "id": "contract_type", "header": "Contract Type", "cluster": "procurement", "type": "text", "onlyFor": "Services", "labels": ["Contract Type"] },
+          { "id": "budget_type", "header": "Budget Type", "cluster": "procurement", "type": "text", "labels": ["Budget Type"] },
+          { "id": "source_of_funds", "header": "Source of Funds", "cluster": "procurement", "type": "text", "labels": ["Source of Funds"] },
+          { "id": "development_partner", "header": "Development Partner", "cluster": "procurement", "type": "text", "labels": ["Development Partner"] },
+          { "id": "project_code", "header": "Project Code", "cluster": "procurement", "type": "id", "labels": ["Project Code"] },
+          { "id": "project_name", "header": "Project Name", "cluster": "procurement", "type": "text", "labels": ["Project Name"] },
+          { "id": "package", "header": "Package No. and Description", "cluster": "procurement", "type": "text", "labels": ["Tender/Proposal Package No. and Description", "Package No. and Description"] },
+          { "id": "category", "header": "Category", "cluster": "procurement", "type": "text", "labels": ["Category"] },
+
+          { "id": "publication", "header": "Publication Date and Time", "cluster": "dates", "type": "datetime", "labels": ["Scheduled Tender/Proposal PublicationDate and Time", "REOI PublicationDate and Time", "RFA PublicationDate and Time", "RFP PublicationDate and Time", "PPS PublicationDate and Time", "RFQ PublicationDate and Time"] },
+          { "id": "document_last_selling", "header": "Document Last Selling/Downloading", "cluster": "dates", "type": "datetime", "labels": ["Tender/Proposal Document last selling /downloading Date and Time", "Document last selling /downloading Date and Time"] },
+          { "id": "pre_meeting_start", "header": "Pre-Tender Meeting Start", "cluster": "dates", "type": "datetime", "labels": ["Pre - Tender/Proposal meeting StartDate and Time", "Pre - Application meeting StartDate and Time", "Pre - RFP meeting StartDate and Time", "Pre - REOI meeting StartDate and Time"] },
+          { "id": "pre_meeting_end", "header": "Pre-Tender Meeting End", "cluster": "dates", "type": "datetime", "labels": ["Pre - Tender/Proposal meeting EndDate and Time", "Pre - Application meeting EndDate and Time", "Pre - RFP meeting EndDate and Time", "Pre - REOI meeting EndDate and Time"] },
+          { "id": "closing", "header": "Closing Date and Time", "cluster": "dates", "type": "datetime", "sameAs": "closing_datetime", "prefer": "list", "labels": ["Tender/Proposal ClosingDate and Time", "ClosingDate and Time", "EOI ClosingDate and Time"] },
+          { "id": "opening", "header": "Opening Date and Time", "cluster": "dates", "type": "datetime", "labels": ["Tender/Proposal OpeningDate and Time", "OpeningDate and Time", "EOI OpeningDate and Time"] },
+          { "id": "security_last_date", "header": "Last Date for Security Submission", "cluster": "dates", "type": "datetime", "labels": ["Last Date and Time for Tender/Proposal SecuritySubmission"] },
+          { "id": "security_valid_up_to", "header": "Security Valid Up To", "cluster": "dates", "type": "date", "labels": ["Tender/Proposal Security Valid Up to"] },
+          { "id": "tender_valid_up_to", "header": "Tender Valid Up To", "cluster": "dates", "type": "date", "labels": ["Tender/Proposal Valid Up to"] },
+
+          { "id": "eligibility", "header": "Eligibility", "cluster": "terms", "type": "text", "labels": ["Eligibility of Tenderer", "Eligibility of Consultant"] },
+          { "id": "brief_description", "header": "Brief Description", "cluster": "terms", "type": "text", "labels": ["Brief Description of Works", "Brief Description of Goods and Related Service", "Brief Description of assignment"] },
+          { "id": "experience_required", "header": "Experience, Resources and Capacity Required", "cluster": "terms", "type": "text", "onlyFor": "Services", "labels": ["Experience, Resources and delivery capacity required"] },
+          { "id": "foreign_firm", "header": "Association with Foreign Firm", "cluster": "terms", "type": "text", "onlyFor": "Services", "labels": ["Association with foreign firm"] },
+          { "id": "other_details", "header": "Other Details", "cluster": "terms", "type": "text", "labels": ["Other details (if applicable)"] },
+          { "id": "additional_documents", "header": "Additional Documents Required", "cluster": "terms", "type": "text", "labels": ["Tenderer shall submit with its Tender, the following additional documents"] },
+          { "id": "evaluation_type", "header": "Evaluation Type", "cluster": "terms", "type": "text", "labels": ["Evaluation Type"] },
+          { "id": "passing_points", "header": "Passing Points", "cluster": "terms", "type": "number", "labels": ["Passing Points"] },
+          { "id": "document_available", "header": "Document Available", "cluster": "terms", "type": "text", "labels": ["Document Available"] },
+          { "id": "document_fees", "header": "Document Fees", "cluster": "terms", "type": "text", "labels": ["Document Fees"] },
+          { "id": "document_price", "header": "Document Price (BDT)", "cluster": "terms", "type": "money", "unit": "BDT", "labels": ["Tender/Proposal Document Price (In BDT)", "PPS Document Price (In BDT)"] },
+          { "id": "mode_of_payment", "header": "Mode of Payment", "cluster": "terms", "type": "text", "labels": ["Mode of Payment"] },
+          { "id": "pps_security", "header": "PPS Security Amount (BDT)", "cluster": "terms", "type": "money", "unit": "BDT", "onlyFor": "Physical Services", "labels": ["PPS Security Amount (In BDT)"] },
+
+          { "id": "lot_no", "header": "Lot No. or Ref. No.", "cluster": "lot_official", "type": "id", "labels": ["Lot No.", "Ref. No."] },
+          { "id": "lot_identification", "header": "Identification of Lot or Phasing of Service", "cluster": "lot_official", "type": "text", "labels": ["Identification of Lot", "Phasing of service"] },
+          { "id": "location", "header": "Location", "cluster": "lot_official", "type": "text", "labels": ["Location"] },
+          { "id": "lot_security_bdt", "header": "Tender Security (BDT)", "cluster": "lot_official", "type": "money", "unit": "BDT", "labels": ["Tender/Proposal security(Amount in BDT)", "Tender/Proposal Security (Amount in BDT)"] },
+          { "id": "lot_security_usd", "header": "Tender Security (USD)", "cluster": "lot_official", "type": "money", "unit": "USD", "labels": ["Tender/Proposal Security (Amount in USD)"] },
+          { "id": "start_date", "header": "Start Date", "cluster": "lot_official", "type": "date", "labels": ["Tentative Start Date", "Indicative Start Date"] },
+          { "id": "completion_date", "header": "Completion Date", "cluster": "lot_official", "type": "date", "labels": ["Tentative Completion Date", "Indicative Completion Date"] },
+          { "id": "official_designation", "header": "Inviting Official's Designation", "cluster": "lot_official", "type": "text", "labels": ["Designation of Official Inviting Tender/Proposal", "Designation of Official Inviting", "Designation of Official Inviting REOI", "Designation of Official Inviting RFP"] },
+          { "id": "official_address", "header": "Inviting Official's Address", "cluster": "lot_official", "type": "text", "labels": ["Address of Official Inviting Tender/Proposal", "Address of Official Inviting", "Address of Official Inviting REOI", "Address of Official Inviting RFP"] },
+          { "id": "framework_offices", "header": "PE Offices for Framework Contract", "cluster": "lot_official", "type": "table", "onlyFor": "Framework", "labels": ["List of PE Offices for Framework Contract", "Office Name", "Lead Office"] }
+        ],
+        "ignored": [
+          { "reason": "personal", "note": "People's names and contact details (D17, r8).", "labels": ["Name of Official Inviting Tender/Proposal", "Name of Official Inviting", "Name of Official Inviting REOI", "Name of Official Inviting RFP", "Contact details of Official Inviting Tender/Proposal", "Contact details of Official Inviting", "Contact details of Official Inviting REOI", "Contact details of Official Inviting RFP", "PE Name", "Designation"] },
+          { "reason": "attachments", "note": "Amendment files. Attachments are out of scope. Action appears logged in only.", "labels": ["File Name", "File Description", "File Size (in KB)", "Action"] },
+          { "reason": "notInScopeYet", "note": "Pre-tender questions and answers: in no cluster yet. Raised with the owner (D31).", "labels": ["Query", "Response"] },
+          { "reason": "structure", "labels": ["S. No."] }
+        ]
+      }
+    },
+    "app_info": {
+      "number": 3,
+      "name": "APP Info",
+      "pattern": "listDetail",
+      "login": { "policy": "either", "departmentWhenLoggedIn": "free" },
+      "page": {
+        "url": "/resources/common/AdvAPPSearch.jsp",
+        "title": "Advanced Search for Annual Procurement Plan",
+        "route": ["Home", "Search dropdown: Annual Procurement Plans", "Advanced Search"],
+        "identity": ["#cmbSearchTab", "#cmbYear", "#txtPkgNo", "#cmbOperator"]
+      },
+      "filters": [
+        { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree" },
+        { "id": "procuring_entity", "label": "Procuring Entity", "control": "select", "panel": true, "selector": "#cmbOffice", "requestField": "office", "empty": " ", "dependsOn": ["department"], "source": "officeCombo", "note": "The page's placeholder value is 0, but its request sends a single space." },
+        { "id": "financial_year", "label": "Financial Year", "control": "select", "panel": true, "selector": "#cmbYear", "requestField": "financialYear", "empty": " ", "pagePreselects": true, "note": "The page preselects the current year, so an untouched page isn't 'no filter'." },
+        { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": true, "selector": "#cmbBudget", "requestField": "budgetType", "empty": "" },
+        { "id": "project_name", "label": "Project Name", "control": "select", "panel": true, "selector": "#cmbProject", "requestField": "project", "empty": " ", "dependsOn": ["financial_year", "budget_type"], "source": "appProjectCombo" },
+        { "id": "procurement_nature", "label": "Procurement Nature", "control": "select", "panel": true, "selector": "#cmbNature", "requestField": "procNature", "empty": "" },
+        { "id": "procurement_type", "label": "Procurement Type", "control": "select", "panel": true, "selector": "#cmbType", "requestField": "procType", "empty": "" },
+        { "id": "app_id", "label": "APP ID", "control": "text", "panel": true, "selector": "#txtAppId", "requestField": "appId", "empty": "" },
+        { "id": "package_no", "label": "Package No.", "control": "text", "panel": true, "selector": "#txtPkgNo", "requestField": "pkgNo", "empty": "" },
+        {
+          "id": "estimated_cost", "label": "Package Estimated Cost", "control": "operatorValue", "panel": true,
+          "parts": [
+            { "role": "operator", "selector": "#cmbOperator", "requestField": "operation", "empty": "" },
+            { "role": "value", "selector": "#txtVal1", "requestField": "value", "empty": "" },
+            { "role": "value2", "selector": "#txtVal2", "requestField": "value2", "empty": "" }
+          ],
+          "note": "Between needs both values, and value2 must be the larger."
+        },
+        { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCat", "empty": "", "source": "categoryTreeRoots" }
+      ],
+      "rules": { "required": ["department", "financial_year"], "decisions": ["D15", "D16", "D17", "D35"] },
+      "list": {
+        "request": {
+          "url": "/SearchServlet",
+          "method": "POST",
+          "fixed": { "action": "Search", "appCode": "" },
+          "pageField": "pageNo",
+          "sizeField": "size",
+          "defaultSize": 100
+        },
+        "rows": "#resultTable > tbody > tr",
+        "totalPages": "#totalPages",
+        "empty": { "selector": "#noRecordFound", "note": "The page's own count stays stale on empty, so never trust the page count here (E9)." },
+        "columns": [
+          { "cell": 2, "header": "APP ID", "split": "none", "parts": [{ "key": "app_id", "header": "APP ID", "index": 0, "type": "id" }] },
+          {
+            "cell": 3, "header": "Ministry, Division, Organization, PE", "split": "br",
+            "parts": [
+              { "key": "organization", "header": "Organization", "index": 0, "type": "text" },
+              { "key": "procuring_entity", "header": "Procuring Entity", "index": -1, "type": "text" }
+            ]
+          },
+          { "cell": 4, "header": "District", "split": "none", "parts": [{ "key": "district", "header": "District", "index": 0, "type": "text" }] },
+          {
+            "cell": 5, "header": "Procurement Nature, Project Name", "split": "br",
+            "parts": [
+              { "key": "procurement_nature", "header": "Procurement Nature", "index": 0, "type": "text" },
+              { "key": "project_name", "header": "Project Name", "index": 1, "type": "text" }
+            ]
+          },
+          {
+            "cell": 6, "header": "Package No, Description", "split": "br", "linkSelector": "a[href*=\"ViewPackageDetail\"]",
+            "parts": [
+              { "key": "package_no", "header": "Package No", "index": 0, "type": "id" },
+              { "key": "package_description", "header": "Package Description", "index": 1, "type": "text" },
+              { "key": "package_id", "header": "Package ID", "index": "link:pkgId", "type": "id" }
+            ]
+          },
+          {
+            "cell": 7, "header": "Estimated Cost (in BDT), Procurement Method", "split": "br",
+            "parts": [
+              { "key": "estimated_cost", "header": "Estimated Cost (BDT)", "index": 0, "type": "money", "unit": "BDT" },
+              { "key": "procurement_method", "header": "Procurement Method", "index": 1, "type": "text" }
+            ]
+          }
+        ]
+      },
+      "naturalKey": { "key": "package_id", "confirmedByOwner": false, "note": "APP ID isn't unique: one APP has many packages. M1-MC3 still to tick." },
+      "detail": {
+        "open": {
+          "method": "GET",
+          "url": "/resources/common/ViewPackageDetail.jsp",
+          "params": [{ "name": "appId", "from": "link" }, { "name": "pkgId", "from": "link" }, { "name": "pkgType", "from": "link" }, { "name": "from", "from": "link" }]
+        },
+        "pageTitle": "View APP Package Details :",
+        "labelCell": "td.ff",
+        "dateFormats": ["dd-MMM-yyyy"],
+        "clusters": [
+          { "id": "identity", "name": "Identity" },
+          { "id": "organisation", "name": "Organisation" },
+          { "id": "procurement", "name": "Procurement and funding" },
+          { "id": "package", "name": "Package" },
+          { "id": "lot", "name": "Lot" },
+          { "id": "planned_dates", "name": "Planned dates" }
+        ],
+        "fields": [
+          { "id": "app_id_detail", "header": "APP ID", "cluster": "identity", "type": "id", "sameAs": "app_id", "prefer": "list", "labels": ["APP ID"] },
+          { "id": "app_code", "header": "APP Code", "cluster": "identity", "type": "id", "labels": ["APP Code"] },
+          { "id": "financial_year", "header": "Financial Year", "cluster": "identity", "type": "text", "labels": ["Financial Year"] },
+          { "id": "advance_procurement_app", "header": "Advance Procurement (APP)", "cluster": "identity", "type": "text", "labels": ["Advance Procurement (APP)"] },
+
+          { "id": "ministry", "header": "Ministry", "cluster": "organisation", "type": "text", "labels": ["Ministry"] },
+          { "id": "division", "header": "Division", "cluster": "organisation", "type": "text", "labels": ["Division"] },
+          { "id": "organization_detail", "header": "Organization", "cluster": "organisation", "type": "text", "sameAs": "organization", "prefer": "detail", "labels": ["Organization"] },
+          { "id": "pe_office_code", "header": "PE Office and Code", "cluster": "organisation", "type": "text", "labels": ["PE Office and Code"] },
+          { "id": "district_detail", "header": "District", "cluster": "organisation", "type": "text", "sameAs": "district", "prefer": "list", "labels": ["District"] },
+
+          { "id": "nature_detail", "header": "Procurement Nature", "cluster": "procurement", "type": "text", "sameAs": "procurement_nature", "prefer": "list", "labels": ["Procurement Nature"] },
+          { "id": "procurement_type", "header": "Procurement Type", "cluster": "procurement", "type": "text", "labels": ["Procurement Type"] },
+          { "id": "method_detail", "header": "Procurement Method", "cluster": "procurement", "type": "text", "sameAs": "procurement_method", "prefer": "list", "labels": ["Procurement Method"] },
+          { "id": "budget_type", "header": "Budget Type", "cluster": "procurement", "type": "text", "labels": ["Budget Type"] },
+          { "id": "source_of_fund", "header": "Source of Fund", "cluster": "procurement", "type": "text", "labels": ["Source of Fund"] },
+          { "id": "development_partners", "header": "Development Partners", "cluster": "procurement", "type": "text", "labels": ["Development Partners"] },
+          { "id": "project_name_detail", "header": "Project Name", "cluster": "procurement", "type": "text", "sameAs": "project_name", "prefer": "detail", "labels": ["Project Name"] },
+          { "id": "approving_authority", "header": "Approving Authority", "cluster": "procurement", "type": "text", "labels": ["Approving Authority"] },
+          { "id": "type_of_emergency", "header": "Type of Emergency", "cluster": "procurement", "type": "text", "labels": ["Type of Emergency"] },
+          { "id": "advance_procurement_package", "header": "Advance Procurement (Package)", "cluster": "procurement", "type": "text", "labels": ["Advance Procurement (Package)"] },
+          { "id": "pq_requires", "header": "PQ Requires", "cluster": "procurement", "type": "text", "onlyFor": "Works", "labels": ["PQ Requires"] },
+          { "id": "service_type", "header": "Service Type", "cluster": "procurement", "type": "text", "onlyFor": "Services", "labels": ["Service Type"] },
+          { "id": "reoi_requires", "header": "REOI / RFA / RFP / PPS Requires", "cluster": "procurement", "type": "text", "onlyFor": "Services", "labels": ["REOI / RFA / RFP / PPS Requires"] },
+
+          { "id": "package_no_detail", "header": "Package No", "cluster": "package", "type": "id", "sameAs": "package_no", "prefer": "list", "labels": ["Package No", "Package No."] },
+          { "id": "package_description_detail", "header": "Package Description", "cluster": "package", "type": "text", "sameAs": "package_description", "prefer": "detail", "labels": ["Package Description"] },
+          { "id": "package_cost", "header": "Package Estimated Cost (BDT)", "cluster": "package", "type": "money", "unit": "BDT", "sameAs": "estimated_cost", "prefer": "list", "labels": ["Package Estimated Cost (In BDT)"] },
+          { "id": "category", "header": "Category", "cluster": "package", "type": "text", "labels": ["Category"] },
+          { "id": "package_type", "header": "Package Type", "cluster": "package", "type": "text", "labels": ["Package Type"] },
+
+          { "id": "lot_no", "header": "Lot No.", "cluster": "lot", "type": "id", "labels": ["Lot No."] },
+          { "id": "lot_description", "header": "Lot Description", "cluster": "lot", "type": "text", "labels": ["Lot Description"] },
+          { "id": "lot_qty", "header": "Lot Qty", "cluster": "lot", "type": "number", "labels": ["Qty"] },
+          { "id": "lot_unit", "header": "Lot Unit", "cluster": "lot", "type": "text", "labels": ["Unit"] },
+          { "id": "lot_cost", "header": "Lot Estimated Cost (BDT)", "cluster": "lot", "type": "money", "unit": "BDT", "labels": ["Estimated Cost (In BDT)"] },
+          { "id": "framework_offices", "header": "PE Offices for Framework Contract", "cluster": "lot", "type": "table", "onlyFor": "Framework", "labels": ["List of PE Offices for Framework Contract"] },
+
+          { "id": "expected_advertisement", "header": "Expected Advertisement", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Advertisement of Tender/Proposal on e-GP website", "Expected Date of Advertisement of RFQ on e-GP website", "Expected Date of Advertisement of REOI on e-GP website"] },
+          { "id": "expected_submission", "header": "Expected Submission", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of submission of Tender/Proposal", "Expected Date of submission of RFQ", "Expected Date of Submission of Proposal"] },
+          { "id": "expected_opening", "header": "Expected Opening", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Opening of Tender/Proposal", "Expected Date of Opening of RFQ"] },
+          { "id": "expected_evaluation_report", "header": "Expected Evaluation Report", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Submission of Evaluation Report"] },
+          { "id": "expected_approval", "header": "Expected Approval for Award", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Approval for Award of Contract"] },
+          { "id": "expected_noa", "header": "Expected Issuance of NOA", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Issuance of the NOA"] },
+          { "id": "expected_signing", "header": "Expected Contract Signing", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Signing of Contract"] },
+          { "id": "expected_completion", "header": "Expected Contract Completion", "cluster": "planned_dates", "type": "date", "labels": ["Expected Date of Completion of Contract"] },
+          { "id": "total_time_to_signing", "header": "Total Time to Contract Signing (days)", "cluster": "planned_dates", "type": "number", "labels": ["Total Time to Contract Signing"] },
+          { "id": "expected_eoi_receipt", "header": "Expected Last Date of Receipt of EOI", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Last Date of Receipt of EOI"] },
+          { "id": "expected_shortlist_submission", "header": "Expected Submission of Shortlisted Firm", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Submission of Recommended Short-listed Firm"] },
+          { "id": "expected_shortlist_approval", "header": "Expected Approval of Shortlisted Firm", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Approval of Recommended Shortlisted Firm"] },
+          { "id": "expected_rfp_issue", "header": "Expected Issue of RFP", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Issue of RFP"] },
+          { "id": "expected_technical_opening", "header": "Expected Technical Proposal Opening", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Technical proposal opening"] },
+          { "id": "expected_technical_evaluation", "header": "Expected Technical Proposal Evaluation", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Technical Proposal Evaluation"] },
+          { "id": "expected_financial_opening", "header": "Expected Financial Proposal Opening", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Financial proposal opening"] },
+          { "id": "expected_combined_report", "header": "Expected Combined Evaluation Report", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Submission of Combined Evaluation Report"] },
+          { "id": "expected_combined_approval", "header": "Expected Approval of Combined Report", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Approval of Combined Evaluation Report"] },
+          { "id": "expected_negotiation", "header": "Expected Completion of Negotiation", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Completion of Negotiation"] }
+        ],
+        "ignored": [
+          { "reason": "personal", "note": "On this page, Procuring Entity holds a person's name; the list holds the office (D17, E19).", "labels": ["Procuring Entity"] },
+          { "reason": "heading", "labels": ["Key Fields Information", "Package Details", "Lot Details", "Tender/Proposal Dates", "RFQ Dates", "REOI Dates", "RFP Dates"] }
+        ]
+      }
+    },
+    "contract_info": {
+      "number": 4,
+      "name": "Contract Info",
+      "pattern": "listDetail",
+      "login": { "policy": "either", "departmentWhenLoggedIn": "notChecked" },
+      "page": {
+        "url": "/resources/common/AdvSearchNOA.jsp",
+        "title": "Advanced Search for eContracts",
+        "route": ["Home", "Search dropdown: eContracts", "Advanced Search"],
+        "identity": ["#cmbSearchTab", "#contractSigneDateFrom", "#txtContractAwardTo"]
+      },
+      "filters": [
+        { "id": "department", "label": "Select Ministry/Division/Agency", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree" },
+        { "id": "procuring_entity", "label": "Procuring Entity", "control": "select", "panel": true, "selector": "#cmbOffice", "requestField": "officeId", "empty": " ", "dependsOn": ["department"], "source": "officeCombo" },
+        { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": true, "selector": "#budgetType", "requestField": "budgetType", "empty": "" },
+        { "id": "district", "label": "District", "control": "select", "panel": true, "selector": "#cmbDistrict", "requestField": "stateName", "empty": " ", "source": "districtCombo" },
+        { "id": "procurement_method", "label": "Procurement Method", "control": "select", "panel": true, "selector": "#cmbProcurementMethod", "requestField": "procurementMethod", "empty": "" },
+        { "id": "framework", "label": "Framework Agreement", "control": "select", "panel": true, "selector": "#cmbIsFrame", "requestField": "isFrame", "empty": "0" },
+        { "id": "contract_no", "label": "Contract No", "control": "text", "panel": true, "selector": "#txtContractNo", "requestField": "contractNo", "empty": "" },
+        { "id": "tender_id", "label": "Tender/Proposal ID", "control": "text", "panel": true, "selector": "#txtTenderId", "requestField": "tenderId", "empty": "" },
+        { "id": "reference_no", "label": "Tender/Proposal Ref. No", "control": "text", "panel": true, "selector": "#txtTenderRefNo", "requestField": "tenderRefNo", "empty": "" },
+        { "id": "value_bdt", "label": "Value (In BDT)", "control": "text", "panel": true, "selector": "#txtContractAmt", "requestField": "contractAmount", "empty": "" },
+        { "id": "keyword", "label": "Keyword", "control": "text", "panel": true, "selector": "#txtKWord", "requestField": "keyword", "empty": "" },
+        { "id": "advertisement_date", "label": "Advertisement Date", "control": "date", "panel": true, "selector": "#advDt", "requestField": "advDt", "empty": "", "typedFormat": "dd/mm/yyyy", "sendFormat": "yyyy-mm-dd" },
+        { "id": "award_date", "label": "Date of Notification of Award", "control": "date", "panel": true, "selector": "#noaDt", "requestField": "noaDt", "empty": "", "typedFormat": "dd/mm/yyyy", "sendFormat": "yyyy-mm-dd" },
+        { "id": "contract_award_to", "label": "Contract Award to", "control": "text", "panel": true, "selector": "#txtContractAwardTo", "requestField": "contractAwardTo", "empty": "" },
+        {
+          "id": "sign_date", "label": "Contract Sign Date", "control": "dateRange", "panel": true, "typedFormat": "dd/mm/yyyy", "sendFormat": "dd/mm/yyyy",
+          "parts": [
+            { "role": "from", "selector": "#contractSigneDateFrom", "requestField": "contractDtFrom", "empty": "" },
+            { "role": "to", "selector": "#contractSigneDateTo", "requestField": "contractDtTo", "empty": "" }
+          ]
+        }
+      ],
+      "rules": {
+        "required": ["department", "sign_date"],
+        "window": { "filter": "sign_date", "maxYears": 5 },
+        "exemptions": [{ "anyOf": ["contract_award_to"], "lifts": ["department", "sign_date"], "maxRows": 5000 }],
+        "decisions": ["D19", "D21", "D22", "D31", "D35", "D38"]
+      },
+      "list": {
+        "request": {
+          "url": "/AdvSearchNOAServlet",
+          "method": "POST",
+          "pageField": "pageNo",
+          "sizeField": "size",
+          "defaultSize": 100
+        },
+        "rows": "#resultTable > tbody > tr",
+        "totalPages": "#totalPages",
+        "empty": { "selector": "#noRecordFound", "note": "An empty result reports 1 page. Match this marker, never the count or the wording." },
+        "dateFormat": "dd-MMM-yyyy",
+        "columns": [
+          { "cell": 2, "header": "Ministry & Division", "split": "none", "parts": [{ "key": "ministry_division", "header": "Ministry & Division", "index": 0, "type": "text" }] },
+          {
+            "cell": 3, "header": "Tender/Proposal ID, Ref No., Title & Advertisement Date", "split": "br", "linkSelector": "a[href*=\"ViewAwardedContracts\"]",
+            "note": "The title can be cut short, with the rest in span.morecontent. Exact splitting is settled against saved pages in B5.",
+            "parts": [
+              { "key": "tender_id", "header": "Tender/Proposal ID", "index": "link:tenderid", "type": "id" },
+              { "key": "contract_id", "header": "Contract ID", "index": "link:pkgLotId", "type": "id" },
+              { "key": "reference_no", "header": "Ref No.", "index": 0, "type": "id" },
+              { "key": "title", "header": "Title", "index": 1, "type": "text" },
+              { "key": "advertisement_date", "header": "Advertisement Date", "index": -1, "type": "date" }
+            ]
+          },
+          {
+            "cell": 4, "header": "Procuring Entity, Procurement Method", "split": "br",
+            "parts": [
+              { "key": "procuring_entity", "header": "Procuring Entity", "index": 0, "type": "text" },
+              { "key": "procurement_method", "header": "Procurement Method", "index": 1, "type": "text" }
+            ]
+          },
+          { "cell": 5, "header": "District", "split": "none", "parts": [{ "key": "district", "header": "District", "index": 0, "type": "text" }] },
+          { "cell": 6, "header": "Date of Notification of Award", "split": "none", "parts": [{ "key": "award_date", "header": "Date of Notification of Award", "index": 0, "type": "date" }] },
+          { "cell": 7, "header": "Contract Award to", "split": "none", "parts": [{ "key": "contract_award_to", "header": "Contract Award to", "index": 0, "type": "text" }] },
+          { "cell": 8, "header": "Value (Cr. BDT)", "split": "none", "parts": [{ "key": "value_crore", "header": "Value (Crore BDT)", "index": 0, "type": "money", "unit": "Crore BDT" }] }
+        ]
+      },
+      "naturalKey": { "key": "contract_id", "confirmedByOwner": false, "note": "Proposed: pkgLotId from the link. Tender ID may repeat. M1-MC3 still to tick." },
+      "detail": {
+        "open": {
+          "method": "GET",
+          "url": "/resources/common/ViewAwardedContracts.jsp",
+          "params": [{ "name": "pkgLotId", "from": "link" }, { "name": "tenderid", "from": "link" }]
+        },
+        "pageTitle": "Contract Awards Details",
+        "labelCell": "td.ff",
+        "dateFormats": ["dd-MMM-yyyy HH:mm", "dd-MMM-yyyy"],
+        "clusters": [
+          { "id": "identity", "name": "Identity" },
+          { "id": "organisation", "name": "Organisation" },
+          { "id": "procurement", "name": "Procurement and funding" },
+          { "id": "dates", "name": "Dates" },
+          { "id": "contract", "name": "Contract and contractor" },
+          { "id": "competition", "name": "Competition and compliance" }
+        ],
+        "fields": [
+          { "id": "contract_award_for", "header": "Contract Award for", "cluster": "identity", "type": "text", "labels": ["Contract Award for"] },
+          { "id": "tender_id_detail", "header": "Tender/Proposal ID", "cluster": "identity", "type": "id", "sameAs": "tender_id", "prefer": "list", "labels": ["Tender/Proposal ID"] },
+          { "id": "reference_detail", "header": "Ref No.", "cluster": "identity", "type": "id", "sameAs": "reference_no", "prefer": "detail", "labels": ["Invitation/Proposal Ref. No."] },
+          { "id": "package_no", "header": "Package No.", "cluster": "identity", "type": "id", "labels": ["Tender/Proposal Package No."] },
+          { "id": "package_name", "header": "Package Name", "cluster": "identity", "type": "text", "labels": ["Tender/Proposal Package Name"] },
+          { "id": "contract_no", "header": "Older: Contract No", "cluster": "identity", "type": "id", "older": true, "labels": ["Contract No"] },
+          { "id": "brief_description", "header": "Older: Brief Description of Contract", "cluster": "identity", "type": "text", "older": true, "labels": ["Brief Description of Contract"] },
+
+          { "id": "ministry_division_detail", "header": "Ministry & Division", "cluster": "organisation", "type": "text", "sameAs": "ministry_division", "prefer": "detail", "labels": ["Ministry/Division"] },
+          { "id": "agency", "header": "Agency", "cluster": "organisation", "type": "text", "labels": ["Agency"] },
+          { "id": "pe_name", "header": "Procuring Entity Name", "cluster": "organisation", "type": "text", "labels": ["Procuring Entity Name"] },
+          { "id": "pe_code", "header": "Procuring Entity Code", "cluster": "organisation", "type": "id", "labels": ["Procuring Entity Code"] },
+          { "id": "pe_district", "header": "Procuring Entity District", "cluster": "organisation", "type": "text", "labels": ["Procuring Entity District"] },
+
+          { "id": "method_detail", "header": "Procurement Method (National/International)", "cluster": "procurement", "type": "text", "labels": ["Procurement Method (National/Internation)"] },
+          { "id": "budget_source", "header": "Budget and Source of Funds", "cluster": "procurement", "type": "text", "labels": ["Budget and Source of Funds"] },
+          { "id": "development_partner", "header": "Development Partner", "cluster": "procurement", "type": "text", "labels": ["Development Partner (if applicable)"] },
+          { "id": "project_code", "header": "Project Code", "cluster": "procurement", "type": "id", "labels": ["Project/Program Code (if applicable)"] },
+          { "id": "project_name", "header": "Project Name", "cluster": "procurement", "type": "text", "labels": ["Project/Program Name (if applicable)"] },
+
+          { "id": "advertisement_datetime", "header": "Date of Advertisement", "cluster": "dates", "type": "datetime", "labels": ["Date of Advertisement"] },
+          { "id": "award_date_detail", "header": "Date of Notification of Award", "cluster": "dates", "type": "date", "sameAs": "award_date", "prefer": "list", "labels": ["Date of Notification of Award"] },
+          { "id": "signing_date", "header": "Date of Contract Signing", "cluster": "dates", "type": "date", "labels": ["Date of Contract Signing"] },
+          { "id": "completion_date", "header": "Expected Contract Completion", "cluster": "dates", "type": "date", "labels": ["Expected Date of Contract Completion", "Proposed Date of Contract Completion"] },
+          { "id": "contract_start", "header": "Older: Proposed Contract Start", "cluster": "dates", "type": "date", "older": true, "labels": ["Proposed Date of Contract Start"] },
+
+          { "id": "contract_price", "header": "Contract Price", "cluster": "contract", "type": "moneyWithCurrency", "labels": ["Contract Price"] },
+          { "id": "operator_name", "header": "Name of the Economic Operator", "cluster": "contract", "type": "text", "labels": ["Name of the Economic Operator (Supplier/Contractor/Service Provider/Consultant)", "Name of Supplier/Contractor/Consultant"] },
+          { "id": "tenderer_id", "header": "Tenderer ID", "cluster": "contract", "type": "id", "labels": ["Tenderer ID of the Economic Operator (If any)"] },
+          { "id": "business_address", "header": "Business Address of the Economic Operator", "cluster": "contract", "type": "text", "labels": ["Business Address of the Economic Operator"] },
+          { "id": "supplier_location", "header": "Older: Location of Supplier", "cluster": "contract", "type": "text", "older": true, "labels": ["Location of Supplier/Contractor/Consultant"] },
+          { "id": "delivery_location", "header": "Location of Delivery/Works/Service", "cluster": "contract", "type": "text", "labels": ["Location of Delivery/Works/Service Delivery"] },
+
+          { "id": "tenders_sold", "header": "Older: Tenders Sold", "cluster": "competition", "type": "number", "older": true, "labels": ["No. of Tenders/Proposals Sold"] },
+          { "id": "tenders_received", "header": "Older: Tenders Received", "cluster": "competition", "type": "number", "older": true, "labels": ["No. of Tenders/Proposals Received"] },
+          { "id": "tenders_responsive", "header": "Older: Tenders Responsive", "cluster": "competition", "type": "number", "older": true, "labels": ["Tenders/Proposals Responsive"] },
+          { "id": "security_in_time", "header": "Older: Performance Security in Due Time", "cluster": "competition", "type": "yesNo", "older": true, "labels": ["Was the Performance Security provided in due time?"] },
+          { "id": "signed_in_time", "header": "Older: Contract Signed in Due Time", "cluster": "competition", "type": "yesNo", "older": true, "labels": ["Was the Contract Singed in due time?"] },
+          { "id": "officer_designation", "header": "Authorised Officer's Designation", "cluster": "competition", "type": "text", "labels": ["Designation of Authorised Officer"] }
+        ],
+        "ignored": [
+          { "reason": "personal", "note": "A person's name, and the Beneficial Ownership table (D19).", "labels": ["Name of Authorised Officer", "Beneficial Ownership Information", "Name", "Designation", "Beneficial Ownership (%)", "Country"] },
+          { "reason": "structure", "labels": ["S. No."] }
+        ]
+      }
+    },
+    "experience_info": {
+      "number": 5,
+      "name": "Experience Info",
+      "pattern": "listDetail",
+      "login": { "policy": "either", "departmentWhenLoggedIn": "notChecked" },
+      "page": {
+        "url": "/resources/common/SearcheCMS.jsp?v=advSearch",
+        "title": "eExperience",
+        "route": ["Home", "Search dropdown: eExperience", "Advanced Search"],
+        "identity": ["#cmbSearchTab", "#packageType", "#cmbWorkStatus", "#txtTendererId"]
+      },
+      "filters": [
+        { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree" },
+        { "id": "procuring_entity", "label": "Procuring Entity", "control": "select", "panel": true, "selector": "#cmbOffice", "requestField": "officeId", "empty": " ", "dependsOn": ["department"], "source": "officeCombo" },
+        { "id": "procurement_nature", "label": "Procurement Nature", "control": "select", "panel": true, "selector": "#cmbProcurementNature", "requestField": "procurementNature", "empty": "" },
+        { "id": "procurement_method", "label": "Procurement Method", "control": "select", "panel": true, "selector": "#cmbProcurementMethod", "requestField": "procurementMethod", "empty": "", "dependsOn": ["procurement_nature"], "note": "The page rebuilds this list in its own code, with no request." },
+        { "id": "procurement_type", "label": "Procurement Type", "control": "select", "panel": true, "selector": "#procType", "requestField": "procType", "empty": "" },
+        { "id": "work_status", "label": "Work Status", "control": "select", "panel": true, "selector": "#cmbWorkStatus", "requestField": "workStatus", "default": "All" },
+        {
+          "id": "tender_type", "label": "Tender Type", "control": "select", "panel": true, "selector": "#packageType", "requestField": "statusTab", "default": "All",
+          "choices": [
+            { "label": "All", "value": "All" },
+            { "label": "eTenders", "value": "eTenders" },
+            { "label": "eCMS", "value": "eCMS" },
+            { "label": "Manual", "value": "OffLine" }
+          ],
+          "note": "Default All (D20), though the page defaults to eTenders. All can be very slow (E12)."
+        },
+        { "id": "tender_id", "label": "Tender/Proposal ID", "control": "text", "panel": true, "selector": "#txtTenderId", "requestField": "tenderId", "empty": "" },
+        {
+          "id": "contract_start_date", "label": "Contract Start Date", "control": "dateRange", "panel": true, "typedFormat": "dd/mm/yyyy", "sendFormat": "yyyy-mm-dd",
+          "parts": [
+            { "role": "from", "selector": "#contractStartDtFrom", "requestField": "contractStartDtFrom", "empty": "" },
+            { "role": "to", "selector": "#contractStartDtTo", "requestField": "contractStartDtTo", "empty": "" }
+          ]
+        },
+        {
+          "id": "contract_end_date", "label": "Contract End Date", "control": "dateRange", "panel": true, "typedFormat": "dd/mm/yyyy", "sendFormat": "yyyy-mm-dd",
+          "parts": [
+            { "role": "from", "selector": "#contractEndDtFrom", "requestField": "contractEndDtFrom", "empty": "" },
+            { "role": "to", "selector": "#contractEndDtTo", "requestField": "contractEndDtTo", "empty": "" }
+          ]
+        },
+        {
+          "id": "contract_awarded_to", "label": "Contract Awarded To", "control": "matchText", "panel": true,
+          "parts": [
+            { "role": "mode", "selector": "#contAwrdSearchOpt", "requestField": "contAwrdSearchOpt", "default": "Contains" },
+            { "role": "text", "selector": "#txtContractAwardTo", "requestField": "contractAwardTo", "empty": "" }
+          ]
+        },
+        { "id": "company_unique_id", "label": "Company Unique ID", "control": "text", "panel": true, "selector": "#txtTendererId", "requestField": "tendererId", "empty": "" },
+        {
+          "id": "certificate_no", "label": "Experience Certificate No", "control": "matchText", "panel": true,
+          "parts": [
+            { "role": "mode", "selector": "#exCertSearchOpt", "requestField": "exCertSearchOpt", "default": "Contains" },
+            { "role": "text", "selector": "#exCertificateNo", "requestField": "exCertificateNo", "empty": "" }
+          ]
+        }
+      ],
+      "rules": {
+        "required": ["department", "contract_start_date"],
+        "window": { "filter": "contract_start_date", "maxYears": 5 },
+        "exemptions": [{ "anyOf": ["contract_awarded_to", "company_unique_id", "certificate_no"], "lifts": ["department", "contract_start_date"], "maxRows": 5000 }],
+        "decisions": ["D20", "D21", "D22", "D35"]
+      },
+      "list": {
+        "request": {
+          "url": "/AdvSearcheCMSServlet",
+          "method": "POST",
+          "fixed": { "action": "geteCMSList", "keyword": "" },
+          "pageField": "pageNo",
+          "sizeField": "size",
+          "defaultSize": 100
+        },
+        "rows": "#resultTable > tbody > tr",
+        "totalPages": "#totalPages",
+        "empty": { "selector": "#noRecordFound", "note": "An empty result reports 1 page. Match this marker, never the count or the wording." },
+        "dateFormat": "dd-MMM-yyyy",
+        "columns": [
+          {
+            "cell": 2, "header": "Ministry, Division, Organization, PE", "split": "br",
+            "parts": [
+              { "key": "ministry", "header": "Ministry", "index": 0, "type": "text" },
+              { "key": "middle_levels", "header": "Division and Organization", "index": "middle", "type": "text" },
+              { "key": "procuring_entity", "header": "Procuring Entity", "index": -1, "type": "text" }
+            ]
+          },
+          {
+            "cell": 3, "header": "Procurement Nature, Type & Method", "split": "br",
+            "parts": [
+              { "key": "procurement_nature", "header": "Procurement Nature", "index": 0, "type": "text" },
+              { "key": "procurement_type", "header": "Procurement Type", "index": 1, "type": "text" },
+              { "key": "procurement_method", "header": "Procurement Method", "index": 2, "type": "text" }
+            ]
+          },
+          {
+            "cell": 4, "header": "Tender/Proposal ID, Ref No., Title & Publishing Date", "split": "br", "linkSelector": "a[href*=\"VieweCmsDetails\"]",
+            "note": "The first line holds ID and Ref No. together. Exact splitting is settled against saved pages in B5.",
+            "parts": [
+              { "key": "tender_id_ref", "header": "Tender/Proposal ID and Ref No.", "index": 0, "type": "id" },
+              { "key": "title", "header": "Title", "index": 1, "type": "text" },
+              { "key": "publishing_date", "header": "Publishing Date", "index": 2, "type": "date" },
+              { "key": "record_id", "header": "Record ID", "index": "link:Id", "type": "id" }
+            ]
+          },
+          { "cell": 5, "header": "Contract Awarded To", "split": "none", "parts": [{ "key": "contract_awarded_to", "header": "Contract Awarded To", "index": 0, "type": "text" }] },
+          { "cell": 6, "header": "Company Unique ID", "split": "none", "parts": [{ "key": "company_unique_id", "header": "Company Unique ID", "index": 0, "type": "id" }] },
+          { "cell": 7, "header": "Experience Certificate No", "split": "none", "parts": [{ "key": "certificate_no", "header": "Experience Certificate No", "index": 0, "type": "id" }] },
+          { "cell": 8, "header": "Contract Amount (In BDT / Equivalent in BDT)", "split": "none", "parts": [{ "key": "contract_amount", "header": "Contract Amount (BDT)", "index": 0, "type": "money", "unit": "BDT" }] },
+          {
+            "cell": 9, "header": "Contract Start & End Date", "split": "br",
+            "parts": [
+              { "key": "contract_start", "header": "Contract Start Date", "index": 0, "type": "date" },
+              { "key": "contract_end", "header": "Contract End Date", "index": 1, "type": "date" }
+            ]
+          },
+          { "cell": 10, "header": "Work Status", "split": "none", "parts": [{ "key": "work_status", "header": "Work Status", "index": 0, "type": "text" }] }
+        ]
+      },
+      "naturalKey": { "key": "record_id", "confirmedByOwner": false, "note": "Proposed: Id from the link. M1-MC3 still to tick." },
+      "detail": {
+        "open": {
+          "method": "GET",
+          "url": "/resources/common/VieweCmsDetails.jsp",
+          "params": [{ "name": "wcs", "from": "link" }, { "name": "Id", "from": "link" }]
+        },
+        "pageTitle": "eExperience Work's Status Details",
+        "labelCell": "td.ff",
+        "dateFormats": ["dd-MMM-yyyy"],
+        "clusters": [
+          { "id": "certificate", "name": "Certificate and tender" },
+          { "id": "organisation", "name": "Organisation" },
+          { "id": "work", "name": "Work" },
+          { "id": "contract", "name": "Contract" },
+          { "id": "progress", "name": "Progress" },
+          { "id": "company", "name": "Company and comments" }
+        ],
+        "fields": [
+          { "id": "certificate_no_detail", "header": "Experience Certificate No", "cluster": "certificate", "type": "id", "sameAs": "certificate_no", "prefer": "list", "labels": ["Work Experience Certificate No"] },
+          { "id": "tender_id", "header": "Tender ID", "cluster": "certificate", "type": "id", "labels": ["Tender ID"] },
+          { "id": "tender_ref", "header": "Tender Ref No", "cluster": "certificate", "type": "id", "labels": ["Tender Ref No"] },
+          { "id": "publication_date", "header": "Tender Publication Date", "cluster": "certificate", "type": "date", "sameAs": "publishing_date", "prefer": "list", "labels": ["Tender Publication Date"] },
+          { "id": "tender_type", "header": "Tender Type", "cluster": "certificate", "type": "text", "labels": ["Tender Type"] },
+
+          { "id": "ministry_detail", "header": "Ministry", "cluster": "organisation", "type": "text", "sameAs": "ministry", "prefer": "detail", "labels": ["Ministry/Division"] },
+          { "id": "organization", "header": "Organization Name", "cluster": "organisation", "type": "text", "labels": ["Organization Name"] },
+          { "id": "pe_office", "header": "PE Office Name", "cluster": "organisation", "type": "text", "labels": ["PE Office Name"] },
+
+          { "id": "package_no", "header": "Package No", "cluster": "work", "type": "id", "labels": ["Package No"] },
+          { "id": "package_name", "header": "Package Name", "cluster": "work", "type": "text", "labels": ["Package Name"] },
+          { "id": "nature_detail", "header": "Procurement Nature", "cluster": "work", "type": "text", "sameAs": "procurement_nature", "prefer": "list", "labels": ["Procurement Nature"] },
+          { "id": "method_detail", "header": "Procurement Method", "cluster": "work", "type": "text", "sameAs": "procurement_method", "prefer": "list", "labels": ["Procurement Method"] },
+          { "id": "work_category", "header": "Work Category", "cluster": "work", "type": "text", "labels": ["Work Category"] },
+          { "id": "name_of_work", "header": "Name of Work", "cluster": "work", "type": "text", "labels": ["Name of Work"] },
+
+          { "id": "contract_no", "header": "Contract No.", "cluster": "contract", "type": "id", "labels": ["Contract No."] },
+          { "id": "contract_start_detail", "header": "Contract Start Date", "cluster": "contract", "type": "date", "sameAs": "contract_start", "prefer": "list", "labels": ["Contract Start Date"] },
+          { "id": "contract_end_detail", "header": "Contract End Date", "cluster": "contract", "type": "date", "sameAs": "contract_end", "prefer": "list", "labels": ["Contract End Date"] },
+          { "id": "contract_value", "header": "Contract Amount (BDT)", "cluster": "contract", "type": "money", "unit": "BDT", "sameAs": "contract_amount", "prefer": "list", "labels": ["Contract Value (Equivalent in BDT)"] },
+
+          { "id": "completion_status", "header": "Work Status", "cluster": "progress", "type": "text", "sameAs": "work_status", "prefer": "list", "labels": ["Work Completion Status"] },
+          { "id": "physical_progress", "header": "Physical Progress (%)", "cluster": "progress", "type": "percent", "labels": ["Physical Progress (%)"] },
+          { "id": "financial_progress", "header": "Financial Progress (%)", "cluster": "progress", "type": "percent", "labels": ["Financial Progress (%)"] },
+          { "id": "physical_progress_date", "header": "Date of Physical Progress", "cluster": "progress", "type": "date", "labels": ["Date of Physical Progress"] },
+          { "id": "financial_progress_date", "header": "Date of Financial Progress", "cluster": "progress", "type": "date", "labels": ["Date of Financial Progress"] },
+
+          { "id": "company_name", "header": "Company Name", "cluster": "company", "type": "text", "labels": ["Company Name"] },
+          { "id": "is_jvca", "header": "Is JVCA", "cluster": "company", "type": "yesNo", "labels": ["Is JVCA"] },
+          { "id": "jvca_partners", "header": "JVCA Partners", "cluster": "company", "type": "table", "onlyFor": "JVCA", "labels": ["Role In JVCA", "JVCA Lead Partner Share(%)", "Amount (Equivalent in BDT)"] },
+          { "id": "remarks", "header": "Remarks", "cluster": "company", "type": "text", "labels": ["Remarks"] },
+          { "id": "comments_by_pe", "header": "Comments By PE", "cluster": "company", "type": "text", "labels": ["Comments By PE"] }
+        ],
+        "ignored": [
+          { "reason": "personal", "note": "PE Name holds a person's name (D17), and the Beneficial Ownership table (D19).", "labels": ["PE Name", "Name", "Designation", "Beneficial Ownership (%)", "Country"] },
+          { "reason": "structure", "labels": ["S. No."] }
+        ]
+      }
+    }
+  }
+}

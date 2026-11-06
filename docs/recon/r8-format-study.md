@@ -159,3 +159,7 @@ Run at the owner's request (`self-run-log.md`, run 10): the same 169 filter valu
 ## Not yet known
 
 - Whether login reveals TSTM, DC, SSS and CSO.
+
+## Answered later
+
+- **The Action column** (2026-11-06): it's the last column of the amendment file table (File Name, File Description, File Size, Action), logged in only. Probably a download link; its contents weren't read. Attachments are out of scope, so nothing follows.

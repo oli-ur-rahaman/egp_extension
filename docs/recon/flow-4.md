@@ -5,7 +5,7 @@
 
 ## Client requirement (owner, 2026-11-05)
 
-**D19. Flow 4 scope.** All **16 filters** in the panel. **Department and a date window of at most 5 years are mandatory.** The window uses Contract Sign Date From/To, the only date range this page has. The field palette starts empty. Measured: PWD, sign dates 03/01/2021–31/12/2025 = **7,119 pages ≈ 71,200 contracts**, down from 89,586 pages. At size 100 and about 3 s per request, that's about 36 minutes for the list and about 59 hours with every detail page.
+**D19. Flow 4 scope.** All filters in the panel: **15, not the 16 first reported** (D38, below). **Department and a date window of at most 5 years are mandatory.** The window uses Contract Sign Date From/To, the only date range this page has. The field palette starts empty. Measured: PWD, sign dates 03/01/2021–31/12/2025 = **7,119 pages ≈ 71,200 contracts**, down from 89,586 pages. At size 100 and about 3 s per request, that's about 36 minutes for the list and about 59 hours with every detail page.
 
 ## A. Identity
 
@@ -35,7 +35,7 @@
 | 13 | Date of Notification of Award | text with calendar, `#noaDt` | `noaDt` | a **single date**, same conversion | empty |
 | 14 | Contract Award to | text `#txtContractAwardTo` | `contractAwardTo` | free text | empty |
 | 15 | Contract Sign Date From / To | text with calendar, `#contractSigneDateFrom`, `#contractSigneDateTo` | `contractDtFrom`, `contractDtTo` | **the only date range**, sent as typed. Checked by `CompareContractSignDateFromTo()` | empty |
-| 16 | Category | `#txtaCPV`, same CPV tree popup | `cpvCode` | | empty |
+| ~~16~~ | ~~Category~~ | **Commented out of the page (D38, E22).** `#txtaCPV` sits inside an HTML comment, so no user can see it. The page's code still reads it, which is why `cpvCode` is absent from the request | `cpvCode` | | |
 
 **Cascade:** Department → Procuring Entity only.
 

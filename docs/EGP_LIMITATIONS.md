@@ -15,12 +15,13 @@
 | **E3** | Flow 1 Programme, Project | Choosing one often returns nothing | Owner's report; all-zero result in R2 | No | Flow 1, one office, one Programme with known work | Hides both filters (owner's decision) | Consider showing them | 🔴 2026-11-04 |
 | **E4** | Flow 1 Quarter | The option "Q2 and Q3 and Q4" has a typo in its code, so it sends its text and not a date range | Page code, R2 | No | Read the option's value | Quarter is hidden and left as the page has it | Could offer Quarter | 🔴 2026-11-04 |
 | **E5** | Flow 1 PE Office | Changing it doesn't refresh the Project list, which depends on it | Page code, R2 | No | Change office; does a request fire? | Project is hidden | Could offer Project | 🔴 2026-11-04 |
+| **E22** | Flow 4 Category | The filter is commented out of the page, so nobody can use it, though the page's code still sends its value | Saved pages, logged out and logged in | Possibly | Is `txtaCPV` inside a comment on the page? | Left out of the panel (D38) | Add Category to Flow 4's panel | 🔴 2026-11-06 |
 
 ## Records you can't reach
 
 | ID | Where | What's wrong | Evidence | Deliberate? | How to check | What the extension does | If fixed | Status · last checked |
 |---|---|---|---|---|---|---|---|---|
-| **E6** | Flow 2, logged out | **Lists only 7 of 16 methods.** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing, though the Method dropdown offers them, with no message | R8, like for like: PWD 3,377 pages logged out, 8,913 logged in. The gap is LTM 5,022, RFQU 465, RFQ 43, RFQL 8, DPM 2 | **Hiding: possibly. Offering them with no message: no** | Logged out, Method = LTM | Warns at the start of the flow (D33) | Remove or narrow the warning; logged-out runs become complete | 🔴 2026-11-06 |
+| **E6** | Flow 2, logged out | **Lists only 7 of 16 methods.** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing, though the Method dropdown offers them, with no message | R8, like for like: PWD 3,377 pages logged out, 8,913 logged in. The gap is LTM 5,022, RFQU 465, RFQ 43, RFQL 8, DPM 2 | **Hiding: possibly. Offering them with no message: no** | Logged out, Method = LTM | Warns at the start of the flow (D37) | Remove or narrow the warning; logged-out runs become complete | 🔴 2026-11-06 |
 | **E7** | Flow 2 notice | A cancelled tender's notice can refuse with "This tender is not exists or You are un-authorized" | 1 of 14 cancelled sampled | Possibly | Reopen a cancelled notice | Records it on that row; continues | Fields fill normally | 🔴 2026-11-06 |
 
 ## Lists and paging
@@ -57,3 +58,4 @@
 | Date | Audited by | Rows checked | Fixed | New | Notes |
 |---|---|---|---|---|---|
 | 2026-11-06 | Claude | register created, from R2–R8 | — | E1–E21 | Baseline |
+| 2026-11-06 | Claude | saved pages, while building the Site Profile | — | E22 | Flow 4 Category |

@@ -1,0 +1,406 @@
+{
+  "$comment": "Shape of the Site Profile. Checked by src/shared/profile.js, which supports only the keywords used here: type, required, properties, additionalProperties, enum, pattern, items, minItems, minimum, $ref, $defs.",
+  "type": "object",
+  "required": ["site", "profileVersion", "capturedAt", "pageStates", "sharedSources", "flows"],
+  "additionalProperties": false,
+  "properties": {
+    "$comment": { "type": "string" },
+    "site": {
+      "type": "object",
+      "required": ["host", "baseUrl", "language"],
+      "additionalProperties": false,
+      "properties": {
+        "host": { "type": "string" },
+        "baseUrl": { "type": "string", "pattern": "^https://" },
+        "language": { "type": "string" }
+      }
+    },
+    "profileVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "capturedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "pageStates": { "$ref": "#/$defs/pageStates" },
+    "sharedSources": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/source" }
+    },
+    "flows": {
+      "type": "object",
+      "required": ["procurement_transaction_report", "tender_info", "app_info", "contract_info", "experience_info"],
+      "additionalProperties": { "$ref": "#/$defs/flow" }
+    }
+  },
+  "$defs": {
+    "strings": { "type": "array", "items": { "type": "string" } },
+    "pageStates": {
+      "type": "object",
+      "required": ["loginForm", "logoutLink", "neverFill", "accountPrompt", "sessionEnded", "block", "slowResponseMs"],
+      "additionalProperties": false,
+      "properties": {
+        "loginForm": { "type": "string" },
+        "logoutLink": { "type": "string" },
+        "sessionCheckUrl": { "type": "string" },
+        "neverFill": { "$ref": "#/$defs/strings" },
+        "accountPrompt": {
+          "type": "object",
+          "required": ["urlContains", "signature"],
+          "additionalProperties": false,
+          "properties": { "urlContains": { "type": "string" }, "signature": { "type": "string" } }
+        },
+        "sessionEnded": {
+          "type": "object",
+          "required": ["urlContains"],
+          "additionalProperties": false,
+          "properties": { "urlContains": { "type": "string" } }
+        },
+        "block": {
+          "type": "object",
+          "required": ["textPattern", "statuses"],
+          "additionalProperties": false,
+          "properties": {
+            "textPattern": { "type": "string" },
+            "statuses": { "type": "array", "items": { "type": "integer" } }
+          }
+        },
+        "slowResponseMs": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["url", "method"],
+      "additionalProperties": false,
+      "properties": {
+        "url": { "type": "string" },
+        "method": { "enum": ["GET", "POST"] },
+        "fixed": { "type": "object", "additionalProperties": { "type": "string" } },
+        "params": { "$ref": "#/$defs/strings" },
+        "nodeSelector": { "type": "string" },
+        "nodeAttributes": { "$ref": "#/$defs/strings" },
+        "answer": { "enum": ["optionsHtml", "treeHtml", "namesText"] },
+        "valueMap": { "type": "object", "additionalProperties": { "type": "string" } },
+        "note": { "type": "string" }
+      }
+    },
+    "filterPart": {
+      "type": "object",
+      "required": ["role", "selector", "requestField"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "enum": ["from", "to", "operator", "value", "value2", "mode", "text"] },
+        "selector": { "type": "string" },
+        "requestField": { "type": "string" },
+        "empty": { "type": "string" },
+        "default": { "type": "string" },
+        "sendFormat": { "type": "string" }
+      }
+    },
+    "filter": {
+      "type": "object",
+      "required": ["id", "label", "control", "panel"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "control": { "enum": ["select", "tree", "text", "date", "dateRange", "operatorValue", "matchText", "tabs"] },
+        "panel": { "type": "boolean" },
+        "selector": { "type": "string" },
+        "valueSelector": { "type": "string" },
+        "requestField": { "type": "string" },
+        "mirrorField": { "type": "string" },
+        "empty": { "type": "string" },
+        "default": { "type": "string" },
+        "pagePreselects": { "type": "boolean" },
+        "leaveAsPageHasIt": { "type": "boolean" },
+        "typedFormat": { "type": "string" },
+        "sendFormat": { "type": "string" },
+        "parts": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/filterPart" } },
+        "dependsOn": { "$ref": "#/$defs/strings" },
+        "source": { "type": "string" },
+        "choices": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["label", "value"],
+            "additionalProperties": false,
+            "properties": { "label": { "type": "string" }, "value": { "type": "string" } }
+          }
+        },
+        "allMeansLoop": { "type": "boolean" },
+        "warnWhen": {
+          "type": "object",
+          "required": ["state", "text"],
+          "additionalProperties": false,
+          "properties": { "state": { "enum": ["loggedIn", "loggedOut", "always"] }, "text": { "type": "string" } }
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "required": ["required", "decisions"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "$ref": "#/$defs/strings" },
+        "window": {
+          "type": "object",
+          "required": ["filter", "maxYears"],
+          "additionalProperties": false,
+          "properties": {
+            "filter": { "type": "string" },
+            "maxYears": { "type": "integer", "minimum": 1 },
+            "currentDateCheckboxes": { "type": "boolean" }
+          }
+        },
+        "exemptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["anyOf", "lifts", "maxRows"],
+            "additionalProperties": false,
+            "properties": {
+              "anyOf": { "$ref": "#/$defs/strings" },
+              "lifts": { "$ref": "#/$defs/strings" },
+              "maxRows": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "decisions": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "login": {
+      "type": "object",
+      "required": ["policy"],
+      "additionalProperties": false,
+      "properties": {
+        "policy": { "enum": ["required", "either"] },
+        "startWarning": {
+          "type": "object",
+          "required": ["state", "text"],
+          "additionalProperties": false,
+          "properties": { "state": { "enum": ["loggedIn", "loggedOut"] }, "text": { "type": "string" } }
+        },
+        "departmentWhenLoggedIn": { "enum": ["locked", "free", "notChecked"] }
+      }
+    },
+    "part": {
+      "type": "object",
+      "required": ["key", "header", "index", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "header": { "type": "string" },
+        "index": { "type": ["integer", "string"] },
+        "type": { "$ref": "#/$defs/valueType" },
+        "unit": { "type": "string" }
+      }
+    },
+    "valueType": { "enum": ["text", "id", "date", "datetime", "number", "money", "moneyWithCurrency", "percent", "yesNo", "table", "repeatedBlock"] },
+    "column": {
+      "type": "object",
+      "required": ["cell", "header", "parts"],
+      "additionalProperties": false,
+      "properties": {
+        "cell": { "type": "integer", "minimum": 1 },
+        "header": { "type": "string" },
+        "split": { "enum": ["br", "none"] },
+        "parts": { "type": "array", "items": { "$ref": "#/$defs/part" } },
+        "linkSelector": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "list": {
+      "type": "object",
+      "required": ["request", "rows", "totalPages", "empty", "columns"],
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "type": "object",
+          "required": ["url", "method", "pageField", "sizeField", "defaultSize"],
+          "additionalProperties": false,
+          "properties": {
+            "url": { "type": "string" },
+            "method": { "enum": ["GET", "POST"] },
+            "fixed": { "type": "object", "additionalProperties": { "type": "string" } },
+            "pageField": { "type": "string" },
+            "sizeField": { "type": "string" },
+            "defaultSize": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "rows": { "type": "string" },
+        "totalPages": { "type": "string" },
+        "rowCount": { "type": "string" },
+        "empty": {
+          "type": "object",
+          "required": ["selector"],
+          "additionalProperties": false,
+          "properties": {
+            "selector": { "type": "string" },
+            "note": { "type": "string" }
+          }
+        },
+        "dateFormat": { "type": "string" },
+        "columns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/column" } }
+      }
+    },
+    "cluster": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" } }
+    },
+    "field": {
+      "type": "object",
+      "required": ["id", "header", "cluster", "type", "labels"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "header": { "type": "string" },
+        "cluster": { "type": "string" },
+        "type": { "$ref": "#/$defs/valueType" },
+        "labels": { "$ref": "#/$defs/strings" },
+        "labelPatterns": { "$ref": "#/$defs/strings" },
+        "older": { "type": "boolean" },
+        "onlyFor": { "type": "string" },
+        "unit": { "type": "string" },
+        "sameAs": { "type": "string" },
+        "prefer": { "enum": ["list", "detail"] }
+      }
+    },
+    "ignored": {
+      "type": "object",
+      "required": ["reason", "labels"],
+      "additionalProperties": false,
+      "properties": {
+        "reason": { "enum": ["personal", "attachments", "heading", "structure", "notInScopeYet"] },
+        "note": { "type": "string" },
+        "labels": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "detail": {
+      "type": "object",
+      "required": ["open", "pageTitle", "labelCell", "clusters", "fields", "ignored"],
+      "additionalProperties": false,
+      "properties": {
+        "open": {
+          "type": "object",
+          "required": ["method", "url"],
+          "additionalProperties": false,
+          "properties": {
+            "method": { "enum": ["GET", "POST"] },
+            "url": { "type": "string" },
+            "params": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["name", "from"],
+                "additionalProperties": false,
+                "properties": { "name": { "type": "string" }, "from": { "type": "string" } }
+              }
+            },
+            "fixed": { "type": "object", "additionalProperties": { "type": "string" } }
+          }
+        },
+        "pageTitle": { "type": "string" },
+        "labelCell": { "type": "string" },
+        "tables": { "type": "string" },
+        "refusalText": { "type": "string" },
+        "dateFormats": { "$ref": "#/$defs/strings" },
+        "clusters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/cluster" } },
+        "fields": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/field" } },
+        "ignored": { "type": "array", "items": { "$ref": "#/$defs/ignored" } }
+      }
+    },
+    "reportColumn": {
+      "type": "object",
+      "required": ["col", "key", "header", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "col": { "type": "integer", "minimum": 1 },
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "header": { "type": "string" },
+        "type": { "$ref": "#/$defs/valueType" },
+        "unit": { "type": "string" },
+        "formula": { "type": "string" }
+      }
+    },
+    "report": {
+      "type": "object",
+      "required": ["request", "tables", "cell", "totalCell", "columns", "rowKinds", "empty", "checks"],
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "type": "object",
+          "required": ["url", "method", "fixed", "fromPage"],
+          "additionalProperties": false,
+          "properties": {
+            "url": { "type": "string" },
+            "method": { "enum": ["POST"] },
+            "fixed": { "type": "object", "additionalProperties": { "type": "string" } },
+            "fromPage": { "$ref": "#/$defs/strings" }
+          }
+        },
+        "tables": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["number", "selector", "budgetType", "totalLabel"],
+            "additionalProperties": false,
+            "properties": {
+              "number": { "type": "integer", "minimum": 1 },
+              "selector": { "type": "string" },
+              "budgetType": { "type": "string" },
+              "totalLabel": { "type": "string" },
+              "grandTotalLabel": { "type": "string" }
+            }
+          }
+        },
+        "cell": { "type": "string" },
+        "totalCell": { "type": "string" },
+        "columns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/reportColumn" } },
+        "rowKinds": { "$ref": "#/$defs/strings" },
+        "methodLabelPattern": { "type": "string" },
+        "notApplicableText": { "type": "string" },
+        "empty": { "type": "string" },
+        "checks": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "naturalKey": {
+      "type": "object",
+      "required": ["key", "confirmedByOwner"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" },
+        "confirmedByOwner": { "type": "boolean" },
+        "note": { "type": "string" }
+      }
+    },
+    "flow": {
+      "type": "object",
+      "required": ["number", "name", "pattern", "login", "page", "filters", "rules"],
+      "additionalProperties": false,
+      "properties": {
+        "number": { "type": "integer", "minimum": 1 },
+        "name": { "type": "string" },
+        "pattern": { "enum": ["report", "listDetail"] },
+        "login": { "$ref": "#/$defs/login" },
+        "page": {
+          "type": "object",
+          "required": ["url", "title", "route", "identity"],
+          "additionalProperties": false,
+          "properties": {
+            "url": { "type": "string" },
+            "title": { "type": "string" },
+            "route": { "$ref": "#/$defs/strings" },
+            "identity": { "$ref": "#/$defs/strings" }
+          }
+        },
+        "filters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/filter" } },
+        "rules": { "$ref": "#/$defs/rules" },
+        "list": { "$ref": "#/$defs/list" },
+        "detail": { "$ref": "#/$defs/detail" },
+        "report": { "$ref": "#/$defs/report" },
+        "naturalKey": { "$ref": "#/$defs/naturalKey" }
+      }
+    }
+  }
+}
