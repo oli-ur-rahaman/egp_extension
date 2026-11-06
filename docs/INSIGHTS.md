@@ -21,7 +21,8 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | # | Insight | Status | What the build must do |
 |---|---|---|---|
 | 49 | Two main uses: tenders by a department's PEs, and one contractor's whole journey in e-GP | decided | PE and contractor must be clean, consistent columns in every flow |
-| 50 | The contractor journey depends on one ID across flows. Flow 5 calls it Company Unique ID; Flow 4's detail calls it Tenderer ID. **Whether they're the same number is unconfirmed** | ❓ | Check before relying on it. Names vary, so an ID is the only safe join |
+| 50 | The contractor journey depends on one ID across flows. Flow 5 calls it Company Unique ID; Flow 4's detail calls it Tenderer ID, **only on newer contracts**: older ones have no such field. **Whether they're the same number is unconfirmed.** Tender ID links the same contract across Flows 4 and 5: same value on one sample | ❓ | Check before relying on it |
+| 55 | **A detail page can have two layouts** at the same URL: Flow 4 older contracts have Contract No, tender counts and supplier location; newer ones have Tenderer ID and Beneficial Ownership | ✅ | One palette field maps from several labels; a missing label is empty, never a failure. Fail-loud must not fire on a known layout |
 | 51 | Detail data is the point of the tool (D25), and it's slow: PWD Flow 4 ≈ 59 h for every detail page at 3 s each | ✅ estimate | Show the estimate beside the checkerboard. Resume must be solid for runs lasting days |
 
 ## Time and sprints (owner, D27)

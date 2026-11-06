@@ -87,6 +87,18 @@
 | Beneficial ownership (one-to-many) | No., Name, Designation, Ownership %, Country. Holds personal names; can have several rows. **Out of the palette** |
 | Authorised officer | Name, Designation. Personal data; the sanitiser must strip it |
 
+**Two layouts of this detail page (2026-11-06).** Same URL and title, different fields:
+
+| Only on the older layout (tender 907857, signed 2024) | Only on the newer layout (signed 2026) |
+|---|---|
+| Proposed Date of Contract Start, Proposed Date of Contract Completion | Expected Date of Contract Completion |
+| No. of Tenders/Proposals Sold, Received, Responsive | Tenderer ID of the Economic Operator |
+| Contract No, Brief Description of Contract | Beneficial Ownership table |
+| Name, Location of Supplier/Contractor/Consultant; Location of Delivery/Works/Service | Name of the Economic Operator |
+| Was the Performance Security provided in due time? Was the Contract Signed in due time? | |
+
+So the palette needs one field mapped from several labels, and "Tenderer ID" can be empty on older contracts. The point at which the layout changes is unknown.
+
 **D21 applies here:** an entry in Contract Award to lifts the Department and date requirements (owner, 2026-11-05). Broad-word limits are in `flow-5.md`.
 
 **Units differ within this flow:** the list shows Crore BDT, the detail shows full BDT with the currency in brackets (e.g. `948782.473 (BDT)`). The parser splits amount from currency.

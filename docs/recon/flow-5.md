@@ -105,7 +105,7 @@ So the owner's reasoning holds for a contractor and fails for a broad word, beca
 | Company | Company Name, Is JVCA |
 | Comments | Remarks, Comments By PE |
 
-The sample's status is `ongoing`, and that word is in the URL (`wcs=ongoing`), so the link needs the row's work status as well as its `Id`. Sampled once only; a completed record may show more.
+The status is in the URL (`wcs=ongoing` or `wcs=completed`), so the link needs the row's work status as well as its `Id`. A completed record shows the **same 28 labels** as an ongoing one (2026-11-06).
 
 ## Open
 

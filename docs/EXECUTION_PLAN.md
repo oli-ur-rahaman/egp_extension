@@ -845,6 +845,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | M7, M10 | **D29: LTM tenders are collected and exported** (logged in, own department only). | Next: §13 step 3a. |
 | 2026-11-06 | 1 | M13 | **D30:** logged-out Flow 2 begins, before any filter, with a Proceed choice: no LTM here; logging in can give both LTM and OTM. | Timing confirmed by the owner. |
 | 2026-11-06 | 1 | M0-T08, §13 3a | `snapshot` writes page text first; its screenshot is optional after 8 s, following one 2-minute hang; `stop` also ends a stuck snapshot. ID check: a Tenderer ID from a contract awarded this week gave no Flow 5 rows, which proves nothing, since a new contract may have no experience record yet. | Retrying the other way: from a Flow 5 row to its contract. |
+| 2026-11-06 | 1 | §13 3a, M7 | **Flow 4 detail has two layouts:** older contracts lack Tenderer ID and have other fields. Completed Flow 5 work is on Flow 4 (tender 907857, same value). Completed Flow 5 detail: same 28 labels. | Still to answer: Tenderer ID = Company Unique ID, on a newer contract; ongoing work on Flow 4. |
 
 **Milestone record**
 
