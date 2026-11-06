@@ -853,6 +853,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8 | Run 3 stopped on a 54 s Flow 5 response, as designed. Flows 2 and 4 complete. Flows 3 and 5 opened nothing, because of a quote bug in the tool; fixed. | Run 4 redoes them after a 15-minute rest. |
 | 2026-11-06 | 1 | R8, M7, M13 | **R8 format study done, logged out:** 675 pages, 1,029 requests. Flow 2 Nature and notice kind; Flow 3 Nature and RFQ method; Flow 4 contract date; Flow 5 uniform, Work Status no effect. **Logged-out Flow 2 hides 9 of 16 methods, not just LTM;** Flows 4 and 5 show them. | Results in `docs/recon/r8-format-study.md`. Awaiting the owner: checkerboard by meaning; warning wording; logged-in repeat. |
 | 2026-11-06 | 1 | R8, M13 | **D32:** checkerboard of 5–6 clusters per flow. **D33:** Flow 2 warning wording. **D34:** logged-in study, then a build plan, then build; M1 demo at risk. `study.js` now re-checks a logged-in session every 30 requests. | Owner logs in; Claude runs the study. |
+| 2026-11-06 | 1 | R8, M2, M7 | Logged-in run refused at the start. **Opening a portal page directly in a new tab appears to have ended the owner's session.** Tool now uses the owner's own tab. | Owner logs in again and opens eTenders Advanced Search. |
 
 **Milestone record**
 

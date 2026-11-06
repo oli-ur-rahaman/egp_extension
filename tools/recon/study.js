@@ -157,6 +157,16 @@ async function main() {
   let cdp = null;
   let reconnects = 0;
   async function attach() {
+    if (STATE === 'logged-in') {
+      // Logged in, opening a portal page directly in a new tab appears to end the session (SessionTimedOut.jsp).
+      // So use the tab the owner reached by the normal route, without navigating or closing it.
+      const pages = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+      tab = pages.find((t) => t.type === 'page' && /AllTenders\.jsp/.test(t.url));
+      if (!tab) await stop('no tab on eTenders Advanced Search. Open it by the normal route, and rerun');
+      cdp = connect(tab.webSocketDebuggerUrl);
+      await cdp.opened;
+      return;
+    }
     if (tab) await fetch(`http://127.0.0.1:${PORT}/json/close/${tab.id}`).catch(() => {});
     const res = await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent(BASE + '/resources/common/AllTenders.jsp?h=t')}`, { method: 'PUT' });
     tab = await res.json();
@@ -212,7 +222,7 @@ async function main() {
   const flows = [flow2(), flow3(), flow4(), flow5()].filter((f) => ONLY.includes(f.id));
   // A session can end mid-run, and public searches still answer normally afterwards, which would quietly mix
   // logged-out data into a logged-in run. So a logged-in run re-checks every 30 requests, and stops if it has ended.
-  let lastCheck = 0;
+  let lastCheck = -30; // so the first filter value checks the real session, not what the page last displayed
   async function checkSession() {
     if (STATE !== 'logged-in' || used - lastCheck < 30) return;
     lastCheck = used;
@@ -258,7 +268,7 @@ async function main() {
     }
   }
   console.log('FINISHED. Requests used:', used, '| link problems:', reconnects);
-  await fetch(`http://127.0.0.1:${PORT}/json/close/${tab.id}`).catch(() => {});
+  if (STATE !== 'logged-in') await fetch(`http://127.0.0.1:${PORT}/json/close/${tab.id}`).catch(() => {});
   cdp.close();
   process.exit(0);
 }
