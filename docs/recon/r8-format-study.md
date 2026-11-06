@@ -79,7 +79,11 @@ Within the new layout, the completion date is labelled either "Expected" or "Pro
 ### Other findings
 
 - **Logged-out Flow 2 lists only 7 of 16 methods.** Pages at size 20: OTM 30,928, OSTETM 1,008, IC 18, QCBS 13, SFB 2, LCS 1, SBCQ 1. **RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing.** Not only LTM.
-- **Flow 4 shows contracts for all 16 methods, logged out:** OTM 22,913, LTM 19,677, RFQU 800, OSTETM 724, RFQ 572, RFQL 62, DPM 44 pages, and a few others. **Flow 5 likewise:** LTM 4,140 pages, more than OTM. So hidden methods are hidden at the tender stage, and they surface once awarded. For the contractor journey, this makes Flows 4 and 5 the complete sources.
+- **Flow 4 shows contracts for 11 of 16 methods, logged out:** OTM 22,913, LTM 19,677, RFQU 800, OSTETM 724, RFQ 572, RFQL 62, DPM 44, IC 7, SSS 4, QCBS 3, SFB 1 pages. **Flow 5 shows 7:** LTM 4,140 pages, more than OTM's 3,409, plus OSTETM, RFQU, RFQ, RFQL and DPM. So hidden methods are hidden at the tender stage, and they surface once awarded. For the contractor journey, this makes Flows 4 and 5 the fuller sources. **Corrected 2026-11-06:** this said "all 16". An empty search reports 1 page on Flows 4 and 5, so the "1" values were empty; they were re-read by whether any row opened. **TSTM, DC and CSO have no records on Flows 2, 4 or 5**, so they may be unused rather than hidden.
+- **The public share of PWD's tenders has fallen,** by publishing year, pages logged out of logged in: 2017 121/435, 2019 379/1,009, 2021 379/846, 2023 501/978, 2024 399/919, 2025 238/970, 2026 195/935. So 21% in 2026 against 51% in 2023. The cause isn't measured.
+- **All page counts in this study are at 20 rows a page.** R7 and the flow notes use 10, so 8,913 here equals R7's 17,826.
+- **Flow 3 across all years is about 1.26 million packages** (about 63,100 pages at size 20). The 174,000 figure is one financial year.
+- **Flow 5 is thin for recent contracts** on Tender Type eTenders: start year 2023 817 pages, 2024 153, 2025 3, 2026 7.
 - **Flow 2's Framework Agreement filter returned nothing for Yes and for No.** The same filter works on Flow 4 (Yes 161, No 44,642 pages). This looks like a portal fault.
 - **Searching Flow 5 with Tender Type All can be very slow:** one search took 54 s. A sweep should expect this and not read it as a block.
 - **Flow 3 has only Package in its link type** across all samples, so that value isn't a factor.

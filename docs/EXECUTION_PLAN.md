@@ -857,6 +857,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8, all | **R8 logged in done:** login changes which records you reach, not a page's fields; new RFQ and framework notice layouts; Budget Type filter does nothing on logged-in Flow 2. **`docs/BUILD_PLAN.md` written**, stages B1–B11, gates not dates. | Awaiting the owner's approval of the plan, then B1. |
 | 2026-11-06 | 1 | R8 | **Owner asked for the logged-out PWD re-run after all,** at a gentler pace; running. **`docs/EGP_LIMITATIONS.md` started,** a list of portal faults to re-audit. | Build plan approval and the Flows 3–5 login question still open. |
 | 2026-11-06 | 1 | R8 | **PWD like-for-like done:** Flows 3, 4, 5 identical both ways, on all 106 filter values and 358 same-record pairs. Flow 2's gap (5,536 pages) equals the hidden methods. Budget Type on logged-in Flow 2 confirmed broken. | **Recon complete.** Awaiting the owner: build plan approval, D35. |
+| 2026-11-06 | 1 | R8, docs | **Owner approved `BUILD_PLAN.md` (D36) and either login state on Flows 3–5 (D35).** Owner asked for a visual summary of the recon before building: private artifact "e-GP Portal Atlas". Re-reading the data for it corrected one finding (Flow 4 shows 11 of 16 methods, Flow 5 shows 7, not all) and added insights 69–72. | **B1 waits for the owner's word after reading the atlas.** D33 wording flagged: TSTM, DC and CSO may be unused. |
 
 **Milestone record**
 
@@ -875,7 +876,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ### ▶ Resume here (updated 2026-11-06, end of day, home PC; valid on either PC)
 
-**Where we are.** All five report pages are mapped logged out. Decisions D11–D29 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. **The M1 demo is Thu 12 Nov.** Fri and Sat are holidays, so about 4 working days are left.
+**Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 
 **Do these in order:**
 
@@ -886,7 +887,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **D29: LTM tenders are collected and exported.** | done | |
 | 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
 | 3b | [x] **R8 done:** logged out, logged in, and PWD like for like (D34) | done | |
-| 3c | **Owner approves `docs/BUILD_PLAN.md`**, which now governs the build order | owner | |
+| 3c | [x] **Owner approved `docs/BUILD_PLAN.md`** (D36) and D35. Next: owner reads the atlas and says to start B1 | done | |
 | 4 | **Then build, stage B1:** `profiles/schema.json` (M1-T01), profile fragments per flow, fixture sanitiser (M1-T07), mock server (M1-T08) | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |

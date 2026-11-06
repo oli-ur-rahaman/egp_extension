@@ -49,4 +49,6 @@ For each flow and filter value, it shows the pages logged out and logged in, and
 
 **Deviation from the study plan:** the plan said at most 900 requests in a run. Each run holds to that, but runs 1–4 together came to 1,029, because of the tool fault.
 
+**Total, runs 1–10:** about 2,740 requests.
+
 **Results:** `r8-format-study.md`.

@@ -828,7 +828,8 @@ egp_ext/
 | D31 | **Template columns follow the portal's latest layout and wording.** Fields found only on older layouts become extra columns, or merge into an existing column where the meaning is the same. Anything that doesn't fit is raised with the owner | Owner, 2026-11-06 |
 | D32 | **The checkerboard is 5–6 clusters per flow, one tick each,** because opening a page costs the time, not the number of fields read. Clusters and their fields are in docs/recon/r8-format-study.md | Owner, 2026-11-06. Refines D25 |
 | D33 | **Warning wording, replacing D30's:** "This page won't list tenders by LTM and 8 other methods. Logging in may show more, for your own department. Proceed?" Shown at the very beginning of a logged-out Flow 2 | Owner, 2026-11-06 |
-| D35 | **Proposed, awaiting the owner:** Flows 3, 4 and 5 run in either login state, since R8 found no difference for PWD. Flow 1 needs a login; Flow 2 follows D23 and D33. Revises D11 | Claude's recommendation, 2026-11-06. See docs/recon/r8-format-study.md |
+| D35 | **Flows 3, 4 and 5 run in either login state,** since R8 found no difference for PWD. Flow 1 needs a login; Flow 2 follows D23 and D33. Revises D11. **Not yet checked:** whether a logged-in user can pick another department on Flows 4 and 5 (Flow 3 allows it, Flow 2 doesn't); B3's live filter scan will show it | Owner, 2026-11-06, on Claude's recommendation. See docs/recon/r8-format-study.md |
+| D36 | **`docs/BUILD_PLAN.md` governs the build:** stages with gates, not dates. Replaces the Proposal's 10-week milestones and payment dates, and the plan's build order | Owner, 2026-11-06, under D28 |
 | D34 | **Order of work: finish the logged-in study, then write a full build plan, then build.** Departs from the plan's schedule: the **M1 demo of Thu 12 Nov is at risk** | Owner, 2026-11-06, under D28 |
 
 ### Open — to resolve during Phase 1

@@ -35,13 +35,17 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 59 | Flow 4: contract date, with a mixed period Oct–Dec 2025. Not method | ✅ 280 pages | Read labels; never assume by date |
 | 60 | Flow 5: uniform, 28 labels. **Work Status doesn't change it.** Only a late-2025 ownership table | ✅ 103 pages | Simplest parser |
 | 61 | **Logged-out Flow 2 lists only 7 of 16 methods;** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing | ✅ | The D30 warning should cover more than LTM |
-| 62 | **Flows 4 and 5 list those methods logged out:** LTM 19,677 pages on Flow 4 | ✅ | For a contractor's journey, Flows 4 and 5 are complete where Flow 2 isn't |
+| 62 | **Flows 4 and 5 list most of those methods logged out:** LTM 19,677 pages on Flow 4 (size 20). Flow 4 shows 11 of 16 methods, Flow 5 shows 7. **TSTM, DC and CSO have no records on Flows 2, 4 or 5,** so they may be unused rather than hidden. An empty search reports 1 page on Flows 4 and 5, so never read 1 as one page of records | ✅ corrected | For a contractor's journey, Flows 4 and 5 are fuller than Flow 2 |
 | 63 | Flow 2's Framework Agreement filter returns nothing for Yes or No; on Flow 4 it works | ✅ | Warn in the panel, or hide it there |
 
 | 65 | **Login changes which records you reach, not a page's fields.** PWD, same record both ways: 407 of 409 had identical labels; the 2 others gained an Action column. **Flows 3, 4, 5: same page counts on all 106 filter values.** Flow 2's gap equals the hidden methods | ✅ | One parser for both states. Flows 3–5 work in either state |
 | 66 | More layouts, seen logged in: RFQ notices; framework notices with a PE offices table; Flow 5 JVCA records | ✅ | Add to the profile and test bed |
 | 67 | On logged-in Flow 2, the Budget Type filter appears to do nothing: all values give the unfiltered 8,913 pages | ✅ | Warn in the panel when logged in |
 | 68 | A notice can refuse with "not exists or un-authorized" | ✅ once | A recorded per-row outcome, never a stop |
+| 69 | **The public share of PWD's tenders is falling:** 51% of 2023's list is public, 25% of 2025's, 21% of 2026's. Cause not measured; more LTM use is likely | ✅ share · 💡 cause | The logged-out warning matters more each year. Check against Flow 1 when real data flows |
+| 70 | **Flow 3 across all years is about 1.26 million packages,** the largest list once the preselected year is removed | ✅ | Financial Year stays mandatory (D15) |
+| 71 | **Flow 5 is thin for recent contracts:** eTenders, start year 2023 817 pages, 2024 153, 2026 7 (size 20) | ✅ | For recent work, the contractor journey leans on Flow 4 |
+| 72 | **Page counts depend on the size they were taken at.** R8 used 20, the flow notes 10 | ✅ | Always record the size beside a page count |
 
 ## Time and sprints (owner, D27)
 
