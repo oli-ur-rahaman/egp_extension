@@ -116,12 +116,14 @@ describe("the owner's decisions", () => {
     expect(flows.tender_info.naturalKey.key).toBe('tender_id');
     expect(flows.contract_info.naturalKey.key).toBe('tender_id');
     expect(flows.experience_info.naturalKey.key).toBe('tender_id');
-    // Some Flow 5 records have no Tender ID, so they need their own ID or they would be lost.
+    // Manually entered experience has no Tender ID: the column says Manual, and the record's own ID keeps rows apart.
+    expect(flows.experience_info.naturalKey.whenMissing).toBe('Manual');
     expect(flows.experience_info.naturalKey.fallback).toBe('record_id');
     // Flow 3 has no Tender ID to use: a plan comes before its tender.
     const keys3 = flows.app_info.list.columns.flatMap((c) => c.parts.map((p) => p.key));
     expect(keys3).not.toContain('tender_id');
     expect(flows.app_info.naturalKey.key).toBe('package_id');
+    for (const flow of Object.values(DETAIL_FLOWS)) expect(flow.naturalKey.confirmedByOwner).toBe(true);
   });
 
   it('uses 100 rows a page on every list', () => {
@@ -146,21 +148,26 @@ describe("the owner's decisions", () => {
   });
 });
 
-describe('personal data stays out (D17, D19)', () => {
-  const PERSONAL = {
-    2: ['Name of Official Inviting Tender/Proposal', 'Name of Official Inviting', 'Name of Official Inviting REOI', 'Name of Official Inviting RFP', 'Contact details of Official Inviting Tender/Proposal', 'PE Name'],
+describe("officials' details are public and collected (D40); owners stay out (D19)", () => {
+  const OFFICIALS = {
+    2: ['Name of Official Inviting Tender/Proposal', 'Designation of Official Inviting Tender/Proposal', 'Address of Official Inviting Tender/Proposal', 'Contact details of Official Inviting Tender/Proposal', 'Name of Official Inviting REOI', 'Contact details of Official Inviting RFP'],
     3: ['Procuring Entity'],
-    4: ['Name of Authorised Officer', 'Beneficial Ownership Information', 'Name', 'Beneficial Ownership (%)'],
-    5: ['PE Name', 'Name', 'Beneficial Ownership (%)'],
+    4: ['Name of Authorised Officer', 'Designation of Authorised Officer'],
+    5: ['PE Name'],
   };
-  for (const [n, labels] of Object.entries(PERSONAL)) {
-    it(`Flow ${n}: names are never a field`, () => {
-      for (const label of labels) {
-        const got = classifyLabel(DETAIL_FLOWS[n], label);
-        expect(got && got.ignored && got.ignored.reason, label).toBe('personal');
-      }
+  for (const [n, labels] of Object.entries(OFFICIALS)) {
+    it(`Flow ${n}: officials are fields`, () => {
+      for (const label of labels) expect(classifyLabel(DETAIL_FLOWS[n], label)?.field, label).toBeDefined();
     });
   }
+  it('Beneficial Ownership stays out', () => {
+    for (const flow of [flows.contract_info, flows.experience_info]) {
+      expect(classifyLabel(flow, 'Beneficial Ownership (%)').ignored.reason).toBe('personal');
+    }
+  });
+  it('the Queries and Replies table is hidden on the page, so it stays out (E23)', () => {
+    expect(classifyLabel(flows.tender_info, 'Query').ignored.reason).toBe('hidden');
+  });
 });
 
 describe('every label the study saw has a home', () => {
@@ -266,8 +273,8 @@ describe('a bad profile is refused, naming every fault', () => {
   it('a label claimed by two fields', () => {
     expect(faults((p) => { p.flows.tender_info.detail.fields[1].labels.push('Event Type'); }).join()).toContain('Event Type');
   });
-  it('a personal label also made a field', () => {
-    expect(faults((p) => { p.flows.app_info.detail.fields[0].labels.push('Procuring Entity'); }).join()).toContain('both field');
+  it('a left-out label also made a field', () => {
+    expect(faults((p) => { p.flows.contract_info.detail.fields[0].labels.push('Beneficial Ownership (%)'); }).join()).toContain('both field');
   });
   it('the wrong number of clusters (D32)', () => {
     const got = faults((p) => {

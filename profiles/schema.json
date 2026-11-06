@@ -270,7 +270,7 @@
       "required": ["reason", "labels"],
       "additionalProperties": false,
       "properties": {
-        "reason": { "enum": ["personal", "attachments", "heading", "structure", "notInScopeYet"] },
+        "reason": { "enum": ["personal", "attachments", "heading", "structure", "hidden"] },
         "note": { "type": "string" },
         "labels": { "$ref": "#/$defs/strings" }
       }
@@ -371,6 +371,7 @@
       "properties": {
         "key": { "type": "string" },
         "fallback": { "type": "string" },
+        "whenMissing": { "type": "string" },
         "confirmedByOwner": { "type": "boolean" },
         "note": { "type": "string" }
       }

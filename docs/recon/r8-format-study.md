@@ -105,7 +105,7 @@ The fields shouldn't be a list of page labels: there would be about 100 on Flow 
 | **4 Contract** | **Identity:** Award for, Tender ID, Ref. No., Package No. and Name, Contract No, Brief Description | **Organisation:** Ministry, Agency, PE Name, Code, District | **Procurement and funding:** Method, Budget and Source, Partner, Project | **Dates:** advertisement, award, signing, proposed start, completion | **Contract and contractor:** Price, Currency, Operator or Supplier name, Tenderer ID, addresses, delivery location | **Competition and compliance:** tenders Sold, Received, Responsive; Security and Signing in due time; Authorised Officer's designation |
 | **5 Experience** | **Certificate and tender:** Certificate No, Tender ID, Ref No, Publication, Tender Type | **Organisation:** Ministry, Organization, PE Office | **Work:** Package, Nature, Method, Category, Name of Work | **Contract:** Contract No, Start, End, Value | **Progress:** Status, Physical and Financial Progress, and their dates | **Company and comments:** Company Name, Is JVCA, Remarks, Comments By PE |
 
-Left out of every cluster, as already decided: people's names in the PE Name fields (D17), and Beneficial Ownership (D19). Officials' names stay out unless the owner asks.
+Left out of every cluster: Beneficial Ownership (D19). **Officials' names and contact details are in, by D40 (2026-11-07),** which reverses the earlier exclusion.
 
 Flow 1 has no detail page, so no checkerboard.
 

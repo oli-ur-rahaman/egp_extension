@@ -22,6 +22,7 @@
 | ID | Where | What's wrong | Evidence | Deliberate? | How to check | What the extension does | If fixed | Status · last checked |
 |---|---|---|---|---|---|---|---|---|
 | **E6** | Flow 2, logged out | **Lists only 7 of 16 methods.** RFQ, LTM, TSTM, DC, SSS, CSO, DPM, RFQU, RFQL return nothing, though the Method dropdown offers them, with no message | R8, like for like: PWD 3,377 pages logged out, 8,913 logged in. The gap is LTM 5,022, RFQU 465, RFQ 43, RFQL 8, DPM 2 | **Hiding: possibly. Offering them with no message: no** | Logged out, Method = LTM | Warns at the start of the flow (D37) | Remove or narrow the warning; logged-out runs become complete | 🔴 2026-11-06 |
+| **E23** | Flow 2 notice | The "Pre – Tender/Proposal Meeting all Queries and Replies" section is in the page's code but hidden (`display: none`), though the page's heading can say "Meeting Doc. Available". The code cites "Defect Id : 2385". Example: tender 1235555 | Page code (owner's copy, 2026-11-07) | Probably | Open a notice with "Meeting Doc. Available"; is the section visible? | Skips hidden tables | Could offer the replies and meeting file list | 🔴 2026-11-07 |
 | **E7** | Flow 2 notice | A cancelled tender's notice can refuse with "This tender is not exists or You are un-authorized" | 1 of 14 cancelled sampled | Possibly | Reopen a cancelled notice | Records it on that row; continues | Fields fill normally | 🔴 2026-11-06 |
 
 ## Lists and paging

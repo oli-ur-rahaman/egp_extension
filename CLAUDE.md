@@ -38,6 +38,8 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - **Detail-page data is the main purpose of the tool (D25),** not an extra. The two main uses of the output are analysing tenders by a department's PEs, and one contractor's whole journey (D24).
 - Flow 2 set the pattern for what the owner wants: panel filters chosen per flow, a checkerboard for notice data, and mandatory filters that keep a run a sensible size. Measure a run's size (`totalPages`) before agreeing a limit, and give the time estimate.
 - Recommend one option; don't just list them. Plain language, short messages. Say so plainly when a check failed or was skipped.
+- **Officials' names, addresses and numbers are public official data, and are collected (D40).** Don't treat them as a security matter in the output. Only this public repo's test files stay cleaned.
+- **Before saying a page has something, check a user can see it:** content can sit in the page's code but be hidden (E23).
 - **Speak in what the owner sees on the page, with evidence they can check:** the page, the label, a tender ID to open. Read a real example before describing a field; never present a guess as fact.
 
 ## Recon traps (learned the hard way)

@@ -352,7 +352,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 - **Manual (You):**
   - [ ] M1-MC1 R0–R6 completed together
   - [ ] M1-MC2 You read each recon note and confirm it matches the portal and the business meaning
-  - [~] M1-MC3 You confirm the **natural key** columns per flow (Q6): Tender ID (D39); exceptions for Flows 3 and 5 await the owner
+  - [x] M1-MC3 You confirm the **natural key** columns per flow (Q6): Tender ID; Flow 3 Package ID; manual experience shows Manual (D39)
   - [ ] M1-MC4 You confirm Tender Info detail content (X3)
   - [ ] M1-MC5 You spot-check two sanitised fixtures and see no personal data
 - **Exit:** profile v1.0.0 committed; Q1–Q6 answered; mock server covers every P-n state.
@@ -860,6 +860,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | R8, docs | **Owner approved `BUILD_PLAN.md` (D36) and either login state on Flows 3–5 (D35).** Owner asked for a visual summary of the recon before building: private artifact "e-GP Portal Atlas". Re-reading the data for it corrected one finding (Flow 4 shows 11 of 16 methods, Flow 5 shows 7, not all) and added insights 69–72. | **B1 waits for the owner's word after reading the atlas.** D33 wording flagged: TSTM, DC and CSO may be unused. |
 | 2026-11-06 | 1 | B1: M1-T01, T05, T06 | **Stage B1 built:** `profiles/schema.json`, `profiles/eprocure.gov.bd.json` v1.0.0 (5 flows, 54 panel filters, 24 clusters, 173 detail fields, every label from 1,767 study pages accounted for), `src/shared/profile.js` (3-layer merge, own schema check, consistency check), `tools/recon/label-census.js`, 46 new tests. **D37** warning wording. **D38: Flow 4 has 15 filters; Category is commented out of the page (E22).** Selectors checked once against saved pages; full proof is M1-AT5 in B2. | **B1's gate waits for the owner:** cluster and column lists in the atlas, sheet 11. Three questions there. Then B2. |
 | 2026-11-07 | 1 | B1, M1-MC3 | **D39: Tender ID is the unique ID** (owner). Checked on saved rows: no repeats on Flows 2, 4, 5. Flow 3 has none, and 24 of 284 Flow 5 rows have none: exceptions proposed. **D38 confirmed by the owner.** Query table: real title read, 4 public examples all empty. Atlas now carries a progress log (owner's request). | B1's gate still waits for 4 answers. Then B2. |
+| 2026-11-07 | 1 | B1, M1-MC3 | **Owner settled B1's questions.** Flow 3 uses Package ID; manual experience shows Manual in the Tender ID column (D39). **D40: officials' details are collected**, reversing my exclusions. **E23: the Queries and Replies table is hidden on the page**; I had described it as visible content, from labels the study didn't check for hiding. | M1-MC3 done. B1 waits only for the owner's word to start B2. |
 
 **Milestone record**
 
@@ -890,7 +891,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
 | 3b | [x] **R8 done:** logged out, logged in, and PWD like for like (D34) | done | |
 | 3c | [x] **Owner approved `docs/BUILD_PLAN.md`** (D36) and D35. Next: owner reads the atlas and says to start B1 | done | |
-| 4 | [x] **B1 built** (M1-T01, T05, T06). [ ] **Owner's gate:** reads the field lists in the atlas, sheet 11, and answers its 3 questions | owner | |
+| 4 | [x] **B1 built** (M1-T01, T05, T06). [~] **Owner's gate:** questions answered 2026-11-07; waits for the word to start B2 (atlas, sheet 11) | owner | |
 | 4a | **Stage B2 test bed:** fixture sanitiser (M1-T07), mock server (M1-T08), fingerprints (M1-T10), M1-AT5 selectors resolve on fixtures | Claude | no browser |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
@@ -903,7 +904,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · the 4 answers on atlas sheet 11: Flow 3 Package ID, Flow 5 rows with no Tender ID, Queries and Replies table, official's name and contact details.
+**Open owner decisions:** Q7 secret code, by Week 9 · the owner's word to start B2.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

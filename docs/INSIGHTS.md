@@ -50,8 +50,9 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 74 | **"PE Name" means different things.** On Flows 2 and 4, Procuring Entity Name is the office (on Flow 2 it matches the list's office 3 of 3 times, and no sample shows a personal title). On Flow 3, Procuring Entity, and on Flow 5, PE Name, hold a person's name | ✅ small sample | Fields on 2 and 4; left out on 3 and 5 |
 | 75 | Flows 4 and 5 keep a header row inside the results table body | ✅ | Find rows by their key, never by position |
 | 76 | **Tender ID didn't repeat in saved rows:** Flow 2 1,789, Flow 4 211, Flow 5 260. **Flow 3 has no Tender ID, and 24 of 284 Flow 5 rows have none:** their cell starts with `-` or has no ID | ✅ small samples | Tender ID as the key (D39), with those exceptions. Test on full sweeps in B5 |
-| 77 | **The Query and Response table is titled "Pre – Tender/Proposal Meeting all Queries and Replies".** On 8 of 573 sampled pages. All 4 public ones opened say "No Record Found." No filled one has been seen | ✅ | Left out unless the owner wants it |
-| 78 | **The inviting official's block sits at the end of the notice:** Name, Designation, Address, Contact details. Present on most notices (474 of 573 with the Tender/Proposal wording) | ✅ | Name and contact details left out as personal |
+| 77 | **The Queries and Replies table is hidden on the page (E23):** it sits inside `display: none`, found from the owner's copy of tender 1235555. Users never see it. **The study's labels included table headers without checking whether they were hidden,** so a label on the census isn't proof that it's visible. All 4 opened said "No Record Found." | ✅ | Parser skips hidden cells, table headers too. Stays out |
+| 78 | **The inviting official's block sits at the end of the notice,** under "Procuring Entity Details": Name, Designation, Address (Address, City, Thana, District, Country), Contact details (Phone No, Fax No). On 474 of 573 samples with the Tender/Proposal wording | ✅ | Collected (D40). Address and contact values are small inner tables |
+| 79 | The Action column on file tables is the **download button** (owner's copy) | ✅ | Nothing to collect |
 
 ## Time and sprints (owner, D27)
 

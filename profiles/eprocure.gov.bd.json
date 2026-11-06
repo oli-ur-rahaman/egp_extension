@@ -324,14 +324,15 @@
           { "id": "lot_security_usd", "header": "Tender Security (USD)", "cluster": "lot_official", "type": "money", "unit": "USD", "labels": ["Tender/Proposal Security (Amount in USD)"] },
           { "id": "start_date", "header": "Start Date", "cluster": "lot_official", "type": "date", "labels": ["Tentative Start Date", "Indicative Start Date"] },
           { "id": "completion_date", "header": "Completion Date", "cluster": "lot_official", "type": "date", "labels": ["Tentative Completion Date", "Indicative Completion Date"] },
+          { "id": "official_name", "header": "Inviting Official's Name", "cluster": "lot_official", "type": "text", "labels": ["Name of Official Inviting Tender/Proposal", "Name of Official Inviting", "Name of Official Inviting REOI", "Name of Official Inviting RFP"] },
           { "id": "official_designation", "header": "Inviting Official's Designation", "cluster": "lot_official", "type": "text", "labels": ["Designation of Official Inviting Tender/Proposal", "Designation of Official Inviting", "Designation of Official Inviting REOI", "Designation of Official Inviting RFP"] },
           { "id": "official_address", "header": "Inviting Official's Address", "cluster": "lot_official", "type": "text", "labels": ["Address of Official Inviting Tender/Proposal", "Address of Official Inviting", "Address of Official Inviting REOI", "Address of Official Inviting RFP"] },
-          { "id": "framework_offices", "header": "PE Offices for Framework Contract", "cluster": "lot_official", "type": "table", "onlyFor": "Framework", "labels": ["List of PE Offices for Framework Contract", "Office Name", "Lead Office"] }
+          { "id": "official_contact", "header": "Inviting Official's Contact Details", "cluster": "lot_official", "type": "text", "labels": ["Contact details of Official Inviting Tender/Proposal", "Contact details of Official Inviting", "Contact details of Official Inviting REOI", "Contact details of Official Inviting RFP"] },
+          { "id": "framework_offices", "header": "PE Offices for Framework Contract", "cluster": "lot_official", "type": "table", "onlyFor": "Framework", "labels": ["List of PE Offices for Framework Contract", "Office Name", "PE Name", "Designation", "Lead Office"] }
         ],
         "ignored": [
-          { "reason": "personal", "note": "People's names and contact details (D17, r8).", "labels": ["Name of Official Inviting Tender/Proposal", "Name of Official Inviting", "Name of Official Inviting REOI", "Name of Official Inviting RFP", "Contact details of Official Inviting Tender/Proposal", "Contact details of Official Inviting", "Contact details of Official Inviting REOI", "Contact details of Official Inviting RFP", "PE Name", "Designation"] },
-          { "reason": "attachments", "note": "Amendment files. Attachments are out of scope. Action appears logged in only.", "labels": ["File Name", "File Description", "File Size (in KB)", "Action"] },
-          { "reason": "notInScopeYet", "note": "The portal's 'Pre - Tender/Proposal Meeting all Queries and Replies' table. On 8 of 573 pages; the 4 opened all said 'No Record Found.' Awaiting the owner.", "labels": ["Query", "Response"] },
+          { "reason": "attachments", "note": "File lists. Attachments are out of scope. Action is the download button.", "labels": ["File Name", "File Description", "File Size (in KB)", "Action"] },
+          { "reason": "hidden", "note": "Hidden on the page by the portal (E23): users can't see it. Only in the page's code.", "labels": ["Query", "Response"] },
           { "reason": "structure", "labels": ["S. No."] }
         ]
       }
@@ -415,7 +416,7 @@
           }
         ]
       },
-      "naturalKey": { "key": "package_id", "confirmedByOwner": false, "note": "This page has no Tender ID: a plan comes before its tender. APP ID isn't unique either. Awaiting the owner (D39)." },
+      "naturalKey": { "key": "package_id", "confirmedByOwner": true, "note": "D39. This page has no Tender ID: a plan comes before its tender." },
       "detail": {
         "open": {
           "method": "GET",
@@ -442,6 +443,7 @@
           { "id": "ministry", "header": "Ministry", "cluster": "organisation", "type": "text", "labels": ["Ministry"] },
           { "id": "division", "header": "Division", "cluster": "organisation", "type": "text", "labels": ["Division"] },
           { "id": "organization_detail", "header": "Organization", "cluster": "organisation", "type": "text", "sameAs": "organization", "prefer": "detail", "labels": ["Organization"] },
+          { "id": "pe_official_name", "header": "Procuring Entity (official's name)", "cluster": "organisation", "type": "text", "labels": ["Procuring Entity"] },
           { "id": "pe_office_code", "header": "PE Office and Code", "cluster": "organisation", "type": "text", "labels": ["PE Office and Code"] },
           { "id": "district_detail", "header": "District", "cluster": "organisation", "type": "text", "sameAs": "district", "prefer": "list", "labels": ["District"] },
 
@@ -493,7 +495,6 @@
           { "id": "expected_negotiation", "header": "Expected Completion of Negotiation", "cluster": "planned_dates", "type": "date", "onlyFor": "Services", "labels": ["Expected Date of Completion of Negotiation"] }
         ],
         "ignored": [
-          { "reason": "personal", "note": "On this page, Procuring Entity holds a person's name; the list holds the office (D17, E19).", "labels": ["Procuring Entity"] },
           { "reason": "heading", "labels": ["Key Fields Information", "Package Details", "Lot Details", "Tender/Proposal Dates", "RFQ Dates", "REOI Dates", "RFP Dates"] }
         ]
       }
@@ -633,10 +634,11 @@
           { "id": "tenders_responsive", "header": "Older: Tenders Responsive", "cluster": "competition", "type": "number", "older": true, "labels": ["Tenders/Proposals Responsive"] },
           { "id": "security_in_time", "header": "Older: Performance Security in Due Time", "cluster": "competition", "type": "yesNo", "older": true, "labels": ["Was the Performance Security provided in due time?"] },
           { "id": "signed_in_time", "header": "Older: Contract Signed in Due Time", "cluster": "competition", "type": "yesNo", "older": true, "labels": ["Was the Contract Singed in due time?"] },
+          { "id": "officer_name", "header": "Authorised Officer's Name", "cluster": "competition", "type": "text", "labels": ["Name of Authorised Officer"] },
           { "id": "officer_designation", "header": "Authorised Officer's Designation", "cluster": "competition", "type": "text", "labels": ["Designation of Authorised Officer"] }
         ],
         "ignored": [
-          { "reason": "personal", "note": "A person's name, and the Beneficial Ownership table (D19).", "labels": ["Name of Authorised Officer", "Beneficial Ownership Information", "Name", "Designation", "Beneficial Ownership (%)", "Country"] },
+          { "reason": "personal", "note": "The Beneficial Ownership table (D19): a company's owners, not officials.", "labels": ["Beneficial Ownership Information", "Name", "Designation", "Beneficial Ownership (%)", "Country"] },
           { "reason": "structure", "labels": ["S. No."] }
         ]
       }
@@ -761,7 +763,7 @@
           { "cell": 10, "header": "Work Status", "split": "none", "parts": [{ "key": "work_status", "header": "Work Status", "index": 0, "type": "text" }] }
         ]
       },
-      "naturalKey": { "key": "tender_id", "fallback": "record_id", "confirmedByOwner": true, "note": "D39. 260 saved rows with an ID, no repeats. 24 of 284 rows have no Tender ID, so they use the record's own ID; the fallback awaits the owner." },
+      "naturalKey": { "key": "tender_id", "fallback": "record_id", "whenMissing": "Manual", "confirmedByOwner": true, "note": "D39. Manually entered experience has no Tender ID. The column then says Manual, and the user goes by the Ref No. The record's own ID keeps those rows apart inside a run." },
       "detail": {
         "open": {
           "method": "GET",
@@ -788,6 +790,7 @@
 
           { "id": "ministry_detail", "header": "Ministry", "cluster": "organisation", "type": "text", "sameAs": "ministry", "prefer": "detail", "labels": ["Ministry/Division"] },
           { "id": "organization", "header": "Organization Name", "cluster": "organisation", "type": "text", "labels": ["Organization Name"] },
+          { "id": "pe_official_name", "header": "PE Name (official's name)", "cluster": "organisation", "type": "text", "labels": ["PE Name"] },
           { "id": "pe_office", "header": "PE Office Name", "cluster": "organisation", "type": "text", "labels": ["PE Office Name"] },
 
           { "id": "package_no", "header": "Package No", "cluster": "work", "type": "id", "labels": ["Package No"] },
@@ -815,7 +818,7 @@
           { "id": "comments_by_pe", "header": "Comments By PE", "cluster": "company", "type": "text", "labels": ["Comments By PE"] }
         ],
         "ignored": [
-          { "reason": "personal", "note": "PE Name holds a person's name (D17), and the Beneficial Ownership table (D19).", "labels": ["PE Name", "Name", "Designation", "Beneficial Ownership (%)", "Country"] },
+          { "reason": "personal", "note": "The Beneficial Ownership table (D19): a company's owners, not officials.", "labels": ["Name", "Designation", "Beneficial Ownership (%)", "Country"] },
           { "reason": "structure", "labels": ["S. No."] }
         ]
       }
