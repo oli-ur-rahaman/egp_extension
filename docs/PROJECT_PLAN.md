@@ -824,6 +824,7 @@ egp_ext/
 | D27 | **Time estimate before every flow, with warnings and sprints.** Tentative range from a real count; **over 6 hours warns**, over 24 hours is marked unrealistic and needs a tick to start; ranked ways to shorten the run; split into sprints of at most 6 hours, combined at the end. Never by going faster | Owner, 2026-11-06. See docs/TIME_ESTIMATE.md |
 | D28 | **The owner holds ToR authority:** the client has delegated the decision, and what the owner says applies. **Claude warns the owner of every deviation from the ToR, Proposal or plan, when it happens;** the owner decides, and it is recorded here. No approval is sought elsewhere | Owner, 2026-11-06 |
 | D29 | **LTM tenders are collected and exported** on Flow 2 when the user is logged in. They can only be reached that way, for the account's own department. Rows stay marked by method and login state | Owner, 2026-11-06, under D28. These tenders are not listed publicly |
+| D30 | **Refines D23: on a logged-out Flow 2 run, the last step before the run starts is a confirmation:** "This run won't capture LTM tenders. Logging in can give both LTM and OTM, for your own department. Proceed?" Proceed runs it; otherwise the user logs in. The choice is the user's; the tool only informs. Claude's reading of the owner's "at the very end": the end of setup, before collecting | Owner, 2026-11-06 |
 
 ### Open — to resolve during Phase 1
 

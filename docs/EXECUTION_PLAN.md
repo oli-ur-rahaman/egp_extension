@@ -843,6 +843,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | M8, M10, M13 | Owner reviewed the five demo workbooks: **"better now"**. **D27: time estimate before every flow; over 6 hours warns; over 24 hours unrealistic; ways to shorten; sprints of at most 6 hours.** Design in `docs/TIME_ESTIMATE.md`, 5 new tasks added. All documents brought up to date, including §0a. | End of day on the home PC. Next: §13 step 3a, then build. |
 | 2026-11-06 | 1 | All | **D28: the owner holds ToR authority; Claude warns of every deviation.** ToR "single sheet" change accepted. | Standing rule, in `CLAUDE.md`. |
 | 2026-11-06 | 1 | M7, M10 | **D29: LTM tenders are collected and exported** (logged in, own department only). | Next: §13 step 3a. |
+| 2026-11-06 | 1 | M13 | **D30:** logged-out Flow 2 ends setup with a Proceed confirmation: no LTM here; logging in can give both LTM and OTM. | Owner to confirm the timing reading. |
 
 **Milestone record**
 
