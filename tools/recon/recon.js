@@ -78,14 +78,20 @@ async function cmdSnapshot() {
     });
     if (exceptionDetails) throw new Error(`snapshot failed in page: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`);
     const snap = result.value;
-    const shot = await cdp.send('Page.captureScreenshot', { format: 'png' });
 
     const dir = path.join(rawDir, `${stamp()}-${safeLabel(label)}`);
     await mkdir(dir, { recursive: true });
     const { html, ...summary } = snap;
     await writeFile(path.join(dir, 'page.html'), html);
     await writeFile(path.join(dir, 'summary.json'), JSON.stringify(summary, null, 2));
-    await writeFile(path.join(dir, 'screenshot.png'), Buffer.from(shot.data, 'base64'));
+
+    // A screenshot can stall on a tab that isn't in front. It's optional; the page text is what matters.
+    const shot = await Promise.race([
+      cdp.send('Page.captureScreenshot', { format: 'png' }),
+      new Promise((resolve) => setTimeout(() => resolve(null), 8000)),
+    ]);
+    if (shot) await writeFile(path.join(dir, 'screenshot.png'), Buffer.from(shot.data, 'base64'));
+    else console.log('  (no screenshot: tab not in front)');
 
     console.log(`Saved ${path.relative(root, dir)}`);
     console.log(`  ${snap.title} — ${snap.url}`);
@@ -173,7 +179,7 @@ async function cmdWatch() {
 // Stopping a background `npm run` on Windows leaves its node child running, so a
 // recorder can outlive its "stop" and run through a login. This kills them for real.
 async function cmdStop() {
-  const script = `Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -match 'recon' -and $_.CommandLine -match ' watch ' -and $_.ProcessId -ne ${process.pid} } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force; $_.ProcessId }`;
+  const script = `Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -match 'recon' -and $_.CommandLine -match ' (watch|snapshot) ' -and $_.ProcessId -ne ${process.pid} } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force; $_.ProcessId }`;
   const out = execFileSync('powershell', ['-NoProfile', '-Command', script], { encoding: 'utf8' }).trim();
   console.log(out ? `Stopped recorder process(es): ${out.split(/\s+/).join(', ')}` : 'No recorder was running.');
 }
