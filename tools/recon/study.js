@@ -27,7 +27,7 @@ const runFile = path.join(outDir, 'run.jsonl');
 const LIMIT = Number(arg('limit', 900));
 const ONLY = String(arg('only', '2,3,4,5')).split(',');
 const PORT = Number(arg('port', 9222));
-const ROWS_PER_LIST = 4;
+const ROWS_PER_LIST = Number(arg('rows', 4));
 const PACE_MS = 3000;
 const SLOW_MS = 20000;
 const BASE = 'https://www.eprocure.gov.bd';
@@ -71,7 +71,7 @@ function flow3() {
   for (const [v, n] of [['1', 'Development'], ['2', 'Revenue'], ['3', 'Own fund']]) s.push([`budget=${n}`, { budgetType: v }]);
   return {
     id: '3', list: '/SearchServlet', strata: s.map(([k, o]) => [k, (page) => body({ ...o, pageNo: String(page) })]),
-    rows: (html) => trs(html).map((t) => ({ t, href: (t.match(/href="([^"]*ViewPackageDetail[^"]*)"/) || [])[1] })).filter((x) => x.href).map(({ t, href }) => {
+    rows: (html) => trs(html).map((t) => ({ t, href: (t.match(/href=["']([^"']*ViewPackageDetail[^"']*)["']/) || [])[1] })).filter((x) => x.href).map(({ t, href }) => {
       const u = href.replace(/&amp;/g, '&');
       const c = cellsOf(t);
       return { key: (u.match(/pkgId=(\d+)/) || [])[1], open: { method: 'GET', url: u.startsWith('/') ? u : '/resources/common/' + u }, attrs: { pkgType: (u.match(/pkgType=([^&]+)/) || [])[1], nature: (c[4] || '').split(/[,/]/)[0].trim(), method: (c[6] || '').split(/[,/]/).pop().trim() } };
@@ -88,7 +88,7 @@ function flow4() {
   for (const y of [2023, 2024, 2025]) for (const m of [1, 4, 7, 10]) s.push([`signQuarter=${y}-${m}`, { contractDtFrom: `02/${String(m).padStart(2, '0')}/${y}`, contractDtTo: `28/${String(m + 2).padStart(2, '0')}/${y}` }]);
   return {
     id: '4', list: '/AdvSearchNOAServlet', strata: s.map(([k, o]) => [k, (page) => body({ ...o, pageNo: String(page) })]),
-    rows: (html) => trs(html).map((t) => ({ t, href: (t.match(/href="([^"]*ViewAwardedContracts[^"]*)"/) || [])[1] })).filter((x) => x.href).map(({ t, href }) => {
+    rows: (html) => trs(html).map((t) => ({ t, href: (t.match(/href=["']([^"']*ViewAwardedContracts[^"']*)["']/) || [])[1] })).filter((x) => x.href).map(({ t, href }) => {
       const u = href.replace(/&amp;/g, '&');
       const c = cellsOf(t);
       return { key: (u.match(/pkgLotId=(\d+)/) || [])[1], open: { method: 'GET', url: u }, attrs: { method: (c[3] || '').split(' / ').pop().trim(), noaYear: ((c[5] || '').match(/(\d{4})/) || [])[1] } };
@@ -99,13 +99,13 @@ function flow5() {
   const body = (o) => ({ action: 'geteCMSList', keyword: '', officeId: ' ', contractAwardTo: '', contractStartDtFrom: '', contractStartDtTo: '', contractEndDtFrom: '', contractEndDtTo: '', departmentId: DEPT, tenderId: '', procurementMethod: '', procurementNature: '', contAwrdSearchOpt: 'Contains', exCertSearchOpt: 'Contains', exCertificateNo: '', tendererId: '', procType: '', statusTab: 'All', pageNo: '1', size: '20', workStatus: 'All', ...o });
   const s = [];
   for (const tab of ['eTenders', 'eCMS', 'OffLine', 'All']) for (const w of ['All', 'Completed', 'Ongoing']) s.push([`tab=${tab}+work=${w}`, { statusTab: tab, workStatus: w }]);
-  for (const n of ['Goods', 'Works', 'Service', 'Physical Services']) s.push([`nature=${n}`, { procurementNature: n }]);
-  for (const m of ['RFQ', 'OTM', 'LTM', 'TSTM', 'DPM', 'OSTETM', 'RFQU', 'RFQL', 'QCBS', 'LCS', 'SFB', 'DC', 'SBCQ', 'SSS', 'IC', 'CSO']) s.push([`method=${m}`, { procurementMethod: m }]);
-  for (const v of ['NCT', 'ICT']) s.push([`type=${v}`, { procType: v }]);
-  for (const y of YEARS) s.push([`startYear=${y}`, { contractStartDtFrom: `${y}-01-01`, contractStartDtTo: `${y}-12-31` }]);
+  for (const n of ['Goods', 'Works', 'Service', 'Physical Services']) s.push([`nature=${n}`, { statusTab: 'eTenders', procurementNature: n }]);
+  for (const m of ['RFQ', 'OTM', 'LTM', 'TSTM', 'DPM', 'OSTETM', 'RFQU', 'RFQL', 'QCBS', 'LCS', 'SFB', 'DC', 'SBCQ', 'SSS', 'IC', 'CSO']) s.push([`method=${m}`, { statusTab: 'eTenders', procurementMethod: m }]);
+  for (const v of ['NCT', 'ICT']) s.push([`type=${v}`, { statusTab: 'eTenders', procType: v }]);
+  for (const y of YEARS) s.push([`startYear=${y}`, { statusTab: 'eTenders', contractStartDtFrom: `${y}-01-01`, contractStartDtTo: `${y}-12-31` }]);
   return {
     id: '5', list: '/AdvSearcheCMSServlet', strata: s.map(([k, o]) => [k, (page) => body({ ...o, pageNo: String(page) })]),
-    rows: (html) => trs(html).map((t) => ({ t, href: (t.match(/href="([^"]*VieweCmsDetails[^"]*)"/) || [])[1] })).filter((x) => x.href).map(({ t, href }) => {
+    rows: (html) => trs(html).map((t) => ({ t, href: (t.match(/href=["']([^"']*VieweCmsDetails[^"']*)["']/) || [])[1] })).filter((x) => x.href).map(({ t, href }) => {
       const u = href.replace(/&amp;/g, '&');
       const c = cellsOf(t);
       const nm = (c[2] || '').split(' / ').map((v) => v.replace(/,$/, '').trim());

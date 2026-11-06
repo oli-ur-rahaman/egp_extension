@@ -850,6 +850,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-06 | 1 | §13 3a, M10 | **Pre-build check finished.** Tenderer ID = Company Unique ID. Ongoing and LTM contracts are on Flow 4. Flow 4 demo rebuilt under D31: latest layout + 10 `Older:` columns. | **Recon stops. Next: §13 step 4, build.** |
 | 2026-11-06 | 1 | R8 | **R8 format study started, on the owner's request, run by Claude alone:** which factors change the detail-page layout on Flows 2-5. Read-only, logged out, about 3 s apart, at most 900 requests, stops itself on any block. | Plan in `docs/recon/r8-format-study.md`. Tool: `tools/recon/study.js`. |
 | 2026-11-06 | 1 | R8 | Owner asked for a self-run test log, to compare logged in with logged out later. **`docs/recon/self-run-log.md` and `tools/recon/study-compare.js` added;** `study.js` now takes `--state` and refuses a mismatch. | Current run continues on the earlier code; its results move to `recon/raw/study/logged-out/` when done. |
+| 2026-11-06 | 1 | R8 | Run 3 stopped on a 54 s Flow 5 response, as designed. Flows 2 and 4 complete. Flows 3 and 5 opened nothing, because of a quote bug in the tool; fixed. | Run 4 redoes them after a 15-minute rest. |
 
 **Milestone record**
 
