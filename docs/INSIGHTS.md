@@ -55,6 +55,8 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 79 | The Action column on file tables is the **download button** (owner's copy) | ✅ | Nothing to collect |
 | 80 | **The department and category trees answer in JSON.** Earlier notes described how the page draws them, not the data | ✅ | The panel reads the JSON. Read the wire, not the drawn page |
 | 81 | The search dropdown (`#cmbSearchTab`) is absent from the logged-in Flow 2 page, so it can't be a landmark | ✅ | Removed from page identity |
+| 83 | **Flow 5's Tender Type has no change handler,** so changing it fires no search; the page reads it only at its own Search. Flow 5's Search and tabs are what load the slow query | ✅ code | Safe to apply on load |
+| 84 | The portal's own popups refill Procuring Entity by a page function. The panel's own picker can't call that, so it asks `/ComboServlet` and fills the list itself, as the page does | ✅ code | Other cascades (Financial Year to Project, Nature to Method) run from the page's own change handlers |
 | 82 | Every notice ends with two standing sentences styled as labels | ✅ | Listed as not fields, so they aren't reported as unknown |
 
 ## Time and sprints (owner, D27)

@@ -354,7 +354,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
   - [ ] M1-MC2 You read each recon note and confirm it matches the portal and the business meaning
   - [x] M1-MC3 You confirm the **natural key** columns per flow (Q6): Tender ID; Flow 3 Package ID; manual experience shows Manual (D39)
   - [ ] M1-MC4 You confirm Tender Info detail content (X3)
-  - [ ] M1-MC5 You spot-check two sanitised fixtures and see no personal data
+  - [x] M1-MC5 You spot-check two sanitised fixtures and see no personal data
 - **Exit:** profile v1.0.0 committed; Q1–Q6 answered; mock server covers every P-n state.
 
 ---
@@ -386,12 +386,12 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 | Task | Description | Est. |
 |---|---|---|
-| M3-T01 | Filter Reader: label, type, options (skipping placeholders) via the profile, with fallbacks | 4 h |
-| M3-T02 | Filter Applier: set a value, fire the correct events (change/input/postback), and **wait for the child to repopulate** | 5 h |
-| M3-T03 | Dependency awareness: refresh child lists in the panel when the parent changes in the panel | 3 h |
-| M3-T04 | Panel filter card: select + "All" checkbox; "All" disables the select and shows `all N items`; "↳ depends on X" hint | 4 h |
-| M3-T05 | Page-match check: "✓ Page matches this flow" or a named reason | 2 h |
-| M3-T06 | Date-range and text filters (if recon finds them), with format and max-span validation | 3 h |
+| M3-T01 | [~] Filter Reader: label, type, options (skipping placeholders) via the profile, with fallbacks | 4 h |
+| M3-T02 | [~] Filter Applier: set a value, fire the correct events (change/input/postback), and **wait for the child to repopulate** | 5 h |
+| M3-T03 | [~] Dependency awareness: refresh child lists in the panel when the parent changes in the panel | 3 h |
+| M3-T04 | [~] Panel filter card: select + "All" checkbox; "All" disables the select and shows `all N items`; "↳ depends on X" hint | 4 h |
+| M3-T05 | [~] Page-match check: "✓ Page matches this flow" or a named reason | 2 h |
+| M3-T06 | [~] Date-range and text filters (if recon finds them), with format and max-span validation | 3 h |
 
 - **Automated:** M3-AT1 reader output equals the golden JSON for each P-n.1 fixture · M3-AT2 the applier on the mock triggers a child repopulation and waits for it · M3-AT3 placeholder options never appear as values · M3-AT4 a flow mismatch blocks with the right reason.
 - **Manual:**
@@ -619,9 +619,9 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 | Task | Description | Est. |
 |---|---|---|
-| M13-T01 | Design tokens (light and dark), Inter + system fallback, 8 px grid, tabular numerals | 2 h |
-| M13-T02 | Header status pill; flow picker; page-match line | 2 h |
-| M13-T03 | Filter card (from M3), Plan card (≈ estimate, Start with a disabled reason) | 3 h |
+| M13-T01 | [~] Design tokens (light and dark), Inter + system fallback, 8 px grid, tabular numerals | 2 h |
+| M13-T02 | [~] Header status pill; flow picker; page-match line | 2 h |
+| M13-T03 | [~] Filter card (from M3), Plan card (≈ estimate, Start with a disabled reason) | 3 h |
 | M13-T04 | Running card: progress `17/≈42`, current branch in plain words, rows / rate / elapsed, Pause / Stop | 4 h |
 | M13-T05 | Recovering, Login-wall, Halted (shape changed), and Done states | 4 h |
 | M13-T06 | Accessibility: keyboard, focus rings, ARIA live region, contrast ≥ 4.5:1 | 3 h |
@@ -862,6 +862,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B1, M1-MC3 | **D39: Tender ID is the unique ID** (owner). Checked on saved rows: no repeats on Flows 2, 4, 5. Flow 3 has none, and 24 of 284 Flow 5 rows have none: exceptions proposed. **D38 confirmed by the owner.** Query table: real title read, 4 public examples all empty. Atlas now carries a progress log (owner's request). | B1's gate still waits for 4 answers. Then B2. |
 | 2026-11-07 | 1 | B1, M1-MC3 | **Owner settled B1's questions.** Flow 3 uses Package ID; manual experience shows Manual in the Tender ID column (D39). **D40: officials' details are collected**, reversing my exclusions. **E23: the Queries and Replies table is hidden on the page**; I had described it as visible content, from labels the study didn't check for hiding. | M1-MC3 done. B1 waits only for the owner's word to start B2. |
 | 2026-11-07 | 1 | B2: M1-T07, T08, T10; M2-T01–T04 | **Stage B2 built.** Cleaner (default deny); 41 cleaned pages plus 2 JSON lookups, covering every layout reachable logged out; fake portal with faults (lost rows, block, 500, dropped connection, session end, latency); page-state classifier; fingerprints; visible-only reading (D41). **Tests caught a real leak before any commit:** account links kept their user ID. Fixed. Corrected: both trees answer in JSON. 27 public requests. | **Gaps:** RFQ and framework notices on Flow 2 need a login; Flow 1's empty report is derived, not captured; M2-T05 is in B8. **B2's gate waits for the owner:** spot-check two cleaned pages. |
+| 2026-11-07 | 1 | B3: M3, M13-T01–T03 | **Stage B3 built, on the fake portal.** Side panel; flow detected from the page's address; filters read live from the page; changes written to the real page, then re-read; Department and Category pickers; login state; Flow 2 warning (D37); required rules with named reasons; a vanished filter is named. M1-MC5 passed by the owner. 258 unit and 10 browser tests. **D42: All as the first dropdown item, not a checkbox.** Start stays off: collection is B5. | **Not yet proven live:** page-script cascades. **B3's gate: the owner's live demo on all five pages,** then RFQ and framework captures while logged in. |
 
 **Milestone record**
 
@@ -893,8 +894,8 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 3b | [x] **R8 done:** logged out, logged in, and PWD like for like (D34) | done | |
 | 3c | [x] **Owner approved `docs/BUILD_PLAN.md`** (D36) and D35. Next: owner reads the atlas and says to start B1 | done | |
 | 4 | [x] **B1 built** (M1-T01, T05, T06). [x] **Owner's gate:** passed 2026-11-07 | owner | |
-| 4a | [x] **B2 built.** [ ] **Owner's gate (M1-MC5):** spot-checks two cleaned pages for personal data | owner | 5 min |
-| 4b | **Stage B3 live filters and panel:** the first demo. Capture RFQ and framework notices at the first logged-in check | Claude, then owner | |
+| 4a | [x] **B2 done.** Owner's gate (M1-MC5) passed 2026-11-07 | done | |
+| 4b | [x] **B3 built on the fake portal.** [ ] **Owner's gate (M3-MC1–MC3): live demo on all five pages.** Capture RFQ and framework notices at the first logged-in check | owner, Claude | 30 min |
 | 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
 | 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
 
@@ -906,7 +907,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · B2's spot-check.
+**Open owner decisions:** Q7 secret code, by Week 9 · D42, All as a dropdown item.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

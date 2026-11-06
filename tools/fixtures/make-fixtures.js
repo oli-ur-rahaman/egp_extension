@@ -76,6 +76,10 @@ const FRAGMENTS = [
 const manifest = {};
 function save(name, html, meta, fragment) {
   let clean = sanitise(html, { fragment });
+  // Some pages were saved after a department was chosen. A test page should open as a user's would: nothing chosen. A logged-in page's is fixed.
+  if (meta.kind === 'filterPage' && !name.includes('logged-in')) {
+    clean = clean.replace(/<input\b[^>]*\bid="txtdepartmentid"[^>]*>/, (tag) => tag.replace(/\bvalue="[^"]*"/, 'value=""'));
+  }
   const file = path.join(out, `${name}.html`);
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, clean);

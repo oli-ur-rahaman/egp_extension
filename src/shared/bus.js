@@ -3,6 +3,13 @@
 
 export const MSG = Object.freeze({
   PING: 'sw/ping',
+  PAGE_STATE: 'sw/page-state',
+  PAGE_APPLY: 'sw/page-apply',
+  LOOKUP: 'sw/lookup',
+  PAGE_CHANGED: 'panel/page-changed',
+  AGENT_SCAN: 'agent/scan',
+  AGENT_APPLY: 'agent/apply',
+  AGENT_LOOKUP: 'agent/lookup',
 });
 
 /**

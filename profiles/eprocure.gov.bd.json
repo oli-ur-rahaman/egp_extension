@@ -142,11 +142,11 @@
       "filters": [
         { "id": "department", "label": "Select Ministry/Division/Organization", "control": "tree", "panel": true, "selector": "#txtdepartment", "valueSelector": "#txtdepartmentid", "requestField": "departmentId", "empty": "", "source": "departmentTree", "note": "Hidden and fixed to the account's department when logged in." },
         { "id": "procuring_entity", "label": "Procuring Entity", "control": "select", "panel": true, "selector": "#cmbOffice", "requestField": "office", "empty": "", "dependsOn": ["department"], "source": "officeCombo" },
-        { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": true, "selector": "#budgetType", "requestField": "budgetType", "empty": "", "warnWhen": { "state": "loggedIn", "text": "When you're logged in, the portal ignores this filter (E2)." } },
+        { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": true, "selector": "#budgetType", "requestField": "budgetType", "empty": "", "warnWhen": { "state": "loggedIn", "text": "When you're logged in, the portal ignores this filter." } },
         { "id": "procurement_nature", "label": "Procurement Nature", "control": "select", "panel": true, "selector": "#procNature", "requestField": "procNature", "empty": "" },
         { "id": "procurement_type", "label": "Procurement Type", "control": "select", "panel": true, "selector": "#cmbType", "requestField": "procType", "empty": "" },
         { "id": "procurement_method", "label": "Procurement Method", "control": "select", "panel": true, "selector": "#cmbProcMethod", "requestField": "procMethod", "empty": "0" },
-        { "id": "framework", "label": "Framework Agreement", "control": "select", "panel": true, "selector": "#cmbIsFrame", "requestField": "isFrame", "empty": "0", "warnWhen": { "state": "always", "text": "On this page the portal returns nothing for Yes or No (E1)." } },
+        { "id": "framework", "label": "Framework Agreement", "control": "select", "panel": true, "selector": "#cmbIsFrame", "requestField": "isFrame", "empty": "0", "warnWhen": { "state": "always", "text": "On this page the portal returns nothing for Yes or No." } },
         { "id": "tender_id", "label": "Tender/Proposal ID", "control": "text", "panel": true, "selector": "#tenderId", "requestField": "tenderId", "empty": "" },
         { "id": "reference_no", "label": "Reference No", "control": "text", "panel": true, "selector": "#refNo", "requestField": "refNo", "empty": "" },
         {

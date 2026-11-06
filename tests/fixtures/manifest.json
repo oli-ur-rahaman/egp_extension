@@ -26,7 +26,7 @@
     "outcome": "OK",
     "fragment": false,
     "fingerprint": "92e0d923",
-    "bytes": 77042
+    "bytes": 77040
   },
   "flow1/report": {
     "flow": "procurement_transaction_report",
@@ -140,7 +140,7 @@
     "outcome": "OK",
     "fragment": false,
     "fingerprint": "938ff3f9",
-    "bytes": 118145
+    "bytes": 118143
   },
   "flow3/package-works": {
     "flow": "app_info",

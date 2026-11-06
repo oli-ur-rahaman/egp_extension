@@ -54,13 +54,25 @@ const options = {
   ],
 };
 
+// Injected scripts can't be ES modules, so the page agent is built as one self-contained file.
+/** @type {import('esbuild').BuildOptions} */
+const agentOptions = {
+  absWorkingDir: root,
+  entryPoints: { 'content/agent': 'src/content/agent.js' },
+  outdir: dist,
+  bundle: true,
+  format: 'iife',
+  target: 'chrome116',
+  logLevel: 'info',
+};
+
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
 
 if (watch) {
-  const ctx = await esbuild.context(options);
-  await ctx.watch();
+  const [ctx, agentCtx] = await Promise.all([esbuild.context(options), esbuild.context(agentOptions)]);
+  await Promise.all([ctx.watch(), agentCtx.watch()]);
   console.log('[build] watching — reload the extension in chrome://extensions after changes');
 } else {
-  await esbuild.build(options);
+  await Promise.all([esbuild.build(options), esbuild.build(agentOptions)]);
 }
