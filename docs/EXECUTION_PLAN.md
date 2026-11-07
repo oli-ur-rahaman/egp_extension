@@ -389,7 +389,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | M3-T01 | [~] Filter Reader: label, type, options (skipping placeholders) via the profile, with fallbacks | 4 h |
 | M3-T02 | [~] Filter Applier: set a value, fire the correct events (change/input/postback), and **wait for the child to repopulate** | 5 h |
 | M3-T03 | [~] Dependency awareness: refresh child lists in the panel when the parent changes in the panel | 3 h |
-| M3-T04 | [~] (D42, D44: All is a list item; child lists say what to choose first) Panel filter card: select + "All" checkbox; "All" disables the select and shows `all N items`; "↳ depends on X" hint | 4 h |
+| M3-T04 | [~] (Changed by D42 and D44: All is a list item, not the checkbox first planned; child lists say what to choose first) Panel filter card: select with "All"; shows `N items`; "↳ depends on X" hint | 4 h |
 | M3-T05 | [~] Page-match check: "✓ Page matches this flow" or a named reason | 2 h |
 | M3-T06 | [~] Date-range and text filters (if recon finds them), with format and max-span validation | 3 h |
 
@@ -868,6 +868,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B3, D43 | **Demo Step 2 passed on the real browser (owner):** the panel opens on its tab, disappears on a new tab, returns on going back, and lists the five report pages on the homepage. | Next: Step 3, live logged out. |
 | 2026-11-07 | 1 | B3, M3-T02, M2, M13-T01–T03 | **Owner's Step 3 found two bugs of Claude's, both fixed.** (1) False "block or CAPTCHA" message: the check read the page's hidden scripts. (2) **Procuring Entity silently chose its last office on the real page, which would have filtered a run;** the test bed never checked the selected entry. **Panel rebuilt to the owner's standard (D44), remembers its state per tab (D45), marks its tab (D46).** Also fixed: list jumped to the top on +; panel now stays bound to its own tab. D47 and D48 recorded for the run stages. 263 unit and 13 browser tests pass. **Dates corrected: an earlier entry said 8 Nov; it was 7 Nov, so the Sunday check is tomorrow.** | Not yet tested in real Chrome: tab mark, and restore after a real tab switch. Owner repeats Step 3 on the new panel. |
 | 2026-11-07 | 1 | B3, M3-T04 | **Owner's check on real Chrome, Flow 2 logged out, passed:** warning first with no red message, department kept after a tab switch, Procuring Entity on All with 224 items, tab icon shown and kept. **Owner then found that clicking or choosing moved the panel; fixed.** Opening a long list pushed the filters down and scrolled the whole panel, and a choice reopened the list. Long lists now float over the filters and scroll only themselves, and a redraw keeps the filter in use where it was. New browser test measures positions: it failed by 44 pixels before the fix and passes now. 263 unit and 13 browser tests pass; verify green. | Owner to confirm the fix in real Chrome, then Flows 3, 4, 5. |
+| 2026-11-07 | 1 | B3, M3-T04 | **D42 decided by the owner:** "All" is an item in each filter's list, not a separate checkbox. The panel already works this way, so no code changed. | Owner's check of the steady panel is still awaited. |
 
 **Milestone record**
 
@@ -888,7 +889,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 
-**Now: B3's live demo, Step 3, on the rebuilt panel (D44–D46).** Flow 2 logged out passed in real Chrome, including the tab mark and the restore after a tab switch. Next: the owner presses the extension's reload arrow, confirms the panel no longer moves on a click or choice, then Flows 3, 4 and 5 logged out. D42 still needs the owner's answer. Give the owner numbered clicks for one step, then wait for "done".
+**Now: B3's live demo, Step 3, on the rebuilt panel (D44–D46).** Flow 2 logged out passed in real Chrome, including the tab mark and the restore after a tab switch. Next: the owner presses the extension's reload arrow, confirms the panel no longer moves on a click or choice, then Flows 3, 4 and 5 logged out. Give the owner numbered clicks for one step, then wait for "done".
 
 - **[x] Done 2026-11-07. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
 - **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
@@ -923,7 +924,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
-**Open owner decisions:** Q7 secret code, by Week 9 · D42, All as a dropdown item.
+**Open owner decisions:** Q7 secret code, by Week 9.
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
