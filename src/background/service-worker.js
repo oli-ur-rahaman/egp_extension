@@ -161,8 +161,11 @@ async function askForRun(run, message) {
     return reply;
   } catch (err) {
     if (err instanceof NetworkError) throw err;
-    if (/Receiving end|Cannot access|No tab|Frame with ID|message channel/i.test(String(/** @type {any} */ (err)?.message))) throw new TabGone();
-    throw err;
+    if (!/Receiving end|Cannot access|No tab|Frame with ID|message channel|back\/forward/i.test(String(/** @type {any} */ (err)?.message))) throw err;
+    // The page went away mid-request. If the tab is still on the portal, it was only reloaded or moved on: ask again.
+    const now = await chrome.tabs.get(run.tabId).catch(() => null);
+    if (now?.url && isPortal(profile, now.url)) throw new NetworkError('The page was reloaded during a request.');
+    throw new TabGone();
   }
 }
 
@@ -204,7 +207,7 @@ function runEnded(run) {
 
 const getEngine = () => (enginePromise ??= getProfile().then(async (profile) => {
   const test = await chrome.storage.session.get('testPaceMs');
-  const pacing = typeof test.testPaceMs === 'number' ? { ...profile.pageStates.pacing, paceMs: test.testPaceMs, jitterMs: 0, backoffSeconds: [0, 0, 0] } : profile.pageStates.pacing;
+  const pacing = typeof test.testPaceMs === 'number' ? { ...profile.pageStates.pacing, paceMs: test.testPaceMs, jitterMs: 0, backoffSeconds: [1, 1, 1] } : profile.pageStates.pacing;
   return createEngine({ store, transport, sleep, pacing, onChange: runChanged, onEnd: runEnded });
 }));
 
