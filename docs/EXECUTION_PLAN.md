@@ -389,7 +389,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | M3-T01 | [~] Filter Reader: label, type, options (skipping placeholders) via the profile, with fallbacks | 4 h |
 | M3-T02 | [~] Filter Applier: set a value, fire the correct events (change/input/postback), and **wait for the child to repopulate** | 5 h |
 | M3-T03 | [~] Dependency awareness: refresh child lists in the panel when the parent changes in the panel | 3 h |
-| M3-T04 | [~] Panel filter card: select + "All" checkbox; "All" disables the select and shows `all N items`; "↳ depends on X" hint | 4 h |
+| M3-T04 | [~] (D42, D44: All is a list item; child lists say what to choose first) Panel filter card: select + "All" checkbox; "All" disables the select and shows `all N items`; "↳ depends on X" hint | 4 h |
 | M3-T05 | [~] Page-match check: "✓ Page matches this flow" or a named reason | 2 h |
 | M3-T06 | [~] Date-range and text filters (if recon finds them), with format and max-span validation | 3 h |
 
@@ -865,7 +865,8 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B3: M3, M13-T01–T03 | **Stage B3 built, on the fake portal.** Side panel; flow detected from the page's address; filters read live from the page; changes written to the real page, then re-read; Department and Category pickers; login state; Flow 2 warning (D37); required rules with named reasons; a vanished filter is named. M1-MC5 passed by the owner. 258 unit and 10 browser tests. **D42: All as the first dropdown item, not a checkbox.** Start stays off: collection is B5. | **Not yet proven live:** page-script cascades. **B3's gate: the owner's live demo on all five pages,** then RFQ and framework captures while logged in. |
 | 2026-11-07 | 1 | B3 | Owner loaded the extension in the controlled Chrome. **D43: the panel now belongs to the tab where the icon was clicked** (owner's request). | Owner confirms on the real browser, then the live demo. |
 | 2026-11-07 | 1 | — | End of day on the home PC. All work pushed. | Resume at §13: B3's live demo, Step 2. |
-| 2026-11-08 | 1 | B3, D43 | **Demo Step 2 passed on the real browser (owner):** the panel opens on its tab, disappears on a new tab, returns on going back, and lists the five report pages on the homepage. | Next: Step 3, live logged out. |
+| 2026-11-07 | 1 | B3, D43 | **Demo Step 2 passed on the real browser (owner):** the panel opens on its tab, disappears on a new tab, returns on going back, and lists the five report pages on the homepage. | Next: Step 3, live logged out. |
+| 2026-11-07 | 1 | B3, M3-T02, M2, M13-T01–T03 | **Owner's Step 3 found two bugs of Claude's, both fixed.** (1) False "block or CAPTCHA" message: the check read the page's hidden scripts. (2) **Procuring Entity silently chose its last office on the real page, which would have filtered a run;** the test bed never checked the selected entry. **Panel rebuilt to the owner's standard (D44), remembers its state per tab (D45), marks its tab (D46).** Also fixed: list jumped to the top on +; panel now stays bound to its own tab. D47 and D48 recorded for the run stages. 263 unit and 13 browser tests pass. **Dates corrected: an earlier entry said 8 Nov; it was 7 Nov, so the Sunday check is tomorrow.** | Not yet tested in real Chrome: tab mark, and restore after a real tab switch. Owner repeats Step 3 on the new panel. |
 
 **Milestone record**
 
@@ -886,9 +887,9 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 
-**Start tomorrow here: B3's live demo, Step 2.** The owner has loaded the extension on the home PC. Nothing below has been checked live yet. Give the owner numbered clicks for one step, then wait for "done".
+**Now: B3's live demo, Step 3, on the rebuilt panel (D44–D46).** The owner must press the extension's reload arrow first. The new panel's tab mark and its restore after a tab switch have not yet been checked in real Chrome. Give the owner numbered clicks for one step, then wait for "done".
 
-- **[x] Done 2026-11-08. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
+- **[x] Done 2026-11-07. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
 - **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
 - **Step 4, live demo, logged in:** `npm run recon -- stop` first, then the owner logs in. Flow 1 (two filters, All offices), Flow 2 (no warning, Department fixed). **Check whether a logged-in Flow 4 or 5 lets the user pick another department** (`departmentWhenLoggedIn: notChecked` in the profile; D35 depends on it). Capture RFQ and framework notices for the test bed while logged in.
 - **Then:** B3's gate passes; start stage B4 (engine).

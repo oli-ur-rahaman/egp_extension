@@ -19,6 +19,7 @@ async function setup({ loggedIn = false } = {}) {
     channel: 'chromium',
     args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`],
   });
+  context.setDefaultTimeout(10000); // a stuck click then names itself, rather than timing the whole test out
   const outside = [];
   await context.route(/^https?:\/\//, async (route) => {
     const url = route.request().url();
@@ -52,6 +53,15 @@ async function setup({ loggedIn = false } = {}) {
 
 const filterCount = (panel) => panel.locator('[data-filter]').count();
 
+/** Long lists are search boxes, short ones plain dropdowns. */
+async function choose(panel, id, label) {
+  const box = panel.locator(`#f-${id}`);
+  if ((await box.evaluate((el) => el.tagName)) === 'SELECT') return box.selectOption({ label });
+  await box.click();
+  await panel.locator(`#f-${id}-list li`, { hasText: label }).first().click();
+}
+const openMore = (panel) => panel.locator('#more-filters summary').click();
+
 test('shows the five flows when no report page is in front', async () => {
   const t = await setup();
   try {
@@ -66,7 +76,8 @@ test('Flow 2 logged out: warns first, then shows all 13 filters', async () => {
   const t = await setup();
   try {
     await t.open('tender_info');
-    await expect(t.panel.locator('#flow-name')).toHaveText('Flow 2 · Tender Info');
+    await expect(t.panel.locator('#flow-name')).toHaveText('Tender Info');
+    await expect(t.panel.locator('#flow-head')).toContainText('FLOW 2');
     await expect(t.panel.locator('#login-state')).toHaveText('Logged out');
     await expect(t.panel.locator('#start-warning')).toContainText("This page won't list LTM and some other methods.");
     expect(await filterCount(t.panel)).toBe(0);
@@ -88,6 +99,7 @@ test('Flow 2: a panel change appears on the real page', async () => {
   try {
     await t.open('tender_info');
     await t.panel.locator('#warning-proceed').click();
+    await openMore(t.panel);
     await t.panel.locator('#f-procurement_nature').selectOption({ label: 'Works' });
     await expect.poll(() => t.page.locator('#procNature').inputValue()).toBe('2');
     await t.panel.locator('#f-tender_id').fill('12345');
@@ -112,6 +124,10 @@ test('Flow 2: choosing a Department refills Procuring Entity from the page, and 
     await expect(t.panel.locator('#f-department-shown')).toHaveText(name);
     await expect.poll(() => t.page.locator('#txtdepartment').inputValue()).toBe(name);
     await expect(t.panel.locator('[data-count="procuring_entity"]')).toHaveText(/^\d{2,} items$/);
+    // The list stays on its "no selection" entry: nothing is filtered until the user chooses (owner, 2026-11-07).
+    expect((await t.page.locator('#cmbOffice').inputValue()).trim()).toBe('');
+    await openMore(t.panel);
+    await expect(t.panel.locator('#f-procuring_entity')).toHaveValue('All');
     // The window's ticks both default to today: a zero-length window is valid, so the filters are ready.
     await expect(t.panel.locator('#plan')).toContainText('Filters are ready.');
     await expect(t.panel.locator('#window-span')).toContainText('0 y 0 m');
@@ -134,7 +150,7 @@ test('Flow 1: login wall when logged out', async () => {
   const t = await setup();
   try {
     await t.open('procurement_transaction_report');
-    await expect(t.panel.locator('#flow-head')).toContainText('needs a login');
+    await expect(t.panel.locator('#flow-view')).toContainText('needs a login');
     await expect(t.panel.locator('[data-filter]')).toHaveCount(0);
   } finally { await t.close(); }
 });
@@ -144,9 +160,9 @@ test('Flow 1 logged in: two filters, All offices by default', async () => {
   try {
     await t.open('procurement_transaction_report');
     await expect(t.panel.locator('[data-filter]')).toHaveCount(2);
-    await expect(t.panel.locator('#f-pe_office option').first()).toHaveText(/^All offices \(\d+\)$/);
+    await expect(t.panel.locator('#f-pe_office')).toHaveValue(/^All offices \([\d,]+\)$/);
     await expect(t.panel.locator('#start-reasons')).toContainText('Financial Year');
-    await t.panel.locator('#f-financial_year').selectOption('2024-2025');
+    await choose(t.panel, 'financial_year', '2024-2025');
     await expect(t.panel.locator('#plan')).toContainText('Filters are ready.');
     expect(await t.page.locator('#cmbFinancialYear').inputValue()).toBe('2024-2025');
   } finally { await t.close(); }
@@ -162,6 +178,7 @@ test('Flows 3, 4, 5: all filters, required rules named', async () => {
       await expect(t.panel.locator('#start-reasons')).toContainText(reason);
     }
     // Flow 5 Tender Type starts at All (the page's default is eTenders), and a contractor lifts the rule.
+    await openMore(t.panel);
     const type = t.panel.locator('#f-tender_type');
     await expect(type.locator('option:checked')).toHaveText('All');
     await t.panel.locator('#f-contract_awarded_to-text').fill('A firm');
@@ -180,5 +197,76 @@ test('a block during a lookup stops with a clear message', async () => {
     await expect(t.panel.locator('#error')).toContainText('block or CAPTCHA');
     await expect(t.panel.locator('#status')).toHaveText('Stopped');
     t.portal.setFaults({});
+  } finally { await t.close(); }
+});
+
+test('opening a branch keeps the list where it is, and children sit on a tinted background', async () => {
+  const t = await setup();
+  try {
+    await t.open('contract_info');
+    await t.panel.addStyleTag({ content: '.sheet-body { flex: none; height: 200px; }' });
+    await t.panel.locator('#f-department-open').click();
+    const body = t.panel.locator('.sheet-body');
+    const twists = t.panel.locator('.twist');
+    await expect(twists.first()).toBeVisible();
+    // The last branch, scrolled to: a long way down the list, which is where the jump used to hurt.
+    const target = twists.nth((await twists.count()) - 1);
+    await target.scrollIntoViewIfNeeded();
+    const before = await body.evaluate((el) => el.scrollTop);
+    expect(before).toBeGreaterThan(0);
+    await target.click();
+    await expect(target).toHaveAttribute('aria-expanded', 'true');
+    await t.panel.waitForTimeout(200);
+    expect(await body.evaluate((el) => el.scrollTop)).toBe(before);
+    const nested = t.panel.locator('.tree .tree').last();
+    await expect(nested).toBeVisible();
+    expect(await nested.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+  } finally { await t.close(); }
+});
+
+test('what the user set survives the panel being closed and reopened on its tab (D45)', async () => {
+  const t = await setup();
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await t.panel.locator('#f-publishing_date-from-today').uncheck();
+    await t.panel.locator('#f-publishing_date-from').fill('01/01/2024');
+    await t.panel.locator('#f-publishing_date-from').blur();
+    await expect(t.panel.locator('#window-span')).toContainText('01/01/2024');
+    await t.panel.locator('#f-department-open').click();
+    await expect(t.panel.locator('.tree .node').first()).toBeVisible();
+    await t.panel.waitForTimeout(250); // the save waits a moment
+    await t.panel.reload();
+    await t.page.bringToFront();
+    await expect(t.panel.locator('#start-warning')).toHaveCount(0);
+    await expect(t.panel.locator('#f-publishing_date-from')).toHaveValue('01/01/2024');
+    await expect(t.panel.locator('#sheet .tree .node').first()).toBeVisible();
+    // A reloaded page is a clean page, so the panel starts clean too; the warning's answer stays.
+    await t.panel.locator('#picker-close').click();
+    await t.page.reload();
+    await expect(t.panel.locator('#f-publishing_date-from-today')).toBeChecked();
+    await expect(t.panel.locator('#start-warning')).toHaveCount(0);
+  } finally { await t.close(); }
+});
+
+test('the block check reads what a user sees, not the page\'s scripts', async () => {
+  const t = await setup();
+  try {
+    await t.open('tender_info');
+    // The real page's login code mentions the word; the fake portal's pages have no scripts, so it's added here.
+    await t.page.evaluate(() => {
+      const s = document.createElement('script');
+      s.type = 'text/plain';
+      s.textContent = 'var servercaptcha = 1;';
+      document.body.append(s);
+    });
+    await t.panel.reload();
+    await t.page.bringToFront();
+    await expect(t.panel.locator('#page-match')).toBeVisible();
+    // A page that really shows the word to the user does stop.
+    await t.page.evaluate(() => document.body.append('Please complete the captcha'));
+    await t.panel.reload();
+    await t.page.bringToFront();
+    await expect(t.panel.locator('#flow-view')).toContainText('block or CAPTCHA');
   } finally { await t.close(); }
 });

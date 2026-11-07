@@ -10,6 +10,8 @@ const state = /** @type {any} */ (window);
 if (!state.__egpAgent) {
   state.__egpAgent = true;
   let defaultsDone = false;
+  // Tells the panel when the page has been reloaded: what it remembers belongs to this loaded page.
+  const loadId = crypto.randomUUID();
 
   /** A same-origin request, as the page itself would make. Stops at any sign of a block. @param {any} profile @param {string} url @param {any} [init] */
   async function request(profile, url, init) {
@@ -32,6 +34,7 @@ if (!state.__egpAgent) {
     const hasLogout = !!document.querySelector(profile.pageStates.logoutLink);
     const hasLoginForm = !!document.querySelector(profile.pageStates.loginForm);
     return {
+      loadId,
       loggedIn: hasLogout && !hasLoginForm,
       verdict: classifyPage({ doc: document, profile, flow, kind: 'filterPage', url: location.href }),
       filters: scanFilters(document, flow),

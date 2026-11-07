@@ -134,7 +134,14 @@ export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } 
       window.close();
       return htmlOf(res, 200, options);
     }
-    if (url.pathname === profile.sharedSources.departmentTree.url) return htmlOf(res, 200, readFileSync(path.join(fixtures, 'shared/department-tree.json'), 'utf8'), { 'Content-Type': 'application/json' });
+    if (url.pathname === profile.sharedSources.departmentTree.url) {
+      // The real tree answers one branch at a time, and a branch's children are new items.
+      const id = url.searchParams.get('id') ?? '0';
+      const tree = id === '0'
+        ? readFileSync(path.join(fixtures, 'shared/department-tree.json'), 'utf8')
+        : JSON.stringify([{ data: `Under ${id}`, state: 'leaf', attr: { id: `deptid_${id}01`, dname: `Office under ${id}`, dtype: 'Division' } }]);
+      return htmlOf(res, 200, tree, { 'Content-Type': 'application/json' });
+    }
     if (url.pathname === profile.sharedSources.categoryTree.url) {
       if (url.searchParams.get('action') === 'getChildData') return htmlOf(res, 200, url.searchParams.get('cpvdesc') ?? '');
       return htmlOf(res, 200, readFileSync(path.join(fixtures, 'shared/category-tree.json'), 'utf8'), { 'Content-Type': 'application/json' });

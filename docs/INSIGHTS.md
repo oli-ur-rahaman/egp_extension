@@ -56,6 +56,9 @@ What we've learned about e-GP that should shape the build, in one place. Each en
 | 80 | **The department and category trees answer in JSON.** Earlier notes described how the page draws them, not the data | ✅ | The panel reads the JSON. Read the wire, not the drawn page |
 | 81 | The search dropdown (`#cmbSearchTab`) is absent from the logged-in Flow 2 page, so it can't be a landmark | ✅ | Removed from page identity |
 | 83 | **Flow 5's Tender Type has no change handler,** so changing it fires no search; the page reads it only at its own Search. Flow 5's Search and tabs are what load the slow query | ✅ code | Safe to apply on load |
+| 85 | **Every real page's scripts mention "captcha",** in the login box's code (6 times on Flow 2's page). 39 saved real pages show none of the block words in visible text. So a block check must read only visible text. Our test pages have no scripts, which hid this. Still open: a real notice could show "forbidden" in its text; test this before long runs | ✅ |
+| 86 | **Moving options one at a time into a Chrome dropdown leaves the last one selected,** so a refilled list silently chose its last office and filtered the real page. Replace the whole list at once, then select "no selection" | ✅ |
+| 87 | **Chrome destroys a tab-specific side panel when the user moves to another tab,** so anything the panel alone holds must be saved | ✅ |
 | 84 | The portal's own popups refill Procuring Entity by a page function. The panel's own picker can't call that, so it asks `/ComboServlet` and fills the list itself, as the page does | ✅ code | Other cascades (Financial Year to Project, Nature to Method) run from the page's own change handlers |
 | 82 | Every notice ends with two standing sentences styled as labels | ✅ | Listed as not fields, so they aren't reported as unknown |
 

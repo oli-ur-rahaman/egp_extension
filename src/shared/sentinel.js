@@ -35,7 +35,8 @@ function pageState(doc, profile, url, status) {
   if (url.includes(states.accountPrompt.urlContains) || doc.querySelector(states.accountPrompt.signature)) {
     return verdict(OUTCOME.ACCOUNT_PROMPT, "The portal is asking for account details. The tool never fills these; press Update Later.");
   }
-  const text = (doc.body?.textContent ?? '').slice(0, 20000);
+  // Only what a user can read (D41): the portal's own scripts mention "captcha" on ordinary pages.
+  const text = (doc.body?.innerText ?? '').slice(0, 20000);
   if (new RegExp(states.block.textPattern, 'i').test(text)) return verdict(OUTCOME.RATE_LIMITED, 'The page reads like a block or CAPTCHA. Stop; don\'t retry.');
   return null;
 }

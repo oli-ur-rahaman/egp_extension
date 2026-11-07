@@ -109,20 +109,33 @@ async function waitForChange(select, before, budgetMs) {
   return false;
 }
 
+/** A refilled list starts on its "no selection" entry, so nothing is filtered without the user choosing it. @param {any} select @param {any} filter */
+function selectPlaceholder(select, filter) {
+  select.selectedIndex = [...select.options].findIndex((o) => isPlaceholder({ value: o.value, text: o.text }, filter));
+}
+
 /**
  * @param {any} doc
  * @param {any} select
+ * @param {any} filter
  * @param {any} source
  * @param {string} parentValue
  * @param {(url: string, init: any) => Promise<string>} request
  */
-async function refillFromSource(doc, select, source, parentValue, request) {
+async function refillFromSource(doc, select, filter, source, parentValue, request) {
   const body = new URLSearchParams({ ...source.fixed, [source.params[0]]: parentValue }).toString();
   const html = await request(source.url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
-  const holder = doc.createElement('select');
-  holder.innerHTML = html; // Parsed by a select, so only options survive; nothing runs.
-  select.innerHTML = '';
-  for (const option of [...holder.options]) select.add(option);
+  // Read in a detached document, where nothing runs, and copied as plain options: only a value and a text survive.
+  const parsed = new doc.defaultView.DOMParser().parseFromString(`<select>${html}</select>`, 'text/html');
+  const options = [...parsed.getElementsByTagName('option')].map((o) => {
+    const option = doc.createElement('option');
+    option.value = o.value;
+    option.text = o.text;
+    return option;
+  });
+  // All at once: moving options across one at a time leaves the last one selected (owner found this, 2026-11-07).
+  select.replaceChildren(...options);
+  selectPlaceholder(select, filter);
 }
 
 /**
@@ -165,8 +178,12 @@ export async function applyFilter({ doc, flow, profile, filterId, value, request
       const source = profile.sharedSources[child.filter.source];
       if (!source?.params?.length) continue;
       if (value?.id) {
-        await refillFromSource(doc, child.el, source, value.id, request);
+        await refillFromSource(doc, child.el, child.filter, source, value.id, request);
         refilled.push(child.filter.id);
+      } else {
+        // The parent was cleared, so the child's list no longer applies.
+        for (const o of [...child.el.options]) if (!isPlaceholder({ value: o.value, text: o.text }, child.filter)) o.remove();
+        selectPlaceholder(child.el, child.filter);
       }
     }
     return { refilled };

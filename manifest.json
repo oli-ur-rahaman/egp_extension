@@ -14,8 +14,10 @@
   "side_panel": {
     "default_path": "panel/index.html"
   },
+  "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
   "action": {
-    "default_title": "Open eGP Extractor"
+    "default_title": "Open eGP Extractor",
+    "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"

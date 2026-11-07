@@ -2,33 +2,21 @@
 // Draws the panel from state. No messaging here, so every screen can be tested on its own.
 // Filter controls call `on.change(filterId, value)`; the controller applies it to the real page, then redraws.
 
-import { evaluateStart, formatDate, resolveWindow, spanBetween, spanText, todayOf } from '../shared/filter-rules.js';
+import { combo } from './combo.js';
+import { h, icon } from './icons.js';
+import { evaluateStart, formatDate, isSet, parseDate, resolveWindow, spanBetween, spanText, todayOf } from '../shared/filter-rules.js';
 
-/**
- * @param {string} tag
- * @param {Record<string, any>} [props]
- * @param {...(Node | string | null | false | undefined)} children
- * @returns {any}
- */
-function h(tag, props = {}, ...children) {
-  const el = document.createElement(tag);
-  for (const [k, v] of Object.entries(props)) {
-    if (v === undefined || v === null || v === false) continue;
-    if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
-    else if (k === 'class') el.className = v;
-    else if (k === 'value') el.value = v;
-    else if (k === 'checked' || k === 'disabled' || k === 'selected') el[k] = v;
-    else el.setAttribute(k, v === true ? '' : v);
-  }
-  for (const c of children) if (c !== null && c !== undefined && c !== false) el.append(c);
-  return el;
+/** Above this many entries a list gets a search box. */
+const SEARCH_ABOVE = 12;
+/** Up to this many optional filters are simply shown; more fold away. */
+const FOLD_ABOVE = 3;
+
+/** @param {string} kind warn, bad, note or ok @param {string} text @param {string} [title] @param {Node} [action] */
+export function banner(kind, text, title, action) {
+  const name = { ok: 'check', warn: 'warning', bad: 'error', note: 'info' }[kind];
+  return h('div', { class: `banner ${kind}`, role: kind === 'bad' ? 'alert' : undefined }, icon(name),
+    h('div', { class: 'banner-body' }, title && h('b', {}, title), h('span', {}, text), action));
 }
-
-/** @param {string} kind ok, warn, bad or note @param {string} text */
-const notice = (kind, text) => {
-  const icon = { ok: '✓', warn: '⚠', bad: '✕', note: 'ⓘ' }[kind];
-  return h('p', { class: `notice ${kind}` }, `${icon} ${text}`);
-};
 
 /** The first entry of a dropdown: All, or a prompt when a choice is required. */
 function emptyLabel(flow, filter) {
@@ -36,19 +24,24 @@ function emptyLabel(flow, filter) {
   return required ? `Choose ${filter.label.replace(/^(Select|By) /, '')}` : 'All';
 }
 
+function listControl(id, value, options, onChange) {
+  if (options.length > SEARCH_ABOVE) return combo({ id, value, options, onChange });
+  return h('select', { id, onchange: (e) => onChange(e.target.value) },
+    ...options.map((o) => h('option', { value: o.value, selected: o.value === value }, o.text)));
+}
+
 function selectControl(flow, filter, scan, on) {
   const id = `f-${filter.id}`;
+  const change = (v) => on.change(filter.id, v);
   if (filter.allMeansLoop) {
     const drafted = on.draft(filter.id);
-    return h('select', { id, onchange: (e) => on.change(filter.id, e.target.value) },
-      h('option', { value: '__all__', selected: drafted === '__all__' }, `All offices (${scan.options.length})`),
-      ...scan.options.map((o) => h('option', { value: o.value, selected: drafted !== '__all__' && scan.value === o.value }, o.text)));
+    return listControl(id, drafted === '__all__' ? '__all__' : scan.value, [{ value: '__all__', text: `All offices (${scan.options.length.toLocaleString('en-US')})` }, ...scan.options], change);
   }
-  const hasAll = !filter.choices;
-  const pageHasThisEmpty = scan.options.every((o) => o.value !== scan.value);
-  return h('select', { id, onchange: (e) => on.change(filter.id, e.target.value) },
-    hasAll && !(filter.default) && h('option', { value: filter.empty ?? '', selected: pageHasThisEmpty }, emptyLabel(flow, filter)),
-    ...scan.options.map((o) => h('option', { value: o.value, selected: scan.value === o.value }, o.text)));
+  const hasAll = !filter.choices && !filter.default;
+  const onEmpty = scan.options.every((o) => o.value !== scan.value);
+  const empty = filter.empty ?? '';
+  const options = hasAll ? [{ value: empty, text: emptyLabel(flow, filter) }, ...scan.options] : scan.options;
+  return listControl(id, onEmpty && hasAll ? empty : scan.value, options, change);
 }
 
 function tabsControl(filter, scan, on) {
@@ -57,11 +50,26 @@ function tabsControl(filter, scan, on) {
 }
 
 function textControl(filter, scan, on) {
-  return h('input', { id: `f-${filter.id}`, type: 'text', value: scan.value ?? '', onchange: (e) => on.change(filter.id, e.target.value) });
+  return h('input', { id: `f-${filter.id}`, type: 'text', value: scan.value ?? '', autocomplete: 'off', onchange: (e) => on.change(filter.id, e.target.value) });
+}
+
+/** A date typed as dd/mm/yyyy, the portal's own format, or picked from a calendar. */
+function dateBox(id, label, value, disabled, onChange) {
+  const toPicker = () => {
+    const d = parseDate(value ?? '');
+    return d ? d.toISOString().slice(0, 10) : '';
+  };
+  const native = h('input', { type: 'date', tabindex: '-1', 'aria-hidden': 'true', value: toPicker(), onchange: (e) => {
+    if (e.target.value) onChange(e.target.value.split('-').reverse().join('/'));
+  } });
+  return h('div', { class: 'date-box' },
+    h('input', { id, type: 'text', placeholder: 'dd/mm/yyyy', 'aria-label': label, value: value ?? '', disabled, autocomplete: 'off', onchange: (e) => onChange(e.target.value) }),
+    h('button', { type: 'button', class: 'icon-btn', 'aria-label': `Pick ${label} from a calendar`, disabled, onclick: () => native.showPicker() }, icon('calendar')),
+    native);
 }
 
 function dateControl(filter, scan, on) {
-  return h('input', { id: `f-${filter.id}`, type: 'text', placeholder: 'dd/mm/yyyy', value: scan.value ?? '', onchange: (e) => on.change(filter.id, e.target.value) });
+  return dateBox(`f-${filter.id}`, filter.label, scan.value, false, (v) => on.change(filter.id, v));
 }
 
 function dateRangeControl(flow, filter, scan, on) {
@@ -69,11 +77,10 @@ function dateRangeControl(flow, filter, scan, on) {
   const withToday = flow.rules.window?.filter === filter.id && flow.rules.window.currentDateCheckboxes;
   const end = (role, flag) => h('div', { class: 'date-end' },
     h('label', { for: `f-${filter.id}-${role}` }, role === 'from' ? 'From' : 'To'),
-    h('input', { id: `f-${filter.id}-${role}`, type: 'text', placeholder: 'dd/mm/yyyy', value: value[role] ?? '', disabled: !!value[flag],
-      onchange: (e) => on.change(filter.id, { ...value, [role]: e.target.value }) }),
+    dateBox(`f-${filter.id}-${role}`, `${filter.label} ${role === 'from' ? 'From' : 'To'}`, value[flag] ? formatDate(todayOf(new Date())) : value[role], !!value[flag], (v) => on.change(filter.id, { ...value, [role]: v })),
     withToday && h('label', { class: 'tick' },
       h('input', { id: `f-${filter.id}-${role}-today`, type: 'checkbox', checked: !!value[flag], onchange: (e) => on.change(filter.id, { ...value, [flag]: e.target.checked, [role]: e.target.checked ? '' : value[role] }) }),
-      ' current date'));
+      'Current date'));
   return h('div', { class: 'date-range' }, end('from', 'fromToday'), end('to', 'toToday'));
 }
 
@@ -85,7 +92,7 @@ function partControl(filter, part, label, scan, on, value) {
     return h('select', { id, 'aria-label': label, onchange: change },
       ...scanned.options.map((o) => h('option', { value: o.value, selected: (value[part.role] ?? scanned.value) === o.value }, o.text.trim() || 'Any')));
   }
-  return h('input', { id, type: 'text', 'aria-label': label, value: value[part.role] ?? scanned?.value ?? '', onchange: change });
+  return h('input', { id, type: 'text', 'aria-label': label, autocomplete: 'off', placeholder: label, value: value[part.role] ?? scanned?.value ?? '', onchange: change });
 }
 
 function compoundControl(filter, scan, on) {
@@ -100,12 +107,11 @@ function treeControl(flow, filter, scan, on) {
   const value = on.value(filter.id);
   if (scan.locked) return h('p', { class: 'locked' }, 'Fixed by your login: your own department.');
   const shown = value?.names?.length ? value.names.join('; ') : value?.name ?? scan.name ?? '';
-  return h('div', { class: 'tree-control' },
-    h('p', { id: `f-${filter.id}-shown`, class: shown ? 'tree-value' : 'tree-value empty' }, shown || (flow.rules.required.includes(filter.id) ? 'Not chosen' : 'All')),
-    h('div', { class: 'row' },
-      h('button', { id: `f-${filter.id}-open`, type: 'button', onclick: () => on.openTree(filter.id) }, on.treeOpen(filter.id) ? 'Close list' : 'Choose'),
-      shown && h('button', { id: `f-${filter.id}-clear`, type: 'button', class: 'quiet', onclick: () => on.change(filter.id, filter.source === 'departmentTree' ? { id: '', name: '' } : { names: [] }) }, 'Clear')),
-    on.treeOpen(filter.id) && on.renderTree(filter));
+  return h('div', { class: shown ? 'field-with-clear has-value' : 'field-with-clear' },
+    h('button', { id: `f-${filter.id}-open`, type: 'button', class: 'field-button', 'aria-haspopup': 'dialog', onclick: () => on.openTree(filter.id) },
+      h('span', { id: `f-${filter.id}-shown`, class: shown ? 'tree-value' : 'tree-value empty' }, shown || (flow.rules.required.includes(filter.id) ? 'Not chosen' : 'All')),
+      !shown && icon('chevronRight')),
+    shown && h('button', { id: `f-${filter.id}-clear`, type: 'button', class: 'icon-btn', 'aria-label': `Clear ${filter.label}`, onclick: () => on.change(filter.id, filter.source === 'departmentTree' ? { id: '', name: '' } : { names: [] }) }, icon('close')));
 }
 
 function controlFor(flow, filter, scan, on) {
@@ -122,53 +128,63 @@ function filterCard(flow, filter, scan, loggedIn, on, note) {
   const required = flow.rules.required.includes(filter.id);
   const warn = filter.warnWhen && (filter.warnWhen.state === 'always' || (filter.warnWhen.state === 'loggedIn') === loggedIn) ? filter.warnWhen.text : null;
   const parents = (filter.dependsOn ?? []).map((id) => flow.filters.find((f) => f.id === id)?.label).filter(Boolean);
+  const count = scan.options?.length;
   return h('div', { class: 'filter', 'data-filter': filter.id },
-    h('label', { class: 'filter-label', for: `f-${filter.id}` }, filter.label, required && h('span', { class: 'req', title: 'Required' }, ' *')),
+    h('label', { class: 'filter-label', for: `f-${filter.id}` }, filter.label.replace(/^(Select|By) /, ''), required && h('span', { class: 'req', title: 'Required' }, ' *')),
     controlFor(flow, filter, scan, on),
-    parents.length > 0 && h('p', { class: 'hint' }, `↳ depends on ${parents.join(' and ')}`),
-    scan.options && !scan.locked && h('p', { class: 'hint', 'data-count': filter.id }, `${scan.options.length} items`),
+    scan.options && !scan.locked && h('p', { class: 'hint', 'data-count': filter.id },
+      count === 0 && parents.length ? `Choose ${parents.join(' and ')} first` : `${count.toLocaleString('en-US')} items`),
     note && h('p', { id: 'window-span', class: 'hint' }, note),
-    warn && notice('warn', warn));
+    warn && h('p', { class: 'hint warn' }, warn));
 }
 
 /** Screen shown when the tab isn't on a report page. */
 export function renderNoPage(state) {
-  return h('section', { class: 'card', id: 'no-page' },
-    h('h2', {}, state.onPortal ? 'Open a report page' : 'Open e-GP, then a report page'),
-    h('p', {}, 'The filters appear here when one of these pages is in front.'),
+  return h('section', { id: 'no-page' },
+    h('div', { class: 'empty-state' },
+      h('h2', {}, state.onPortal ? 'Open a report page' : 'Open e-GP, then a report page'),
+      h('p', {}, 'The filters appear here when this tab is on one of these pages.')),
     h('ol', { class: 'flows' }, ...state.flows.map((f) => h('li', {},
-      h('b', {}, `Flow ${f.number} · ${f.name}`),
-      f.login === 'required' && h('span', { class: 'tag' }, 'needs a login'),
-      h('br'), h('span', { class: 'hint' }, f.route.join(' → '))))));
+      h('div', { class: 'flow-title' }, `Flow ${f.number} · ${f.name}`, f.login === 'required' && h('span', { class: 'tag' }, 'needs a login')),
+      h('p', { class: 'hint' }, f.route.join(' → '))))));
+}
+
+/** True when the filter differs from where it started, so Clear all has something to do. */
+export function isChanged(filter, value) {
+  if (filter.default !== undefined) return value !== filter.default;
+  if (filter.allMeansLoop) return value !== '__all__';
+  return isSet(filter, value);
 }
 
 /** Screen for a report page. */
 export function renderFlow(state, on, now = new Date()) {
   const { flow, page } = state;
-  const header = h('section', { class: 'card', id: 'flow-head' },
-    h('h2', { id: 'flow-name' }, `Flow ${flow.number} · ${flow.name}`),
-    h('p', { id: 'login-state', class: 'hint' }, page.loggedIn ? 'Logged in' : 'Logged out'),
-    page.verdict.outcome === 'OK'
-      ? notice('ok', 'Page matches this flow.')
-      : page.verdict.outcome === 'LOGIN_WALL'
-        ? notice('bad', `${flow.name} needs a login. Log in, then open this page again.`)
-        : notice('bad', `This page doesn't match what the tool expects: ${page.verdict.reason}`));
+  const header = h('section', { class: 'flow-head', id: 'flow-head' },
+    h('p', { class: 'overline' }, `FLOW ${flow.number}`),
+    h('h2', { id: 'flow-name' }, flow.name),
+    h('div', { class: 'meta' },
+      h('span', { id: 'login-state', class: page.loggedIn ? 'chip on' : 'chip' }, page.loggedIn ? 'Logged in' : 'Logged out'),
+      page.verdict.outcome === 'OK' && h('span', { id: 'page-match', class: 'matched' }, icon('check'), 'Page recognised')));
 
-  if (page.verdict.outcome === 'LOGIN_WALL') return h('div', {}, header);
+  if (page.verdict.outcome === 'LOGIN_WALL') {
+    return h('div', { id: 'flow-view' }, header, banner('warn', 'Log in, then open this page again.', `${flow.name} needs a login`));
+  }
+  const pageProblem = page.verdict.outcome !== 'OK' && banner('bad', page.verdict.reason, "This page isn't what the tool expects");
 
   // D37: at the very beginning, before any filter. The choice is the user's.
   const warning = flow.login.startWarning;
   if (warning && (warning.state === 'loggedOut') === !page.loggedIn && !on.warningAccepted()) {
-    return h('div', {}, header,
-      h('section', { class: 'card warn-card', id: 'start-warning' },
+    return h('div', { id: 'flow-view' }, header, pageProblem,
+      h('section', { class: 'warn-card', id: 'start-warning' },
+        h('div', { class: 'warn-title' }, icon('warning'), 'Before you continue'),
         h('p', {}, warning.text),
-        h('button', { id: 'warning-proceed', type: 'button', class: 'primary', onclick: () => on.acceptWarning() }, 'Proceed')));
+        h('div', { class: 'row' }, h('button', { id: 'warning-proceed', type: 'button', class: 'btn filled', onclick: () => on.acceptWarning() }, 'Proceed'))));
   }
 
   const scans = Object.fromEntries(page.filters.map((s) => [s.id, s]));
   const panelFilters = flow.filters.filter((f) => f.panel);
   const vanished = panelFilters.filter((f) => scans[f.id]?.vanished);
-  const shown = panelFilters.filter((f) => !scans[f.id]?.vanished);
+  const present = panelFilters.filter((f) => !scans[f.id]?.vanished);
   const values = Object.fromEntries(panelFilters.map((f) => [f.id, on.value(f.id)]));
   const today = todayOf(now);
   const result = evaluateStart(flow, values, { loggedIn: page.loggedIn, today });
@@ -178,14 +194,30 @@ export function renderFlow(state, on, now = new Date()) {
   const windowNote = win?.from && win.to && win.from <= win.to
     ? `Window: ${formatDate(win.from)} to ${formatDate(win.to)}, ${spanText(spanBetween(win.from, win.to))}` : null;
 
-  return h('div', {}, header,
-    h('section', { class: 'card', id: 'filters' },
-      ...shown.map((f) => filterCard(flow, f, scans[f.id], page.loggedIn, on, f.id === windowFilter && windowNote))),
-    h('section', { class: 'card', id: 'plan' },
+  const card = (f) => filterCard(flow, f, scans[f.id], page.loggedIn, on, f.id === windowFilter && windowNote);
+  const isMain = (f) => flow.rules.required.includes(f.id) || f.id === windowFilter;
+  const main = present.filter(isMain);
+  const others = present.filter((f) => !isMain(f));
+  const fold = others.length > FOLD_ABOVE;
+  const changed = present.filter((f) => !scans[f.id]?.locked && isChanged(f, values[f.id]) && !(f.id === windowFilter && values[f.id]?.fromToday && values[f.id]?.toToday));
+  const changedOthers = others.filter((f) => changed.includes(f)).length;
+
+  return h('div', { id: 'flow-view' }, header, pageProblem,
+    h('section', { class: 'section', id: 'filters' },
+      h('div', { class: 'section-head' },
+        h('h3', {}, 'Filters'),
+        changed.length > 0 && h('button', { id: 'clear-all', type: 'button', class: 'btn text', onclick: () => on.clearAll(changed) }, 'Clear all')),
+      ...main.map(card),
+      !fold && others.map(card)),
+    fold && h('details', { class: 'section', id: 'more-filters', open: on.moreOpen() },
+      // Noted at the click: Chrome reports the fold's change late, and a redraw in between would shut it.
+      h('summary', { onclick: (e) => on.setMoreOpen(!e.currentTarget.parentElement.open) }, icon('chevronRight'), 'More filters', changedOthers > 0 && h('span', { class: 'count', title: 'Filters set here' }, String(changedOthers))),
+      ...others.map(card)),
+    h('section', { class: 'action-bar', id: 'plan' },
       reasons.length
         ? h('ul', { id: 'start-reasons', class: 'reasons' }, ...reasons.map((r) => h('li', {}, r)))
-        : notice('ok', 'Filters are ready.'),
-      result.exemptionUsed && notice('note', `Department and date aren't needed for this search, while it stays within ${result.maxRows.toLocaleString('en-US')} rows.`),
-      h('button', { id: 'start', type: 'button', class: 'primary', disabled: true }, 'Start'),
+        : h('p', { class: 'ready' }, icon('check'), 'Filters are ready.'),
+      result.exemptionUsed && h('p', { class: 'exempt' }, `Department and date aren't needed for this search, while it stays within ${result.maxRows.toLocaleString('en-US')} rows.`),
+      h('button', { id: 'start', type: 'button', class: 'btn filled wide', disabled: true }, 'Start'),
       h('p', { class: 'hint' }, 'Collection arrives in a later stage of the build.')));
 }

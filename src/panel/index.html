@@ -7,16 +7,16 @@
   <link rel="stylesheet" href="panel.css">
 </head>
 <body>
-  <header class="bar">
+  <div id="progress" class="progress" hidden></div>
+  <header class="appbar">
+    <img src="../icons/icon.svg" alt="" width="24" height="24">
     <h1>eGP Extractor</h1>
-    <span id="status" class="pill" data-state="pending" role="status" aria-live="polite">Connecting…</span>
+    <span id="version" class="version">v—</span>
+    <span id="status" class="status" data-state="pending" role="status" aria-live="polite">Connecting…</span>
   </header>
 
   <main id="screen"></main>
-
-  <footer class="foot">
-    <span id="version">v—</span>
-  </footer>
+  <div id="sheet" hidden></div>
 
   <script type="module" src="panel.js"></script>
 </body>

@@ -3,6 +3,7 @@
 
 export const MSG = Object.freeze({
   PING: 'sw/ping',
+  PANEL_PORT: 'panel-port',
   PAGE_STATE: 'sw/page-state',
   PAGE_APPLY: 'sw/page-apply',
   LOOKUP: 'sw/lookup',

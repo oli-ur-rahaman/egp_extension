@@ -494,11 +494,13 @@ Ten phases. Each has a gate: it is not done until both the automated tests pass 
 
 ### 5.2 Visual language
 
-- **Type:** `Inter`, system fallback. 13px base (side panels are narrow), 11px meta, 15px headings. Tabular numerals for all counters so digits don't jitter.
+**Replaced by D44 where they differ; `src/panel/panel.css` holds the current tokens.**
+
+- **Type:** system font (Segoe UI on Windows). 13px base (side panels are narrow), 11-12px meta, 20px flow name. Tabular numerals for all counters so digits don't jitter.
 - **Density:** 8px spacing grid. Comfortable, not cramped — a 400px panel with air beats a dense one.
-- **Radius:** 8px cards, 6px controls.
-- **Colour:** near-neutral base; a single indigo accent; semantic colours only for state.
-  - `--ok #16a34a` · `--warn #d97706` · `--error #dc2626` · `--accent #4f46e5` · `--muted` greys
+- **Radius:** 8px controls, 12px messages, pill-shaped buttons.
+- **Colour:** near-neutral base; one blue for what can be acted on; other colours only for state.
+  - `--primary #0b57d0` · `--ok #146c2e` · `--warn #8a5300` · `--error #b3261e` · `--muted #5f6368`
 - **Dark mode:** full parity via CSS custom properties and `prefers-color-scheme`. Not an afterthought.
 - **Motion:** 150ms ease-out on state change only. No spinners that spin forever — indeterminate work shows a live activity line instead.
 
@@ -835,6 +837,11 @@ egp_ext/
 | D40 | **Officials' details are collected:** name, designation, address and contact details of inviting and authorised officials, on Flows 2, 3, 4 and 5. They are public official documents (owner). **Reverses D17 and Claude's "personal" exclusions.** Beneficial Ownership stays out (D19). Test files in this public repo remain cleaned; that is about the repo, not the output | Owner, 2026-11-07 |
 | D41 | **What a user can't see doesn't exist for this tool.** Content hidden on a page isn't read, listed or collected, and needs no question to the owner. Revises nothing already decided; it settles E23 | Owner, 2026-11-07 |
 | D42 | **"All" is the first item of each dropdown,** not a separate checkbox beside it as M3-T04 says. Same meaning, fewer controls; it matches how the owner described Status and Tender Type. **Deviation from the plan, for the owner's decision.** A required filter shows "Choose…" instead | Claude, 2026-11-07 |
+| D47 | **A run works out of the user's way:** it never brings a tab to the front or takes focus, so the user keeps working in other tabs. It's owned by the service worker, not the panel, so closing the panel or moving tabs doesn't touch it. Progress shows on the toolbar icon. To build in B4 and B5 | Owner, 2026-11-07 |
+| D48 | **Closing a running tab or window warns first,** with Chrome's own "Leave site?" box. **Limit to test in B4:** Chrome shows that box only if the user has clicked inside that page, and clicks in the side panel don't count. Whatever happens, progress is already saved, and the run can be resumed | Owner, 2026-11-07 |
+| D46 | **The tab shows it has the panel:** the page's tab icon becomes the extension's icon, and the toolbar icon shows ON for that tab. It stays while the user is on another tab, and goes when the panel is closed. Only e-GP tabs can show it. The page title isn't changed, because page checks read it | Owner, 2026-11-07 |
+| D45 | **The panel remembers its state per tab.** Chrome closes a tab's panel when the user moves to another tab, so choices, date ticks, the warning's answer, open lists and scroll position are saved and restored. A reloaded page is a clean page, so its filters start clean; the warning's answer stays | Owner, 2026-11-07 |
+| D44 | **The panel follows Google and Microsoft practice** (owner: "world grade"). Replaces §5.2's indigo and Inter, and departs from §5.3's layout, **a deviation the owner asked for:** system font; blue for what can be acted on; one main group of required filters with the rest folded under More filters, showing how many are set; Start always in view at the bottom; lists over 12 items can be searched; Department and Category pickers fill the panel, with children on a tinted background; dates typed or picked from a calendar; Clear all | Owner, 2026-11-07 |
 | D43 | **The side panel belongs to the tab where the icon was clicked.** It's off on every other tab, including new ones, and stays on that tab as the user moves between pages in it. A detail page opened in a new tab has no panel | Owner, 2026-11-07 |
 | D36 | **`docs/BUILD_PLAN.md` governs the build:** stages with gates, not dates. Replaces the Proposal's 10-week milestones and payment dates, and the plan's build order | Owner, 2026-11-06, under D28 |
 | D34 | **Order of work: finish the logged-in study, then write a full build plan, then build.** Departs from the plan's schedule: the **M1 demo of Thu 12 Nov is at risk** | Owner, 2026-11-06, under D28 |
