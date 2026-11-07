@@ -18,21 +18,29 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
   const box = h('div', { id: 'plan-estimate', class: 'estimate' });
   const go = h('button', { id: 'run-start', type: 'button', class: 'btn filled' }, 'Start collecting');
   const agree = h('input', { id: 'plan-agree', type: 'checkbox' });
-  const agreeLine = h('label', { class: 'cluster', hidden: true }, agree, h('span', {}, 'I understand this will take a long time.'));
+  const agreeWords = h('span', {});
+  const agreeLine = h('label', { id: 'plan-agree-line', class: 'cluster agree', hidden: true }, agree, agreeWords);
+  let mustAgree = false;
 
   function refresh() {
     const listRequests = report ? plan.offices.length : plan.totalPages;
     const detailRequests = ticked.size ? plan.rows : 0;
     const time = estimate({ pacing: plan.pacing, listRequests, detailRequests });
-    box.replaceChildren(
+    // Filtered: a condition that's false would otherwise print the word.
+    box.replaceChildren(...[
       h('b', {}, time.text),
       h('span', { class: 'parts' }, report ? `One report for each of ${n(plan.offices.length)} offices` : ticked.size ? `List ${time.listText}, detail pages ${time.detailText}` : `List only, ${time.listText}`),
       time.level !== 'ok' && h('p', { class: 'hint warn' }, time.level === 'unrealistic'
         ? 'Too long for one sitting. To shorten it: collect the list only, narrow the dates, or choose one Procuring Entity.'
         : 'Over 6 hours. To shorten it: collect the list only, narrow the dates, or choose one Procuring Entity. Progress is saved if you stop.'),
-    );
-    agreeLine.hidden = time.level !== 'unrealistic';
-    go.disabled = tooBig || empty || (time.level === 'unrealistic' && !agree.checked);
+    ].filter(Boolean));
+    mustAgree = time.level === 'unrealistic';
+    agreeLine.hidden = !mustAgree;
+    agreeWords.textContent = `I understand this will take ${time.text.replace(/^About /, 'about ')}. Tick to start.`;
+    if (!mustAgree) agree.checked = false;
+    agreeLine.classList.remove('asked');
+    // Start stays pressable when only the tick is missing, and says what's missing: a greyed button explains nothing.
+    go.disabled = tooBig || empty;
   }
   agree.addEventListener('change', refresh);
 
@@ -78,6 +86,11 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
 
   refresh();
   go.addEventListener('click', () => {
+    if (mustAgree && !agree.checked) {
+      agreeLine.classList.add('asked');
+      agree.focus({ preventScroll: true });
+      return;
+    }
     go.disabled = true;
     const chosen = [...ticked];
     const clusterIds = detail ? detail.clusters.map((c) => c.id).filter((id) => detail.fields.some((f) => f.cluster === id && ticked.has(f.id))) : [];

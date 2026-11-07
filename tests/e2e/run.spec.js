@@ -357,6 +357,26 @@ test('Flow 1, logged in: one report per office, with totals marked', async () =>
   } finally { await t.close(); }
 });
 
+test('a very long run: Start says the tick is what\'s missing, and starts once it\'s given (D27)', async () => {
+  const t = await setup({ rows: 30000, paceMs: 200 });
+  try {
+    await flow2Plan(t);
+    await expect(t.panel.locator('#plan-estimate')).not.toContainText('false');
+    const go = t.panel.locator('#run-start');
+    await expect(t.panel.locator('#plan-agree-line')).toBeHidden();
+    await cluster(t, 'identity').check();
+    await expect(t.panel.locator('#plan-estimate')).toContainText('Too long for one sitting');
+    await expect(t.panel.locator('#plan-agree-line')).toBeVisible();
+    await expect(go).toBeEnabled();
+    await go.click();
+    await expect(t.panel.locator('#plan-agree-line')).toHaveClass(/asked/);
+    await expect(t.panel.locator('#plan-count')).toBeVisible();
+    await t.panel.locator('#plan-agree').check();
+    await go.click();
+    await expect(state(t)).toHaveText('Collecting');
+  } finally { await t.close(); }
+}, 90000);
+
 test('a contractor search over the limit is refused, with the reason (D22)', async () => {
   const t = await setup({ rows: 6000 });
   try {

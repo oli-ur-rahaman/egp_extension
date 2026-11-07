@@ -273,3 +273,5 @@ label.node input { margin-top: 2px; flex: none; }
 .cluster-field { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; line-height: 18px; cursor: pointer; }
 .cluster-field input { margin-top: 1px; flex: none; }
 .cluster-field small { display: block; color: var(--muted); font-size: 11px; }
+.plan-end .agree { margin-top: 8px; padding: 6px 8px; border-radius: 8px; font-size: 12px; }
+.plan-end .agree.asked { background: #fce8e6; color: #b3261e; font-weight: 600; outline: 1px solid #b3261e; }
