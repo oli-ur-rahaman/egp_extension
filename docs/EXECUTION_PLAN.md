@@ -683,7 +683,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 **Stages:** APP, Tender, Contract, Experience, in any combination, not necessarily in sequence. **Palette:** stage opens to groups, group opens to fields, all unticked. **Time:** an estimate always shows. When it's excessive, the tool says to reduce the IDs and suggests a batch size (Mode C: says to narrow the filters).
 
-**The gap this design must close, found 2026-11-07:** the portal shows no way forward from an APP package to its tender. Flow 3's list and all 6 saved package pages carry no Tender ID, no status and no tender link; Flows 2 and 4 have no APP or package filter. So Modes B and C can't yet reach Tender, Contract or Experience, and "leave out cancelled and re-tendered" can't be read from an APP row. **Routes to test, in order:** (1) the header quick search (`#txtKeyword`) and Flow 4's Keyword, searched by Package No.; (2) if not, search Flow 2 in that department and open every notice to match App ID and Package No., which is correct but slow. A package with several tenders keeps them all.
+**The gap this design must close, found 2026-11-07:** the portal shows no way forward from an APP package to its tender. Flow 3's list and all 6 saved package pages carry no Tender ID, no status and no tender link; Flows 2 and 4 have no APP or package filter. So Modes B and C can't yet reach Tender, Contract or Experience, and "leave out cancelled and re-tendered" can't be read from an APP row. **Route, the owner's (D61):** from the APP row, apply department, Procuring Entity, nature and method on Flow 2, then find the work's name in that table; the package's expected advertisement date can narrow the dates further. **Claude's added step:** open the notice and confirm its App ID and Package No., so a similar name can't give a wrong match. Before building, test on live data: how often it finds the tender, and how many notices it opens. Also try the header quick search (`#txtKeyword`) by Package No., which would be quicker if it works. Logged out, LTM tenders aren't listed on Flow 2, so they can't be found this way. **Study types (D61):** APP IDs, Tender IDs, Project Name, Procuring Entity + Financial Year, Procuring Entity + Budget Type, Contract Awarded To.
 
 **How a tender is traced.** Each stage is an ordinary search with only the ID filled in, then the detail page of what it finds:
 
@@ -691,20 +691,12 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 |---|---|---|---|
 | 1. Tender | Flow 2, `tenderId` | Notice page | The notice gives App ID and Package No. Logged out, LTM tenders aren't listed on Flow 2 (insight 47) |
 | 2. APP | Flow 3, `appId` from stage 1, **with Financial Year blank** | The package whose Package No. matches | One APP holds many packages, so matching is by Package No. The page preselects the year (insight 70) |
-| 3. Contract | Flow 4, `tenderId` | Contract page | Can return more than one contract; each is kept (D39). Works for LTM logged out (insight 56) |
+| 3. Contract | Flow 4, `tenderId` | Contract page | One contractor per tender, per the owner; a JVCA has at most 3 partners (D62). Works for LTM logged out (insight 56) |
 | 4. Experience | Flow 5, `tenderId` | Experience record | Often none, especially for recent contracts (insight 71). Manual records have no Tender ID, so they can't be found this way (insight 76) |
 
 **A stage with nothing is an answer, not a failure:** a tender not yet awarded has no contract. Each stage records Found, Not found or Refused for each ID, so the file never leaves the user guessing.
 
-**Output (proposed, awaiting the owner):** one workbook. **Departs from D26's two sheets.**
-
-| Sheet | Holds |
-|---|---|
-| About this lookup | IDs asked for, found and not found; login state; time |
-| Journey | One row per Tender ID: found at each stage, Package No., contract count, contractor, contract value, work status |
-| Tender, APP, Contract, Experience | One sheet per stage, with the same columns as that flow's normal Data sheet. Tender ID in every row, so sheets join |
-
-For Mode B, the same About sheet and one sheet of packages.
+**Output (D62, decided by the owner):** the usual two sheets, About and Data. **One row per Tender ID, all in one sheet,** with a column group per stage, so nothing needs relating across sheets. About lists IDs asked for, found and not found. Each stage has a Found column. One tender has one contractor; JVCA partners (at most 3) stay in that row. Should a tender ever show two contracts, both are kept in the cell and the row is flagged. For a package with no tender yet, the row is identified by Package ID.
 
 **Time (planning figures, D27):** Mode A takes about 8 requests per tender, about 35 seconds, so 100 tenders take about 1 hour, up to 1.5 with slow-downs. Mode B takes 1 request per APP plus 1 per package. A saved sample held about 3 packages per APP, but a large APP holds many more, so the real count is taken first, as in D27.
 
@@ -724,7 +716,7 @@ For Mode B, the same About sheet and one sheet of packages.
 | M15-T03 | Engine: a queue of stages per ID, each saved, resumable, and stopping as a run does on a block or lost session | 4 h |
 | M15-T04 | Mode A linking: App ID and Package No. from the notice; package matching; several contracts per tender | 3 h |
 | M15-T05 | Mode B: all packages of each APP, with paging | 1 h |
-| M15-T06 | Workbook: About, Journey and stage sheets; found and not found per ID | 4 h |
+| M15-T06 | Workbook: About and Data, one row per Tender ID (D62); found and not found per ID | 4 h |
 | M15-T07 | Fake portal answers by ID, including no contract, no experience, several contracts, refused and unknown IDs | 2 h |
 
 - **Automated:** M15-AT1 input checks: mixed separators, repeats, non-numbers, 101 IDs · M15-AT2 a tender at every stage of life (notice only, contract, experience, cancelled) gives the right Found and Not found · M15-AT3 stopping and resuming mid-journey loses and repeats nothing · M15-AT4 a package is matched by Package No., never by position.
@@ -734,7 +726,7 @@ For Mode B, the same About sheet and one sheet of packages.
   - [ ] M15-MC3 A logged-out and a logged-in lookup of the same LTM tender are compared
 - **Exit:** the above pass, and the owner has decided the questions below.
 
-**Open questions for the owner:** the workbook's shape above; whether the limit of 100 IDs stays; whether a Company Unique ID should be a third input (D24); what to do if the APP-to-tender route is too slow.
+**Open questions for the owner:** whether a Company Unique ID should be a further input (D24); what to do if the APP-to-tender route is too slow.
 
 ---
 
@@ -944,6 +936,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B5, B6, B9 live; M3, M10, M13; M15 | **First real run passed (owner):** Flow 2 logged out, 4 rows, no warnings, the file opened in Excel, one tender checked and matched. Owner's requests done: Start presses the page's Search (D53), files are real `.xls` (D54), groups open to single fields (D55). **M15 Lookup by ID designed, not built (D56).** All tests pass on the fake portal. | `.xls` not yet opened in Excel. Live next: the new build, Flows 3, 4, 5, then logged in. Owner to answer M15's questions. |
 | 2026-11-07 | 1 | M13 | **Owner: Start collecting stayed unclickable after ticking fields.** Reproduced on the fake portal with a large search: ticking pushed the estimate past 24 hours, and D27's "I understand" tick locked the button with nothing saying why. Start now stays pressable and asks for the tick. A small search never had this. Also fixed: the word "false" printed in the estimate box. | **Owner's search size not yet confirmed, so this is the likely cause, not a proven one.** M15's questions wait for the owner, who will write them in detail. |
 | 2026-11-07 | 1 | M15, D57–D60 | **Owner's next design recorded:** M15 redesigned with stages and fields, a Detailed report on Flow 3, new required filters, and a local store. **Nothing built or applied yet.** Found: no link from an APP package to its tender on saved pages, which blocks part of the design; a conflict between the new Department rule and the contractor search. Owner confirmed the last Flow 2 test was good. | Awaiting the owner's answers. Live checks of Flows 3, 4, 5 and logged in are still not done. |
+| 2026-11-07 | 1 | M15, D58, D61–D63 | **Owner answered:** contractor filters count as first degree on Flows 4 and 5; one row per Tender ID, all in one sheet; presets and history wanted; no fixed ID limit. Owner gave six study types and a route from APP to tender. All recorded, none built. | Live checks of Flows 3, 4, 5 and logged in are next, then the demo. Not everything is finished; D49 lists what isn't built. |
 
 **Milestone record**
 
@@ -1000,6 +993,8 @@ Append one line per working block. Demo and feedback dates matter contractually 
 **Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
 
 **Open owner decisions:** Q7 secret code, by Week 9.
+
+**After the client demo, in order:** the remaining live checks; required filters (D58); presets and history (D60, D63); then M15 (D57, D59, D61, D62).
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 
