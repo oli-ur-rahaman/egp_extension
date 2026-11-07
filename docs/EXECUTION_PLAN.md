@@ -673,14 +673,17 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 **Purpose:** today the tool starts from filters and finds many rows. This starts from IDs the user already holds and fetches exactly those. **Outside the ToR and Proposal, by the owner's decision.**
 
-**Two modes, on a new "Lookup by ID" entry in the panel:**
+**Owner's design (2026-11-07, D57), which replaces the two fixed modes first proposed here:**
 
-| Mode | The user gives | The tool returns |
+| Mode | The user gives | Then chooses |
 |---|---|---|
-| **A. Tender journey** | 1 to 100 Tender IDs | Each tender's whole history: APP, tender notice, contract, experience |
-| **B. APP details** | 1 to 100 APP IDs | Every package under each APP, with its details |
+| **A. Tender IDs** | One or many Tender IDs | Stages, then groups and fields |
+| **B. APP IDs** | One or many APP IDs; an APP's several rows are all taken | All entries, or leave out cancelled and re-tendered; then stages; then groups and fields |
+| **C. Detailed report (D59)** | A tick on Flow 3's filter page, on its normal search | The same as B, for every row found |
 
-**Input (both modes):** one box. Paste from Excel, or type, separated by new lines, commas or spaces. Repeats are removed. Anything not a number is named and refused. More than 100 is refused with the count. The panel shows how many IDs it accepted and the time estimate before Start.
+**Stages:** APP, Tender, Contract, Experience, in any combination, not necessarily in sequence. **Palette:** stage opens to groups, group opens to fields, all unticked. **Time:** an estimate always shows. When it's excessive, the tool says to reduce the IDs and suggests a batch size (Mode C: says to narrow the filters).
+
+**The gap this design must close, found 2026-11-07:** the portal shows no way forward from an APP package to its tender. Flow 3's list and all 6 saved package pages carry no Tender ID, no status and no tender link; Flows 2 and 4 have no APP or package filter. So Modes B and C can't yet reach Tender, Contract or Experience, and "leave out cancelled and re-tendered" can't be read from an APP row. **Routes to test, in order:** (1) the header quick search (`#txtKeyword`) and Flow 4's Keyword, searched by Package No.; (2) if not, search Flow 2 in that department and open every notice to match App ID and Package No., which is correct but slow. A package with several tenders keeps them all.
 
 **How a tender is traced.** Each stage is an ordinary search with only the ID filled in, then the detail page of what it finds:
 
@@ -692,8 +695,6 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 | 4. Experience | Flow 5, `tenderId` | Experience record | Often none, especially for recent contracts (insight 71). Manual records have no Tender ID, so they can't be found this way (insight 76) |
 
 **A stage with nothing is an answer, not a failure:** a tender not yet awarded has no contract. Each stage records Found, Not found or Refused for each ID, so the file never leaves the user guessing.
-
-**Why Mode B stops at details:** Flow 2 has no APP or Package filter (its filter list, `flow-2.md`), so the portal gives no direct way from a plan forward to its tender. Going forward would need a guess by reference or title, which could give wrong matches. Mode A goes the other way, from tender back to its plan, and that link is on the notice.
 
 **Output (proposed, awaiting the owner):** one workbook. **Departs from D26's two sheets.**
 
@@ -733,7 +734,7 @@ For Mode B, the same About sheet and one sheet of packages.
   - [ ] M15-MC3 A logged-out and a logged-in lookup of the same LTM tender are compared
 - **Exit:** the above pass, and the owner has decided the questions below.
 
-**Open questions for the owner:** the workbook's shape above; all fields or a choice of fields per stage; whether a Company Unique ID should be a third input, for a contractor's whole journey (D24).
+**Open questions for the owner:** the workbook's shape above; whether the limit of 100 IDs stays; whether a Company Unique ID should be a third input (D24); what to do if the APP-to-tender route is too slow.
 
 ---
 
@@ -942,6 +943,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | M5 | **Correction:** the commit above went out with one browser test failing, because `verify` doesn't run the browser tests. The test found a real bug: reloading the e-GP page mid-run paused the run as if the tab had gone. Fixed: it asks again. | From here, browser tests run before each commit that touches a run. |
 | 2026-11-07 | 1 | B5, B6, B9 live; M3, M10, M13; M15 | **First real run passed (owner):** Flow 2 logged out, 4 rows, no warnings, the file opened in Excel, one tender checked and matched. Owner's requests done: Start presses the page's Search (D53), files are real `.xls` (D54), groups open to single fields (D55). **M15 Lookup by ID designed, not built (D56).** All tests pass on the fake portal. | `.xls` not yet opened in Excel. Live next: the new build, Flows 3, 4, 5, then logged in. Owner to answer M15's questions. |
 | 2026-11-07 | 1 | M13 | **Owner: Start collecting stayed unclickable after ticking fields.** Reproduced on the fake portal with a large search: ticking pushed the estimate past 24 hours, and D27's "I understand" tick locked the button with nothing saying why. Start now stays pressable and asks for the tick. A small search never had this. Also fixed: the word "false" printed in the estimate box. | **Owner's search size not yet confirmed, so this is the likely cause, not a proven one.** M15's questions wait for the owner, who will write them in detail. |
+| 2026-11-07 | 1 | M15, D57–D60 | **Owner's next design recorded:** M15 redesigned with stages and fields, a Detailed report on Flow 3, new required filters, and a local store. **Nothing built or applied yet.** Found: no link from an APP package to its tender on saved pages, which blocks part of the design; a conflict between the new Department rule and the contractor search. Owner confirmed the last Flow 2 test was good. | Awaiting the owner's answers. Live checks of Flows 3, 4, 5 and logged in are still not done. |
 
 **Milestone record**
 
