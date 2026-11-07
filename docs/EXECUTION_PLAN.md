@@ -865,6 +865,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B3: M3, M13-T01–T03 | **Stage B3 built, on the fake portal.** Side panel; flow detected from the page's address; filters read live from the page; changes written to the real page, then re-read; Department and Category pickers; login state; Flow 2 warning (D37); required rules with named reasons; a vanished filter is named. M1-MC5 passed by the owner. 258 unit and 10 browser tests. **D42: All as the first dropdown item, not a checkbox.** Start stays off: collection is B5. | **Not yet proven live:** page-script cascades. **B3's gate: the owner's live demo on all five pages,** then RFQ and framework captures while logged in. |
 | 2026-11-07 | 1 | B3 | Owner loaded the extension in the controlled Chrome. **D43: the panel now belongs to the tab where the icon was clicked** (owner's request). | Owner confirms on the real browser, then the live demo. |
 | 2026-11-07 | 1 | — | End of day on the home PC. All work pushed. | Resume at §13: B3's live demo, Step 2. |
+| 2026-11-08 | 1 | B3, D43 | **Demo Step 2 passed on the real browser (owner):** the panel opens on its tab, disappears on a new tab, returns on going back, and lists the five report pages on the homepage. | Next: Step 3, live logged out. |
 
 **Milestone record**
 
@@ -887,7 +888,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Start tomorrow here: B3's live demo, Step 2.** The owner has loaded the extension on the home PC. Nothing below has been checked live yet. Give the owner numbered clicks for one step, then wait for "done".
 
-- **Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
+- **[x] Done 2026-11-08. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
 - **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
 - **Step 4, live demo, logged in:** `npm run recon -- stop` first, then the owner logs in. Flow 1 (two filters, All offices), Flow 2 (no warning, Department fixed). **Check whether a logged-in Flow 4 or 5 lets the user pick another department** (`departmentWhenLoggedIn: notChecked` in the profile; D35 depends on it). Capture RFQ and framework notices for the test bed while logged in.
 - **Then:** B3's gate passes; start stage B4 (engine).
