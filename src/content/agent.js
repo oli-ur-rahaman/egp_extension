@@ -147,6 +147,12 @@ if (!state.__egpAgent) {
       const doc = readHtml(answer.text);
       return { loggedIn: !!doc.querySelector(profile.pageStates.logoutLink) && !doc.querySelector(profile.pageStates.loginForm) };
     },
+    // D53: the page shows the same search the user is about to run. After this reply: a page's own message box would hold everything up.
+    [MSG.AGENT_SEARCH]: ({ flow }) => {
+      const button = flow.page.searchButton ? document.querySelector(flow.page.searchButton) : null;
+      if (button) setTimeout(() => /** @type {HTMLElement} */ (button).click(), 0);
+      return { pressed: !!button };
+    },
     // D48: closing a tab that's running asks first. Chrome only asks if the user has clicked inside the page.
     [MSG.AGENT_GUARD]: ({ on }) => {
       if (on && !guard) {

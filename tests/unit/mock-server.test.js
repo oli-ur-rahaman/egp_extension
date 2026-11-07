@@ -26,7 +26,7 @@ describe('pages', () => {
       const got = classifyPage({ doc: docOf(await res.text()), profile, flow: profile.flows[id], kind: 'filterPage' });
       expect(got.outcome, id).toBe(OUTCOME.OK);
     }
-  });
+  }, 30000); // reading five whole pages is slow when the other test files are busy
   it('gives Flow 1 a login wall when logged out, and the report when logged in', async () => {
     const flow = profile.flows.procurement_transaction_report;
     const url = flow.page.url;

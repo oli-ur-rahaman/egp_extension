@@ -1,7 +1,7 @@
 {
   "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
   "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
-  "profileVersion": "1.1.0",
+  "profileVersion": "1.2.0",
   "capturedAt": "2026-11-06",
   "pageStates": {
     "loginForm": "#txtPassword",
@@ -137,6 +137,7 @@
       "page": {
         "url": "/resources/common/AllTenders.jsp?h=t",
         "title": "Advanced Search for eTenders/eProposals",
+        "searchButton": "#btnSearch",
         "route": ["Home", "Search dropdown: eTenders", "Advanced Search"],
         "identity": ["#cmbProcMethod", "#pubDtFrm", "#viewType"]
       },
@@ -343,6 +344,7 @@
       "page": {
         "url": "/resources/common/AdvAPPSearch.jsp",
         "title": "Advanced Search for Annual Procurement Plan",
+        "searchButton": "#btnSearch",
         "route": ["Home", "Search dropdown: Annual Procurement Plans", "Advanced Search"],
         "identity": ["#cmbYear", "#txtPkgNo", "#cmbOperator"]
       },
@@ -508,6 +510,7 @@
       "page": {
         "url": "/resources/common/AdvSearchNOA.jsp",
         "title": "Advanced Search for eContracts",
+        "searchButton": "#btnSearch",
         "route": ["Home", "Search dropdown: eContracts", "Advanced Search"],
         "identity": ["#contractSigneDateFrom", "#txtContractAwardTo"]
       },
@@ -655,6 +658,7 @@
       "page": {
         "url": "/resources/common/SearcheCMS.jsp?v=advSearch",
         "title": "eExperience",
+        "searchButton": "#btnSearch",
         "route": ["Home", "Search dropdown: eExperience", "Advanced Search"],
         "identity": ["#packageType", "#cmbWorkStatus", "#txtTendererId"]
       },

@@ -50,6 +50,7 @@ export function columnsFor(flow, run) {
     for (const [header, key, width] of basics) columns.push({ group: 'list', header, key, type: 'text', width, value: (row) => row.list[key] });
     for (const c of flow.report.columns.filter((x) => x.key !== 'method_label')) columns.push({ group: 'list', header: c.header, key: c.key, type: c.type, width: 12, value: (row) => row.list[c.key] });
   } else {
+    const isChosen = (field) => (run.chosen ? run.chosen.includes(field.id) : run.clusters.includes(field.cluster));
     const preferred = new Map(flow.detail.fields.filter((f) => f.sameAs && f.prefer === 'detail' && run.clusters.includes(f.cluster)).map((f) => [f.sameAs, f.id]));
     for (const column of flow.list.columns) {
       for (const part of column.parts) {
@@ -59,7 +60,7 @@ export function columnsFor(flow, run) {
     }
     const taken = new Set(columns.map((c) => c.header));
     for (const field of flow.detail.fields) {
-      if (field.sameAs || !run.clusters.includes(field.cluster)) continue;
+      if (field.sameAs || !isChosen(field)) continue;
       const header = taken.has(field.header) ? `Notice: ${field.header}` : field.header;
       taken.add(header);
       columns.push({ group: 'detail', header, key: field.id, type: field.type === 'moneyWithCurrency' ? field.type : field.type, width: WIDTH[field.type] ?? 22, value: (row) => row.detail?.[field.id] });
@@ -166,10 +167,14 @@ export function buildWorkbook({ flow, run, rows, toolVersion, profileVersion, si
   gap();
   if (flow.detail) {
     title('Detail-page fields you chose (checkerboard)');
-    const ticked = flow.detail.clusters.filter((c) => run.clusters.includes(c.id)).map((c) => c.name);
-    const unticked = flow.detail.clusters.filter((c) => !run.clusters.includes(c.id)).map((c) => c.name);
-    kv('Ticked', ticked.join(', ') || 'None');
-    kv('Not ticked', unticked.join(', ') || 'None');
+    const inCluster = (id) => flow.detail.fields.filter((f) => f.cluster === id && !f.sameAs);
+    const isOn = (f) => (run.chosen ? run.chosen.includes(f.id) : run.clusters.includes(f.cluster));
+    for (const cluster of flow.detail.clusters) {
+      const fields = inCluster(cluster.id);
+      if (!fields.length) continue;
+      const on = fields.filter(isOn);
+      kv(cluster.name, on.length === 0 ? 'None' : on.length === fields.length ? `All ${fields.length} fields` : on.map((f) => f.header).join(', '));
+    }
     gap();
   }
   title('Is it complete?');
@@ -237,10 +242,10 @@ export function buildWorkbook({ flow, run, rows, toolVersion, profileVersion, si
   ];
 }
 
-/** pdms_<flow>_<yyyy-mm-dd_hhmm>.xlsx, marked when partial (M10-T05, T06). */
-export function fileName(flow, run, flowId) {
+/** pdms_<flow>_<yyyy-mm-dd_hhmm>.xls, marked when partial (M10-T05, T06, D54). */
+export function fileName(flow, run, flowId, extension = 'xls') {
   const d = new Date(run.finishedAt ?? Date.now());
   const p = (n) => String(n).padStart(2, '0');
   const partial = run.status === 'finished' ? '' : '_partial';
-  return `pdms_${flowId}_${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${partial}.xlsx`;
+  return `pdms_${flowId}_${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${partial}.${extension}`;
 }

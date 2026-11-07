@@ -408,6 +408,7 @@
           "properties": {
             "url": { "type": "string" },
             "title": { "type": "string" },
+            "searchButton": { "type": "string" },
             "route": { "$ref": "#/$defs/strings" },
             "identity": { "$ref": "#/$defs/strings" }
           }

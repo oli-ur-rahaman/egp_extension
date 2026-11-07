@@ -25,6 +25,7 @@ export const MSG = Object.freeze({
   AGENT_REPORT: 'agent/report',
   AGENT_SESSION: 'agent/session',
   AGENT_GUARD: 'agent/guard',
+  AGENT_SEARCH: 'agent/search',
 });
 
 /**

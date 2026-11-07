@@ -264,3 +264,12 @@ label.node input { margin-top: 2px; flex: none; }
 .run-numbers dd { margin: 0; text-align: right; font-weight: 600; }
 .run-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .run-note { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 16px; }
+.cluster-group { border-bottom: 1px solid var(--divider); }
+.cluster-head { display: flex; align-items: flex-start; gap: 2px; }
+.cluster-head .twist { flex: none; margin-top: 4px; }
+.cluster-head .cluster { flex: 1; min-width: 0; border-bottom: 0; }
+.cluster-fields { margin: 0 0 8px 28px; padding: 4px 8px; border-radius: 8px; background: var(--surface-2); }
+.cluster-fields[hidden] { display: none; }
+.cluster-field { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; line-height: 18px; cursor: pointer; }
+.cluster-field input { margin-top: 1px; flex: none; }
+.cluster-field small { display: block; color: var(--muted); font-size: 11px; }

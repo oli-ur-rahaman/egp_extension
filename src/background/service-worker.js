@@ -226,6 +226,11 @@ async function runFor(tabId) {
   return null;
 }
 
+/** Presses the page's own Search, so the user sees the same results there (D53). The tab isn't brought forward. @param {number} tabId @param {any} profile @param {any} flow */
+function showSearchOnPage(tabId, profile, flow) {
+  chrome.tabs.sendMessage(tabId, { type: MSG.AGENT_SEARCH, profile, flow }).catch(() => {});
+}
+
 /** Works out how big the search is, with the one or two requests that takes (D27), before anything starts. */
 async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
   const profile = await getProfile();
@@ -245,7 +250,10 @@ async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
   if (first.network) throw new Error(first.network);
   if (first.outcome === 'RATE_LIMITED') throw new Error('BLOCKED: the portal answered with a block or CAPTCHA. Stop and try later.');
   if (first.outcome !== 'OK' && first.outcome !== 'EMPTY') throw new Error(first.reason ?? "The portal's answer couldn't be read.");
-  if (first.outcome === 'EMPTY') return { ...plan, size, repeatSize: flow.list.repeatSweepSize, totalPages: 0, rows: 0 };
+  if (first.outcome === 'EMPTY') {
+    showSearchOnPage(tab.id, profile, flow);
+    return { ...plan, size, repeatSize: flow.list.repeatSweepSize, totalPages: 0, rows: 0 };
+  }
   const totalPages = first.totalPages ?? 1;
   let lastRows = first.rows.length;
   if (totalPages > 1) {
@@ -253,19 +261,20 @@ async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
     if (last.network) throw new Error(last.network);
     lastRows = last.rows?.length ?? size;
   }
+  showSearchOnPage(tab.id, profile, flow);
   return { ...plan, size, repeatSize: flow.list.repeatSweepSize, totalPages, rows: (totalPages - 1) * size + lastRows };
 }
 
 /** @type {Record<string, (payload: any) => unknown>} */
 const handlers = {
   [MSG.RUN_MEASURE]: measure,
-  [MSG.RUN_START]: async ({ plan, clusters }) => {
+  [MSG.RUN_START]: async ({ plan, clusters, chosen }) => {
     const running = (await store.allRuns()).find((/** @type {any} */ r) => r.status === 'running');
     if (running) throw new Error('A run is already going in another tab. Pause or stop it first.');
     // Only the finished runs the user has left behind are removed.
     for (const old of await store.allRuns()) if (old.dismissed) await store.deleteRun(old.id);
     await chrome.storage.session.set({ runAlive: true });
-    return (await getEngine()).start({ ...plan, clusters });
+    return (await getEngine()).start({ ...plan, clusters, chosen });
   },
   [MSG.RUN_STATE]: async ({ tabId }) => {
     const run = await runFor(tabId);

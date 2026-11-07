@@ -248,6 +248,7 @@ Each row names the module, the ToR clause it satisfies, and when it gets built.
 | **M12** | Activity Log & Audit | **Activity Log** | W3 (skeleton), W9 (final) | M5 |
 | **M13** | Side Panel UI | §5 User Interface | W4–W5, polish W8–W9 | M3, M5 |
 | **M14** | Testing, Documentation, Training & Handover | §6 Deliverables, §10, §11 | W10 (docs drafted throughout) | all |
+| **M15** | Lookup by ID: tender journey and APP details (D56) | **Outside the ToR, by the owner's decision** | After the current plan | M5, M6, M7, M10 |
 
 ---
 
@@ -668,6 +669,74 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 ---
 
+### M15 — Lookup by ID (D56): after the current plan, not built
+
+**Purpose:** today the tool starts from filters and finds many rows. This starts from IDs the user already holds and fetches exactly those. **Outside the ToR and Proposal, by the owner's decision.**
+
+**Two modes, on a new "Lookup by ID" entry in the panel:**
+
+| Mode | The user gives | The tool returns |
+|---|---|---|
+| **A. Tender journey** | 1 to 100 Tender IDs | Each tender's whole history: APP, tender notice, contract, experience |
+| **B. APP details** | 1 to 100 APP IDs | Every package under each APP, with its details |
+
+**Input (both modes):** one box. Paste from Excel, or type, separated by new lines, commas or spaces. Repeats are removed. Anything not a number is named and refused. More than 100 is refused with the count. The panel shows how many IDs it accepted and the time estimate before Start.
+
+**How a tender is traced.** Each stage is an ordinary search with only the ID filled in, then the detail page of what it finds:
+
+| Stage | Search | Then | What is already known |
+|---|---|---|---|
+| 1. Tender | Flow 2, `tenderId` | Notice page | The notice gives App ID and Package No. Logged out, LTM tenders aren't listed on Flow 2 (insight 47) |
+| 2. APP | Flow 3, `appId` from stage 1, **with Financial Year blank** | The package whose Package No. matches | One APP holds many packages, so matching is by Package No. The page preselects the year (insight 70) |
+| 3. Contract | Flow 4, `tenderId` | Contract page | Can return more than one contract; each is kept (D39). Works for LTM logged out (insight 56) |
+| 4. Experience | Flow 5, `tenderId` | Experience record | Often none, especially for recent contracts (insight 71). Manual records have no Tender ID, so they can't be found this way (insight 76) |
+
+**A stage with nothing is an answer, not a failure:** a tender not yet awarded has no contract. Each stage records Found, Not found or Refused for each ID, so the file never leaves the user guessing.
+
+**Why Mode B stops at details:** Flow 2 has no APP or Package filter (its filter list, `flow-2.md`), so the portal gives no direct way from a plan forward to its tender. Going forward would need a guess by reference or title, which could give wrong matches. Mode A goes the other way, from tender back to its plan, and that link is on the notice.
+
+**Output (proposed, awaiting the owner):** one workbook. **Departs from D26's two sheets.**
+
+| Sheet | Holds |
+|---|---|
+| About this lookup | IDs asked for, found and not found; login state; time |
+| Journey | One row per Tender ID: found at each stage, Package No., contract count, contractor, contract value, work status |
+| Tender, APP, Contract, Experience | One sheet per stage, with the same columns as that flow's normal Data sheet. Tender ID in every row, so sheets join |
+
+For Mode B, the same About sheet and one sheet of packages.
+
+**Time (planning figures, D27):** Mode A takes about 8 requests per tender, about 35 seconds, so 100 tenders take about 1 hour, up to 1.5 with slow-downs. Mode B takes 1 request per APP plus 1 per package. A saved sample held about 3 packages per APP, but a large APP holds many more, so the real count is taken first, as in D27.
+
+**To check on the live portal before building (small requests, with the owner):**
+
+| # | Question | Why it matters |
+|---|---|---|
+| 1 | Do Flows 2 to 5 answer a request with only the ID filled in, Department and dates blank? | The whole module rests on this. From the page code: Flow 2 needs "at least one filter"; Flows 3 to 5 don't block. **Not yet tried** |
+| 2 | Does an LTM notice open logged out, given its Tender ID? | Whether a logged-out journey can include LTM tenders |
+| 3 | Is a Flow 5 search by Tender ID slow with Tender Type on All (E12)? | If so, the time above is too low |
+| 4 | Logged in, do Flows 4 and 5 search outside the user's department? | Still open from D35 |
+
+| Task | Description | Est. |
+|---|---|---|
+| M15-T01 | Live checks 1 to 4 above, with the owner | 30 min |
+| M15-T02 | Input box and its checks; entry in the panel; estimate | 3 h |
+| M15-T03 | Engine: a queue of stages per ID, each saved, resumable, and stopping as a run does on a block or lost session | 4 h |
+| M15-T04 | Mode A linking: App ID and Package No. from the notice; package matching; several contracts per tender | 3 h |
+| M15-T05 | Mode B: all packages of each APP, with paging | 1 h |
+| M15-T06 | Workbook: About, Journey and stage sheets; found and not found per ID | 4 h |
+| M15-T07 | Fake portal answers by ID, including no contract, no experience, several contracts, refused and unknown IDs | 2 h |
+
+- **Automated:** M15-AT1 input checks: mixed separators, repeats, non-numbers, 101 IDs · M15-AT2 a tender at every stage of life (notice only, contract, experience, cancelled) gives the right Found and Not found · M15-AT3 stopping and resuming mid-journey loses and repeats nothing · M15-AT4 a package is matched by Package No., never by position.
+- **Manual:**
+  - [ ] M15-MC1 The owner gives 5 Tender IDs at different stages, and checks each sheet against the portal
+  - [ ] M15-MC2 The owner gives 3 APP IDs, including a large one, and checks the package count against the portal
+  - [ ] M15-MC3 A logged-out and a logged-in lookup of the same LTM tender are compared
+- **Exit:** the above pass, and the owner has decided the questions below.
+
+**Open questions for the owner:** the workbook's shape above; all fields or a choice of fields per stage; whether a Company Unique ID should be a third input, for a contractor's whole journey (D24).
+
+---
+
 ## 8. Test strategy
 
 ### 8.1 Layers
@@ -871,6 +940,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | B3, M3-T04 | **D42 decided by the owner:** "All" is an item in each filter's list, not a separate checkbox. The panel already works this way, so no code changed. | Owner's check of the steady panel is still awaited. |
 | 2026-11-07 | 1 | B4–B7, B9 (M5, M6, M7, M9, M10, M13) | **Owner asked for the whole tool tonight, for a client demo on 8 Nov (D49, a deviation Claude warned about).** Built and tested on the fake portal: Start, size check, checkerboard, estimate, list collection with a second search for lost rows, detail pages, Flow 1 reports, save and resume, block and session stops, Excel in the agreed two-sheet format. Decisions D49–D52. All pass on the fake portal. | **Nothing here has run on the real portal yet.** Next: small live run with the owner. Excel not yet opened in Excel itself. Not built: see D49. |
 | 2026-11-07 | 1 | M5 | **Correction:** the commit above went out with one browser test failing, because `verify` doesn't run the browser tests. The test found a real bug: reloading the e-GP page mid-run paused the run as if the tab had gone. Fixed: it asks again. | From here, browser tests run before each commit that touches a run. |
+| 2026-11-07 | 1 | B5, B6, B9 live; M3, M10, M13; M15 | **First real run passed (owner):** Flow 2 logged out, 4 rows, no warnings, the file opened in Excel, one tender checked and matched. Owner's requests done: Start presses the page's Search (D53), files are real `.xls` (D54), groups open to single fields (D55). **M15 Lookup by ID designed, not built (D56).** All tests pass on the fake portal. | `.xls` not yet opened in Excel. Live next: the new build, Flows 3, 4, 5, then logged in. Owner to answer M15's questions. |
 
 **Milestone record**
 
@@ -891,7 +961,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 
-**Now: small live runs with the owner, for the client demo on 8 Nov (D49).** Collection is built and passes on the fake portal; **nothing has run on the real portal yet.** Flow 2 logged out passed its filter check in real Chrome. Next: the owner presses the extension's reload arrow and runs one Flow 2 search of a few rows, with detail pages, then opens the file in Excel; then Flows 3, 4, 5, and logged in Flows 1 and 2, watching whether the session survives (D50, insight 64). Not built: see D49. Give the owner numbered clicks for one step, then wait for "done".
+**Now: small live runs with the owner, for the client demo on 8 Nov (D49).** Flow 2 logged out ran live and matched (4 rows). Next: the owner reloads the extension and repeats it on the new build, opening the `.xls` in Excel; then Flows 3, 4, 5, and logged in Flows 1 and 2, watching whether the session survives (D50, insight 64). M15 (D56) waits until the current plan is built, and needs the owner's answers. Not built: see D49. Give the owner numbered clicks for one step, then wait for "done".
 
 - **[x] Done 2026-11-07. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
 - **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**

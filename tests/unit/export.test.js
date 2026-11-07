@@ -7,6 +7,7 @@ import * as XLSX from '../../vendor/xlsx.js';
 import { parseDetail, parseList, parseReport } from '../../src/shared/page-parse.js';
 import { buildWorkbook, columnsFor, excelDate, fileName, typed, verdictOf } from '../../src/shared/export.js';
 import { buildXlsx, colName } from '../../src/shared/xlsx-writer.js';
+import { buildXls } from '../../src/shared/xls-writer.js';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
 const profile = JSON.parse(readFileSync(path.join(root, 'profiles/eprocure.gov.bd.json'), 'utf8'));
@@ -48,6 +49,66 @@ describe('types', () => {
     expect(typed('money', 'N.A.')).toBeNull();
     expect(typed('text', '')).toBeNull();
     expect(typed('moneyWithCurrency', '999.5 (BDT)')).toBe(999.5);
+  });
+});
+
+describe('a chosen field (D55)', () => {
+  it('only what was ticked becomes a column', () => {
+    const flow = profile.flows.tender_info;
+    const headers = columnsFor(flow, baseRun({ clusters: ['identity'], chosen: ['app_id'] })).filter((c) => c.group === 'detail').map((c) => c.header);
+    expect(headers).toEqual(['App ID']);
+  });
+  it('the file names what was ticked in each group', () => {
+    const flow = profile.flows.tender_info;
+    const [about] = buildWorkbook({ flow, run: baseRun({ clusters: ['identity'], chosen: ['app_id', 'event_type'] }), rows: [], toolVersion: '1', profileVersion: '1', siteHost: 'x' });
+    const text = about.rows.flat().map((c) => c?.v).filter(Boolean);
+    expect(text).toContain('App ID, Event Type');
+    expect(text.filter((v) => v === 'None').length).toBeGreaterThan(3);
+  });
+});
+
+describe('.xls file (D54)', () => {
+  const readXls = async (sheets) => {
+    const blob = buildXls(sheets);
+    return XLSX.read(new Uint8Array(await blob.arrayBuffer()), { type: 'array' });
+  };
+  it('reads back with its text, numbers and sheets', async () => {
+    const book = await readXls([
+      { name: 'About this grab', rows: [[{ v: 'Title', s: { bold: true, fill: '1F3864', color: 'FFFFFF' } }]], merges: ['A1:D1'], widths: [30], hideGrid: true },
+      { name: 'Data', freeze: true, widths: [12, 12, 12], rows: [[{ v: 'ID' }, { v: 'Amount' }, { v: 'Date' }], [{ v: '00123', s: { format: '@', border: true } }, { v: 1234.5, s: { format: '#,##0.000' } }, { v: 45292.5, s: { format: 'dd-mmm-yyyy hh:mm' } }]] },
+    ]);
+    expect(book.SheetNames).toEqual(['About this grab', 'Data']);
+    const data = XLSX.utils.sheet_to_json(book.Sheets.Data, { raw: true, cellDates: false });
+    expect(data[0].ID).toBe('00123');
+    expect(data[0].Amount).toBe(1234.5);
+  });
+  it('holds text in Bangla, and text longer than a record', async () => {
+    const long = 'x'.repeat(20000);
+    const book = await readXls([{ name: 'T', rows: [[{ v: long }, { v: 'বাংলা' }, { v: 'a\u0001b' }, { v: '' }, { v: 'after' }]] }]);
+    expect(book.Sheets.T.A1.v).toBe(long);
+    expect(book.Sheets.T.B1.v).toBe('বাংলা');
+    expect(book.Sheets.T.C1.v).toBe('a b');
+    expect(book.Sheets.T.E1.v).toBe('after');
+  });
+  it('holds many rows, past the size where the file needs extra index sectors', async () => {
+    const rows = Array.from({ length: 32000 }, (_, i) => [{ v: `row ${i} ${'y'.repeat(120)}` }, { v: i }]);
+    const book = await readXls([{ name: 'Big', rows }]);
+    expect(book.Sheets.Big.A32000.v).toContain('row 31999');
+    expect(book.Sheets.Big.B32000.v).toBe(31999);
+  }, 120000);
+  it('every flow\'s real layout writes, for a second reader to check', async () => {
+    const out = path.join(root, 'test-results', 'xls');
+    mkdirSync(out, { recursive: true });
+    for (const [flowId, list, detail] of [['tender_info', 'flow2/list', 'flow2/notice-works'], ['app_info', 'flow3/list', 'flow3/package-works'], ['contract_info', 'flow4/list', 'flow4/contract-new'], ['experience_info', 'flow5/list', 'flow5/experience-jvca']]) {
+      const flow = profile.flows[flowId];
+      const rows = flowRows(flowId, list, detail);
+      const run = baseRun({ flowId, clusters: flow.detail.clusters.map((c) => c.id), expected: rows.length, stats: { rows: rows.length, detailTotal: rows.length, detailDone: rows.length, detailFailed: 0, refused: 0, multiLot: 0 } });
+      const sheets = buildWorkbook({ flow, run, rows, toolVersion: '0.3.0', profileVersion: '1.2.0', siteHost: profile.site.host });
+      const blob = buildXls(sheets);
+      writeFileSync(path.join(out, `${flowId}.xls`), Buffer.from(await blob.arrayBuffer()));
+      const book = XLSX.read(new Uint8Array(await blob.arrayBuffer()), { type: 'array' });
+      expect(XLSX.utils.sheet_to_json(book.Sheets.Data)).toHaveLength(rows.length);
+    }
   });
 });
 
@@ -112,7 +173,7 @@ describe('workbook', () => {
 
   it('names the file by flow and time, and marks a partial one', () => {
     const name = fileName(profile.flows.tender_info, baseRun({ status: 'stopped' }), 'tender_info');
-    expect(name).toMatch(/^pdms_tender_info_\d{4}-\d{2}-\d{2}_\d{4}_partial\.xlsx$/);
+    expect(name).toMatch(/^pdms_tender_info_\d{4}-\d{2}-\d{2}_\d{4}_partial\.xls$/);
   });
 
   it('handles characters Excel would refuse, and long text', async () => {

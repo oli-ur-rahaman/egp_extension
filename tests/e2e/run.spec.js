@@ -121,7 +121,7 @@ test('Flow 2, whole journey: measure, choose, collect, download', async () => {
     expect(made.filter((r) => r.path === profile.flows.tender_info.list.request.url)).toHaveLength(3);
     expect(t.context.pages()).toHaveLength(3);
     const file = await downloaded(t);
-    expect(file.name).toMatch(/^pdms_tender_info_.*\.xlsx$/);
+    expect(file.name).toMatch(/^pdms_tender_info_.*\.xls$/);
     expect(file.book.SheetNames).toEqual(['About this grab', 'Data']);
     expect(file.data).toHaveLength(230);
     expect(new Set(file.data.map((r) => r['Tender/Proposal ID'])).size).toBe(230);
@@ -132,6 +132,41 @@ test('Flow 2, whole journey: measure, choose, collect, download', async () => {
     // New search goes back to the filters.
     await t.panel.locator('#run-new').click();
     await expect(t.panel.locator('[data-filter]').first()).toBeVisible();
+  } finally { await t.close(); }
+});
+
+test('Start presses the page\'s own Search, and a group opens to choose its fields', async () => {
+  const t = await setup({ rows: 12 });
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await chooseDepartment(t);
+    await t.page.evaluate(() => {
+      window.searchPressed = 0;
+      document.querySelector('#btnSearch').addEventListener('click', () => { window.searchPressed += 1; });
+    });
+    await t.panel.locator('#start').click();
+    await expect(t.panel.locator('#plan-count')).toHaveText('12 rows');
+    await expect.poll(() => t.page.evaluate(() => window.searchPressed)).toBe(1);
+    // The group opens; one field is ticked; the group shows it's partly ticked; the file holds just that field.
+    const fields = t.panel.locator('#fields-identity');
+    await expect(fields).toBeHidden();
+    await t.panel.locator('.twist').first().click();
+    await expect(fields).toBeVisible();
+    await t.panel.locator('input[data-field="app_id"]').check();
+    await expect(t.panel.locator('[data-count="identity"]')).toHaveText(/^1 of \d+ fields$/);
+    expect(await cluster(t, 'identity').evaluate((el) => el.indeterminate)).toBe(true);
+    await cluster(t, 'dates').check();
+    await expect(t.panel.locator('[data-count="dates"]')).toHaveText(/^All \d+ fields$/);
+    await cluster(t, 'dates').uncheck();
+    await t.panel.locator('#run-start').click();
+    await expect(state(t)).toHaveText('Finished', { timeout: 30000 });
+    const file = await downloaded(t);
+    expect(file.name).toMatch(/\.xls$/);
+    const headers = Object.keys(file.data[0]);
+    expect(headers).toContain('App ID');
+    expect(headers).not.toContain('Event Type');
+    expect(headers).not.toContain('Opening Date and Time');
   } finally { await t.close(); }
 });
 

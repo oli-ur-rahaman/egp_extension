@@ -9,7 +9,8 @@ const n = (value) => (value ?? 0).toLocaleString('en-US');
 
 /** D25, D27, D32: the real size, what to collect, how long it will take. Nothing is ticked until the user chooses, unless they chose it last time. */
 export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose }) {
-  const ticked = new Set(remembered);
+  const known = new Set(flow.detail?.fields.map((f) => f.id));
+  const ticked = new Set(remembered.filter((id) => known.has(id)));
   const detail = flow.detail;
   const report = !!flow.report;
   const tooBig = limit !== null && plan.rows > limit;
@@ -35,20 +36,52 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
   }
   agree.addEventListener('change', refresh);
 
-  const clusters = detail ? detail.clusters.map((cluster) => {
+  // D55: each group opens to its fields, and what's ticked here is what the file holds.
+  const groups = detail ? detail.clusters.map((cluster) => {
     const fields = detail.fields.filter((f) => f.cluster === cluster.id && !f.sameAs);
-    const tick = h('input', { type: 'checkbox', 'data-cluster': cluster.id, checked: ticked.has(cluster.id), onchange: (e) => {
-      if (e.target.checked) ticked.add(cluster.id);
-      else ticked.delete(cluster.id);
+    if (!fields.length) return null;
+    const count = h('small', { 'data-count': cluster.id });
+    const all = h('input', { type: 'checkbox', 'data-cluster': cluster.id, 'aria-label': `All of ${cluster.name}` });
+    const boxes = fields.map((f) => h('input', { type: 'checkbox', 'data-field': f.id, checked: ticked.has(f.id), onchange: (e) => {
+      if (e.target.checked) ticked.add(f.id);
+      else ticked.delete(f.id);
+      show();
       refresh();
-    } });
-    return h('label', { class: 'cluster' }, tick, h('span', {}, cluster.name, h('small', {}, fields.slice(0, 4).map((f) => f.header).join(', ') + (fields.length > 4 ? ` and ${fields.length - 4} more` : ''))));
-  }) : [];
+    } }));
+    const show = () => {
+      const on = fields.filter((f) => ticked.has(f.id)).length;
+      all.checked = on === fields.length;
+      all.indeterminate = on > 0 && on < fields.length;
+      count.textContent = on === 0 ? `${fields.length} fields` : on === fields.length ? `All ${fields.length} fields` : `${on} of ${fields.length} fields`;
+      boxes.forEach((box, i) => { box.checked = ticked.has(fields[i].id); });
+    };
+    all.addEventListener('change', () => {
+      for (const f of fields) {
+        if (all.checked) ticked.add(f.id);
+        else ticked.delete(f.id);
+      }
+      show();
+      refresh();
+    });
+    const list = h('div', { class: 'cluster-fields', hidden: true, id: `fields-${cluster.id}` },
+      ...fields.map((f, i) => h('label', { class: 'cluster-field' }, boxes[i], h('span', {}, f.header.replace(/^Older: /, ''), f.older && h('small', {}, 'older contract pages only')))));
+    const twist = h('button', { type: 'button', class: 'twist', 'aria-label': `Show the fields of ${cluster.name}`, 'aria-expanded': 'false', onclick: () => {
+      const open = list.hidden;
+      list.hidden = !open;
+      twist.setAttribute('aria-expanded', String(open));
+    } }, icon('chevronRight'));
+    show();
+    return h('div', { class: 'cluster-group' },
+      h('div', { class: 'cluster-head' }, twist, h('label', { class: 'cluster' }, all, h('span', {}, cluster.name, count))),
+      list);
+  }).filter(Boolean) : [];
 
   refresh();
   go.addEventListener('click', () => {
     go.disabled = true;
-    onStart([...ticked]);
+    const chosen = [...ticked];
+    const clusterIds = detail ? detail.clusters.map((c) => c.id).filter((id) => detail.fields.some((f) => f.cluster === id && ticked.has(f.id))) : [];
+    onStart(clusterIds, chosen);
   });
 
   return h('div', { class: 'sheet', style: 'display:contents', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Before you start' },
@@ -62,8 +95,8 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
       !report && h('p', { class: 'plan-sub' }, empty ? 'The portal has no records for these filters.' : `${n(plan.totalPages)} list ${plan.totalPages === 1 ? 'page' : 'pages'} at ${plan.size} rows each, as the portal counts them right now.`),
       tooBig && banner('bad', `A search by this kind of filter can't go over ${n(limit)} rows. Add Department and a date window to narrow it.`, 'Too many rows'),
       detail && h('h3', { class: 'plan-h' }, 'Detail-page data to collect'),
-      detail && h('p', { class: 'hint' }, "One page holds all its fields, so ticking more doesn't take longer. The choice that matters is some or none."),
-      ...clusters),
+      detail && h('p', { class: 'hint' }, "Open a group to pick its fields. One page holds them all, so ticking more doesn't take longer. Only what you tick goes in the file."),
+      ...groups),
     // Always in view, directly above Start (TIME_ESTIMATE §1).
     h('footer', { class: 'plan-end' }, box, agreeLine,
       h('div', { class: 'plan-foot' },

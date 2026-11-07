@@ -7,6 +7,7 @@ import { buildPicker } from './picker.js';
 import { buildPlanSheet, renderRun } from './run-view.js';
 import { buildWorkbook, fileName } from '../shared/export.js';
 import { buildXlsx } from '../shared/xlsx-writer.js';
+import { buildXls, XLS_MAX_COLS, XLS_MAX_ROWS } from '../shared/xls-writer.js';
 import { loadProfile } from '../shared/profile.js';
 import { createStore } from '../background/store.js';
 import { banner, renderFlow, renderNoPage } from './view.js';
@@ -251,7 +252,7 @@ async function startPlan(values, result) {
     const loopFilter = current.flow.filters.find((/** @type {any} */ f) => f.allMeansLoop);
     const plan = /** @type {any} */ (await ask(MSG.RUN_MEASURE, { loopAll: loopFilter ? valueOf(loopFilter.id) === '__all__' : false, categoryNames: category ? values[category.id]?.names ?? [] : [] }));
     setStatus('ok', 'Ready');
-    const key = `clusters:${current.flowId}`;
+    const key = `fields:${current.flowId}`;
     const remembered = /** @type {string[]} */ ((await chrome.storage.local.get(key))[key] ?? []);
     const limit = result.exemptionUsed ? result.maxRows : null;
     sheetEl.replaceChildren(buildPlanSheet({
@@ -260,10 +261,10 @@ async function startPlan(values, result) {
       remembered,
       limit,
       onClose: closeSheet,
-      onStart: async (/** @type {string[]} */ clusters) => {
-        await chrome.storage.local.set({ [key]: clusters });
+      onStart: async (/** @type {string[]} */ clusters, /** @type {string[]} */ chosen) => {
+        await chrome.storage.local.set({ [key]: chosen });
         try {
-          shownRun = /** @type {any} */ (await ask(MSG.RUN_START, { plan, clusters }));
+          shownRun = /** @type {any} */ (await ask(MSG.RUN_START, { plan, clusters, chosen }));
           closeSheet();
           drawRun();
         } catch (err) {
@@ -310,9 +311,12 @@ const runActions = {
       const rows = await createStore().allRows(shownRun.id);
       const flow = profile.flows[shownRun.flowId];
       const sheets = buildWorkbook({ flow, run: shownRun, rows, toolVersion: chrome.runtime.getManifest().version, profileVersion: profile.profileVersion, siteHost: profile.site.host });
-      const blob = await buildXlsx(sheets);
+      // D54: .xls, unless the file is too big for that format.
+      const data = sheets[sheets.length - 1];
+      const fits = data.rows.length <= XLS_MAX_ROWS && Math.max(...data.rows.map((r) => r.length)) <= XLS_MAX_COLS;
+      const blob = fits ? buildXls(sheets) : await buildXlsx(sheets);
       const url = URL.createObjectURL(blob);
-      await chrome.downloads.download({ url, filename: fileName(flow, shownRun, shownRun.flowId) });
+      await chrome.downloads.download({ url, filename: fileName(flow, shownRun, shownRun.flowId, fits ? 'xls' : 'xlsx') });
       setTimeout(() => URL.revokeObjectURL(url), 60000);
       setStatus('ok', 'Ready');
     } catch (err) {
