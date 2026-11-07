@@ -1,6 +1,6 @@
 # Build plan
 
-**Written 2026-11-06, after studies R7 and R8. Status: approved by the owner, 2026-11-06 (D36).** It replaces the build order of `EXECUTION_PLAN.md` §7 where they differ. Module and task IDs there still apply. The owner has set quality above dates (D34), so stages have **gates, not deadlines**, and the old M1–M5 dates no longer apply.
+**Written 2026-11-06, after studies R7 and R8. Status: approved by the owner, 2026-11-06 (D36).** **2026-11-07: the owner asked for a working tool tonight (D49), so B4–B7 and B9 are built without their gates; see `PROJECT_PLAN.md`.** It replaces the build order of `EXECUTION_PLAN.md` §7 where they differ. Module and task IDs there still apply. The owner has set quality above dates (D34), so stages have **gates, not deadlines**, and the old M1–M5 dates no longer apply.
 
 **Deviations from the Proposal and ToR, for the owner's decision (D28):** the 10-week milestones and their payment dates; the two-sheet workbook (D26, accepted); LTM export (D29, accepted). The owner's demo moves to the end of stage B3.
 

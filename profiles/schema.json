@@ -60,7 +60,20 @@
             "statuses": { "type": "array", "items": { "type": "integer" } }
           }
         },
-        "slowResponseMs": { "type": "integer", "minimum": 1000 }
+        "slowResponseMs": { "type": "integer", "minimum": 1000 },
+        "pacing": {
+          "type": "object",
+          "required": ["paceMs", "jitterMs", "backoffSeconds", "listSeconds", "detailSeconds", "sessionCheckEvery"],
+          "additionalProperties": false,
+          "properties": {
+            "paceMs": { "type": "integer", "minimum": 1000 },
+            "jitterMs": { "type": "integer", "minimum": 0 },
+            "backoffSeconds": { "type": "array", "items": { "type": "integer" } },
+            "listSeconds": { "type": "number" },
+            "detailSeconds": { "type": "number" },
+            "sessionCheckEvery": { "type": "integer", "minimum": 1 }
+          }
+        }
       }
     },
     "source": {
@@ -226,6 +239,8 @@
           }
         },
         "rows": { "type": "string" },
+        "tableId": { "type": "string" },
+        "repeatSweepSize": { "type": "integer", "minimum": 1 },
         "totalPages": { "type": "string" },
         "rowCount": { "type": "string" },
         "empty": {
@@ -370,6 +385,7 @@
       "additionalProperties": false,
       "properties": {
         "key": { "type": "string" },
+        "storeKey": { "type": "string" },
         "fallback": { "type": "string" },
         "whenMissing": { "type": "string" },
         "confirmedByOwner": { "type": "boolean" },
@@ -401,7 +417,20 @@
         "list": { "$ref": "#/$defs/list" },
         "detail": { "$ref": "#/$defs/detail" },
         "report": { "$ref": "#/$defs/report" },
-        "naturalKey": { "$ref": "#/$defs/naturalKey" }
+        "naturalKey": { "$ref": "#/$defs/naturalKey" },
+        "statistics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "by"],
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string" },
+              "by": { "type": "string" },
+              "sum": { "type": "string" }
+            }
+          }
+        }
       }
     }
   }

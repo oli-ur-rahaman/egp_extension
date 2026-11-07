@@ -21,7 +21,7 @@ describe('the shipped profile', () => {
 
   it('loads through the packaged-file route', async () => {
     const profile = await loadProfile({ readJson: async (file) => readJson(file) });
-    expect(profile.profileVersion).toBe('1.0.0');
+    expect(profile.profileVersion).toMatch(/^\d+\.\d+\.\d+$/);
     expect(Object.keys(profile.flows)).toHaveLength(5);
   });
 

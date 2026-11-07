@@ -4,6 +4,11 @@
 import { MSG, request as send } from '../shared/bus.js';
 import { h } from './icons.js';
 import { buildPicker } from './picker.js';
+import { buildPlanSheet, renderRun } from './run-view.js';
+import { buildWorkbook, fileName } from '../shared/export.js';
+import { buildXlsx } from '../shared/xlsx-writer.js';
+import { loadProfile } from '../shared/profile.js';
+import { createStore } from '../background/store.js';
 import { banner, renderFlow, renderNoPage } from './view.js';
 
 const statusEl = /** @type {HTMLElement} */ (document.getElementById('status'));
@@ -226,7 +231,113 @@ const on = {
     save();
   },
   openTree: openPicker,
+  startPlan,
 };
+
+// --- The run
+
+/** The run this panel is showing. @type {any} */
+let shownRun = null;
+
+/** Measures the search, then asks what to collect. Nothing starts until the user says so (D25, D27). @param {Record<string, any>} values @param {any} result */
+async function startPlan(values, result) {
+  setStatus('pending', 'Measuring this search…');
+  try {
+    // Dates ticked "current date" have to be on the page before it's read.
+    for (const filter of current.flow.filters.filter((/** @type {any} */ f) => f.panel && f.control === 'dateRange')) {
+      if (values[filter.id]?.fromToday || values[filter.id]?.toToday) current = await ask(MSG.PAGE_APPLY, { filterId: filter.id, value: pageValue(filter, values[filter.id]) });
+    }
+    const category = current.flow.filters.find((/** @type {any} */ f) => f.source === 'categoryTree');
+    const loopFilter = current.flow.filters.find((/** @type {any} */ f) => f.allMeansLoop);
+    const plan = /** @type {any} */ (await ask(MSG.RUN_MEASURE, { loopAll: loopFilter ? valueOf(loopFilter.id) === '__all__' : false, categoryNames: category ? values[category.id]?.names ?? [] : [] }));
+    setStatus('ok', 'Ready');
+    const key = `clusters:${current.flowId}`;
+    const remembered = /** @type {string[]} */ ((await chrome.storage.local.get(key))[key] ?? []);
+    const limit = result.exemptionUsed ? result.maxRows : null;
+    sheetEl.replaceChildren(buildPlanSheet({
+      flow: current.flow,
+      plan,
+      remembered,
+      limit,
+      onClose: closeSheet,
+      onStart: async (/** @type {string[]} */ clusters) => {
+        await chrome.storage.local.set({ [key]: clusters });
+        try {
+          shownRun = /** @type {any} */ (await ask(MSG.RUN_START, { plan, clusters }));
+          closeSheet();
+          drawRun();
+        } catch (err) {
+          closeSheet();
+          showError(err);
+        }
+      },
+    }));
+    sheetEl.hidden = false;
+  } catch (err) {
+    showError(err);
+  }
+}
+
+function closeSheet() {
+  sheetEl.hidden = true;
+  sheetEl.replaceChildren();
+  document.getElementById('start')?.focus({ preventScroll: true });
+}
+
+const runActions = {
+  /** @param {string} type @param {any} [extra] */
+  async send(type, extra = {}) {
+    try {
+      const reply = /** @type {any} */ (await ask(type, { runId: shownRun.id, ...extra }));
+      if (reply.run) shownRun = reply.run;
+      drawRun();
+    } catch (err) {
+      showError(err);
+    }
+  },
+  pause: () => runActions.send(MSG.RUN_PAUSE),
+  resume: () => runActions.send(MSG.RUN_RESUME, { tabId: ownTab ?? undefined }),
+  stop: () => runActions.send(MSG.RUN_STOP),
+  async finishAndClear() {
+    await ask(MSG.RUN_DISMISS, { runId: shownRun.id });
+    shownRun = null;
+    refresh();
+  },
+  async download() {
+    setStatus('pending', 'Making the Excel file…');
+    try {
+      const profile = await loadProfile();
+      const rows = await createStore().allRows(shownRun.id);
+      const flow = profile.flows[shownRun.flowId];
+      const sheets = buildWorkbook({ flow, run: shownRun, rows, toolVersion: chrome.runtime.getManifest().version, profileVersion: profile.profileVersion, siteHost: profile.site.host });
+      const blob = await buildXlsx(sheets);
+      const url = URL.createObjectURL(blob);
+      await chrome.downloads.download({ url, filename: fileName(flow, shownRun, shownRun.flowId) });
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      setStatus('ok', 'Ready');
+    } catch (err) {
+      showError(err);
+    }
+  },
+};
+
+/** The run's screen, which replaces the filters until the user has finished with it. */
+function drawRun() {
+  screenEl.replaceChildren(renderRun(shownRun, runActions, (shownRun.flowName ?? current?.flow?.name)));
+  setStatus(shownRun.status === 'running' ? 'pending' : 'ok', shownRun.status === 'running' ? 'Collecting…' : 'Ready');
+  progressEl.hidden = true;
+}
+
+/** @returns {Promise<boolean>} true when a run has the screen */
+async function checkRun() {
+  const { run } = /** @type {any} */ (await ask(MSG.RUN_STATE));
+  shownRun = run;
+  if (!run) return false;
+  const profile = await loadProfile();
+  shownRun = { ...run, flowName: profile.flows[run.flowId].name };
+  drawRun();
+  return true;
+}
 
 /** The filters on screen. Those inside a closed fold take no space. @returns {HTMLElement[]} */
 function shownFilters() {
@@ -248,6 +359,8 @@ function render() {
   // A long list the user has open, perhaps with words typed in it, is still open after the redraw.
   const openList = active?.getAttribute('role') === 'combobox' && active.getAttribute('aria-expanded') === 'true'
     ? { typed: active.value, scrollTop: document.getElementById(`${focused}-list`)?.scrollTop ?? 0 } : null;
+  // Words being typed aren't on the page yet, so a redraw mustn't lose them.
+  const typing = active?.tagName === 'INPUT' && active.type === 'text' && !openList ? { value: active.value, start: active.selectionStart, end: active.selectionEnd } : null;
   const steady = steadyFilter();
   const { scrollTop } = screenEl;
   screenEl.replaceChildren(current.flowId ? renderFlow(current, on) : renderNoPage(current));
@@ -258,6 +371,10 @@ function render() {
   if (!focused || focused.startsWith('picker')) return;
   const box = /** @type {HTMLInputElement | null} */ (document.getElementById(focused));
   box?.focus({ preventScroll: true });
+  if (box && typing && box.value !== typing.value && !box.disabled) {
+    box.value = typing.value;
+    box.setSelectionRange(typing.start, typing.end);
+  }
   if (!box || !openList) return;
   box.click();
   if (box.value !== openList.typed) {
@@ -275,6 +392,7 @@ screenEl.addEventListener('scroll', () => {
 
 async function refresh() {
   try {
+    if (await checkRun()) return;
     const state = /** @type {any} */ (await ask(MSG.PAGE_STATE));
     // What's remembered belongs to one loaded page: a reload gives a clean page, so it starts clean too.
     const key = state.flowId ? `${state.tabId}|${state.url}|${state.page.loadId}` : null;
@@ -309,7 +427,12 @@ async function refresh() {
 }
 
 chrome.runtime.onMessage.addListener((message) => {
+  if (message?.type === MSG.RUN_CHANGED) {
+    if (shownRun?.id === message.runId || (!ownTab || message.tabId === ownTab)) checkRun().catch(() => {});
+    return;
+  }
   if (message?.type !== MSG.PAGE_CHANGED) return;
+  if (shownRun) return;
   if (!ownTab || message.tabId === ownTab) refresh();
 });
 

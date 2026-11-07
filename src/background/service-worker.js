@@ -1,6 +1,9 @@
-// Service worker: the brain. It will own all run state (M5). For now it connects the panel to the page in the user's tab.
+// Service worker: the brain. It owns the run (D47, M5) and connects the panel to the page in the user's tab.
 
 import { MSG } from '../shared/bus.js';
+import { progressOf } from '../shared/estimate.js';
+import { createEngine, NetworkError, TabGone } from './engine.js';
+import { createStore } from './store.js';
 import { detectFlow, isPortal } from '../shared/flow-detect.js';
 import { loadProfile } from '../shared/profile.js';
 
@@ -125,8 +128,160 @@ async function pageState(tabId) {
   return { onPortal: true, flowId, flow, page, tabId: tab.id, url };
 }
 
+// --- The run (M5). One at a time; its requests go through the agent on the run's tab, and that tab is never brought to the front.
+
+const store = createStore();
+/** @type {Promise<any> | null} */
+let enginePromise = null;
+
+/** A long wait mustn't let Chrome put this worker to sleep. @param {number} ms */
+function sleep(ms) {
+  return new Promise((resolve) => {
+    const beat = setInterval(() => chrome.runtime.getPlatformInfo().catch(() => {}), 20000);
+    setTimeout(() => {
+      clearInterval(beat);
+      resolve(undefined);
+    }, ms);
+  });
+}
+
+/** @param {any} run @param {any} message */
+async function askForRun(run, message) {
+  const profile = await getProfile();
+  const flow = profile.flows[run.flowId];
+  const tab = await chrome.tabs.get(run.tabId).catch(() => null);
+  if (!tab?.id || !tab.url || !isPortal(profile, tab.url)) throw new TabGone();
+  try {
+    await ensureAgent(tab.id);
+    // Each time, as a page reloaded during a run has a new agent.
+    await chrome.tabs.sendMessage(tab.id, { type: MSG.AGENT_GUARD, on: true });
+    const reply = await chrome.tabs.sendMessage(tab.id, { ...message, profile, flow });
+    if (reply?.network) throw new NetworkError(reply.network);
+    if (reply?.error) throw new Error(reply.error);
+    return reply;
+  } catch (err) {
+    if (err instanceof NetworkError) throw err;
+    if (/Receiving end|Cannot access|No tab|Frame with ID|message channel/i.test(String(/** @type {any} */ (err)?.message))) throw new TabGone();
+    throw err;
+  }
+}
+
+const transport = {
+  /** @param {any} run @param {number} page @param {number} size */
+  list: (run, page, size) => askForRun(run, { type: MSG.AGENT_LIST, fields: run.fields, page, size }),
+  /** @param {any} run @param {any} row */
+  detail: (run, row) => askForRun(run, { type: MSG.AGENT_DETAIL, open: row.open }),
+  /** @param {any} run @param {any} office */
+  report: (run, office) => askForRun(run, { type: MSG.AGENT_REPORT, fields: { ...run.fields, [run.loop.field]: office.value, [run.loop.mirror]: office.text } }),
+  /** @param {any} run */
+  session: (run) => askForRun(run, { type: MSG.AGENT_SESSION }),
+};
+
+/** @param {any} run */
+function showOnToolbar(run) {
+  const running = run.status === 'running' || run.status === 'paused';
+  const text = run.status === 'paused' ? '||' : running ? `${Math.floor(progressOf(run) * 100)}%` : 'ON';
+  chrome.action.setBadgeText({ tabId: run.tabId, text }).catch(() => {});
+}
+
+/** @param {any} run */
+function runChanged(run) {
+  showOnToolbar(run);
+  chrome.runtime.sendMessage({ type: MSG.RUN_CHANGED, tabId: run.tabId, runId: run.id }).catch(() => {});
+}
+
+/** A run has stopped by itself or ended: the page no longer needs the closing warning, and the user is told. Takes no focus (D47). @param {any} run */
+function runEnded(run) {
+  chrome.tabs.sendMessage(run.tabId, { type: MSG.AGENT_GUARD, on: false }).catch(() => {});
+  if (run.pauseKind === 'user') return;
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
+    title: run.status === 'paused' ? 'eGP Extractor paused' : 'eGP Extractor finished',
+    message: run.status === 'paused' ? run.reason ?? 'The run has paused.' : `${run.stats.rows.toLocaleString('en-US')} rows collected. Open the panel to download the Excel file.`,
+  }).catch(() => {});
+}
+
+const getEngine = () => (enginePromise ??= getProfile().then(async (profile) => {
+  const test = await chrome.storage.session.get('testPaceMs');
+  const pacing = typeof test.testPaceMs === 'number' ? { ...profile.pageStates.pacing, paceMs: test.testPaceMs, jitterMs: 0, backoffSeconds: [0, 0, 0] } : profile.pageStates.pacing;
+  return createEngine({ store, transport, sleep, pacing, onChange: runChanged, onEnd: runEnded });
+}));
+
+const isOpen = (/** @type {any} */ run) => run.status === 'running' || run.status === 'paused';
+
+/** The run this panel should show: the tab's own, or an unfinished one left without a tab. @param {number} [tabId] */
+async function runFor(tabId) {
+  const runs = (await store.allRuns()).filter((/** @type {any} */ r) => !r.dismissed).sort((/** @type {any} */ a, /** @type {any} */ b) => b.startedAt - a.startedAt);
+  const own = runs.find((/** @type {any} */ r) => r.tabId === tabId);
+  if (own) return own;
+  for (const run of runs) {
+    if (!isOpen(run)) continue;
+    const tab = await chrome.tabs.get(run.tabId).catch(() => null);
+    if (!tab) return run;
+  }
+  return null;
+}
+
+/** Works out how big the search is, with the one or two requests that takes (D27), before anything starts. */
+async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
+  const profile = await getProfile();
+  const tab = await panelTab(tabId);
+  const flowId = tab?.url ? detectFlow(profile, tab.url) : null;
+  if (!tab?.id || !flowId) throw new Error('This tab is no longer on the report page.');
+  const flow = profile.flows[flowId];
+  const built = await askAgent(tab.id, { type: MSG.AGENT_BUILD, profile, flow, categoryNames });
+  const plan = { tabId: tab.id, flowId, fields: built.fields, shown: built.shown, loggedIn: built.loggedIn, pacing: profile.pageStates.pacing };
+  if (flow.report) {
+    const office = built.fields[built.loop.field];
+    const offices = loopAll ? built.loopable : built.loopable.filter((/** @type {any} */ o) => o.value === office);
+    return { ...plan, offices, loop: built.loop, rows: null, totalPages: offices.length };
+  }
+  const size = flow.list.request.defaultSize;
+  const first = await askAgent(tab.id, { type: MSG.AGENT_LIST, profile, flow, fields: built.fields, page: 1, size });
+  if (first.network) throw new Error(first.network);
+  if (first.outcome === 'RATE_LIMITED') throw new Error('BLOCKED: the portal answered with a block or CAPTCHA. Stop and try later.');
+  if (first.outcome !== 'OK' && first.outcome !== 'EMPTY') throw new Error(first.reason ?? "The portal's answer couldn't be read.");
+  if (first.outcome === 'EMPTY') return { ...plan, size, repeatSize: flow.list.repeatSweepSize, totalPages: 0, rows: 0 };
+  const totalPages = first.totalPages ?? 1;
+  let lastRows = first.rows.length;
+  if (totalPages > 1) {
+    const last = await askAgent(tab.id, { type: MSG.AGENT_LIST, profile, flow, fields: built.fields, page: totalPages, size });
+    if (last.network) throw new Error(last.network);
+    lastRows = last.rows?.length ?? size;
+  }
+  return { ...plan, size, repeatSize: flow.list.repeatSweepSize, totalPages, rows: (totalPages - 1) * size + lastRows };
+}
+
 /** @type {Record<string, (payload: any) => unknown>} */
 const handlers = {
+  [MSG.RUN_MEASURE]: measure,
+  [MSG.RUN_START]: async ({ plan, clusters }) => {
+    const running = (await store.allRuns()).find((/** @type {any} */ r) => r.status === 'running');
+    if (running) throw new Error('A run is already going in another tab. Pause or stop it first.');
+    // Only the finished runs the user has left behind are removed.
+    for (const old of await store.allRuns()) if (old.dismissed) await store.deleteRun(old.id);
+    await chrome.storage.session.set({ runAlive: true });
+    return (await getEngine()).start({ ...plan, clusters });
+  },
+  [MSG.RUN_STATE]: async ({ tabId }) => {
+    const run = await runFor(tabId);
+    if (run?.status === 'running') (await getEngine()).ensure(run.id);
+    return { run };
+  },
+  [MSG.RUN_PAUSE]: async ({ runId }) => ({ run: await (await getEngine()).pause(runId) }),
+  [MSG.RUN_RESUME]: async ({ runId, tabId }) => {
+    await chrome.storage.session.set({ runAlive: true });
+    return { run: await (await getEngine()).resume(runId, tabId) };
+  },
+  [MSG.RUN_STOP]: async ({ runId }) => ({ run: await (await getEngine()).stop(runId) }),
+  [MSG.RUN_DISMISS]: async ({ runId }) => {
+    const run = await store.getRun(runId);
+    if (run) await store.saveRun({ ...run, dismissed: true });
+    chrome.action.setBadgeText({ tabId: run?.tabId, text: 'ON' }).catch(() => {});
+    return { ok: true };
+  },
+
   [MSG.PING]: () => ({
     version: chrome.runtime.getManifest().version,
     startedAt,
@@ -173,4 +328,30 @@ chrome.tabs.onUpdated.addListener(async (tabId, change) => {
 });
 chrome.tabs.onRemoved.addListener((tabId) => {
   rememberPanelTab(tabId, false).catch(() => {});
+});
+
+/**
+ * When this worker wakes: a run marked running is still wanted. If the session flag has gone, Chrome itself was closed,
+ * so the user is asked to resume (M5-MC2). Otherwise only the worker slept, so it simply carries on.
+ */
+async function wakeRuns() {
+  const runs = (await store.allRuns()).filter((/** @type {any} */ r) => r.status === 'running');
+  if (!runs.length) return;
+  const { runAlive } = await chrome.storage.session.get('runAlive');
+  const engine = await getEngine();
+  for (const run of runs) {
+    if (runAlive) engine.ensure(run.id);
+    else await engine.markInterrupted(run);
+  }
+}
+chrome.alarms.create('run-watch', { periodInMinutes: 1 });
+chrome.alarms.onAlarm.addListener(() => {
+  wakeRuns().catch((err) => console.error('[sw] wakeRuns failed', err));
+});
+wakeRuns().catch((err) => console.error('[sw] wakeRuns failed', err));
+
+// The network came back: a run that paused for it carries on by itself (M8-MC2).
+self.addEventListener('online', async () => {
+  const engine = await getEngine();
+  for (const run of await store.allRuns()) if (run.status === 'paused' && run.pauseKind === 'network') await engine.resume(run.id);
 });

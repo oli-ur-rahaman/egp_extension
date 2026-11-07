@@ -26,8 +26,8 @@ const MIN_KNOWN_SHARE = 0.5;
 /** @param {string} outcome @param {string} reason @param {Partial<Verdict>} [extra] @returns {Verdict} */
 const verdict = (outcome, reason, extra = {}) => ({ outcome, reason, ...extra });
 
-/** @param {any} doc @param {any} profile @param {string} url @param {number} [status] @returns {Verdict | null} */
-function pageState(doc, profile, url, status) {
+/** @param {any} doc @param {any} profile @param {string} url @param {number} [status] @param {boolean} [isExpected] @returns {Verdict | null} */
+function pageState(doc, profile, url, status, isExpected) {
   const states = profile.pageStates;
   if (status !== undefined && states.block.statuses.includes(status)) return verdict(OUTCOME.RATE_LIMITED, `The portal answered ${status}. Stop; don't retry.`);
   if (status !== undefined && status >= 500) return verdict(OUTCOME.SERVER_ERROR, `The portal answered ${status}.`);
@@ -35,6 +35,8 @@ function pageState(doc, profile, url, status) {
   if (url.includes(states.accountPrompt.urlContains) || doc.querySelector(states.accountPrompt.signature)) {
     return verdict(OUTCOME.ACCOUNT_PROMPT, "The portal is asking for account details. The tool never fills these; press Update Later.");
   }
+  // A page that is plainly what was asked for isn't a block, even if a tender's own wording says "forbidden".
+  if (isExpected) return null;
   // Only what a user can read (D41): the portal's own scripts mention "captcha" on ordinary pages.
   const text = (doc.body?.innerText ?? '').slice(0, 20000);
   if (new RegExp(states.block.textPattern, 'i').test(text)) return verdict(OUTCOME.RATE_LIMITED, 'The page reads like a block or CAPTCHA. Stop; don\'t retry.');
@@ -104,7 +106,10 @@ function checkReport(doc, flow) {
  */
 export function classifyPage({ doc, profile, flow, kind, url = '', status, timedOut = false }) {
   if (timedOut) return verdict(OUTCOME.TIMEOUT, 'The page did not settle in time.');
-  const state = pageState(doc, profile, url, status);
+  const isExpected = kind === 'list' ? !!(doc.querySelector(flow.list.empty.selector) || doc.querySelector(flow.list.totalPages))
+    : kind === 'detail' ? doc.title.trim() === flow.detail.pageTitle
+      : kind === 'report' ? flow.report.tables.some((/** @type {any} */ t) => doc.querySelector(t.selector)) : false;
+  const state = pageState(doc, profile, url, status, isExpected);
   if (state) return state;
   if (flow.login.policy === 'required' && doc.querySelector(profile.pageStates.loginForm)) return verdict(OUTCOME.LOGIN_WALL, 'This flow needs a login.');
   if (kind === 'filterPage') return checkFilterPage(doc, flow);

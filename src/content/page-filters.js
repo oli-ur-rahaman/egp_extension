@@ -201,6 +201,82 @@ export async function applyFilter({ doc, flow, profile, filterId, value, request
   return { refilled };
 }
 
+/** The selected entry's words. @param {any} el */
+const selectedText = (el) => (el.selectedOptions?.[0]?.text ?? el.options?.[el.selectedIndex]?.text ?? '').replace(/\s+/g, ' ').trim();
+
+/** dd/mm/yyyy as the request wants it (insight 21). @param {string} text @param {string} [format] */
+function sendDate(text, format) {
+  const value = (text ?? '').trim();
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  return m && format === 'yyyy-mm-dd' ? `${m[3]}-${m[2]}-${m[1]}` : value;
+}
+
+/**
+ * What a search sends, read from the page the user set up, and what to show for it in the file. Frozen when a run starts,
+ * so the user can go on using the page. The fields are the ones the portal's own request carries (recon notes).
+ * @param {any} doc
+ * @param {any} flow
+ * @returns {{ fields: Record<string, string>, shown: { label: string, value: string }[], loopable: { value: string, text: string }[] | null, loop: any }}
+ */
+export function buildRequest(doc, flow) {
+  /** @type {Record<string, string>} */
+  const fields = {};
+  /** @type {{ label: string, value: string }[]} */
+  const shown = [];
+  /** @type {{ value: string, text: string }[] | null} */
+  let loopable = null;
+  let loop = null;
+  const label = (/** @type {any} */ f) => f.label.replace(/^(Select|By) /, '');
+  for (const filter of flow.filters) {
+    if (filter.parts) {
+      const words = [];
+      for (const part of filter.parts) {
+        const el = doc.querySelector(part.selector);
+        const value = el ? el.value : part.empty ?? part.default ?? '';
+        fields[part.requestField] = filter.sendFormat ? sendDate(value, filter.sendFormat) : value;
+        if (filter.control === 'dateRange') shown.push({ label: `${label(filter)} ${part.role === 'from' ? 'From' : 'To'}`, value: value.trim() || '-' });
+        else if (value.trim() && (part.role === 'value' || part.role === 'value2' || part.role === 'text')) words.push(value.trim());
+        else if (part.role === 'operator' || part.role === 'mode') words.push(value.trim());
+      }
+      if (filter.control !== 'dateRange') {
+        const hasValue = filter.parts.some((/** @type {any} */ p) => (p.role === 'value' || p.role === 'text') && doc.querySelector(p.selector)?.value?.trim());
+        shown.push({ label: label(filter), value: hasValue ? words.filter(Boolean).join(' ') : '-' });
+      }
+      continue;
+    }
+    const el = doc.querySelector(filter.selector);
+    if (!el) {
+      fields[filter.requestField] = filter.empty ?? filter.default ?? '';
+      if (filter.panel) shown.push({ label: label(filter), value: '-' });
+      continue;
+    }
+    if (filter.control === 'tree') {
+      const valueEl = filter.valueSelector ? doc.querySelector(filter.valueSelector) : el;
+      fields[filter.requestField] = valueEl?.value ?? '';
+      shown.push({ label: label(filter), value: el.value.trim() || 'All' });
+      continue;
+    }
+    if (el.tagName === 'SELECT') {
+      const choice = filter.choices?.find((/** @type {any} */ c) => c.label === selectedText(el) || c.value === el.value);
+      const option = { value: el.value, text: selectedText(el) };
+      const blank = isPlaceholder(option, filter);
+      fields[filter.requestField] = choice?.value ?? (blank ? filter.empty ?? '' : el.value);
+      if (filter.mirrorField) fields[filter.mirrorField] = blank ? '' : option.text;
+      if (filter.allMeansLoop) {
+        loopable = optionsOf(el, filter);
+        loop = { field: filter.requestField, mirror: filter.mirrorField };
+      }
+      if (filter.panel) shown.push({ label: label(filter), value: choice?.label ?? (blank ? 'All' : option.text) });
+      continue;
+    }
+    fields[filter.requestField] = filter.sendFormat ? sendDate(el.value, filter.sendFormat) : el.value;
+    const named = filter.choices?.find((/** @type {any} */ c) => c.value === el.value)?.label;
+    if (filter.panel) shown.push({ label: label(filter), value: named ?? (el.value.trim() || '-') });
+  }
+  for (const name of flow.report?.request.fromPage ?? []) fields[name] = doc.getElementsByName(name)[0]?.value ?? '';
+  return { fields, shown, loopable, loop };
+}
+
 /**
  * Sets the panel's defaults on the page: Status and Tender Type start at All, though the pages start elsewhere.
  * @param {any} doc

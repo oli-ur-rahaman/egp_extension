@@ -11,6 +11,20 @@ export const MSG = Object.freeze({
   AGENT_SCAN: 'agent/scan',
   AGENT_APPLY: 'agent/apply',
   AGENT_LOOKUP: 'agent/lookup',
+  RUN_MEASURE: 'sw/run-measure',
+  RUN_START: 'sw/run-start',
+  RUN_STATE: 'sw/run-state',
+  RUN_PAUSE: 'sw/run-pause',
+  RUN_RESUME: 'sw/run-resume',
+  RUN_STOP: 'sw/run-stop',
+  RUN_DISMISS: 'sw/run-dismiss',
+  RUN_CHANGED: 'panel/run-changed',
+  AGENT_BUILD: 'agent/build',
+  AGENT_LIST: 'agent/list',
+  AGENT_DETAIL: 'agent/detail',
+  AGENT_REPORT: 'agent/report',
+  AGENT_SESSION: 'agent/session',
+  AGENT_GUARD: 'agent/guard',
 });
 
 /**

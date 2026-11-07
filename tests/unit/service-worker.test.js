@@ -6,6 +6,7 @@ let clicked;
 const listener = () => ({ addListener: () => {} });
 
 beforeAll(async () => {
+  globalThis.self ??= { addEventListener: () => {} };
   globalThis.chrome = {
     runtime: { getManifest: () => ({ version: '0', side_panel: { default_path: 'panel/index.html' } }), onMessage: listener(), onConnect: listener(), sendMessage: vi.fn(async () => {}) },
     sidePanel: {
@@ -20,6 +21,7 @@ beforeAll(async () => {
     },
     scripting: { executeScript: async (o) => { calls.push(['mark', { tabId: o.target.tabId, on: o.args[0] }]); } },
     storage: { session: { get: async () => ({}), set: async () => {} } },
+    alarms: { create: () => {}, onAlarm: listener() },
     tabs: { onActivated: listener(), onUpdated: listener(), onRemoved: listener() },
   };
   await import('../../src/background/service-worker.js');

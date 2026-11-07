@@ -1,7 +1,7 @@
 {
   "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
   "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
-  "profileVersion": "1.0.0",
+  "profileVersion": "1.1.0",
   "capturedAt": "2026-11-06",
   "pageStates": {
     "loginForm": "#txtPassword",
@@ -11,7 +11,8 @@
     "accountPrompt": { "urlContains": "UpdateMobileNid.jsp", "signature": "#btnUpdateLater" },
     "sessionEnded": { "urlContains": "SessionTimedOut.jsp" },
     "block": { "textPattern": "captcha|access denied|too many requests|temporarily blocked|forbidden", "statuses": [403, 429] },
-    "slowResponseMs": 60000
+    "slowResponseMs": 60000,
+    "pacing": { "paceMs": 3000, "jitterMs": 1000, "backoffSeconds": [5, 15, 45], "listSeconds": 2, "detailSeconds": 0.5, "sessionCheckEvery": 100 }
   },
   "sharedSources": {
     "departmentTree": {
@@ -191,6 +192,8 @@
           "defaultSize": 100
         },
         "rows": "#resultTable > tbody > tr",
+        "tableId": "resultTable",
+        "repeatSweepSize": 50,
         "totalPages": "#totalPages",
         "rowCount": "#cntTenBrief",
         "empty": { "selector": "#noRecordFound", "note": "An empty result carries no totalPages." },
@@ -236,6 +239,7 @@
           }
         ]
       },
+      "statistics": [{ "title": "Tenders by Procuring Entity", "by": "procuring_entity" }, { "title": "Tenders by Status", "by": "status" }, { "title": "Tenders by Procurement Method", "by": "procurement_method" }],
       "naturalKey": { "key": "tender_id", "confirmedByOwner": true, "note": "D39. 1,789 saved rows, no repeats." },
       "detail": {
         "open": {
@@ -374,6 +378,8 @@
           "defaultSize": 100
         },
         "rows": "#resultTable > tbody > tr",
+        "tableId": "resultTable",
+        "repeatSweepSize": 50,
         "totalPages": "#totalPages",
         "empty": { "selector": "#noRecordFound", "note": "The page's own count stays stale on empty, so never trust the page count here (E9)." },
         "columns": [
@@ -410,6 +416,7 @@
           }
         ]
       },
+      "statistics": [{ "title": "Packages by Procuring Entity", "by": "procuring_entity", "sum": "estimated_cost" }, { "title": "Packages by method", "by": "procurement_method", "sum": "estimated_cost" }],
       "naturalKey": { "key": "package_id", "confirmedByOwner": true, "note": "D39. This page has no Tender ID: a plan comes before its tender." },
       "detail": {
         "open": {
@@ -542,6 +549,8 @@
           "defaultSize": 100
         },
         "rows": "#resultTable > tbody > tr",
+        "tableId": "resultTable",
+        "repeatSweepSize": 50,
         "totalPages": "#totalPages",
         "empty": { "selector": "#noRecordFound", "note": "An empty result reports 1 page. Match this marker, never the count or the wording." },
         "dateFormat": "dd-MMM-yyyy",
@@ -549,13 +558,13 @@
           { "cell": 2, "header": "Ministry & Division", "split": "none", "parts": [{ "key": "ministry_division", "header": "Ministry & Division", "index": 0, "type": "text" }] },
           {
             "cell": 3, "header": "Tender/Proposal ID, Ref No., Title & Advertisement Date", "split": "br", "linkSelector": "a[href*=\"ViewAwardedContracts\"]",
-            "note": "The title can be cut short, with the rest in span.morecontent. Exact splitting is settled against saved pages in B5.",
+            "note": "The link holds ID and Ref No.; the next line holds the title, then the date. Proven on saved rows.",
             "parts": [
               { "key": "tender_id", "header": "Tender/Proposal ID", "index": "link:tenderid", "type": "id" },
               { "key": "contract_id", "header": "Contract ID", "index": "link:pkgLotId", "type": "id" },
-              { "key": "reference_no", "header": "Ref No.", "index": 0, "type": "id" },
-              { "key": "title", "header": "Title", "index": 1, "type": "text" },
-              { "key": "advertisement_date", "header": "Advertisement Date", "index": -1, "type": "date" }
+              { "key": "reference_no", "header": "Ref No.", "index": "0:afterComma", "type": "id" },
+              { "key": "title", "header": "Title", "index": "1:beforeDate", "type": "text" },
+              { "key": "advertisement_date", "header": "Advertisement Date", "index": "1:trailingDate", "type": "date" }
             ]
           },
           {
@@ -571,7 +580,8 @@
           { "cell": 8, "header": "Value (Cr. BDT)", "split": "none", "parts": [{ "key": "value_crore", "header": "Value (Crore BDT)", "index": 0, "type": "money", "unit": "Crore BDT" }] }
         ]
       },
-      "naturalKey": { "key": "tender_id", "confirmedByOwner": true, "note": "D39. 211 saved rows, no repeats. Two rows sharing an ID are both kept and flagged, never dropped." },
+      "statistics": [{ "title": "Contracts by Procuring Entity", "by": "procuring_entity", "sum": "value_crore" }, { "title": "Contracts by contractor", "by": "contract_award_to", "sum": "value_crore" }],
+      "naturalKey": { "key": "tender_id", "storeKey": "contract_id", "confirmedByOwner": true, "note": "D39. 211 saved rows, no repeats. Two rows sharing an ID are both kept and flagged, never dropped." },
       "detail": {
         "open": {
           "method": "GET",
@@ -712,6 +722,8 @@
           "defaultSize": 100
         },
         "rows": "#resultTable > tbody > tr",
+        "tableId": "resultTable",
+        "repeatSweepSize": 50,
         "totalPages": "#totalPages",
         "empty": { "selector": "#noRecordFound", "note": "An empty result reports 1 page. Match this marker, never the count or the wording." },
         "dateFormat": "dd-MMM-yyyy",
@@ -734,7 +746,7 @@
           },
           {
             "cell": 4, "header": "Tender/Proposal ID, Ref No., Title & Publishing Date", "split": "br", "linkSelector": "a[href*=\"VieweCmsDetails\"]",
-            "note": "The first line holds ID and Ref No. together, split at the comma. The ID can be '-' or absent. Exact splitting is settled against saved pages in B5.",
+            "note": "The first line holds ID and Ref No. together, split at the comma. The ID can be '-' or absent.",
             "parts": [
               { "key": "tender_id", "header": "Tender/Proposal ID", "index": "0:beforeComma", "type": "id" },
               { "key": "reference_no", "header": "Ref No.", "index": "0:afterComma", "type": "id" },
@@ -757,7 +769,8 @@
           { "cell": 10, "header": "Work Status", "split": "none", "parts": [{ "key": "work_status", "header": "Work Status", "index": 0, "type": "text" }] }
         ]
       },
-      "naturalKey": { "key": "tender_id", "fallback": "record_id", "whenMissing": "Manual", "confirmedByOwner": true, "note": "D39. Manually entered experience has no Tender ID. The column then says Manual, and the user goes by the Ref No. The record's own ID keeps those rows apart inside a run." },
+      "statistics": [{ "title": "Work by Ministry", "by": "ministry", "sum": "contract_amount" }, { "title": "Work by status", "by": "work_status", "sum": "contract_amount" }, { "title": "Work by Procuring Entity", "by": "procuring_entity", "sum": "contract_amount" }],
+      "naturalKey": { "key": "tender_id", "storeKey": "record_id", "fallback": "record_id", "whenMissing": "Manual", "confirmedByOwner": true, "note": "D39. Manually entered experience has no Tender ID. The column then says Manual, and the user goes by the Ref No. The record's own ID keeps those rows apart inside a run." },
       "detail": {
         "open": {
           "method": "GET",

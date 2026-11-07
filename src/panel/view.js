@@ -77,9 +77,9 @@ function dateRangeControl(flow, filter, scan, on) {
   const withToday = flow.rules.window?.filter === filter.id && flow.rules.window.currentDateCheckboxes;
   const end = (role, flag) => h('div', { class: 'date-end' },
     h('label', { for: `f-${filter.id}-${role}` }, role === 'from' ? 'From' : 'To'),
-    dateBox(`f-${filter.id}-${role}`, `${filter.label} ${role === 'from' ? 'From' : 'To'}`, value[flag] ? formatDate(todayOf(new Date())) : value[role], !!value[flag], (v) => on.change(filter.id, { ...value, [role]: v })),
+    dateBox(`f-${filter.id}-${role}`, `${filter.label} ${role === 'from' ? 'From' : 'To'}`, value[flag] ? formatDate(todayOf(new Date())) : value[role], !!value[flag], (v) => on.change(filter.id, { ...on.value(filter.id), [role]: v })),
     withToday && h('label', { class: 'tick' },
-      h('input', { id: `f-${filter.id}-${role}-today`, type: 'checkbox', checked: !!value[flag], onchange: (e) => on.change(filter.id, { ...value, [flag]: e.target.checked, [role]: e.target.checked ? '' : value[role] }) }),
+      h('input', { id: `f-${filter.id}-${role}-today`, type: 'checkbox', checked: !!value[flag], onchange: (e) => on.change(filter.id, { ...on.value(filter.id), [flag]: e.target.checked, [role]: e.target.checked ? '' : on.value(filter.id)[role] }) }),
       'Current date'));
   return h('div', { class: 'date-range' }, end('from', 'fromToday'), end('to', 'toToday'));
 }
@@ -87,7 +87,7 @@ function dateRangeControl(flow, filter, scan, on) {
 function partControl(filter, part, label, scan, on, value) {
   const id = `f-${filter.id}-${part.role}`;
   const scanned = scan.parts.find((p) => p.role === part.role);
-  const change = (e) => on.change(filter.id, { ...value, [part.role]: e.target.value });
+  const change = (e) => on.change(filter.id, { ...on.value(filter.id), [part.role]: e.target.value });
   if (scanned?.options) {
     return h('select', { id, 'aria-label': label, onchange: change },
       ...scanned.options.map((o) => h('option', { value: o.value, selected: (value[part.role] ?? scanned.value) === o.value }, o.text.trim() || 'Any')));
@@ -218,6 +218,5 @@ export function renderFlow(state, on, now = new Date()) {
         ? h('ul', { id: 'start-reasons', class: 'reasons' }, ...reasons.map((r) => h('li', {}, r)))
         : h('p', { class: 'ready' }, icon('check'), 'Filters are ready.'),
       result.exemptionUsed && h('p', { class: 'exempt' }, `Department and date aren't needed for this search, while it stays within ${result.maxRows.toLocaleString('en-US')} rows.`),
-      h('button', { id: 'start', type: 'button', class: 'btn filled wide', disabled: true }, 'Start'),
-      h('p', { class: 'hint' }, 'Collection arrives in a later stage of the build.')));
+      h('button', { id: 'start', type: 'button', class: 'btn filled wide', disabled: !result.ok || vanished.length > 0, onclick: () => on.startPlan(values, result) }, 'Start')));
 }
