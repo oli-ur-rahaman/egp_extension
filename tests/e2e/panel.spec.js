@@ -224,6 +224,76 @@ test('opening a branch keeps the list where it is, and children sit on a tinted 
   } finally { await t.close(); }
 });
 
+test('clicking or choosing never moves the filters (owner, 2026-11-07)', async () => {
+  const t = await setup();
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await t.panel.locator('#f-department-open').click();
+    await t.panel.locator('.tree .node').first().click();
+    await expect(t.panel.locator('[data-count="procuring_entity"]')).toHaveText(/^\d{2,} items$/);
+    await openMore(t.panel);
+    // Short enough that the filters scroll, as they do in a real side panel.
+    await t.panel.addStyleTag({ content: '#screen { flex: none; height: 420px; }' });
+    const screen = t.panel.locator('#screen');
+    const cards = t.panel.locator('[data-filter]');
+    /** Where every filter sits on screen, and the scroll position. */
+    const places = () => t.panel.evaluate(() => ({
+      scroll: document.getElementById('screen').scrollTop,
+      tops: Object.fromEntries([...document.querySelectorAll('[data-filter]')].map((el) => [el.dataset.filter, Math.round(el.getBoundingClientRect().top)])),
+    }));
+    /** The filter acted on must stay exactly where it was, at each moment given. */
+    const stays = async (id, name, act) => {
+      const card = t.panel.locator(`[data-filter="${id}"]`);
+      await card.evaluate((el) => { el.scrollIntoView({ block: 'center' }); });
+      const before = await places();
+      await act();
+      await t.panel.waitForTimeout(300); // long enough for the page's answer and the redraw
+      const after = await places();
+      expect(after.tops[id], `${name}: the filter moved`).toBe(before.tops[id]);
+    };
+
+    // A long list: opening it floats over the filters, leaving each of them where it was.
+    await stays('procuring_entity', 'opening a long list', () => t.panel.locator('#f-procuring_entity').click());
+    await expect(t.panel.locator('#f-procuring_entity')).toBeFocused();
+    await expect(t.panel.locator('#f-procuring_entity-list')).toBeVisible();
+    const open = await places();
+    await t.panel.locator('#f-procuring_entity-list').evaluate((el) => { el.scrollTop = 80; });
+    expect(await places()).toEqual(open);
+    const box = await t.panel.locator('#f-procuring_entity-list').boundingBox();
+    expect(box.y + box.height).toBeLessThanOrEqual(t.panel.viewportSize().height);
+
+    // Choosing from it: the list closes and stays closed, and nothing moves.
+    await stays('procuring_entity', 'choosing from a long list', () => t.panel.locator('#f-procuring_entity-list li').nth(5).click());
+    await expect(t.panel.locator('#f-procuring_entity-list')).toBeHidden();
+    await expect(t.panel.locator('#f-procuring_entity')).toHaveAttribute('aria-expanded', 'false');
+
+    // A short list, a tick, a typed value.
+    await stays('procurement_nature', 'a short list', () => t.panel.locator('#f-procurement_nature').selectOption({ label: 'Works' }));
+    await stays('publishing_date', 'a date tick', () => t.panel.locator('#f-publishing_date-from-today').uncheck());
+    await stays('tender_id', 'a typed value', async () => {
+      await t.panel.locator('#f-tender_id').fill('12345');
+      await t.panel.locator('#f-tender_id').blur();
+    });
+
+    // A filter above the one in use changing size doesn't move it: Department's name returns after a clear.
+    await stays('department', 'clearing Department', () => t.panel.locator('#f-department-clear').click());
+
+    // The last filter, with the panel scrolled right to its end, where a shrinking page would drag it.
+    const lastId = await cards.last().getAttribute('data-filter');
+    const last = t.panel.locator(`[data-filter="${lastId}"]`).locator('select, input').first();
+    await screen.evaluate((el) => { el.scrollTop = el.scrollHeight; });
+    const end = await places();
+    if ((await last.evaluate((el) => el.tagName)) === 'SELECT') await last.selectOption({ index: 1 });
+    else {
+      await last.fill('1');
+      await last.blur();
+    }
+    await t.panel.waitForTimeout(300);
+    expect((await places()).tops[lastId], 'the last filter moved').toBe(end.tops[lastId]);
+  } finally { await t.close(); }
+});
+
 test('what the user set survives the panel being closed and reopened on its tab (D45)', async () => {
   const t = await setup();
   try {

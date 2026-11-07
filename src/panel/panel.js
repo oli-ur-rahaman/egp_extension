@@ -228,12 +228,44 @@ const on = {
   openTree: openPicker,
 };
 
+/** The filters on screen. Those inside a closed fold take no space. @returns {HTMLElement[]} */
+function shownFilters() {
+  return /** @type {HTMLElement[]} */ ([...screenEl.getElementsByClassName('filter')]).filter((el) => el.getClientRects().length > 0);
+}
+
+/** The filter that must not move in a redraw: the one in use, or else the first one in view. */
+function steadyFilter() {
+  const shown = shownFilters();
+  const inUse = /** @type {HTMLElement | null | undefined} */ (document.activeElement?.closest('.filter'));
+  const viewTop = screenEl.getBoundingClientRect().top;
+  const el = inUse && shown.includes(inUse) ? inUse : shown.find((f) => f.getBoundingClientRect().bottom > viewTop);
+  return el ? { id: el.dataset.filter, top: el.getBoundingClientRect().top } : null;
+}
+
 function render() {
-  const focused = document.activeElement?.id;
+  const active = /** @type {HTMLInputElement | null} */ (document.activeElement);
+  const focused = active?.id;
+  // A long list the user has open, perhaps with words typed in it, is still open after the redraw.
+  const openList = active?.getAttribute('role') === 'combobox' && active.getAttribute('aria-expanded') === 'true'
+    ? { typed: active.value, scrollTop: document.getElementById(`${focused}-list`)?.scrollTop ?? 0 } : null;
+  const steady = steadyFilter();
   const { scrollTop } = screenEl;
   screenEl.replaceChildren(current.flowId ? renderFlow(current, on) : renderNoPage(current));
-  if (focused && !focused.startsWith('picker')) document.getElementById(focused)?.focus({ preventScroll: true });
   screenEl.scrollTop = scrollTop;
+  // A filter above may have grown or shrunk, so the one that matters is put back where it was.
+  const same = steady && shownFilters().find((f) => f.dataset.filter === steady.id);
+  if (same) screenEl.scrollTop += same.getBoundingClientRect().top - steady.top;
+  if (!focused || focused.startsWith('picker')) return;
+  const box = /** @type {HTMLInputElement | null} */ (document.getElementById(focused));
+  box?.focus({ preventScroll: true });
+  if (!box || !openList) return;
+  box.click();
+  if (box.value !== openList.typed) {
+    box.value = openList.typed;
+    box.dispatchEvent(new Event('input'));
+  }
+  const list = document.getElementById(`${focused}-list`);
+  if (list) list.scrollTop = openList.scrollTop;
 }
 
 screenEl.addEventListener('scroll', () => {
