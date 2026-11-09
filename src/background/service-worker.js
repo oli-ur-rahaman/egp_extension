@@ -172,7 +172,7 @@ async function askForRun(run, message) {
 
 const transport = {
   /** @param {any} run @param {number} page @param {number} size */
-  list: (run, page, size) => askForRun(run, { type: MSG.AGENT_LIST, fields: run.fields, page, size }),
+  list: (/** @type {any} */ run, /** @type {number} */ page, /** @type {number} */ size, /** @type {any} */ fields) => askForRun(run, { type: MSG.AGENT_LIST, fields: fields ?? run.fields, page, size }),
   /** @param {any} run @param {any} row */
   detail: (run, row) => askForRun(run, { type: MSG.AGENT_DETAIL, open: row.open }),
   /** @param {any} run @param {any} office */
@@ -232,8 +232,35 @@ function showSearchOnPage(tabId, profile, flow) {
   chrome.tabs.sendMessage(tabId, { type: MSG.AGENT_SEARCH, profile, flow }).catch(() => {});
 }
 
+/**
+ * D66: several offices on a page that takes one. Each office is its own search; the first page of each gives its size.
+ * @param {number} tabId @param {any} profile @param {any} flow @param {any} built @param {any} plan @param {any} several @param {number} size
+ */
+async function measureSeveral(tabId, profile, flow, built, plan, several, size) {
+  const filter = flow.filters.find((/** @type {any} */ f) => f.id === several.filterId);
+  const searches = [];
+  let rows = 0;
+  let pages = 0;
+  for (const office of several.offices) {
+    const fields = { ...built.fields, [filter.requestField]: office.value };
+    const first = await askAgent(tabId, { type: MSG.AGENT_LIST, profile, flow, fields, page: 1, size });
+    if (first.network) throw new Error(first.network);
+    if (first.outcome === 'RATE_LIMITED') throw new Error('BLOCKED: the portal answered with a block or CAPTCHA. Stop and try later.');
+    if (first.outcome !== 'OK' && first.outcome !== 'EMPTY') throw new Error(first.reason ?? "The portal's answer couldn't be read.");
+    const total = first.outcome === 'EMPTY' ? 0 : first.totalPages ?? 1;
+    // Exact for one page; for more, the last page's size isn't known until the run reaches it.
+    rows += total <= 1 ? first.rows?.length ?? 0 : Math.round((total - 0.5) * size);
+    pages += total;
+    searches.push({ key: office.value, fields: { [filter.requestField]: office.value }, labels: { office: office.text } });
+    await new Promise((r) => setTimeout(r, 300)); // polite between offices
+  }
+  const label = filter.label.replace(/^(Select|By) /, '');
+  const shown = built.shown.map((/** @type {any} */ s) => (s.label === label ? { ...s, value: `${searches.length} offices: ${several.offices.map((/** @type {any} */ o) => o.text).join('; ')}` } : s));
+  return { ...plan, shown, searches, approx: true, size, repeatSize: flow.list.repeatSweepSize, totalPages: pages, rows };
+}
+
 /** Works out how big the search is, with the one or two requests that takes (D27), before anything starts. */
-async function measure(/** @type {any} */ { tabId, loops, categoryNames }) {
+async function measure(/** @type {any} */ { tabId, loops, several, categoryNames }) {
   const profile = await getProfile();
   const tab = await panelTab(tabId);
   const flowId = tab?.url ? detectFlow(profile, tab.url) : null;
@@ -248,7 +275,13 @@ async function measure(/** @type {any} */ { tabId, loops, categoryNames }) {
     // What the file says was searched: a filter on All says All, not what the page last showed.
     const shown = built.shown.map((/** @type {any} */ s) => {
       const filter = flow.filters.find((/** @type {any} */ f) => f.allMeansLoop && wanted[f.id] && f.label.replace(/^(Select|By) /, '') === s.label);
-      return filter ? { ...s, value: filter.allLabel.replace(' ({n})', '').replace('{n}', '') } : s;
+      if (!filter) return s;
+      const want = wanted[filter.id];
+      if (Array.isArray(want)) {
+        const names = built.loops[filter.id].options.filter((/** @type {any} */ o) => want.includes(o.value)).map((/** @type {any} */ o) => o.text);
+        return { ...s, value: `${names.length} offices: ${names.join('; ')}` };
+      }
+      return { ...s, value: filter.allLabel.replace(' ({n})', '').replace('{n}', '') };
     });
     const projectFilter = flow.filters.find((/** @type {any} */ f) => f.id === 'project');
     const chosen = projectFilter && built.fields[projectFilter.requestField] && built.fields[projectFilter.requestField] !== projectFilter.empty;
@@ -256,6 +289,7 @@ async function measure(/** @type {any} */ { tabId, loops, categoryNames }) {
     return { ...plan, shown, offices: combos, sizes, project, rows: null, totalPages: combos.length };
   }
   const size = flow.list.request.defaultSize;
+  if (several?.offices?.length > 1) return measureSeveral(tab.id, profile, flow, built, plan, several, size);
   const first = await askAgent(tab.id, { type: MSG.AGENT_LIST, profile, flow, fields: built.fields, page: 1, size });
   if (first.network) throw new Error(first.network);
   if (first.outcome === 'RATE_LIMITED') throw new Error('BLOCKED: the portal answered with a block or CAPTCHA. Stop and try later.');

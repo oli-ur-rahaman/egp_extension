@@ -127,7 +127,7 @@ test('Flow 2: choosing a Department refills Procuring Entity from the page, and 
     // The list stays on its "no selection" entry: nothing is filtered until the user chooses (owner, 2026-11-07).
     expect((await t.page.locator('#cmbOffice').inputValue()).trim()).toBe('');
     await openMore(t.panel);
-    await expect(t.panel.locator('#f-procuring_entity')).toHaveValue('All');
+    await expect(t.panel.locator('#f-procuring_entity')).toHaveText(/^All offices \(\d+\)/);
     // The window's ticks both default to today: a zero-length window is valid, so the filters are ready.
     await expect(t.panel.locator('#plan')).toContainText('Filters are ready.');
     await expect(t.panel.locator('#window-span')).toContainText('0 y 0 m');
@@ -160,7 +160,7 @@ test('Flow 1 logged in: three filters, All offices by default', async () => {
   try {
     await t.open('procurement_transaction_report');
     await expect(t.panel.locator('[data-filter]')).toHaveCount(3);
-    await expect(t.panel.locator('#f-pe_office')).toHaveValue(/^All offices \([\d,]+\)$/);
+    await expect(t.panel.locator('#f-pe_office')).toHaveText(/^All offices \([\d,]+\)/);
     await expect(t.panel.locator('#start-reasons')).toContainText('Financial Year');
     await choose(t.panel, 'financial_year', '2024-2025');
     await expect(t.panel.locator('#plan')).toContainText('Filters are ready.');
@@ -253,20 +253,14 @@ test('clicking or choosing never moves the filters (owner, 2026-11-07)', async (
       expect(after.tops[id], `${name}: the filter moved`).toBe(before.tops[id]);
     };
 
-    // A long list: opening it floats over the filters, leaving each of them where it was.
-    await stays('procuring_entity', 'opening a long list', () => t.panel.locator('#f-procuring_entity').click());
-    await expect(t.panel.locator('#f-procuring_entity')).toBeFocused();
-    await expect(t.panel.locator('#f-procuring_entity-list')).toBeVisible();
-    const open = await places();
-    await t.panel.locator('#f-procuring_entity-list').evaluate((el) => { el.scrollTop = 80; });
-    expect(await places()).toEqual(open);
-    const box = await t.panel.locator('#f-procuring_entity-list').boundingBox();
-    expect(box.y + box.height).toBeLessThanOrEqual(t.panel.viewportSize().height);
-
-    // Choosing from it: the list closes and stays closed, and nothing moves.
-    await stays('procuring_entity', 'choosing from a long list', () => t.panel.locator('#f-procuring_entity-list li').nth(5).click());
-    await expect(t.panel.locator('#f-procuring_entity-list')).toBeHidden();
-    await expect(t.panel.locator('#f-procuring_entity')).toHaveAttribute('aria-expanded', 'false');
+    // The office picker (D66): choosing an office from it leaves the filter where it was.
+    await stays('procuring_entity', 'choosing an office', async () => {
+      await t.panel.locator('#f-procuring_entity').click();
+      await t.panel.locator('[data-cluster="unplaced"]').locator('xpath=ancestor::div[1]').locator('.twist').click();
+      await t.panel.locator('input[data-office]').first().check();
+      await t.panel.locator('#offices-done').click();
+    });
+    await expect(t.panel.locator('#f-procuring_entity')).toHaveAttribute('data-offices', '1');
 
     // A short list, a tick, a typed value.
     await stays('procurement_nature', 'a short list', () => t.panel.locator('#f-procurement_nature').selectOption({ label: 'Works' }));
@@ -338,5 +332,56 @@ test('the block check reads what a user sees, not the page\'s scripts', async ()
     await t.panel.reload();
     await t.page.bringToFront();
     await expect(t.panel.locator('#flow-view')).toContainText('block or CAPTCHA');
+  } finally { await t.close(); }
+});
+
+test('the office picker: clusters, kinds of office, several offices, and the hierarchy screen (D66)', async () => {
+  // Finding boxes among 224 offices is slow for the test runner; for a user each step is under half a second.
+  test.setTimeout(90000);
+  const t = await setup();
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await t.panel.locator('#f-department-open').click();
+    await t.panel.locator('.tree .node').first().click();
+    await expect(t.panel.locator('[data-count="procuring_entity"]')).toHaveText(/^\d{2,} items$/);
+    const field = t.panel.locator('#f-procuring_entity');
+    await field.click();
+    // Offices that fit nowhere come first, as a cluster.
+    await expect(t.panel.locator('#sheet .tree > li').first()).toContainText('Not in the hierarchy');
+    // Every division office at once, then clear.
+    await t.panel.locator('[data-level="4"]').click();
+    await expect(t.panel.locator('[data-level="4"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(t.panel.locator('#offices-done')).toHaveText(/^Done \(\d{2,}\)$/);
+    await t.panel.locator('#sheet .sheet-foot .btn', { hasText: 'Clear' }).click();
+    await expect(t.panel.locator('#offices-done')).toHaveText('Done: All offices');
+    // Find two offices by name and choose them.
+    const search = t.panel.locator('#offices-search');
+    await search.fill('Rajshahi PWD Division');
+    const boxes = t.panel.locator('input[data-office]:visible');
+    await expect(boxes.first()).toBeVisible();
+    await boxes.nth(0).check();
+    await boxes.nth(1).check();
+    await t.panel.locator('#offices-done').click();
+    await expect(field).toHaveText(/^2 offices/);
+    await expect(t.panel.locator('#plan')).toContainText('Filters are ready.');
+    // The page holds no single office while several are chosen.
+    expect((await t.page.locator('#cmbOffice').inputValue()).trim()).toBe('');
+    // A cluster's box chooses everything in it.
+    await field.click();
+    await t.panel.locator('[data-cluster="unplaced"]').check();
+    await expect(t.panel.locator('#offices-done')).toHaveText(/^Done \(\d+\)$/);
+    await t.panel.locator('#offices-close').click();
+
+    // The hierarchy screen: place an office that fits nowhere, and it moves out of that cluster.
+    await t.panel.locator('#settings').click();
+    await expect(t.panel.locator('.settings-head').first()).toContainText('Not in the hierarchy');
+    const before = Number((await t.panel.locator('.settings-head').first().textContent()).replace(/\D/g, ''));
+    const first = t.panel.locator('.settings-list li[data-office]').first();
+    await first.locator('[data-move]').click();
+    await first.locator('input[role="combobox"]').fill('Rajshahi PWD Circle');
+    await first.locator('.combo-list li').first().click();
+    await expect(t.panel.locator('.settings-head').first()).toHaveText(`Not in the hierarchy (${before - 1})`);
+    await t.panel.locator('#settings-close').click();
   } finally { await t.close(); }
 });

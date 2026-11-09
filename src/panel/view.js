@@ -33,8 +33,18 @@ function listControl(id, value, options, onChange) {
     ...options.map((o) => h('option', { value: o.value, selected: o.value === value }, o.text)));
 }
 
+/** D66: PWD's office list opens the office picker. */
+function officeControl(filter, scan, on) {
+  const value = on.value(filter.id);
+  const name = (v) => scan.options.find((o) => o.value === v)?.text;
+  const shown = Array.isArray(value) ? `${value.length} offices` : value && value !== '__all__' && name(value) ? name(value) : `All offices (${scan.options.length.toLocaleString('en-US')})`;
+  return h('button', { id: `f-${filter.id}`, type: 'button', class: 'field-button', 'aria-haspopup': 'dialog', 'data-offices': Array.isArray(value) ? String(value.length) : value && value !== '__all__' && name(value) ? '1' : 'all', onclick: () => on.openOffices(filter.id) },
+    h('span', { class: 'tree-value' }, shown), icon('chevronRight'));
+}
+
 function selectControl(flow, filter, scan, on) {
   const id = `f-${filter.id}`;
+  if (on.officeTree?.(filter.id)) return officeControl(filter, scan, on);
   const change = (v) => on.change(filter.id, v);
   if (filter.allMeansLoop) {
     const drafted = on.draft(filter.id);

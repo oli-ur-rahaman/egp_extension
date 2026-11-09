@@ -26,9 +26,10 @@ export function reportCombos(flow, built, wanted, now) {
   for (const filter of flow.filters.filter((f) => f.allMeansLoop)) {
     const loop = built.loops[filter.id];
     if (!loop) continue;
-    let options = wanted[filter.id] ? loop.options : loop.selected ? [loop.selected] : [];
+    const want = wanted[filter.id];
+    let options = Array.isArray(want) ? loop.options.filter((o) => want.includes(o.value)) : want ? loop.options : loop.selected ? [loop.selected] : [];
     // A year after the current one can't have data yet.
-    if (filter.loopFields && wanted[filter.id]) options = options.filter((o) => (yearOf(o.text)?.start ?? 0) <= current.start);
+    if (filter.loopFields && want === true) options = options.filter((o) => (yearOf(o.text)?.start ?? 0) <= current.start);
     sizes[filter.id] = options.length;
     const next = [];
     for (const combo of combos) {

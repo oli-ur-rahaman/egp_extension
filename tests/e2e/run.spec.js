@@ -367,7 +367,9 @@ test('Flow 1: a project grab loops every year to the current one, for one office
     await t.panel.locator('#f-project').click();
     await t.panel.locator('#f-project-list li').nth(1).click();
     await t.panel.locator('#f-pe_office').click();
-    await t.panel.locator('#f-pe_office-list li').nth(1).click();
+    await t.panel.locator('#offices-search').fill('Rajshahi PWD Division-1');
+    await t.panel.locator('input[data-office]:visible').first().check();
+    await t.panel.locator('#offices-done').click();
     await expect(t.panel.locator('#start')).toBeEnabled();
     await t.panel.locator('#start').click();
     await expect(t.panel.locator('#plan-sizes')).toContainText('× 1 office');
@@ -378,6 +380,32 @@ test('Flow 1: a project grab loops every year to the current one, for one office
     const dev = XLSX.utils.sheet_to_json(file.book.Sheets.Development, { raw: true });
     expect(new Set(dev.map((r) => r['Financial Year'])).size).toBeGreaterThan(5);
     expect(dev[0].Project).toBeTruthy();
+  } finally { await t.close(); }
+});
+
+test('several offices (D66): Flow 2 searches each one; Flow 1 reports only those', async () => {
+  const t = await setup({ rows: 30, loggedIn: false });
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await chooseDepartment(t);
+    await t.panel.locator('#f-procuring_entity').click();
+    await t.panel.locator('#offices-search').fill('Rajshahi PWD Division');
+    await t.panel.locator('input[data-office]:visible').nth(0).check();
+    await t.panel.locator('input[data-office]:visible').nth(1).check();
+    await t.panel.locator('#offices-done').click();
+    const listUrl = profile.flows.tender_info.list.request.url;
+    const before = t.portal.state.requests.filter((r) => r.path === listUrl).length;
+    await t.panel.locator('#start').click();
+    await expect(t.panel.locator('#plan-count')).toBeVisible();
+    await t.panel.locator('#run-start').click();
+    await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
+    // Two measuring requests, then a sweep per office. The fake portal gives every office the same 30 rows, kept once;
+    // so the second office looks short and gets the second search too. On the real portal each office has its own rows.
+    expect(t.portal.state.requests.filter((r) => r.path === listUrl).length - before).toBeGreaterThanOrEqual(4);
+    const file = await downloaded(t);
+    expect(file.data).toHaveLength(30);
+    expect(file.data[0]['Filter: Procuring Entity']).toMatch(/^2 offices: /);
   } finally { await t.close(); }
 });
 

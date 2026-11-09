@@ -75,27 +75,49 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     await sleep(wait * 1000 * (1 + random() * 0.2));
   }
 
-  /** Sets up the second sweep, or moves on. */
-  async function endOfSweep(run, lastPageRows) {
-    const distinct = await store.countRows(run.id);
-    run.stats.rows = distinct;
-    const expected = (run.totalPages - 1) * run.size + lastPageRows;
-    if (run.sweep === 1) run.expected = expected;
-    // Tied timestamps can hide a row from one sweep (insight 1); another size shifts the page edges and finds it (insight 3).
-    if (run.sweep === 1 && distinct < expected && run.repeatSize && run.repeatSize !== run.size) {
-      run.sweep = 2;
-      run.size = run.repeatSize;
+  /** The fields of the search under way: one office of several (D66), or the page's own. */
+  const searchFields = (run) => (run.searches ? { ...run.fields, ...run.searches[run.searchIndex].fields } : run.fields);
+
+  /** One search is done: the next office, or the detail pages. */
+  function nextSearch(run, distinct, expected) {
+    run.expectedDone = (run.expectedDone ?? 0) + expected;
+    if (run.searches && run.searchIndex < run.searches.length - 1) {
+      run.searchIndex += 1;
+      run.searchStart = distinct;
       run.page = 1;
-      run.note = `${(expected - distinct).toLocaleString('en-US')} rows were hidden by the portal's sorting. Searching the list once more to find them.`;
+      run.sweep = 1;
+      run.size = run.baseSize ?? run.size;
+      run.totalPages = 1;
+      run.note = null;
       return;
     }
+    run.expected = run.expectedDone;
     run.note = null;
     run.phase = run.clusters.length ? 'detail' : 'done';
     run.stats.detailTotal = run.clusters.length ? distinct : 0;
   }
 
+  /** Sets up the second sweep, or moves on. */
+  async function endOfSweep(run, lastPageRows) {
+    const distinct = await store.countRows(run.id);
+    run.stats.rows = distinct;
+    const expected = (run.totalPages - 1) * run.size + lastPageRows;
+    if (run.sweep === 1) run.searchExpected = expected;
+    if (run.sweep === 1 && !run.searches) run.expected = expected;
+    const found = distinct - (run.searchStart ?? 0);
+    // Tied timestamps can hide a row from one sweep (insight 1); another size shifts the page edges and finds it (insight 3).
+    if (run.sweep === 1 && found < expected && run.repeatSize && run.repeatSize !== run.size) {
+      run.sweep = 2;
+      run.size = run.repeatSize;
+      run.page = 1;
+      run.note = `${(expected - found).toLocaleString('en-US')} rows were hidden by the portal's sorting. Searching the list once more to find them.`;
+      return;
+    }
+    nextSearch(run, distinct, run.searchExpected ?? expected);
+  }
+
   async function listStep(run) {
-    const result = await transport.list(run, run.page, run.size);
+    const result = await transport.list(run, run.page, run.size, searchFields(run));
     if (result.outcome !== 'OK' && result.outcome !== 'EMPTY') {
       if (await handleBad(run, result)) return;
       await pause(run, 'shape', `${PAUSE_TEXT.shape} ${result.reason ?? ''}`.trim());
@@ -103,9 +125,15 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     }
     if (result.empty) {
       if (run.page === 1 && run.sweep === 1) {
-        run.expected = 0;
         run.totalPages = 0;
-        run.phase = 'done';
+        run.searchExpected = 0;
+        if (!run.searches) {
+          run.expected = 0;
+          run.phase = 'done';
+        } else {
+          nextSearch(run, await store.countRows(run.id), 0);
+          if (run.phase === 'detail' && run.stats.detailTotal === 0) run.phase = 'done';
+        }
       } else {
         // Rows moved during a long run, so this page no longer exists: the page before was the last full one.
         run.totalPages = run.page - 1;
@@ -276,7 +304,12 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         project: plan.project ?? null,
         sizes: plan.sizes ?? null,
         size: plan.size,
+        baseSize: plan.size,
         repeatSize: plan.repeatSize,
+        searches: plan.searches ?? null,
+        searchIndex: 0,
+        searchStart: 0,
+        expectedDone: 0,
         page: 1,
         totalPages: plan.totalPages ?? 1,
         expected: plan.rows ?? null,

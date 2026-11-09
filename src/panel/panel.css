@@ -275,3 +275,21 @@ label.node input { margin-top: 2px; flex: none; }
 .cluster-field small { display: block; color: var(--muted); font-size: 11px; }
 .plan-end .agree { margin-top: 8px; padding: 6px 8px; border-radius: 8px; font-size: 12px; }
 .plan-end .agree.asked { background: #fce8e6; color: #b3261e; font-weight: 600; outline: 1px solid #b3261e; }
+/* Office picker and hierarchy screen (D66) */
+.appbar #settings { margin-left: 4px; }
+.level-bar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 16px 10px; }
+.level-bar .hint { width: 100%; margin: 0; }
+.chip-btn { padding: 5px 12px; border: 1px solid var(--divider); border-radius: 16px; background: var(--bg); color: var(--text); font: inherit; font-size: 12px; cursor: pointer; }
+.chip-btn:hover { background: var(--surface-2); }
+.chip-btn[aria-pressed="true"] { background: var(--primary-soft); color: var(--on-primary-soft); border-color: transparent; font-weight: 600; }
+.tree .count, .tree .own { color: var(--muted); font-size: 11px; font-weight: 400; }
+.tree li[hidden], .tree[hidden] { display: none; }
+.settings-intro { flex: none; margin: 0; padding: 0 16px 10px; color: var(--muted); font-size: 12px; line-height: 17px; }
+.settings-list { list-style: none; margin: 0; padding: 0; }
+.settings-head { padding: 10px 16px 4px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.settings-list > li[data-office] { padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--divider); }
+.settings-row { display: flex; align-items: flex-start; gap: 8px; }
+.settings-name { flex: 1; min-width: 0; line-height: 18px; overflow-wrap: anywhere; }
+.settings-name small { display: block; color: var(--muted); font-size: 11px; }
+.settings-name .tag { margin-left: 6px; }
+.settings-move { padding: 6px 0 4px; }

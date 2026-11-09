@@ -4,6 +4,9 @@
 import { MSG, request as send } from '../shared/bus.js';
 import { h } from './icons.js';
 import { buildPicker } from './picker.js';
+import { buildOfficePicker } from './office-picker.js';
+import { buildOfficeSettings } from './office-settings.js';
+import { isPwdList, loadOfficeTree } from '../shared/offices.js';
 import { buildPlanSheet, renderRun } from './run-view.js';
 import { buildWorkbook, fileName } from '../shared/export.js';
 import { buildXlsx } from '../shared/xlsx-writer.js';
@@ -104,6 +107,17 @@ function pageValue(filter, value) {
 /** @param {string} filterId @param {any} value @param {boolean} [redraw] */
 async function change(filterId, value, redraw = true) {
   const filter = current.flow.filters.find((/** @type {any} */ f) => f.id === filterId);
+  // A parent's change refills its children, so offices chosen from the old list no longer apply.
+  for (const child of current.flow.filters.filter((/** @type {any} */ f) => f.dependsOn?.includes(filterId))) delete session.drafts[child.id];
+  if (Array.isArray(value)) {
+    // Several offices (D66): the tool loops them; the page shows no single one.
+    session.drafts[filterId] = value;
+    save();
+    if (filter.allMeansLoop) return render();
+    value = filter.empty ?? '';
+  } else if (!filter.allMeansLoop && filter.control === 'select') {
+    delete session.drafts[filterId];
+  }
   if (filter.allMeansLoop) {
     session.drafts[filterId] = value;
     save();
@@ -138,6 +152,7 @@ async function clearAll(filters) {
     } else if (filter.allMeansLoop) {
       session.drafts[filter.id] = '__all__';
     } else {
+      delete session.drafts[filter.id];
       await change(filter.id, filter.default ?? filter.empty ?? '', false);
     }
   }
@@ -235,7 +250,76 @@ const on = {
   },
   openTree: openPicker,
   startPlan,
+  /** D66: the office picker applies to PWD's office lists. @param {string} id */
+  officeTree: (id) => {
+    const scan = current.page.filters.find((/** @type {any} */ s) => s.id === id);
+    return officeTree && scan?.options && isPwdList(officeTree.tree, scan.options) ? officeTree : null;
+  },
+  openOffices,
 };
+
+// --- Offices (D66)
+
+/** @type {any} */
+let officeTree = null;
+async function loadOffices() {
+  try {
+    officeTree = await loadOfficeTree();
+  } catch {
+    officeTree = null;
+  }
+}
+
+/** @param {string} id */
+function openOffices(id) {
+  const filter = current.flow.filters.find((/** @type {any} */ f) => f.id === id);
+  const scan = current.page.filters.find((/** @type {any} */ s) => s.id === id);
+  const value = valueOf(id);
+  const chosen = Array.isArray(value) ? value : value && value !== '__all__' && value !== (filter.empty ?? '') ? [value] : [];
+  // Offices the tree doesn't know are remembered, so the Office hierarchy screen can place them.
+  const unknown = scan.options.filter((/** @type {any} */ o) => !(o.value in officeTree.tree.egpOffices));
+  if (unknown.length) {
+    chrome.storage.local.get('officesSeen').then((got) => chrome.storage.local.set({ officesSeen: { ...(got.officesSeen ?? {}), ...Object.fromEntries(unknown.map((/** @type {any} */ o) => [o.value, o.text])) } }));
+  }
+  const sheet = /** @type {any} */ (buildOfficePicker({
+    title: filter.label.replace(/^(Select|By) /, ''),
+    tree: officeTree.tree,
+    overrides: officeTree.overrides,
+    options: scan.options,
+    chosen,
+    onClose: closePicker,
+    onPick: (ids) => {
+      closePicker();
+      // Every office is the same as All, and quicker: one search, not one per office.
+      const all = ids.length === 0 || ids.length === scan.options.length;
+      if (all) change(id, filter.allMeansLoop ? '__all__' : filter.empty ?? '');
+      else if (ids.length === 1) change(id, ids[0]);
+      else change(id, ids);
+    },
+  }));
+  sheetEl.replaceChildren(sheet);
+  sheetEl.hidden = false;
+  sheet.restore();
+}
+
+async function openSettings() {
+  if (!officeTree) await loadOffices();
+  if (!officeTree) return;
+  const seen = /** @type {any} */ ((await chrome.storage.local.get('officesSeen')).officesSeen ?? {});
+  sheetEl.replaceChildren(buildOfficeSettings({
+    tree: officeTree.tree,
+    overrides: officeTree.overrides,
+    seen,
+    onClose: () => {
+      sheetEl.hidden = true;
+      sheetEl.replaceChildren();
+      if (current?.flowId && !shownRun) render();
+    },
+    onSaved: () => loadOffices(),
+  }));
+  sheetEl.hidden = false;
+}
+document.getElementById('settings')?.addEventListener('click', openSettings);
 
 // --- The run
 
@@ -251,8 +335,17 @@ async function startPlan(values, result) {
       if (values[filter.id]?.fromToday || values[filter.id]?.toToday) current = await ask(MSG.PAGE_APPLY, { filterId: filter.id, value: pageValue(filter, values[filter.id]) });
     }
     const category = current.flow.filters.find((/** @type {any} */ f) => f.source === 'categoryTree');
-    const loops = Object.fromEntries(current.flow.filters.filter((/** @type {any} */ f) => f.allMeansLoop).map((/** @type {any} */ f) => [f.id, valueOf(f.id) === '__all__']));
-    const plan = /** @type {any} */ (await ask(MSG.RUN_MEASURE, { loops, categoryNames: category ? values[category.id]?.names ?? [] : [] }));
+    // true: every office or year; a list: those offices (D66); false: what the page has.
+    const loops = Object.fromEntries(current.flow.filters.filter((/** @type {any} */ f) => f.allMeansLoop).map((/** @type {any} */ f) => {
+      const v = valueOf(f.id);
+      return [f.id, v === '__all__' ? true : Array.isArray(v) ? v : false];
+    }));
+    /** Several offices chosen on a flow whose page takes one: each is its own search. */
+    const several = current.flow.filters.filter((/** @type {any} */ f) => !f.allMeansLoop && Array.isArray(valueOf(f.id))).map((/** @type {any} */ f) => {
+      const scan = current.page.filters.find((/** @type {any} */ s) => s.id === f.id);
+      return { filterId: f.id, offices: valueOf(f.id).map((/** @type {string} */ v) => scan.options.find((/** @type {any} */ o) => o.value === v)).filter(Boolean) };
+    })[0] ?? null;
+    const plan = /** @type {any} */ (await ask(MSG.RUN_MEASURE, { loops, several, categoryNames: category ? values[category.id]?.names ?? [] : [] }));
     setStatus('ok', 'Ready');
     const key = `fields:${current.flowId}`;
     const remembered = /** @type {string[]} */ ((await chrome.storage.local.get(key))[key] ?? []);
@@ -448,6 +541,7 @@ function holdConnection() {
 }
 holdConnection();
 
+loadOffices();
 ask(MSG.PING).then((/** @type {any} */ reply) => {
   versionEl.textContent = `v${reply.version}`;
 }, () => {});

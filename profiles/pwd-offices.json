@@ -1,0 +1,3771 @@
+{
+ "$comment": "PWD office hierarchy (D66). Built by tools/make-office-tree.py from the owner's hierarchy file and e-GP's office list. Office names and IDs only. Users place new or unmatched offices in the panel's Office hierarchy screen; their changes are kept in the browser, not here.",
+ "department": "Public Works Department",
+ "builtOn": "2026-11-10",
+ "levels": {
+  "1": "Chief Engineer",
+  "2": "Zone",
+  "3": "Circle",
+  "4": "Division",
+  "5": "Sub-division"
+ },
+ "egpOffices": {
+  "933": "Chattogram PWD Division-1,Chattogram",
+  "934": "PWD Resource Division, Dhaka",
+  "935": "Shere Bangla Nagar PWD Division-1, Dhaka",
+  "936": "Medical College PWD Division, Dhaka",
+  "937": "PWD EM Division-5, Dhaka",
+  "938": "PWD EM Division-8, Dhaka",
+  "939": "Cox's Bazar PWD Division",
+  "940": "Noakhali PWD Division",
+  "941": "Sylhet PWD Division",
+  "942": "Rajshahi PWD Division-2",
+  "943": "Rangpur PWD Division",
+  "944": "Khulna PWD Division-1",
+  "945": "Invalid Gazipur",
+  "946": "Barisal PWD Division",
+  "947": "Dinajpur PWD Division",
+  "948": "Munshiganj PWD Division",
+  "949": "Manikganj PWD Division",
+  "950": "Sirajganj PWD Division",
+  "951": "Natore PWD Division",
+  "952": "Jessore PWD Division",
+  "989": "INVALID 5",
+  "1125": "PWD EM Division-1, Dhaka",
+  "1178": "PWD EM Division-2, Dhaka",
+  "1179": "PWD EM Division-3, Dhaka",
+  "1180": "PWD EM Division-4, Dhaka",
+  "1181": "PWD EM Division-6, Dhaka",
+  "1182": "PWD EM Division-7, Dhaka",
+  "1184": "Office of The Chief Engineer of Public Works",
+  "1220": "Chattogram PWD EM Division-2",
+  "1221": "Narayangonj PWD Division, Narayangonj",
+  "1226": "Dhaka PWD Zone, Dhaka",
+  "1229": "Dhaka PWD Circle-1, Dhaka",
+  "1230": "Dhaka PWD Division-1, Dhaka",
+  "1231": "Dhaka PWD Division-2, Segunbagicha,Dhaka",
+  "1232": "City PWD Division, Abdul Gani Road, Dhaka",
+  "1233": "Dhaka PWD Circle-2, Dhaka",
+  "1234": "Dhaka PWD Division-3, Dhaka",
+  "1235": "Dhaka PWD Division-4, Dhaka",
+  "1236": "Eden Bhabon PWD Division, Bangladesh Secretariate, Dhaka",
+  "1237": "Invalid DMC PWD Div",
+  "1238": "Dhaka PWD Circle-3, Sere-e-Bangla Nagar, Dhaka",
+  "1239": "Shere Bangla Nagar PWD Division-2, Dhaka",
+  "1240": "Shere Bangla Nagar PWD Division-3, Dhaka",
+  "1241": "Mohakhali PWD Division, Mohakhali, Dhaka",
+  "1242": "Dhaka PWD Circle-4, Dhaka",
+  "1243": "Motijheel PWD Division, Segunbagicha, Dhaka",
+  "1244": "Azimpur PWD Division, New Market, Dhaka",
+  "1245": "Norshingdi PWD Division, Norshingdi",
+  "1246": "Invalid Munshiganj",
+  "1247": "Savar PWD Circle, Allenbari, Tejgaon, Dhaka",
+  "1248": "Mirpur PWD Division, Dhaka",
+  "1249": "Savar PWD Division, Dhaka",
+  "1250": "Gazipur PWD Division, Gazipur",
+  "1251": "Office of the Additional Chief Engineer(EM) of PWD, Dhaka",
+  "1252": "PWD EM Circle-1, Purtha Bhabon, Dhaka",
+  "1253": "PWD EM Circle-2, Dhaka",
+  "1254": "PWD EM Circle-3, Dhaka",
+  "1255": "Chattogram PWD Zone,Chattogram",
+  "1256": "Chattogram PWD Circle-1, Chattogram",
+  "1257": "Rangamati PWD Division, Rangamati",
+  "1258": "Chattogram PWD Circle-2, Chattogram",
+  "1259": "Chattogram PWD Division-3, Chattogram",
+  "1260": "Bandarban PWD Division, Bandarban",
+  "1261": "Chattogram PWD EM Circle,Chattogram",
+  "1262": "Cumilla PWD Circle, Cumilla",
+  "1263": "Cumilla PWD Division, Cumilla",
+  "1264": "Laksmipur PWD Division, Laksmipur",
+  "1265": "Khulna PWD Zone, Khulna",
+  "1266": "Khulna PWD Circle, Khulna",
+  "1267": "Satkhira PWD Division, Satkhira",
+  "1268": "INVALID OFFICE",
+  "1269": "INVALID",
+  "1270": "Invalid Barguna PWD Division, Barguna",
+  "1271": "PWD Training Academy & Testing Laboratory",
+  "1304": "Wood 2",
+  "1305": "Invalid EM Workshop",
+  "1306": "PWD Maintenance Division, Dhaka",
+  "1395": "Bhola PWD Division",
+  "1396": "khagrachari pwd division",
+  "1397": "Rajshahi PWD Division-1",
+  "1398": "Sherpur PWD Division",
+  "1552": "Arboriculture pwd division",
+  "1553": "Invalid PWD Dhaka Division-3",
+  "1556": "Kishoreganj pwd division",
+  "1560": "Jamalpur pwd division",
+  "1562": "Netrokona pwd division",
+  "1564": "invalid ctg div1",
+  "1565": "Chattogram PWD Division -2, Chattogram",
+  "1566": "Invalid ctg div3",
+  "1567": "Chattogram PWD Division-4",
+  "1568": "Brammanbaria pwd division",
+  "1569": "Chandpur pwd division",
+  "1570": "Feni pwd division",
+  "1571": "Chapai Nawabganj pwd division",
+  "1572": "Pabna PWD Division, Pabna",
+  "1573": "Naogaon pwd division",
+  "1575": "Bogra pwd division",
+  "1576": "Invalid Sirajgonj",
+  "1577": "Joypurhat pwd division",
+  "1578": "Kurigram PWD Division",
+  "1579": "Gaibandha PWD Division",
+  "1580": "Nilphamari PWD Division,Nilphamari",
+  "1585": "Mymensingh PWD Division, Mymensingh",
+  "1596": "Invalid PWD Trainining Academy",
+  "1600": "Khulna PWD Division-2",
+  "1605": "Thakurgaon PWD Division",
+  "1634": "Panchagarh PWD Division",
+  "1635": "Lalmonirhat PWD Division",
+  "1636": "Bagerhat PWD Division",
+  "1637": "Narail PWD Division",
+  "1638": "Jhenaidah PWD Division",
+  "1639": "Magura PWD Division",
+  "1640": "Chuadanga PWD Division",
+  "1641": "Meherpur PWD Division",
+  "1644": "Faridpur PWD Division",
+  "1645": "Rajbari PWD Division",
+  "1646": "Patuakhali PWD Division",
+  "1647": "Barguna PWD Division",
+  "1648": "Perojpur PWD Division",
+  "1649": "Jhalokathi PWD Division",
+  "1650": "Gopalganj PWD Division",
+  "1651": "Madaripur PWD Division",
+  "1655": "Shariatpur PWD Division",
+  "1657": "Sunamganj PWD Division",
+  "1658": "Moulvibazar PWD Division",
+  "1659": "Hobiganj PWD Division",
+  "1664": "Chattogram Maintenance Division",
+  "1665": "PWD EM Workshop Division",
+  "1667": "PWD Wood Workshop Division",
+  "1669": "Rajshahi PWD Zone",
+  "1670": "Rangpur PWD Zone",
+  "1671": "Sylhet PWD Zone",
+  "1672": "Barisal PWD Zone",
+  "1676": "Rajshahi PWD Circle",
+  "1677": "Bogra PWD Circle",
+  "1678": "Rangpur PWD Circle",
+  "1679": "Jessore PWD Circle",
+  "1680": "Barisal PWD Circle",
+  "1681": "Sylhet PWD Circle",
+  "1682": "PWD EM P&D Circle",
+  "1683": "Office of Additional Chief Engineer (Est & Coord) of PWD",
+  "1684": "PWD Health Wing",
+  "1685": "PWD Planning & Special Project",
+  "1705": "Kushtia PWD Division",
+  "1741": "Invalid EM-5 Dhk",
+  "1871": "Chattogram PWD EM Division 1",
+  "1909": "Invalid Gopalgonj",
+  "2246": "Tangail PWD Division",
+  "2251": "Invalid Satkhira",
+  "2252": "invalid satkhira",
+  "2259": "Maintenance Circle , Dhaka",
+  "2420": "PWD Mymensingh Circle",
+  "2433": "Invalid Division",
+  "2434": "PWD Survey Division",
+  "2482": "Urban Building Safety Project (UBSP)",
+  "2637": "Project Division 2",
+  "2821": "Invalid 4",
+  "3578": "EM Division of Uttora Apartment Project",
+  "3579": "Project Circle 1",
+  "4232": "Project Division 1",
+  "4278": "Chief Judicial Megistrate Court Building Project",
+  "4663": "Project Division 4",
+  "5113": "Population Project Cell",
+  "5114": "Audit and Monitoring Circle",
+  "6475": "Office of the Superintending Engineer (Devlopment)",
+  "6605": "Reserve",
+  "6657": "PWD EM PnD Division 2",
+  "6697": "Population Project Cell (PPC)",
+  "6905": "PECU Circle",
+  "6943": "Planning and Special Project",
+  "8438": "PWD EM Circle 2, Dhaka",
+  "9604": "Gopalgonj PWD Zone",
+  "9605": "Mymensingh PWD Zone",
+  "9606": "Dhaka PWD metropolitan Zone",
+  "9607": "PWD EM P&D Zone, Dhaka",
+  "9608": "Gopalganj PWD Circle",
+  "9609": "Tangail PWD Circle",
+  "9610": "Dinajpur PWD Circle",
+  "9611": "Pabna PWD Circle",
+  "9612": "Rangamati PWD Circle",
+  "9643": "PWD EM Division-9, Dhaka",
+  "9644": "PWD EM Division-10, Dhaka",
+  "9645": "PWD EM Division-11, Dhaka",
+  "9710": "PWD EM MIS Division 2",
+  "9711": "PWD MIS Circle",
+  "13001": "PWD EM Circle-4, Dhaka",
+  "13479": "Khulna P&D Office",
+  "13669": "PWD EM MIS Division 3",
+  "15352": "EM Planning Circle",
+  "15353": "EM Design Circle",
+  "15433": "EM Planning Division1",
+  "15559": "Rajshahi PWD EM P&D Division",
+  "15576": "EM Planning Division 2",
+  "15577": "EM Planning Division3",
+  "16144": "PWD EM Design Division 3",
+  "16152": "Project Division 5, Dhaka",
+  "16203": "PWD EM P&D Division-3, Dhaka",
+  "16231": "PWD Project Circle-2, Dhaka",
+  "16510": "PWD EM MIS Division 1",
+  "16747": "PWD EM Design Division-2,Dhaka",
+  "17028": "PWD Design Division-6, Dhaka",
+  "17216": "Mymensingh PWD EM P&D Division",
+  "17343": "PWD EM Wood Workshop Division ( Special Unit)",
+  "17583": "Office of the Executive Engineer(O & M)",
+  "19543": "PWD Procurement Unit,Public Works Department",
+  "19684": "Construction of 123 Nos flats for government employees Project",
+  "19781": "PWD Design Division-5, Dhaka",
+  "21867": "Office of the Project Director of 112 Flat, Agargaon",
+  "21882": "PWD EM P&D Division, Chattogram",
+  "22363": "PWD Plumbing Unit-3, Dhaka",
+  "22673": "Chattogram PWD EM Zone,Chattogram",
+  "23004": "PWD Design Zone",
+  "26020": "Dhaka PWD Circle-5, Dhaka",
+  "26396": "PWD EM Design Division 1",
+  "26514": "Dhaka PWD Division-5, Dhaka",
+  "26985": "Pabna PWD EM Division, Pabna",
+  "27137": "Rajshahi PWD EM Division, Rajshahi",
+  "27156": "Khulna PWD EM Division, Khulna",
+  "28527": "Establishment-1, Office of the Chief Engineer, Public Works Department",
+  "28962": "Sher-E-Bangla Nagar PWD Division-4, Dhaka",
+  "29886": "PWD EM Division-12, Dhaka",
+  "29913": "PWD EM Division-13, Dhaka",
+  "30829": "PWD EM PnD Division-1, Dhaka",
+  "31343": "PWD Monitoring Division, Dhaka"
+ },
+ "nodes": [
+  {
+   "id": "n0",
+   "name": "Chief Engineer",
+   "level": 1,
+   "children": [
+    {
+     "id": "n3",
+     "name": "Additional Chief Engineer (Est. & Co)",
+     "level": 2,
+     "children": [
+      {
+       "id": "n5",
+       "name": "Office of the Superintending Engineer (Establishment)",
+       "level": 3,
+       "children": [
+        {
+         "id": "n7",
+         "name": "Office of the Executive Engineer (Enquery)",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n9",
+         "name": "Office of the Executive Engineer (Establishment)",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n11",
+         "name": "Office Of the Executive Engineer (O&M)",
+         "level": 4,
+         "children": [],
+         "egpId": "17583",
+         "egpName": "Office of the Executive Engineer(O & M)"
+        }
+       ]
+      },
+      {
+       "id": "n13",
+       "name": "PWD Training Academy and Testing Laboratory",
+       "level": 3,
+       "children": [],
+       "egpId": "1271",
+       "egpName": "PWD Training Academy & Testing Laboratory"
+      },
+      {
+       "id": "n15",
+       "name": "Superintending Engineer(Coordination)",
+       "level": 3,
+       "children": [
+        {
+         "id": "n17",
+         "name": "Office of the Executive Engineer (Co-ordination)",
+         "level": 4,
+         "children": []
+        }
+       ]
+      },
+      {
+       "id": "n21",
+       "name": "Superintending Engineer(Development)",
+       "level": 3,
+       "children": [
+        {
+         "id": "n26",
+         "name": "Office of the Executive Engineer (Development)",
+         "level": 4,
+         "children": []
+        }
+       ],
+       "egpId": "6475",
+       "egpName": "Office of the Superintending Engineer (Devlopment)"
+      }
+     ],
+     "egpId": "1683",
+     "egpName": "Office of Additional Chief Engineer (Est & Coord) of PWD"
+    },
+    {
+     "id": "n28",
+     "name": "Additional Chief Engineer (Planning and Special Project)",
+     "level": 2,
+     "children": [
+      {
+       "id": "n31",
+       "name": "Architecture Circle (reserve)",
+       "level": 3,
+       "children": []
+      },
+      {
+       "id": "n67",
+       "name": "PWD Internal Audit Unit (Reserve)",
+       "level": 3,
+       "children": []
+      },
+      {
+       "id": "n79",
+       "name": "PWD Monitoring & Audit Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n89",
+         "name": "PWD Audit Division, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n95",
+         "name": "PWD Monitoring Division, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "31343",
+         "egpName": "PWD Monitoring Division, Dhaka"
+        }
+       ]
+      },
+      {
+       "id": "n101",
+       "name": "PWD PECU Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n111",
+         "name": "PWD PECU Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n119",
+           "name": "PWD PECU Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ]
+        }
+       ],
+       "egpId": "6905",
+       "egpName": "PECU Circle"
+      },
+      {
+       "id": "n124",
+       "name": "PWD Project Circle-1, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n131",
+         "name": "PWD Project Division-1, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "4232",
+         "egpName": "Project Division 1"
+        },
+        {
+         "id": "n140",
+         "name": "PWD Project Division-2, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "2637",
+         "egpName": "Project Division 2"
+        }
+       ],
+       "egpId": "3579",
+       "egpName": "Project Circle 1"
+      },
+      {
+       "id": "n158",
+       "name": "PWD Project Circle-2, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n168",
+         "name": "PWD Project Division-3, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n175",
+         "name": "PWD Project Division-4, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "4663",
+         "egpName": "Project Division 4"
+        },
+        {
+         "id": "n184",
+         "name": "PWD Project Division-5, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "16152",
+         "egpName": "Project Division 5, Dhaka"
+        }
+       ],
+       "egpId": "16231",
+       "egpName": "PWD Project Circle-2, Dhaka"
+      },
+      {
+       "id": "n192",
+       "name": "PWD Research and Development Unit",
+       "level": 3,
+       "children": [
+        {
+         "id": "n194",
+         "name": "Disaster Risk Reduction (DRR) Unit",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n201",
+         "name": "Environmental & Social Safeguard (ESS)",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n207",
+         "name": "Innovation in Construction, Repair & Maintenance (CRMI) Unit",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n214",
+         "name": "Schedule of Rates (SoR)",
+         "level": 4,
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "n223",
+     "name": "Barishal PWD Zone, Barishal",
+     "level": 2,
+     "children": [
+      {
+       "id": "n231",
+       "name": "Barishal PWD Circle, Barishal",
+       "level": 3,
+       "children": [
+        {
+         "id": "n239",
+         "name": "Barguna PWD Division, Barguna",
+         "level": 4,
+         "children": [
+          {
+           "id": "n246",
+           "name": "Barguna PWD E/M Sub-Division, Barguna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n250",
+           "name": "Barguna PWD Sub-Division, Barguna",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1647",
+         "egpName": "Barguna PWD Division"
+        },
+        {
+         "id": "n255",
+         "name": "Barishal PWD Division, Barishal",
+         "level": 4,
+         "children": [
+          {
+           "id": "n264",
+           "name": "Barishal PWD E/M Sub-Division, Barishal",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n269",
+           "name": "Barishal PWD Medical Sub-Division, Barishal",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n274",
+           "name": "Barishal PWD Sub-Division, Barishal",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n279",
+           "name": "Goarnadi PWD Sub-Division, Barishal",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "946",
+         "egpName": "Barisal PWD Division"
+        },
+        {
+         "id": "n284",
+         "name": "Bhola PWD Division, Bhola",
+         "level": 4,
+         "children": [
+          {
+           "id": "n291",
+           "name": "Bhola PWD E/M Sub-Division, Bhola",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n296",
+           "name": "Bhola PWD Sub-Division, Bhola",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n301",
+           "name": "Lalmohan PWD Sub-Division, Bhola",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1395",
+         "egpName": "Bhola PWD Division"
+        },
+        {
+         "id": "n306",
+         "name": "Jhalakathi PWD Division, Jhalakathi",
+         "level": 4,
+         "children": [
+          {
+           "id": "n313",
+           "name": "Jhalakathi PWD E/M Sub-Division, Jhalakathi",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n318",
+           "name": "Jhalakathi PWD Sub-Division, Jhalakathi",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1649",
+         "egpName": "Jhalokathi PWD Division"
+        },
+        {
+         "id": "n323",
+         "name": "Patuakhali PWD Division, Patuakhali",
+         "level": 4,
+         "children": [
+          {
+           "id": "n330",
+           "name": "Golachipa PWD Sub-Division, Patuakhali",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n335",
+           "name": "Patuakhali PWD E/M Sub-Division, Patuakhali",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n340",
+           "name": "Patuakhali PWD Sub-Division, Patuakhali",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1646",
+         "egpName": "Patuakhali PWD Division"
+        },
+        {
+         "id": "n345",
+         "name": "Pirojpur PWD Division, Pirojpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n352",
+           "name": "Pirojpur PWD E/M Sub-Division, Pirojpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n356",
+           "name": "Pirojpur PWD Sub-Division, Pirojpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1648",
+         "egpName": "Perojpur PWD Division"
+        }
+       ],
+       "egpId": "1680",
+       "egpName": "Barisal PWD Circle"
+      }
+     ],
+     "egpId": "1672",
+     "egpName": "Barisal PWD Zone"
+    },
+    {
+     "id": "n361",
+     "name": "Chattogram PWD Zone, Chattogram",
+     "level": 2,
+     "children": [
+      {
+       "id": "n369",
+       "name": "Chattogram PWD Circle-1, Chattogram",
+       "level": 3,
+       "children": [
+        {
+         "id": "n378",
+         "name": "Chattogram PWD Division-1, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n385",
+           "name": "Chattogram PWD Sub-Division-1, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n390",
+           "name": "Chattogram PWD Sub-Division-2, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n395",
+           "name": "Patia PWD Sub-Division, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "933",
+         "egpName": "Chattogram PWD Division-1,Chattogram"
+        },
+        {
+         "id": "n400",
+         "name": "Chattogram PWD Division-2, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n406",
+           "name": "Chattogram PWD Sub-Division-3, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n411",
+           "name": "Chattogram PWD Sub-Division-4, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n416",
+           "name": "Hathajari PWD Sub-Division, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1565",
+         "egpName": "Chattogram PWD Division -2, Chattogram"
+        },
+        {
+         "id": "n421",
+         "name": "PWD Maintenance Division, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n428",
+           "name": "PWD Maintenance Sub-Division 1, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n433",
+           "name": "PWD Maintenance Sub-Division 2, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n438",
+           "name": "PWD Maintenance Sub-Division 3, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1664",
+         "egpName": "Chattogram Maintenance Division"
+        }
+       ],
+       "egpId": "1256",
+       "egpName": "Chattogram PWD Circle-1, Chattogram"
+      },
+      {
+       "id": "n443",
+       "name": "Chattogram PWD Circle-2, Chattogram",
+       "level": 3,
+       "children": [
+        {
+         "id": "n452",
+         "name": "Chattogram PWD Division-3, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n459",
+           "name": "Chattogram PWD Sub-Division-5, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n464",
+           "name": "Chattogram PWD Sub-Division-6, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1259",
+         "egpName": "Chattogram PWD Division-3, Chattogram"
+        },
+        {
+         "id": "n469",
+         "name": "Chattogram PWD Division-4, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n477",
+           "name": "Chattogram PWD Arboriculture Sub-Division, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n482",
+           "name": "Chattogram PWD Resource Sub-Division, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n487",
+           "name": "Chattogram PWD Sub-Division-8, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n492",
+           "name": "Chattogram PWD Sub-Division-9, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1567",
+         "egpName": "Chattogram PWD Division-4"
+        },
+        {
+         "id": "n497",
+         "name": "Cox's Bazar PWD Division, Coxbazar",
+         "level": 4,
+         "children": [
+          {
+           "id": "n505",
+           "name": "Coxbazar PWD E/M Sub-Division, Coxbazar",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n510",
+           "name": "Coxbazar PWD Sub-Division-1, Coxbazar",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n515",
+           "name": "Coxbazar PWD Sub-Division-2, Coxbazar",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "939",
+         "egpName": "Cox's Bazar PWD Division"
+        }
+       ],
+       "egpId": "1258",
+       "egpName": "Chattogram PWD Circle-2, Chattogram"
+      },
+      {
+       "id": "n520",
+       "name": "Cumilla PWD Circle, Cumilla",
+       "level": 3,
+       "children": [
+        {
+         "id": "n530",
+         "name": "Brahmanbaria PWD Division, Brahmanbaria",
+         "level": 4,
+         "children": [
+          {
+           "id": "n537",
+           "name": "Brahmanbaria PWD E/M Sub-Division, Brahmanbaria",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n542",
+           "name": "Brahmanbaria PWD Sub-Division-1, Brahmanbaria",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n547",
+           "name": "Brahmanbaria PWD Sub-Division-2, Brahmanbaria",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1568",
+         "egpName": "Brammanbaria pwd division"
+        },
+        {
+         "id": "n552",
+         "name": "Chandpur PWD Division, Chandpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n558",
+           "name": "Chandpur PWD E/M Sub-Division, Chandpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n563",
+           "name": "Chandpur PWD Sub-Division, Chandpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1569",
+         "egpName": "Chandpur pwd division"
+        },
+        {
+         "id": "n568",
+         "name": "Cumilla PWD Division, Cumilla",
+         "level": 4,
+         "children": [
+          {
+           "id": "n576",
+           "name": "Cortbari PWD Sub-Division, Cumilla",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n581",
+           "name": "Cumilla PWD E/M Sub-Division, Cumilla",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n586",
+           "name": "Cumilla PWD Sub-Division, Cumilla",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1263",
+         "egpName": "Cumilla PWD Division, Cumilla"
+        },
+        {
+         "id": "n591",
+         "name": "Feni PWD Division, Feni",
+         "level": 4,
+         "children": [
+          {
+           "id": "n598",
+           "name": "Feni PWD E/M Sub-Division, Feni",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n603",
+           "name": "Feni PWD Sub-Division, Feni",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1570",
+         "egpName": "Feni pwd division"
+        },
+        {
+         "id": "n608",
+         "name": "Lakshmipur PWD Division, Lakshmipur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n614",
+           "name": "Lakshmipur PWD E/M Sub-Division, Lakshmipur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n618",
+           "name": "Lakshmipur PWD Sub-Division, Lakshmipur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1264",
+         "egpName": "Laksmipur PWD Division, Laksmipur"
+        },
+        {
+         "id": "n623",
+         "name": "Noakhali PWD Division, Noakhali",
+         "level": 4,
+         "children": [
+          {
+           "id": "n631",
+           "name": "Noakhali PWD E/M Sub-Division, Noakhali",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n636",
+           "name": "Noakhali PWD Sub-Division-1, Noakhali",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n641",
+           "name": "Noakhali PWD Sub-Division-2, Noakhali",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "940",
+         "egpName": "Noakhali PWD Division"
+        }
+       ],
+       "egpId": "1262",
+       "egpName": "Cumilla PWD Circle, Cumilla"
+      },
+      {
+       "id": "n646",
+       "name": "Rangamati PWD Circle , Rangamati",
+       "level": 3,
+       "children": [
+        {
+         "id": "n655",
+         "name": "Bandarban PWD Division, Bandarban",
+         "level": 4,
+         "children": [
+          {
+           "id": "n662",
+           "name": "Bandarban PWD E/M Sub-Division, Bandarban",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n667",
+           "name": "Bandarban PWD Sub-Division, Bandarban",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n672",
+           "name": "Lama PWD Sub-Division, Bandarban",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1260",
+         "egpName": "Bandarban PWD Division, Bandarban"
+        },
+        {
+         "id": "n677",
+         "name": "Khagrachhari PWD Division, Khagrachhari",
+         "level": 4,
+         "children": [
+          {
+           "id": "n683",
+           "name": "Khagrachhari PWD E/M Sub-Division, Khagrachhari",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n688",
+           "name": "Khagrachhari PWD Sub-Division, Khagrachhari",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n693",
+           "name": "Ramgor PWD Sub-Division, Khagrachhari",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1396",
+         "egpName": "khagrachari pwd division"
+        },
+        {
+         "id": "n698",
+         "name": "Rangamati PWD Division, Rangamati",
+         "level": 4,
+         "children": [
+          {
+           "id": "n706",
+           "name": "Kaptai PWD Sub-Division, Rangamati",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n711",
+           "name": "Rangamati PWD E/M Sub-Division, Rangamati",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n716",
+           "name": "Rangamati PWD Sub-Division, Rangamati",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1257",
+         "egpName": "Rangamati PWD Division, Rangamati"
+        }
+       ],
+       "egpId": "9612",
+       "egpName": "Rangamati PWD Circle"
+      }
+     ],
+     "egpId": "1255",
+     "egpName": "Chattogram PWD Zone,Chattogram"
+    },
+    {
+     "id": "n721",
+     "name": "Dhaka PWD Zone, Dhaka",
+     "level": 2,
+     "children": [
+      {
+       "id": "n731",
+       "name": "Dhaka PWD Circle-4, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n740",
+         "name": "Azimpur PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n748",
+           "name": "Azimpur PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n753",
+           "name": "Azimpur PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n758",
+           "name": "Pilkhana PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1244",
+         "egpName": "Azimpur PWD Division, New Market, Dhaka"
+        },
+        {
+         "id": "n763",
+         "name": "Motijheel PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n771",
+           "name": "Dhaka PWD Sub-Division-7, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n776",
+           "name": "Motijheel PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n781",
+           "name": "Motijheel PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1243",
+         "egpName": "Motijheel PWD Division, Segunbagicha, Dhaka"
+        },
+        {
+         "id": "n787",
+         "name": "Munshiganj PWD Division, Munshiganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n794",
+           "name": "Munshiganj PWD Sub-Division, Munshiganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "948",
+         "egpName": "Munshiganj PWD Division"
+        },
+        {
+         "id": "n800",
+         "name": "Narayanganj PWD Division, Narayanganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n808",
+           "name": "Narayanganj PWD Sub-Division-1, Narayanganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n813",
+           "name": "Narayanganj PWD Sub-Division-2, Narayanganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1221",
+         "egpName": "Narayangonj PWD Division, Narayangonj"
+        }
+       ],
+       "egpId": "1242",
+       "egpName": "Dhaka PWD Circle-4, Dhaka"
+      },
+      {
+       "id": "n818",
+       "name": "PWD Maintenance Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n826",
+         "name": "Narsingdi PWD Division, Narsingdi",
+         "level": 4,
+         "children": [
+          {
+           "id": "n833",
+           "name": "Narsingdi PWD Sub-Division-1, Narsingdi",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n837",
+           "name": "Narsingdi PWD Sub-Division-2, Narsingdi",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1245",
+         "egpName": "Norshingdi PWD Division, Norshingdi"
+        },
+        {
+         "id": "n842",
+         "name": "PWD Maintenance Division,Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n848",
+           "name": "PWD Maintenance Sub-Division 1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n853",
+           "name": "PWD Maintenance Sub-Division 2, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n858",
+           "name": "PWD Maintenance Sub-Division 3, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1306",
+         "egpName": "PWD Maintenance Division, Dhaka"
+        },
+        {
+         "id": "n863",
+         "name": "PWD Resource Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n870",
+           "name": "PWD Resource Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "934",
+         "egpName": "PWD Resource Division, Dhaka"
+        }
+       ],
+       "egpId": "2259",
+       "egpName": "Maintenance Circle , Dhaka"
+      },
+      {
+       "id": "n875",
+       "name": "Savar PWD Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n883",
+         "name": "Gazipur PWD Division, Gazipur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n891",
+           "name": "Gazipur PWD Sub-Division-1, Gazipur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n896",
+           "name": "Gazipur PWD Sub-Division-2, Gazipur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n901",
+           "name": "Gazipur PWD Sub-Division-3, Gazipur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1250",
+         "egpName": "Gazipur PWD Division, Gazipur"
+        },
+        {
+         "id": "n906",
+         "name": "Manikganj PWD Division, Manikganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n914",
+           "name": "Manikganj PWD Sub-Division-1, Manikganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n919",
+           "name": "Manikganj PWD Sub-Division-2, Manikganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "949",
+         "egpName": "Manikganj PWD Division"
+        },
+        {
+         "id": "n924",
+         "name": "Mirpur PWD Division, Mirpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n932",
+           "name": "Mirpur PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n938",
+           "name": "Mirpur PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n943",
+           "name": "Mirpur PWD Sub-Division-3, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1248",
+         "egpName": "Mirpur PWD Division, Dhaka"
+        },
+        {
+         "id": "n948",
+         "name": "Savar PWD Division, Savar",
+         "level": 4,
+         "children": [
+          {
+           "id": "n956",
+           "name": "Savar PWD Sub-Division-1, Savar",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n961",
+           "name": "Savar PWD Sub-Division-2, Savar",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1249",
+         "egpName": "Savar PWD Division, Dhaka"
+        }
+       ],
+       "egpId": "1247",
+       "egpName": "Savar PWD Circle, Allenbari, Tejgaon, Dhaka"
+      }
+     ],
+     "egpId": "1226",
+     "egpName": "Dhaka PWD Zone, Dhaka"
+    },
+    {
+     "id": "n966",
+     "name": "Gopalganj PWD Zone, Gopalganj",
+     "level": 2,
+     "children": [
+      {
+       "id": "n974",
+       "name": "Gopalganj PWD Circle, Gopalganj",
+       "level": 3,
+       "children": [
+        {
+         "id": "n982",
+         "name": "Faridpur PWD Division, Faridpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n990",
+           "name": "Faridpur PWD E/M Sub-Division, Faridpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n995",
+           "name": "Faridpur PWD Sub-Division-1, Faridpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1000",
+           "name": "Faridpur PWD Sub-Division-2, Faridpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1644",
+         "egpName": "Faridpur PWD Division"
+        },
+        {
+         "id": "n1005",
+         "name": "Gopalganj PWD Division, Gopalganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1011",
+           "name": "Gopalganj PWD Arboriculture SubDivision, Gopalganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1016",
+           "name": "Gopalganj PWD E/M Sub-Division, Gopalganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1021",
+           "name": "Gopalganj PWD Sub-Division, Gopalganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1650",
+         "egpName": "Gopalganj PWD Division"
+        },
+        {
+         "id": "n1026",
+         "name": "Madaripur PWD Division, Madaripur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1033",
+           "name": "Madaripur PWD E/M Sub-Division, Madaripur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1038",
+           "name": "Madaripur PWD Sub-Division, Madaripur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1651",
+         "egpName": "Madaripur PWD Division"
+        },
+        {
+         "id": "n1043",
+         "name": "Rajbari PWD Division, Rajbari",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1051",
+           "name": "Rajbari PWD E/M Sub-Division, Rajbari",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1056",
+           "name": "Rajbari PWD Sub-Division, Rajbari",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1645",
+         "egpName": "Rajbari PWD Division"
+        },
+        {
+         "id": "n1061",
+         "name": "Shariatpur PWD Division, Shariatpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1068",
+           "name": "Shariatpur PWD E/M Sub-Division, Shariatpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1073",
+           "name": "Shariatpur PWD Sub-Division, Shariatpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1655",
+         "egpName": "Shariatpur PWD Division"
+        }
+       ],
+       "egpId": "9608",
+       "egpName": "Gopalganj PWD Circle"
+      },
+      {
+       "id": "n1078",
+       "name": "Gopalganj PWD E/M P&D Division , Gopalganj",
+       "level": 3,
+       "children": []
+      }
+     ],
+     "egpId": "9604",
+     "egpName": "Gopalgonj PWD Zone"
+    },
+    {
+     "id": "n1084",
+     "name": "Khulna PWD Zone, Khulna",
+     "level": 2,
+     "children": [
+      {
+       "id": "n1092",
+       "name": "Jashore PWD Circle, Jashore",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1101",
+         "name": "Chuadanga PWD Division, Chuadanga",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1108",
+           "name": "Chuadanga PWD E/M Sub-Division, Chuadanga",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1112",
+           "name": "Chuadanga PWD Sub-Division, Chuadanga",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1640",
+         "egpName": "Chuadanga PWD Division"
+        },
+        {
+         "id": "n1117",
+         "name": "Jashore PWD Division, Jashore",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1126",
+           "name": "Jashore PWD E/M Sub-Division, Jashore",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1131",
+           "name": "Jashore PWD Sub-Division-1, Jashore",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1136",
+           "name": "Jashore PWD Sub-Division-2, Jashore",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "952",
+         "egpName": "Jessore PWD Division"
+        },
+        {
+         "id": "n1141",
+         "name": "Jhenaidah PWD Division, Jhenaidah",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1148",
+           "name": "Jhenaidah PWD E/M Sub-Division, Jhenaidah",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1153",
+           "name": "Jhenaidah PWD Sub-Division, Jhenaidah",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1638",
+         "egpName": "Jhenaidah PWD Division"
+        },
+        {
+         "id": "n1158",
+         "name": "Kushtia PWD Division, Kushtia",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1166",
+           "name": "Kushtia PWD E/M Sub-Division, Kushtia",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1171",
+           "name": "Kushtia PWD Sub-Division, Kushtia",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1705",
+         "egpName": "Kushtia PWD Division"
+        },
+        {
+         "id": "n1176",
+         "name": "Magura PWD Division, Magura",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1183",
+           "name": "Magura PWD E/M Sub-Division, Magura",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1188",
+           "name": "Magura PWD Sub-Division, Magura",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1639",
+         "egpName": "Magura PWD Division"
+        },
+        {
+         "id": "n1193",
+         "name": "Meherpur PWD Division, Meherpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1200",
+           "name": "Meherpur PWD E/M Sub-Division, Meherpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1205",
+           "name": "Meherpur PWD Sub-Division, Meherpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1641",
+         "egpName": "Meherpur PWD Division"
+        },
+        {
+         "id": "n1210",
+         "name": "Narail PWD Division, Narail",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1217",
+           "name": "Narail PWD E/M Sub-Division, Narail",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1221",
+           "name": "Narail PWD Sub-Division, Narail",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1637",
+         "egpName": "Narail PWD Division"
+        }
+       ],
+       "egpId": "1679",
+       "egpName": "Jessore PWD Circle"
+      },
+      {
+       "id": "n1226",
+       "name": "Khulna PWD Circle, Khulna",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1235",
+         "name": "Bagerhat PWD Division, Bagerhat",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1242",
+           "name": "Bagerhat PWD E/M Sub-Division, Bagerhat",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1247",
+           "name": "Bagerhat PWD Sub-Division-1, Bagerhat",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1252",
+           "name": "Bagerhat PWD Sub-Division-2, Bagerhat",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1636",
+         "egpName": "Bagerhat PWD Division"
+        },
+        {
+         "id": "n1257",
+         "name": "Khulna PWD Division-1, Khulna",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1266",
+           "name": "Khulna PWD Sub-Division-1, Khulna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1270",
+           "name": "Khulna PWD Sub-Division-3, Khulna",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "944",
+         "egpName": "Khulna PWD Division-1"
+        },
+        {
+         "id": "n1275",
+         "name": "Khulna PWD Division-2, Khulna",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1283",
+           "name": "Khulna PWD Sub-Division-2, Khulna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1288",
+           "name": "PWD Maintainance Sub-Division, Khulna",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1600",
+         "egpName": "Khulna PWD Division-2"
+        },
+        {
+         "id": "n1293",
+         "name": "Khulna PWD E/M Division, Khulna",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1297",
+           "name": "Khulna PWD E/M Sub-Division-1, Khulna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1302",
+           "name": "Khulna PWD E/M Sub-Division-2, Khulna",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "27156",
+         "egpName": "Khulna PWD EM Division, Khulna"
+        },
+        {
+         "id": "n1307",
+         "name": "Satkhira PWD Division, Satkhira",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1313",
+           "name": "Satkhira PWD E/M Sub-Division, Satkhira",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1318",
+           "name": "Satkhira PWD Sub-Division-1, Satkhira",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1323",
+           "name": "Satkhira PWD Sub-Division-2, Satkhira",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1267",
+         "egpName": "Satkhira PWD Division, Satkhira"
+        }
+       ],
+       "egpId": "1266",
+       "egpName": "Khulna PWD Circle, Khulna"
+      },
+      {
+       "id": "n1328",
+       "name": "Khulna PWD E/M P&D Division , Khulna",
+       "level": 3,
+       "children": []
+      }
+     ],
+     "egpId": "1265",
+     "egpName": "Khulna PWD Zone, Khulna"
+    },
+    {
+     "id": "n1334",
+     "name": "Mymensingh PWD Zone, Mymensingh",
+     "level": 2,
+     "children": [
+      {
+       "id": "n1342",
+       "name": "Mymensingh PWD Circle, Mymensingh",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1349",
+         "name": "Kishoreganj PWD Division, Kishoreganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1356",
+           "name": "Kishoreganj PWD E/M Sub-Division, Kishoreganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1361",
+           "name": "Kishoreganj PWD Sub-Division-1, Kishoreganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1366",
+           "name": "Kishoreganj PWD Sub-Division-2, Kishoreganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1556",
+         "egpName": "Kishoreganj pwd division"
+        },
+        {
+         "id": "n1371",
+         "name": "Mymensingh PWD Division, Mymensingh",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1379",
+           "name": "Kendua PWD Sub-Division, Mymensing",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1385",
+           "name": "Mymensingh PWD E/M Sub-Division, Mymensingh",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1390",
+           "name": "Mymensingh PWD Sub-Division, Mymensingh",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1585",
+         "egpName": "Mymensingh PWD Division, Mymensingh"
+        },
+        {
+         "id": "n1395",
+         "name": "Netrokona PWD Division, Netrokona",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1402",
+           "name": "Netrokona PWD E/M Sub-Division, Netrokona",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1407",
+           "name": "Netrokona PWD Sub-Division-1, Netrokona",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1412",
+           "name": "Netrokona PWD Sub-Division-2, Netrokona",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1562",
+         "egpName": "Netrokona pwd division"
+        }
+       ],
+       "egpId": "2420",
+       "egpName": "PWD Mymensingh Circle"
+      },
+      {
+       "id": "n1417",
+       "name": "Tangail PWD Circle, Tangail",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1426",
+         "name": "Jamalpur PWD Division, Jamalpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1433",
+           "name": "Jamalpur PWD E/M Sub-Division, Jamalpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1438",
+           "name": "Jamalpur PWD Sub-Division, Jamalpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1560",
+         "egpName": "Jamalpur pwd division"
+        },
+        {
+         "id": "n1443",
+         "name": "Sherpur PWD Division,Sherpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1449",
+           "name": "Sherpur PWD E/M Sub-Division, Sherpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1453",
+           "name": "Sherpur PWD Sub-Division, Sherpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1398",
+         "egpName": "Sherpur PWD Division"
+        },
+        {
+         "id": "n1458",
+         "name": "Tangail PWD Division, Tangail",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1466",
+           "name": "Gopalpur PWD Sub-Division, Tangail",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1471",
+           "name": "Tangail PWD E/M Sub-Division,Tangail",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1476",
+           "name": "Tangail PWD Sub-Division, Tangail",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "2246",
+         "egpName": "Tangail PWD Division"
+        }
+       ],
+       "egpId": "9609",
+       "egpName": "Tangail PWD Circle"
+      },
+      {
+       "id": "n1481",
+       "name": "Mymensingh PWD E/M P&D Division, Mymensingh",
+       "level": 3,
+       "children": [],
+       "egpId": "17216",
+       "egpName": "Mymensingh PWD EM P&D Division"
+      }
+     ],
+     "egpId": "9605",
+     "egpName": "Mymensingh PWD Zone"
+    },
+    {
+     "id": "n1487",
+     "name": "Office of the Addl Chief Engineer (Health Wing )",
+     "level": 2,
+     "children": [
+      {
+       "id": "n1489",
+       "name": "PPC",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1497",
+         "name": "PPC Division, Dhaka",
+         "level": 4,
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "n1505",
+     "name": "Project Office",
+     "level": 2,
+     "children": [
+      {
+       "id": "n1506",
+       "name": "Urban Builing Safety Project",
+       "level": 3,
+       "children": [],
+       "egpId": "2482",
+       "egpName": "Urban Building Safety Project (UBSP)"
+      }
+     ]
+    },
+    {
+     "id": "n1509",
+     "name": "PWD Design Zone",
+     "level": 2,
+     "children": [
+      {
+       "id": "n1512",
+       "name": "PWD Design Circle-1, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1517",
+         "name": "PWD Design Division-1, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1530",
+         "name": "PWD Design Division-2, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1543",
+         "name": "PWD Design Division-3, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1556",
+         "name": "PWD Design Division-7, Dhaka",
+         "level": 4,
+         "children": []
+        }
+       ]
+      },
+      {
+       "id": "n1559",
+       "name": "PWD Design Circle-2, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1564",
+         "name": "PWD Design Division-4, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1576",
+         "name": "PWD Design Division-5, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "19781",
+         "egpName": "PWD Design Division-5, Dhaka"
+        },
+        {
+         "id": "n1588",
+         "name": "PWD Design Division-6, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "17028",
+         "egpName": "PWD Design Division-6, Dhaka"
+        },
+        {
+         "id": "n1600",
+         "name": "PWD Design Division-8, Dhaka",
+         "level": 4,
+         "children": []
+        }
+       ]
+      },
+      {
+       "id": "n1608",
+       "name": "PWD Design Circle-3, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1615",
+         "name": "PWD Design Division-10, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1622",
+         "name": "PWD Design Division-11, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1629",
+         "name": "PWD Design Division-12, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n1636",
+         "name": "PWD Design Division-9, Dhaka",
+         "level": 4,
+         "children": []
+        }
+       ]
+      },
+      {
+       "id": "n1643",
+       "name": "PWD Plumbing Design Circle",
+       "level": 3,
+       "children": []
+      }
+     ],
+     "egpId": "23004",
+     "egpName": "PWD Design Zone"
+    },
+    {
+     "id": "n1648",
+     "name": "PWD Dhaka Metropolitan Zone, Dhaka",
+     "level": 2,
+     "children": [
+      {
+       "id": "n1658",
+       "name": "Dhaka PWD Circle-1, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1667",
+         "name": "Arboriculture PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1671",
+           "name": "Arboriculture PWD Sub-Division, Sher-E-Bangla Nagar, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1676",
+           "name": "Arboriculture PWD Sub-Division-1, Ramna Park, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1681",
+           "name": "Arboriculture Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1552",
+         "egpName": "Arboriculture pwd division"
+        },
+        {
+         "id": "n1686",
+         "name": "City PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1696",
+           "name": "Ramna PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1702",
+           "name": "Ramna PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1708",
+           "name": "Ramna PWD Sub-Division-3, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1232",
+         "egpName": "City PWD Division, Abdul Gani Road, Dhaka"
+        },
+        {
+         "id": "n1709",
+         "name": "Dhaka PWD Division-1, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1717",
+           "name": "Dhaka PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1722",
+           "name": "Razarbag PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1728",
+           "name": "Razarbag PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1230",
+         "egpName": "Dhaka PWD Division-1, Dhaka"
+        },
+        {
+         "id": "n1734",
+         "name": "Dhaka PWD Division-2, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1743",
+           "name": "Dhaka PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1749",
+           "name": "Dhaka PWD Sub-Division-3, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1754",
+           "name": "Dhanmondi PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1231",
+         "egpName": "Dhaka PWD Division-2, Segunbagicha,Dhaka"
+        }
+       ],
+       "egpId": "1229",
+       "egpName": "Dhaka PWD Circle-1, Dhaka"
+      },
+      {
+       "id": "n1760",
+       "name": "Dhaka PWD Circle-2, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1769",
+         "name": "Dhaka PWD Division-3, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1777",
+           "name": "Dhaka PWD Sub-Division-4, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1782",
+           "name": "PWD Food Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1788",
+           "name": "Tejgaon PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1234",
+         "egpName": "Dhaka PWD Division-3, Dhaka"
+        },
+        {
+         "id": "n1794",
+         "name": "Dhaka PWD Division-4, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1802",
+           "name": "Dhaka PWD Sub-Division-5, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1807",
+           "name": "Dhaka PWD Sub-Division-6, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1812",
+           "name": "Dhaka PWD Sub-Division-7, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1817",
+           "name": "Rail Way Diversion PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1235",
+         "egpName": "Dhaka PWD Division-4, Dhaka"
+        },
+        {
+         "id": "n1823",
+         "name": "Eden Bhaban PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1831",
+           "name": "Eden Bhaban PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1836",
+           "name": "Eden Bhaban PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1236",
+         "egpName": "Eden Bhabon PWD Division, Bangladesh Secretariate, Dhaka"
+        },
+        {
+         "id": "n1841",
+         "name": "Medical College PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1851",
+           "name": "Dhaka Medical College PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1857",
+           "name": "Sir Sollemollah Madical College PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "936",
+         "egpName": "Medical College PWD Division, Dhaka"
+        }
+       ],
+       "egpId": "1233",
+       "egpName": "Dhaka PWD Circle-2, Dhaka"
+      },
+      {
+       "id": "n1863",
+       "name": "Dhaka PWD Circle-3, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1872",
+         "name": "Sher-E-Bangla Nagar PWD Division-1, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1880",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1885",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "935",
+         "egpName": "Shere Bangla Nagar PWD Division-1, Dhaka"
+        },
+        {
+         "id": "n1892",
+         "name": "Sher-E-Bangla Nagar PWD Division-2, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1900",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-3, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1905",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-4, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1910",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-5, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1239",
+         "egpName": "Shere Bangla Nagar PWD Division-2, Dhaka"
+        },
+        {
+         "id": "n1915",
+         "name": "Sher-E-Bangla Nagar PWD Division-3, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1923",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-6, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1928",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-7, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1933",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-8, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1240",
+         "egpName": "Shere Bangla Nagar PWD Division-3, Dhaka"
+        },
+        {
+         "id": "n1938",
+         "name": "Sher-E-Bangla Nagar PWD Division-4, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1945",
+           "name": "Sher-E-Bangla Nagar PWD Medical Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1951",
+           "name": "Sher-E-Bangla Nagar PWD Sub-Division-9, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "28962",
+         "egpName": "Sher-E-Bangla Nagar PWD Division-4, Dhaka"
+        }
+       ],
+       "egpId": "1238",
+       "egpName": "Dhaka PWD Circle-3, Sere-e-Bangla Nagar, Dhaka"
+      },
+      {
+       "id": "n1956",
+       "name": "Dhaka PWD Circle-5, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n1962",
+         "name": "Dhaka PWD Division-5, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1967",
+           "name": "Bangabhaban PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1972",
+           "name": "Dhaka PWD Sub-Division-8, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "26514",
+         "egpName": "Dhaka PWD Division-5, Dhaka"
+        },
+        {
+         "id": "n1975",
+         "name": "Mohakhali PWD Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n1984",
+           "name": "Mohakhali PWD Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n1989",
+           "name": "Uttara PWD Sub-Division, Mohakhali, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1241",
+         "egpName": "Mohakhali PWD Division, Mohakhali, Dhaka"
+        },
+        {
+         "id": "n1995",
+         "name": "PWD Survey Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2003",
+           "name": "PWD Survey Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2008",
+           "name": "PWD Survey Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "2434",
+         "egpName": "PWD Survey Division"
+        }
+       ],
+       "egpId": "26020",
+       "egpName": "Dhaka PWD Circle-5, Dhaka"
+      }
+     ],
+     "egpId": "9606",
+     "egpName": "Dhaka PWD metropolitan Zone"
+    },
+    {
+     "id": "n2013",
+     "name": "PWD E/M P&D Zone, Dhaka.",
+     "level": 2,
+     "children": [
+      {
+       "id": "n2021",
+       "name": "PWD E/M Circle-4, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2027",
+         "name": "PWD E/M Division-10, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2034",
+           "name": "Gazipur PWD E/M Sub-Division, Gazipur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2038",
+           "name": "Manikganj PWD E/M Sub-Division, Manikganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "9644",
+         "egpName": "PWD EM Division-10, Dhaka"
+        },
+        {
+         "id": "n2042",
+         "name": "PWD E/M Division-11, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2049",
+           "name": "Bangabhaban PWD E/M Sub-Division, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2053",
+           "name": "Munshiganj PWD E/M Sub-Division, Munshiganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "9645",
+         "egpName": "PWD EM Division-11, Dhaka"
+        },
+        {
+         "id": "n2057",
+         "name": "PWD E/M Division-9, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2063",
+           "name": "Narayanganj PWD E/M Sub-Division, Narayanganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2067",
+           "name": "Narsingdi PWD E/M Sub-Division, Narsingdi",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "9643",
+         "egpName": "PWD EM Division-9, Dhaka"
+        }
+       ],
+       "egpId": "13001",
+       "egpName": "PWD EM Circle-4, Dhaka"
+      },
+      {
+       "id": "n2071",
+       "name": "PWD E/M Design Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2074",
+         "name": "PWD E/M Design Division-1, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "26396",
+         "egpName": "PWD EM Design Division 1"
+        },
+        {
+         "id": "n2078",
+         "name": "PWD E/M Design Division-2, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "16747",
+         "egpName": "PWD EM Design Division-2,Dhaka"
+        },
+        {
+         "id": "n2081",
+         "name": "PWD E/M Design Division-3, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "16144",
+         "egpName": "PWD EM Design Division 3"
+        }
+       ],
+       "egpId": "15353",
+       "egpName": "EM Design Circle"
+      },
+      {
+       "id": "n2085",
+       "name": "PWD E/M P&D Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2089",
+         "name": "PWD E/M P&D Division-1, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "30829",
+         "egpName": "PWD EM PnD Division-1, Dhaka"
+        },
+        {
+         "id": "n2096",
+         "name": "PWD E/M P&D Division-2, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "6657",
+         "egpName": "PWD EM PnD Division 2"
+        },
+        {
+         "id": "n2103",
+         "name": "PWD E/M P&D Division-3, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "16203",
+         "egpName": "PWD EM P&D Division-3, Dhaka"
+        }
+       ],
+       "egpId": "1682",
+       "egpName": "PWD EM P&D Circle"
+      },
+      {
+       "id": "n2109",
+       "name": "PWD E/M Planning Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2114",
+         "name": "PWD E/M Planning Division-1, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "15433",
+         "egpName": "EM Planning Division1"
+        },
+        {
+         "id": "n2118",
+         "name": "PWD E/M Planning Division-2, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "15576",
+         "egpName": "EM Planning Division 2"
+        },
+        {
+         "id": "n2121",
+         "name": "PWD E/M Planning Division-3, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "15577",
+         "egpName": "EM Planning Division3"
+        }
+       ],
+       "egpId": "15352",
+       "egpName": "EM Planning Circle"
+      },
+      {
+       "id": "n2125",
+       "name": "PWD MIS Circle, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2131",
+         "name": "PWD E/M MIS Division-1, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "16510",
+         "egpName": "PWD EM MIS Division 1"
+        },
+        {
+         "id": "n2139",
+         "name": "PWD E/M MIS Division-2, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "9710",
+         "egpName": "PWD EM MIS Division 2"
+        },
+        {
+         "id": "n2145",
+         "name": "PWD E/M MIS Division-3, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "13669",
+         "egpName": "PWD EM MIS Division 3"
+        }
+       ],
+       "egpId": "9711",
+       "egpName": "PWD MIS Circle"
+      }
+     ],
+     "egpId": "9607",
+     "egpName": "PWD EM P&D Zone, Dhaka"
+    },
+    {
+     "id": "n2151",
+     "name": "PWD E/M Zone, Chattogram",
+     "level": 2,
+     "children": [
+      {
+       "id": "n2159",
+       "name": "PWD E/M Circle, Chattogram",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2167",
+         "name": "PWD E/M Division-1, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2172",
+           "name": "PWD E/M Sub-Division-1, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2177",
+           "name": "PWD E/M Workshop Sub-Division, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1871",
+         "egpName": "Chattogram PWD EM Division 1"
+        },
+        {
+         "id": "n2182",
+         "name": "PWD E/M Division-2, Chattogram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2187",
+           "name": "PWD E/M Sub-Division-2, Chattogram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2192",
+           "name": "PWD E/M Sub-Division-3, Chattogram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1220",
+         "egpName": "Chattogram PWD EM Division-2"
+        },
+        {
+         "id": "n2197",
+         "name": "PWD E/M P&D Division, Chattogram",
+         "level": 4,
+         "children": [],
+         "egpId": "21882",
+         "egpName": "PWD EM P&D Division, Chattogram"
+        }
+       ],
+       "egpId": "1261",
+       "egpName": "Chattogram PWD EM Circle,Chattogram"
+      }
+     ],
+     "egpId": "22673",
+     "egpName": "Chattogram PWD EM Zone,Chattogram"
+    },
+    {
+     "id": "n2203",
+     "name": "PWD E/M Zone, Dhaka",
+     "level": 2,
+     "children": [
+      {
+       "id": "n2206",
+       "name": "PWD E/M Circle-1, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2212",
+         "name": "PWD E/M Division-1, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2219",
+           "name": "PWD E/M Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2224",
+           "name": "PWD E/M Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1125",
+         "egpName": "PWD EM Division-1, Dhaka"
+        },
+        {
+         "id": "n2229",
+         "name": "PWD E/M Division-12, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2231",
+           "name": "PWD E/M Sub-Division-17, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "29886",
+         "egpName": "PWD EM Division-12, Dhaka"
+        },
+        {
+         "id": "n2233",
+         "name": "PWD E/M Division-2, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2241",
+           "name": "PWD E/M Sub-Division-3, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2246",
+           "name": "PWD E/M Sub-Division-4, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1178",
+         "egpName": "PWD EM Division-2, Dhaka"
+        },
+        {
+         "id": "n2251",
+         "name": "PWD E/M Division-3, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2258",
+           "name": "PWD E/M Sub-Division-5, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2263",
+           "name": "PWD E/M Sub-Division-6, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1179",
+         "egpName": "PWD EM Division-3, Dhaka"
+        }
+       ],
+       "egpId": "1252",
+       "egpName": "PWD EM Circle-1, Purtha Bhabon, Dhaka"
+      },
+      {
+       "id": "n2268",
+       "name": "PWD E/M Circle-2, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2274",
+         "name": "PWD E/M  Division-13, Dhaka",
+         "level": 4,
+         "children": [],
+         "egpId": "29913",
+         "egpName": "PWD EM Division-13, Dhaka"
+        },
+        {
+         "id": "n2276",
+         "name": "PWD E/M Division-4, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2283",
+           "name": "PWD E/M Sub-Division-7, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2288",
+           "name": "PWD E/M Sub-Division-8, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1180",
+         "egpName": "PWD EM Division-4, Dhaka"
+        },
+        {
+         "id": "n2293",
+         "name": "PWD E/M Division-5, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2300",
+           "name": "PWD E/M Sub-Division-10, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2305",
+           "name": "PWD E/M Sub-Division-9, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "937",
+         "egpName": "PWD EM Division-5, Dhaka"
+        },
+        {
+         "id": "n2310",
+         "name": "PWD E/M Division-6, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2317",
+           "name": "PWD E/M Sub-Division-11, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2322",
+           "name": "PWD E/M Sub-Division-12, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1181",
+         "egpName": "PWD EM Division-6, Dhaka"
+        }
+       ],
+       "egpId": "1253",
+       "egpName": "PWD EM Circle-2, Dhaka"
+      },
+      {
+       "id": "n2327",
+       "name": "PWD E/M Circle-3, Dhaka",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2332",
+         "name": "PWD E/M Division-7, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2340",
+           "name": "PWD E/M Sub-Division-13, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2345",
+           "name": "PWD E/M Sub-Division-14, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1182",
+         "egpName": "PWD EM Division-7, Dhaka"
+        },
+        {
+         "id": "n2350",
+         "name": "PWD E/M Division-8, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2357",
+           "name": "PWD E/M Sub-Division-15, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2362",
+           "name": "PWD E/M Sub-Division-16, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "938",
+         "egpName": "PWD EM Division-8, Dhaka"
+        },
+        {
+         "id": "n2367",
+         "name": "PWD E/M Wood Workshop Division, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2374",
+           "name": "PWD E/M Wood Workshop Sub-Division, Mirpur, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ]
+        },
+        {
+         "id": "n2379",
+         "name": "PWD E/M Wood Workshop Division-2, Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2381",
+           "name": "PWD E/M Wood Workshop Sub-Division-2, Mirpur, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ]
+        },
+        {
+         "id": "n2383",
+         "name": "PWD E/M Wood Workshop Division-2, Dhaka",
+         "level": 4,
+         "children": []
+        },
+        {
+         "id": "n2384",
+         "name": "PWD E/M Workshop Division, PWD Dhaka",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2391",
+           "name": "PWD E/M Workshop Sub-Division-1, Dhaka",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2396",
+           "name": "PWD E/M Workshop Sub-Division-2, Dhaka",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1665",
+         "egpName": "PWD EM Workshop Division"
+        }
+       ],
+       "egpId": "1254",
+       "egpName": "PWD EM Circle-3, Dhaka"
+      }
+     ]
+    },
+    {
+     "id": "n2401",
+     "name": "Rajshahi PWD Zone, Rajshahi",
+     "level": 2,
+     "children": [
+      {
+       "id": "n2409",
+       "name": "Bogura PWD Circle, Bogura",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2413",
+         "name": "Bogura PWD Division, Bogura",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2422",
+           "name": "Bogura PWD  Sub-Division-3, Bogura",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2428",
+           "name": "Bogura PWD E/M Sub-Division, Bogura",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2433",
+           "name": "Bogura PWD Sub-Division-1, Bogura",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2439",
+           "name": "Bogura PWD Sub-Division-2, Bogura",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1575",
+         "egpName": "Bogra pwd division"
+        },
+        {
+         "id": "n2445",
+         "name": "Joypurhat PWD Division, Joypurhat",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2452",
+           "name": "Joypurhat PWD E/M Sub-Division, Joypurhat",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2457",
+           "name": "Joypurhat PWD Sub-Division, Joypurhat",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1577",
+         "egpName": "Joypurhat pwd division"
+        },
+        {
+         "id": "n2462",
+         "name": "Naogaon PWD Division, Naogaon",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2468",
+           "name": "Naogaon PWD E/M Sub-Division, Naogaon",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2472",
+           "name": "Naogaon PWD Sub-Division, Naogaon",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1573",
+         "egpName": "Naogaon pwd division"
+        }
+       ],
+       "egpId": "1677",
+       "egpName": "Bogra PWD Circle"
+      },
+      {
+       "id": "n2477",
+       "name": "Pabna PWD Circle, Pabna",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2486",
+         "name": "Natore PWD Division, Natore",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2493",
+           "name": "Natore PWD E/M Sub-Division, Natore",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2498",
+           "name": "Natore PWD Sub-Division, Natore",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "951",
+         "egpName": "Natore PWD Division"
+        },
+        {
+         "id": "n2503",
+         "name": "Pabna PWD Division, Pabna",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2512",
+           "name": "Pabna PWD E/M Sub-Division, Pabna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2518",
+           "name": "Pabna PWD Sub-Division-1, Pabna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2524",
+           "name": "Pabna PWD Sub-Division-2, Pabna",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2530",
+           "name": "Pabna PWD Sub-Division-3, Pabna",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1572",
+         "egpName": "Pabna PWD Division, Pabna"
+        },
+        {
+         "id": "n2535",
+         "name": "Pabna PWD E/M Division, Pabna",
+         "level": 4,
+         "children": [],
+         "egpId": "26985",
+         "egpName": "Pabna PWD EM Division, Pabna"
+        },
+        {
+         "id": "n2539",
+         "name": "Sirajganj PWD Division, Sirajganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2547",
+           "name": "Sirajganj PWD E/M Sub-Division, Sirajganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2552",
+           "name": "Sirajganj PWD Sub-Division, Sirajganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2557",
+           "name": "Ullapara PWD Sub-Division, Sirajganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "950",
+         "egpName": "Sirajganj PWD Division"
+        }
+       ],
+       "egpId": "9611",
+       "egpName": "Pabna PWD Circle"
+      },
+      {
+       "id": "n2562",
+       "name": "Rajshahi PWD Circle, Rajshahi",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2571",
+         "name": "Chapainawabganj PWD Division, Chapainawabganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2576",
+           "name": "Chapainawabganj PWD E/M Sub-Division, Chapainawabganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2579",
+           "name": "Chapainawabganj PWD Sub-Division, Chapainawabganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1571",
+         "egpName": "Chapai Nawabganj pwd division"
+        },
+        {
+         "id": "n2584",
+         "name": "Rajshahi PWD Division-1, Rajshahi",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2592",
+           "name": "PWD Mainteinance Sub-Division, Rajshahi",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2598",
+           "name": "Rajshahi PWD E/M Sub-Division-1, Rajshahi",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2604",
+           "name": "Rajshahi PWD Sub-Division-1, Rajshahi",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2610",
+           "name": "Sarda PWD Sub-Division, Rajshahi",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1397",
+         "egpName": "Rajshahi PWD Division-1"
+        },
+        {
+         "id": "n2616",
+         "name": "Rajshahi PWD Division-2, Rajshahi",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2624",
+           "name": "Rajshahi PWD E/M Sub-Division-2, Rajshahi",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2630",
+           "name": "Rajshahi PWD Sub-Division-2, Rajshahi",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "942",
+         "egpName": "Rajshahi PWD Division-2"
+        }
+       ],
+       "egpId": "1676",
+       "egpName": "Rajshahi PWD Circle"
+      },
+      {
+       "id": "n2636",
+       "name": "Rajshahi PWD E/M Circle, Rajshahi",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2637",
+         "name": "Rajshahi PWD E/M Division, Rajshahi",
+         "level": 4,
+         "children": [],
+         "egpId": "27137",
+         "egpName": "Rajshahi PWD EM Division, Rajshahi"
+        }
+       ]
+      },
+      {
+       "id": "n2638",
+       "name": "Rajshahi PWD E/M P&D Division, Rajshahi",
+       "level": 3,
+       "children": [],
+       "egpId": "15559",
+       "egpName": "Rajshahi PWD EM P&D Division"
+      }
+     ],
+     "egpId": "1669",
+     "egpName": "Rajshahi PWD Zone"
+    },
+    {
+     "id": "n2644",
+     "name": "Rangpur PWD Zone, Rangpur",
+     "level": 2,
+     "children": [
+      {
+       "id": "n2651",
+       "name": "Dinajpur PWD Circle, Dinajpur",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2660",
+         "name": "Dinajpur PWD Division, Dinajpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2669",
+           "name": "Dinajpur PWD E/M Sub-Division, Dinajpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2674",
+           "name": "Dinajpur PWD Sub-Division-1, Dinajpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2679",
+           "name": "Dinajpur PWD Sub-Division-2, Dinajpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2684",
+           "name": "Fulbari PWD Sub-Division, Dinajpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "947",
+         "egpName": "Dinajpur PWD Division"
+        },
+        {
+         "id": "n2689",
+         "name": "Nilphamari PWD Division, Nilphamari",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2696",
+           "name": "Nilphamari PWD E/M Sub-Division, Nilphamari",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2700",
+           "name": "Nilphamari PWD Sub-Division, Nilphamari",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1580",
+         "egpName": "Nilphamari PWD Division,Nilphamari"
+        },
+        {
+         "id": "n2705",
+         "name": "Panchagarh PWD Division, Panchagarh",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2711",
+           "name": "Panchagarh PWD E/MSub-Division, Panchagarh",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2715",
+           "name": "Panchagarh PWD Sub-Division, Panchagarh",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1634",
+         "egpName": "Panchagarh PWD Division"
+        },
+        {
+         "id": "n2720",
+         "name": "Thakurgaon PWD Division, Thakurgaon",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2727",
+           "name": "Thakurgaon PWD E/M Sub-Division, Thakurgaon",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2732",
+           "name": "Thakurgaon PWD Sub-Division-1, Thakurgaon",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2737",
+           "name": "Thakurgaon PWD Sub-Division-2, Thakurgaon",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1605",
+         "egpName": "Thakurgaon PWD Division"
+        }
+       ],
+       "egpId": "9610",
+       "egpName": "Dinajpur PWD Circle"
+      },
+      {
+       "id": "n2742",
+       "name": "Rangpur PWD Circle, Rangpur",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2751",
+         "name": "Gaibandha PWD Division, Gaibandha",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2758",
+           "name": "Gaibanda PWD E/M Sub-Division, Gaibanda",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2763",
+           "name": "Gaibanda PWD Sub-Division, Gaibanda",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1579",
+         "egpName": "Gaibandha PWD Division"
+        },
+        {
+         "id": "n2768",
+         "name": "Kurigram PWD Division, Kurigram",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2775",
+           "name": "Kurigram PWD E/M Sub-Division, Kurigram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2780",
+           "name": "Kurigram PWD Sub-Division-1, Kurigram",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2785",
+           "name": "Kurigram PWD Sub-Division-2, Kurigram",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1578",
+         "egpName": "Kurigram PWD Division"
+        },
+        {
+         "id": "n2790",
+         "name": "Lalmonirhat PWD Division, Lalmonirhat",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2796",
+           "name": "Lalmonirhat PWD E/M Sub-Division, Lalmonirhat",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2800",
+           "name": "Lalmonirhat PWD Sub-Division-1, Lalmonirhat",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2805",
+           "name": "Lalmonirhat PWD Sub-Division-2, Lalmonirhat",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1635",
+         "egpName": "Lalmonirhat PWD Division"
+        },
+        {
+         "id": "n2810",
+         "name": "Rangpur PWD Division, Rangpur",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2819",
+           "name": "Rangpur PWD E/M Sub-Division, Rangpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2824",
+           "name": "Rangpur PWD Maintenance Sub-Division, Rangpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2829",
+           "name": "Rangpur PWD Sub-Division-1, Rangpur",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2834",
+           "name": "Rangpur PWD Sub-Division-2, Rangpur",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "943",
+         "egpName": "Rangpur PWD Division"
+        }
+       ],
+       "egpId": "1678",
+       "egpName": "Rangpur PWD Circle"
+      }
+     ],
+     "egpId": "1670",
+     "egpName": "Rangpur PWD Zone"
+    },
+    {
+     "id": "n2839",
+     "name": "Sylhet PWD Zone, Sylhet",
+     "level": 2,
+     "children": [
+      {
+       "id": "n2846",
+       "name": "Sylhet PWD Circle, Sylhet",
+       "level": 3,
+       "children": [
+        {
+         "id": "n2855",
+         "name": "Habiganj PWD Division, Habiganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2863",
+           "name": "Habiganj PWD E/M Sub-Division, Habiganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2868",
+           "name": "Habiganj PWD Sub-Division-1, Habiganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2873",
+           "name": "Habiganj PWD Sub-Division-2, Habiganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1659",
+         "egpName": "Hobiganj PWD Division"
+        },
+        {
+         "id": "n2878",
+         "name": "Moulvibazar PWD Division, Moulvibazar",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2885",
+           "name": "Moulvibazar PWD E/M Sub-Division, Moulvibazar",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2890",
+           "name": "Moulvibazar PWD Sub-Division-1, Moulvibazar",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2895",
+           "name": "Moulvibazar PWD Sub-Division-2, Moulvibazar",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1658",
+         "egpName": "Moulvibazar PWD Division"
+        },
+        {
+         "id": "n2900",
+         "name": "Sunamganj PWD Division, Sunamganj",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2907",
+           "name": "Sunamganj PWD E/M Sub-Division, Sunamganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2912",
+           "name": "Sunamganj PWD Sub-Division-1, Sunamganj",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2917",
+           "name": "Sunamganj PWD Sub-Division-2, Sunamganj",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "1657",
+         "egpName": "Sunamganj PWD Division"
+        },
+        {
+         "id": "n2923",
+         "name": "Sylhet PWD Division, Sylhet",
+         "level": 4,
+         "children": [
+          {
+           "id": "n2932",
+           "name": "Sylhet PWD E/M Sub-Division, Sylhet",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2937",
+           "name": "Sylhet PWD Sub-Division-1, Sylhet",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2942",
+           "name": "Sylhet PWD Sub-Division-2, Sylhet",
+           "level": 5,
+           "children": []
+          },
+          {
+           "id": "n2947",
+           "name": "Sylhet PWD Sub-Division-3, Sylhet",
+           "level": 5,
+           "children": []
+          }
+         ],
+         "egpId": "941",
+         "egpName": "Sylhet PWD Division"
+        }
+       ],
+       "egpId": "1681",
+       "egpName": "Sylhet PWD Circle"
+      }
+     ],
+     "egpId": "1671",
+     "egpName": "Sylhet PWD Zone"
+    }
+   ],
+   "egpId": "1184",
+   "egpName": "Office of The Chief Engineer of Public Works"
+  }
+ ]
+}
