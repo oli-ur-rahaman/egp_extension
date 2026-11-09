@@ -187,7 +187,7 @@ export function parseReport(doc, flow) {
       const values = {};
       for (const c of cols) values[c.key] = c.formula ? percentOf(c, raw) : raw[`col${c.col}`];
       for (const c of cols) if (!c.formula) sums[`col${c.col}`] = (sums[`col${c.col}`] ?? 0) + (Number(raw[`col${c.col}`]) || 0);
-      rows.push({ key: `${table.number}.${r}`, kind: 'Method', budget: table.budgetType, method: m?.groups?.method?.trim() ?? label, nature: m?.groups?.nature?.trim() ?? '', values });
+      rows.push({ key: `${table.number}.${r}`, kind: 'Method', label, budget: table.budgetType, method: m?.groups?.method?.trim() ?? label, nature: m?.groups?.nature?.trim() ?? '', values });
     }
     // Totals: the page's own cell where it has one, otherwise the sum of the rows above it. Cell t1total1 is column 3.
     const values = {};
@@ -199,11 +199,11 @@ export function parseReport(doc, flow) {
       grand[`col${c.col}`] = (grand[`col${c.col}`] ?? 0) + (Number(raw[`col${c.col}`]) || 0);
     }
     for (const c of cols) values[c.key] = c.formula ? percentOf(c, raw) : raw[`col${c.col}`];
-    rows.push({ key: `${table.number}.total`, kind: 'Budget Total', budget: table.budgetType, method: '', nature: '', values });
+    rows.push({ key: `${table.number}.total`, kind: 'Budget Total', label: table.totalLabel, budget: table.budgetType, method: '', nature: '', values });
   }
   const values = {};
   const raw = Object.fromEntries(Object.entries(grand).map(([k, v]) => [k, String(Math.round(v * 1000) / 1000)]));
   for (const c of cols) values[c.key] = c.formula ? percentOf(c, raw) : raw[`col${c.col}`];
-  rows.push({ key: 'grand', kind: 'Grand Total', budget: 'All', method: '', nature: '', values });
+  rows.push({ key: 'grand', kind: 'Grand Total', label: report.tables.find((t) => t.grandTotalLabel)?.grandTotalLabel ?? 'Grand Total', budget: 'All', method: '', nature: '', values });
   return { rows };
 }

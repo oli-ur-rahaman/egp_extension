@@ -15,7 +15,7 @@ const load = (name) => {
   return window.document;
 };
 const PAGES = [
-  ['flow1/filter', 'procurement_transaction_report', 2],
+  ['flow1/filter', 'procurement_transaction_report', 3],
   ['flow2/filter', 'tender_info', 13],
   ['flow2/filter-logged-in', 'tender_info', 13],
   ['flow3/filter', 'app_info', 11],

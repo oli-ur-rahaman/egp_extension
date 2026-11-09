@@ -38,7 +38,8 @@ function selectControl(flow, filter, scan, on) {
   const change = (v) => on.change(filter.id, v);
   if (filter.allMeansLoop) {
     const drafted = on.draft(filter.id);
-    return listControl(id, drafted === '__all__' ? '__all__' : scan.value, [{ value: '__all__', text: `All offices (${scan.options.length.toLocaleString('en-US')})` }, ...scan.options], change);
+    const allText = (filter.allLabel ?? 'All ({n})').replace('{n}', scan.options.length.toLocaleString('en-US'));
+    return listControl(id, drafted === '__all__' ? '__all__' : scan.value, [{ value: '__all__', text: allText }, ...scan.options], change);
   }
   const hasAll = !filter.choices && !filter.default;
   const onEmpty = scan.options.every((o) => o.value !== scan.value);

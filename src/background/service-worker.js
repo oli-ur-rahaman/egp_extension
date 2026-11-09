@@ -2,6 +2,7 @@
 
 import { MSG } from '../shared/bus.js';
 import { progressOf } from '../shared/estimate.js';
+import { reportCombos } from '../shared/report-plan.js';
 import { createEngine, NetworkError, TabGone } from './engine.js';
 import { createStore } from './store.js';
 import { detectFlow, isPortal } from '../shared/flow-detect.js';
@@ -175,7 +176,7 @@ const transport = {
   /** @param {any} run @param {any} row */
   detail: (run, row) => askForRun(run, { type: MSG.AGENT_DETAIL, open: row.open }),
   /** @param {any} run @param {any} office */
-  report: (run, office) => askForRun(run, { type: MSG.AGENT_REPORT, fields: { ...run.fields, [run.loop.field]: office.value, [run.loop.mirror]: office.text } }),
+  report: (run, office) => askForRun(run, { type: MSG.AGENT_REPORT, fields: { ...run.fields, ...(office.fields ?? { [run.loop.field]: office.value, [run.loop.mirror]: office.text }) } }),
   /** @param {any} run */
   session: (run) => askForRun(run, { type: MSG.AGENT_SESSION }),
 };
@@ -232,7 +233,7 @@ function showSearchOnPage(tabId, profile, flow) {
 }
 
 /** Works out how big the search is, with the one or two requests that takes (D27), before anything starts. */
-async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
+async function measure(/** @type {any} */ { tabId, loops, categoryNames }) {
   const profile = await getProfile();
   const tab = await panelTab(tabId);
   const flowId = tab?.url ? detectFlow(profile, tab.url) : null;
@@ -241,9 +242,18 @@ async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
   const built = await askAgent(tab.id, { type: MSG.AGENT_BUILD, profile, flow, categoryNames });
   const plan = { tabId: tab.id, flowId, fields: built.fields, shown: built.shown, loggedIn: built.loggedIn, pacing: profile.pageStates.pacing };
   if (flow.report) {
-    const office = built.fields[built.loop.field];
-    const offices = loopAll ? built.loopable : built.loopable.filter((/** @type {any} */ o) => o.value === office);
-    return { ...plan, offices, loop: built.loop, rows: null, totalPages: offices.length };
+    const wanted = loops ?? {};
+    const { combos, sizes, currentYear } = reportCombos(flow, built, wanted, new Date());
+    if (!combos.length) throw new Error(`No financial year up to the current one (${currentYear}) is on the page.`);
+    // What the file says was searched: a filter on All says All, not what the page last showed.
+    const shown = built.shown.map((/** @type {any} */ s) => {
+      const filter = flow.filters.find((/** @type {any} */ f) => f.allMeansLoop && wanted[f.id] && f.label.replace(/^(Select|By) /, '') === s.label);
+      return filter ? { ...s, value: filter.allLabel.replace(' ({n})', '').replace('{n}', '') } : s;
+    });
+    const projectFilter = flow.filters.find((/** @type {any} */ f) => f.id === 'project');
+    const chosen = projectFilter && built.fields[projectFilter.requestField] && built.fields[projectFilter.requestField] !== projectFilter.empty;
+    const project = chosen ? built.fields[projectFilter.mirrorField] || shown.find((/** @type {any} */ s) => s.label === 'Project')?.value : null;
+    return { ...plan, shown, offices: combos, sizes, project, rows: null, totalPages: combos.length };
   }
   const size = flow.list.request.defaultSize;
   const first = await askAgent(tab.id, { type: MSG.AGENT_LIST, profile, flow, fields: built.fields, page: 1, size });
@@ -268,13 +278,13 @@ async function measure(/** @type {any} */ { tabId, loopAll, categoryNames }) {
 /** @type {Record<string, (payload: any) => unknown>} */
 const handlers = {
   [MSG.RUN_MEASURE]: measure,
-  [MSG.RUN_START]: async ({ plan, clusters, chosen }) => {
+  [MSG.RUN_START]: async ({ plan, clusters, chosen, scope }) => {
     const running = (await store.allRuns()).find((/** @type {any} */ r) => r.status === 'running');
     if (running) throw new Error('A run is already going in another tab. Pause or stop it first.');
     // Only the finished runs the user has left behind are removed.
     for (const old of await store.allRuns()) if (old.dismissed) await store.deleteRun(old.id);
     await chrome.storage.session.set({ runAlive: true });
-    return (await getEngine()).start({ ...plan, clusters, chosen });
+    return (await getEngine()).start({ ...plan, clusters, chosen, scope });
   },
   [MSG.RUN_STATE]: async ({ tabId }) => {
     const run = await runFor(tabId);

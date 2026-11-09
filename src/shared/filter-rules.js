@@ -54,6 +54,7 @@ function withinYears(from, to, maxYears) {
  */
 export function isSet(filter, value) {
   if (value === undefined || value === null) return false;
+  if (filter.allNotAValue && value === '__all__') return false;
   switch (filter.control) {
     case 'dateRange': return Boolean(value.fromToday || value.toToday || value.from?.trim() || value.to?.trim());
     case 'operatorValue': return Boolean(value.value?.trim());

@@ -155,11 +155,11 @@ test('Flow 1: login wall when logged out', async () => {
   } finally { await t.close(); }
 });
 
-test('Flow 1 logged in: two filters, All offices by default', async () => {
+test('Flow 1 logged in: three filters, All offices by default', async () => {
   const t = await setup({ loggedIn: true });
   try {
     await t.open('procurement_transaction_report');
-    await expect(t.panel.locator('[data-filter]')).toHaveCount(2);
+    await expect(t.panel.locator('[data-filter]')).toHaveCount(3);
     await expect(t.panel.locator('#f-pe_office')).toHaveValue(/^All offices \([\d,]+\)$/);
     await expect(t.panel.locator('#start-reasons')).toContainText('Financial Year');
     await choose(t.panel, 'financial_year', '2024-2025');

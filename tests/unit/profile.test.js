@@ -48,10 +48,11 @@ describe('the shipped profile', () => {
 describe("the owner's decisions", () => {
   const panel = (flow) => flow.filters.filter((f) => f.panel).map((f) => f.id);
 
-  it('Flow 1 shows Financial Year and PE Office only, and All loops offices (D12)', () => {
+  it('Flow 1 shows Financial Year, PE Office and Project, and All loops years and offices (D12, D65)', () => {
     const f = flows.procurement_transaction_report;
     expect(f.filters).toHaveLength(6);
-    expect(panel(f)).toEqual(['financial_year', 'pe_office']);
+    expect(panel(f)).toEqual(['financial_year', 'pe_office', 'project']);
+    expect(f.filters.find((x) => x.id === 'financial_year').allMeansLoop).toBe(true);
     expect(f.filters.find((x) => x.id === 'pe_office').allMeansLoop).toBe(true);
     expect(f.filters.filter((x) => !x.panel).every((x) => x.leaveAsPageHasIt)).toBe(true);
     expect(f.login.policy).toBe('required');
@@ -80,7 +81,8 @@ describe("the owner's decisions", () => {
     expect(group('experience_info', 'second')).toEqual(['contract_start_date', 'procuring_entity', 'contract_awarded_to', 'company_unique_id']);
     expect(flows.tender_info.rules.window).toEqual({ filter: 'publishing_date', maxYears: 5, currentDateCheckboxes: true });
     // Flow 1 keeps its own: a year and an office.
-    expect(flows.procurement_transaction_report.rules.required).toEqual(['financial_year', 'pe_office']);
+    expect(flows.procurement_transaction_report.rules.required).toEqual(['pe_office']);
+    expect(flows.procurement_transaction_report.rules.groups[0].anyOf).toEqual(['financial_year', 'project']);
   });
 
   it('a contractor search stays within 5,000 rows when it stands in for Department (D21, D22, D58)', () => {

@@ -216,16 +216,15 @@ function sendDate(text, format) {
  * so the user can go on using the page. The fields are the ones the portal's own request carries (recon notes).
  * @param {any} doc
  * @param {any} flow
- * @returns {{ fields: Record<string, string>, shown: { label: string, value: string }[], loopable: { value: string, text: string }[] | null, loop: any }}
+ * @returns {{ fields: Record<string, string>, shown: { label: string, value: string }[], loops: Record<string, any> }}
  */
 export function buildRequest(doc, flow) {
   /** @type {Record<string, string>} */
   const fields = {};
   /** @type {{ label: string, value: string }[]} */
   const shown = [];
-  /** @type {{ value: string, text: string }[] | null} */
-  let loopable = null;
-  let loop = null;
+  /** @type {Record<string, any>} */
+  const loops = {};
   const label = (/** @type {any} */ f) => f.label.replace(/^(Select|By) /, '');
   for (const filter of flow.filters) {
     if (filter.parts) {
@@ -262,10 +261,7 @@ export function buildRequest(doc, flow) {
       const blank = isPlaceholder(option, filter);
       fields[filter.requestField] = choice?.value ?? (blank ? filter.empty ?? '' : el.value);
       if (filter.mirrorField) fields[filter.mirrorField] = blank ? '' : option.text;
-      if (filter.allMeansLoop) {
-        loopable = optionsOf(el, filter);
-        loop = { field: filter.requestField, mirror: filter.mirrorField };
-      }
+      if (filter.allMeansLoop) loops[filter.id] = { field: filter.requestField, mirror: filter.mirrorField, options: optionsOf(el, filter), selected: blank ? null : option };
       if (filter.panel) shown.push({ label: label(filter), value: choice?.label ?? (blank ? 'All' : option.text) });
       continue;
     }
@@ -274,7 +270,7 @@ export function buildRequest(doc, flow) {
     if (filter.panel) shown.push({ label: label(filter), value: named ?? (el.value.trim() || '-') });
   }
   for (const name of flow.report?.request.fromPage ?? []) fields[name] = doc.getElementsByName(name)[0]?.value ?? '';
-  return { fields, shown, loopable, loop };
+  return { fields, shown, loops };
 }
 
 /**

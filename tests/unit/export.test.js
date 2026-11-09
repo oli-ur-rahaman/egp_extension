@@ -151,16 +151,21 @@ describe('workbook', () => {
     expect(ministry.value({ list: { ministry: 'short' }, detail: {} })).toBe('short');
   });
 
-  it('Flow 1: office, kind and amounts, with totals marked', async () => {
+  it('Flow 1: About and one sheet per budget, with the report\'s own rows and Total rows (D65)', async () => {
     const flow = profile.flows.procurement_transaction_report;
     const report = parseReport(doc(raw('flow1/report')), flow).rows;
-    const rows = report.map((r, seq) => ({ key: r.key, seq, list: { office: 'Office A', budget_type: r.budget, row_type: r.kind, method: r.method, nature: r.nature, ...r.values } }));
-    const run = baseRun({ flowId: 'procurement_transaction_report', offices: [{ value: '1', text: 'Office A' }], officeIndex: 1, shown: [{ label: 'Financial Year', value: '2024-2025' }, { label: 'PE Office', value: 'All' }] });
-    const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.2.0', profileVersion: '1.1.0', siteHost: profile.site.host }));
-    const data = XLSX.utils.sheet_to_json(book.Sheets.Data, { raw: true });
-    expect(data.at(-1)['Row Type']).toBe('Grand Total');
-    expect(data[0].Office).toBe('Office A');
-    expect(typeof data[0]['Planned packages, National (No.)']).toBe('number');
+    const rows = ['Office A', 'Office B'].flatMap((office, i) => report.map((r, seq) => ({ key: `${i}|${r.key}`, seq, list: { financial_year: '2024-2025', pe_office: office, budget_type: r.budget, row_type: r.kind, label: r.label, ...r.values } })));
+    const run = baseRun({ flowId: 'procurement_transaction_report', project: 'Road Project', scope: 'national', offices: [{}, {}], officeIndex: 2, shown: [{ label: 'Financial Year', value: '2024-2025' }, { label: 'PE Office', value: 'All offices' }, { label: 'Project', value: 'Road Project' }] });
+    const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.5.0', profileVersion: '1.4.0', siteHost: profile.site.host }));
+    expect(book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);
+    const dev = XLSX.utils.sheet_to_json(book.Sheets.Development, { raw: true });
+    expect(dev[0]).toMatchObject({ 'Financial Year': '2024-2025', Office: 'Office A', Project: 'Road Project', 'Method of Procurement': 'OTM(Goods)' });
+    expect(dev.filter((r) => r['Method of Procurement'] === 'Total Development Budget')).toHaveLength(2);
+    const headers = Object.keys(dev[0]);
+    expect(headers.some((h) => h.includes('International'))).toBe(false);
+    expect(headers.some((h) => h.includes('National'))).toBe(true);
+    const own = XLSX.utils.sheet_to_json(book.Sheets['Own Fund'], { raw: true });
+    expect(own.filter((r) => r['Method of Procurement'] === 'GRAND TOTAL').map((r) => r.Office)).toEqual(['Office A', 'Office B']);
   });
 
   it('says so plainly when a file isn\'t complete', () => {

@@ -16,6 +16,11 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
   const tooBig = limit !== null && plan.rows > limit;
   const empty = !report && plan.rows === 0;
   const box = h('div', { id: 'plan-estimate', class: 'estimate' });
+  // D65: National, International or both, as the report shows them side by side.
+  let scope = 'all';
+  const scopeChoice = h('div', { class: 'scope', role: 'radiogroup', 'aria-label': 'Columns' },
+    ...[['all', 'All: National and International'], ['national', 'National only'], ['international', 'International only']].map(([value, text]) =>
+      h('label', { class: 'cluster' }, h('input', { type: 'radio', name: 'scope', value, 'data-scope': value, checked: value === scope, onchange: () => { scope = value; } }), h('span', {}, text))));
   const go = h('button', { id: 'run-start', type: 'button', class: 'btn filled' }, 'Start collecting');
   const agree = h('input', { id: 'plan-agree', type: 'checkbox' });
   const agreeWords = h('span', {});
@@ -29,7 +34,7 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
     // Filtered: a condition that's false would otherwise print the word.
     box.replaceChildren(...[
       h('b', {}, time.text),
-      h('span', { class: 'parts' }, report ? `One report for each of ${n(plan.offices.length)} offices` : ticked.size ? `List ${time.listText}, detail pages ${time.detailText}` : `List only, ${time.listText}`),
+      h('span', { class: 'parts' }, report ? `One report at a time, ${n(plan.offices.length)} in all` : ticked.size ? `List ${time.listText}, detail pages ${time.detailText}` : `List only, ${time.listText}`),
       time.level !== 'ok' && h('p', { class: 'hint warn' }, time.level === 'unrealistic'
         ? 'Too long for one sitting. To shorten it: collect the list only, narrow the dates, or choose one Procuring Entity.'
         : 'Over 6 hours. To shorten it: collect the list only, narrow the dates, or choose one Procuring Entity. Progress is saved if you stop.'),
@@ -94,7 +99,7 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
     go.disabled = true;
     const chosen = [...ticked];
     const clusterIds = detail ? detail.clusters.map((c) => c.id).filter((id) => detail.fields.some((f) => f.cluster === id && ticked.has(f.id))) : [];
-    onStart(clusterIds, chosen);
+    onStart(clusterIds, chosen, scope);
   });
 
   return h('div', { class: 'sheet', style: 'display:contents', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Before you start' },
@@ -103,8 +108,15 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
       h('button', { id: 'plan-close', type: 'button', class: 'icon-btn', 'aria-label': 'Back to filters', onclick: onClose }, icon('close'))),
     h('div', { class: 'plan-body' },
       report
-        ? h('p', { class: 'plan-count', id: 'plan-count' }, `${n(plan.offices.length)} ${plan.offices.length === 1 ? 'office' : 'offices'}`)
+        ? h('p', { class: 'plan-count', id: 'plan-count' }, `${n(plan.offices.length)} ${plan.offices.length === 1 ? 'report' : 'reports'}`)
         : h('p', { class: 'plan-count', id: 'plan-count' }, `${n(plan.rows)} rows`),
+      report && h('p', { class: 'plan-sub', id: 'plan-sizes' }, [
+        plan.project ? `Project: ${plan.project.replace(/\.+$/, '')}.` : null,
+        plan.sizes ? `${n(plan.sizes.financial_year ?? 1)} ${plan.sizes.financial_year === 1 ? 'year' : 'years'} × ${n(plan.sizes.pe_office ?? 1)} ${plan.sizes.pe_office === 1 ? 'office' : 'offices'}.` : null,
+        plan.project ? 'Reports with nothing for this project are counted, not written as rows of zeros.' : null,
+      ].filter(Boolean).join(' ')),
+      report && h('h3', { class: 'plan-h' }, 'Columns'),
+      report && scopeChoice,
       !report && h('p', { class: 'plan-sub' }, empty ? 'The portal has no records for these filters.' : `${n(plan.totalPages)} list ${plan.totalPages === 1 ? 'page' : 'pages'} at ${plan.size} rows each, as the portal counts them right now.`),
       tooBig && banner('bad', `A search by this kind of filter can't go over ${n(limit)} rows. Add Department and a date window to narrow it.`, 'Too many rows'),
       detail && h('h3', { class: 'plan-h' }, 'Detail-page data to collect'),
@@ -125,7 +137,8 @@ export function renderRun(run, actions, flowName) {
   const left = timeLeft(run);
   const numbers = [];
   if (run.offices) {
-    numbers.push(['Offices done', `${n(run.officeIndex)} of ${n(run.offices.length)}`], ['Rows collected', n(run.stats.rows)]);
+    numbers.push(['Reports done', `${n(run.officeIndex)} of ${n(run.offices.length)}`], ['Rows collected', n(run.stats.rows)]);
+    if (run.stats.emptyReports) numbers.push(['Nothing for this project', n(run.stats.emptyReports)]);
   } else {
     numbers.push(['Rows collected', run.expected ? `${n(run.stats.rows)} of ${n(run.expected)}` : n(run.stats.rows)]);
     if (run.phase === 'list' && run.status !== 'finished') numbers.push(['List page', `${n(run.page)} of ${n(run.totalPages)}`]);

@@ -337,23 +337,47 @@ for (const [flowId, key, clusterId] of [['app_info', 'Package ID', 'package'], [
   });
 }
 
-test('Flow 1, logged in: one report per office, with totals marked', async () => {
+test('Flow 1, logged in: an office grab gives one sheet per budget, with each office\'s rows and totals (D65)', async () => {
   const t = await setup({ loggedIn: true, paceMs: 1 });
   try {
     await t.open('procurement_transaction_report');
-    const year = t.panel.locator('#f-financial_year');
-    await year.click();
+    await expect(t.panel.locator('#start-reasons')).toContainText('Choose one of: Financial Year or Project.');
+    await t.panel.locator('#f-financial_year').click();
     await t.panel.locator('#f-financial_year-list li').nth(1).click();
     await expect(t.panel.locator('#start')).toBeEnabled();
     await t.panel.locator('#start').click();
-    await expect(t.panel.locator('#plan-count')).toContainText('offices');
-    const offices = Number((await t.panel.locator('#plan-count').textContent()).replace(/\D/g, ''));
+    await expect(t.panel.locator('#plan-count')).toContainText('reports');
+    const reports = Number((await t.panel.locator('#plan-count').textContent()).replace(/\D/g, ''));
+    await t.panel.locator('input[data-scope="national"]').check();
     await t.panel.locator('#run-start').click();
     await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
     const file = await downloaded(t);
-    const grand = file.data.filter((r) => r['Row Type'] === 'Grand Total');
-    expect(grand).toHaveLength(offices);
-    expect(file.data[0]['Filter: Financial Year']).toBeTruthy();
+    expect(file.book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);
+    const own = XLSX.utils.sheet_to_json(file.book.Sheets['Own Fund'], { raw: true });
+    expect(own.filter((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toHaveLength(reports);
+    expect(own[0]['Financial Year']).toBeTruthy();
+    expect(Object.keys(own[0]).some((h) => h.includes('International'))).toBe(false);
+  } finally { await t.close(); }
+});
+
+test('Flow 1: a project grab loops every year to the current one, for one office', async () => {
+  const t = await setup({ loggedIn: true, paceMs: 1 });
+  try {
+    await t.open('procurement_transaction_report');
+    await t.panel.locator('#f-project').click();
+    await t.panel.locator('#f-project-list li').nth(1).click();
+    await t.panel.locator('#f-pe_office').click();
+    await t.panel.locator('#f-pe_office-list li').nth(1).click();
+    await expect(t.panel.locator('#start')).toBeEnabled();
+    await t.panel.locator('#start').click();
+    await expect(t.panel.locator('#plan-sizes')).toContainText('× 1 office');
+    await expect(t.panel.locator('#plan-sizes')).toContainText('Project:');
+    await t.panel.locator('#run-start').click();
+    await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
+    const file = await downloaded(t);
+    const dev = XLSX.utils.sheet_to_json(file.book.Sheets.Development, { raw: true });
+    expect(new Set(dev.map((r) => r['Financial Year'])).size).toBeGreaterThan(5);
+    expect(dev[0].Project).toBeTruthy();
   } finally { await t.close(); }
 });
 

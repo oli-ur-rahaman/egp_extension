@@ -95,8 +95,97 @@ const lasted = (ms) => {
   return minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
 };
 
+/**
+ * Flow 1 (D65): About, then one sheet per budget, each with e-GP's own rows in e-GP's order, Total rows included.
+ * The year, office and project of each report are columns of their own.
+ * @returns {import('./xlsx-writer.js').Sheet[]}
+ */
+export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersion, siteHost }) {
+  const finished = run.finishedAt ?? Date.now();
+  const grabbed = dateText(finished);
+  const shownOf = (label) => run.shown.find((x) => x.label === label)?.value;
+  const scope = run.scope ?? 'all';
+  const inScope = (c) => scope === 'all' || !/_(national|international)$/.test(c.key) || c.key.endsWith(`_${scope}`);
+  const columns = [
+    { group: 'filter', header: 'Financial Year', type: 'text', width: 12, value: (row) => row.list.financial_year ?? shownOf('Financial Year') },
+    { group: 'filter', header: 'Office', type: 'text', width: 28, value: (row) => row.list.pe_office ?? row.list.office },
+    ...(run.project ? [{ group: 'filter', header: 'Project', type: 'text', width: 28, value: () => run.project }] : []),
+    { group: 'list', header: flow.report.columns.find((c) => c.key === 'method_label')?.header ?? 'Method of Procurement', type: 'text', width: 22, value: (row) => row.list.label ?? (row.list.method ? `${row.list.method}(${row.list.nature})` : row.list.row_type) },
+    ...flow.report.columns.filter((c) => c.key !== 'method_label' && inScope(c)).map((c) => ({ group: 'list', header: c.header, key: c.key, type: c.type, width: 13, value: (row) => row.list[c.key] })),
+    { group: 'source', header: 'Grabbed at', type: 'datetime', width: 17, value: () => grabbed },
+    { group: 'source', header: 'Login state', type: 'text', width: 12, value: () => (run.loggedIn ? 'Logged in' : 'Logged out') },
+  ];
+  const head = columns.map((c) => ({ v: c.header, s: { bold: true, color: 'FFFFFF', fill: FILL[c.group], border: true, wrap: true, h: 'center', v: 'center' } }));
+  const lastTable = flow.report.tables.at(-1).budgetType;
+  // The grand total sits at the end of the last table on the page, so it goes on that sheet.
+  const sheetOf = (row) => (row.list.row_type === 'Grand Total' ? lastTable : row.list.budget_type);
+  const counts = {};
+  const sheets = flow.report.tables.map((table) => {
+    const own = rows.filter((row) => sheetOf(row) === table.budgetType);
+    counts[table.budgetType] = own.length;
+    const body = own.map((row) => {
+      const isTotal = row.list.row_type !== 'Method';
+      return columns.map((c) => {
+        const v = typed(c.type, c.value(row));
+        const format = FORMAT[c.type];
+        return { v, s: { border: true, v: 'top', ...(isTotal ? { bold: true, fill: FILL.key } : {}), ...(format && typeof v === 'number' ? { format } : {}) } };
+      });
+    });
+    return { name: table.budgetType, widths: columns.map((c) => c.width), rows: [head, ...body], heights: { 0: 62 }, freeze: true, filter: `A1:${colName(columns.length - 1)}${Math.max(body.length + 1, 1)}` };
+  });
+
+  const about = [];
+  const merges = [];
+  const heights = {};
+  const title = (text, size = 11) => {
+    const r = about.length;
+    about.push([{ v: text, s: { bold: true, size, color: 'FFFFFF', fill: FILL.head } }, { s: { fill: FILL.head } }, { s: { fill: FILL.head } }, { s: { fill: FILL.head } }]);
+    merges.push(`A${r + 1}:D${r + 1}`);
+  };
+  const kv = (k, v) => about.push([{ v: k, s: { bold: true, fill: FILL.key, border: true, wrap: true, v: 'top' } }, { v, s: { border: true, wrap: true, v: 'top', h: 'left' } }]);
+  const para = (text, height = 30) => {
+    const r = about.length;
+    about.push([{ v: text, s: { wrap: true, v: 'top' } }]);
+    merges.push(`A${r + 1}:D${r + 1}`);
+    heights[r] = height;
+  };
+  title(flow.name, 14);
+  about.push([]);
+  title('What was done');
+  para(run.project
+    ? `Project grab: generated the report for the project "${run.project}" for each financial year and office chosen, and kept every row the report shows.`
+    : 'Office grab: generated the report for the financial year chosen, once for each office chosen, and kept every row the report shows.', 44);
+  about.push([]);
+  title('The grab');
+  kv('Portal', `e-GP Bangladesh, ${siteHost.replace(/^www\./, '')}`);
+  kv('Report page', flow.name);
+  kv('Started', dateText(run.startedAt));
+  kv('Finished', run.finishedAt ? dateText(run.finishedAt) : 'Not finished');
+  kv('Time taken', lasted(finished - run.startedAt));
+  kv('Login state', run.loggedIn ? 'Logged in' : 'Logged out');
+  kv('Interruptions', run.interruptions.length ? `${run.interruptions.length}, each resumed. No data lost.` : 'None');
+  kv('Tool / rules version', `PDMS eGP Extractor ${toolVersion} / site rules ${profileVersion}`);
+  about.push([]);
+  title('Search criteria');
+  for (const item of run.shown) if (item.value !== '-') kv(item.label, item.value);
+  kv('Columns', { all: 'National and International', national: 'National only', international: 'International only' }[scope]);
+  about.push([]);
+  title('Is it complete?');
+  kv('Reports in this grab / made', `${run.offices?.length ?? 0} / ${run.officeIndex}`);
+  if (run.project) kv('Reports with nothing for this project', String(run.stats.emptyReports ?? 0));
+  for (const table of flow.report.tables) kv(`Rows on the ${table.budgetType} sheet`, String(counts[table.budgetType]));
+  kv('Verdict', verdictOf(flow, run, rows.length).text);
+  about.push([]);
+  title('Good to know about this file');
+  para("Each sheet keeps the report's own rows, in the portal's order, with its Total rows. Totals are in bold.");
+  para('To add up, filter Method of Procurement first and leave out the Total rows, or totals count twice.');
+  para('Amounts are in Crore BDT, as on the portal. A value the portal shows as N.A. is empty.');
+  return [{ name: 'About this grab', widths: [34, 58, 16, 18], rows: about, merges, heights, hideGrid: true }, ...sheets];
+}
+
 /** @returns {import('./xlsx-writer.js').Sheet[]} */
 export function buildWorkbook({ flow, run, rows, toolVersion, profileVersion, siteHost }) {
+  if (flow.report) return buildReportWorkbook({ flow, run, rows, toolVersion, profileVersion, siteHost });
   const finished = run.finishedAt ?? Date.now();
   const withText = { ...run, grabbedText: dateText(finished) };
   const columns = columnsFor(flow, withText);

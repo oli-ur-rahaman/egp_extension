@@ -161,9 +161,16 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       await pause(run, 'shape', `${PAUSE_TEXT.shape} ${result.reason ?? ''}`.trim());
       return;
     }
+    // A project grab meets many offices and years with nothing for that project: those are counted, not written as rows of zeros.
+    if (result.outcome === 'EMPTY' && run.project) {
+      run.stats.emptyReports = (run.stats.emptyReports ?? 0) + 1;
+      run.officeIndex += 1;
+      return;
+    }
+    const labels = office.labels ?? { pe_office: office.text };
     await store.addRows(run.id, result.rows.map((r) => ({
-      key: `${office.value}|${r.key}`,
-      list: { office: office.text, budget_type: r.budget, row_type: r.kind, method: r.method, nature: r.nature, ...r.values },
+      key: `${office.key ?? office.value}|${r.key}`,
+      list: { ...labels, office: labels.pe_office, budget_type: r.budget, row_type: r.kind, label: r.label, method: r.method, nature: r.nature, ...r.values },
       pending: 0,
     })));
     run.officeIndex += 1;
@@ -265,6 +272,9 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         loggedIn: plan.loggedIn,
         clusters: plan.clusters ?? [],
         chosen: plan.chosen ?? null,
+        scope: plan.scope ?? 'all',
+        project: plan.project ?? null,
+        sizes: plan.sizes ?? null,
         size: plan.size,
         repeatSize: plan.repeatSize,
         page: 1,
