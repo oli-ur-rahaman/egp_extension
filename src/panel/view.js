@@ -42,8 +42,19 @@ function officeControl(filter, scan, on) {
     h('span', { class: 'tree-value' }, shown), icon('chevronRight'));
 }
 
+/** D68: years and projects, one or many, from a searchable list. */
+function listPickControl(filter, scan, on) {
+  const value = on.value(filter.id);
+  const names = Array.isArray(value) ? value.map((v) => scan.options.find((o) => o.value === v)?.text).filter(Boolean) : [];
+  const none = (filter.allLabel ?? 'All').replace(' ({n})', '').replace('{n}', '');
+  const shown = names.length === 0 ? none : names.length <= 2 ? names.join(', ') : `${names.length} chosen`;
+  return h('button', { id: `f-${filter.id}`, type: 'button', class: 'field-button', 'aria-haspopup': 'dialog', 'data-chosen': String(names.length), onclick: () => on.openList(filter.id) },
+    h('span', { class: names.length ? 'tree-value' : 'tree-value empty' }, shown), icon('chevronRight'));
+}
+
 function selectControl(flow, filter, scan, on) {
   const id = `f-${filter.id}`;
+  if (filter.picker === 'list') return listPickControl(filter, scan, on);
   if (on.officeTree?.(filter.id)) return officeControl(filter, scan, on);
   const change = (v) => on.change(filter.id, v);
   if (filter.allMeansLoop) {
@@ -222,7 +233,7 @@ export function renderFlow(state, on, now = new Date()) {
         h('h3', {}, 'Filters'),
         changed.length > 0 && h('button', { id: 'clear-all', type: 'button', class: 'btn text', onclick: () => on.clearAll(changed) }, 'Clear all')),
       ...main.map(card),
-      !fold && others.map(card)),
+      ...(fold ? [] : others.map(card))),
     fold && h('details', { class: 'section', id: 'more-filters', open: on.moreOpen() },
       // Noted at the click: Chrome reports the fold's change late, and a redraw in between would shut it.
       h('summary', { onclick: (e) => on.setMoreOpen(!e.currentTarget.parentElement.open) }, icon('chevronRight'), 'More filters', changedOthers > 0 && h('span', { class: 'count', title: 'Filters set here' }, String(changedOthers))),

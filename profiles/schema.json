@@ -139,6 +139,9 @@
         },
         "allMeansLoop": { "type": "boolean" },
         "allNotAValue": { "type": "boolean" },
+        "multiPick": { "type": "boolean" },
+        "picker": { "enum": ["list"] },
+        "allWithProject": { "type": "object", "required": ["value", "label"], "additionalProperties": false, "properties": { "value": { "type": "string" }, "label": { "type": "string" } } },
         "allLabel": { "type": "string" },
         "loopFields": { "type": "object", "additionalProperties": { "type": "string" } },
         "warnWhen": {

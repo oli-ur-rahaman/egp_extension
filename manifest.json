@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PDMS eGP Extractor",
   "short_name": "eGP Extractor",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Collects report data from the e-GP portal into Excel, inside your own logged-in session.",
   "minimum_chrome_version": "116",
   "permissions": ["sidePanel", "storage", "scripting", "tabs", "downloads", "notifications", "alarms"],

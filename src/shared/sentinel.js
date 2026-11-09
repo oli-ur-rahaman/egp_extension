@@ -86,17 +86,20 @@ function checkReport(doc, flow) {
   const report = flow.report;
   const missing = report.tables.filter((/** @type {any} */ t) => !doc.querySelector(t.selector));
   if (missing.length) return verdict(OUTCOME.SHAPE_CHANGED, 'Report tables are missing.', { expected: report.tables.map((/** @type {any} */ t) => t.selector).join(' '), found: `missing ${missing.map((/** @type {any} */ t) => t.selector).join(' ')}` });
-  const numberCols = report.columns.filter((/** @type {any} */ c) => c.type === 'number' || c.type === 'money').map((/** @type {any} */ c) => c.col);
-  let anyValue = false;
+  // The server sends Total cells blank; the page's own script fills them later (live, D68). So rows decide, not totals.
   for (const table of report.tables) {
-    for (const col of numberCols) {
-      const id = report.totalCell.replace('{table}', table.number).replace('{col}', col);
-      const cell = doc.getElementById(id);
-      if (!cell) return verdict(OUTCOME.SHAPE_CHANGED, 'A total cell is missing.', { expected: id, found: 'nothing' });
-      if (Number((cell.textContent ?? '').trim()) > 0) anyValue = true;
+    const id = report.totalCell.replace('{table}', table.number).replace('{col}', '1');
+    if (!doc.getElementById(id)) return verdict(OUTCOME.SHAPE_CHANGED, 'A total cell is missing.', { expected: id, found: 'nothing' });
+  }
+  // Empty is no rows, or rows that are all zeros (insight 24).
+  const numberCols = report.columns.filter((/** @type {any} */ c) => c.type === 'number' || c.type === 'money').map((/** @type {any} */ c) => c.col);
+  const cell = (/** @type {any} */ table, /** @type {any} */ col, /** @type {number} */ row) => doc.getElementById(report.cell.replace('{table}', table.number).replace('{col}', col).replace('{row}', String(row)));
+  for (const table of report.tables) {
+    for (let row = 1; cell(table, 2, row); row++) {
+      if (numberCols.some((/** @type {any} */ col) => Number((cell(table, col, row)?.textContent ?? '').trim()) > 0)) return verdict(OUTCOME.OK, 'Report recognised.');
     }
   }
-  return anyValue ? verdict(OUTCOME.OK, 'Report recognised.') : verdict(OUTCOME.EMPTY, 'Every total is zero.');
+  return verdict(OUTCOME.EMPTY, 'The report has no figures.');
 }
 
 /**

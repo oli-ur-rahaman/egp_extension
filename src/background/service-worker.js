@@ -275,19 +275,18 @@ async function measure(/** @type {any} */ { tabId, loops, several, categoryNames
     if (!combos.length) throw new Error(`No financial year up to the current one (${currentYear}) is on the page.`);
     // What the file says was searched: a filter on All says All, not what the page last showed.
     const shown = built.shown.map((/** @type {any} */ s) => {
-      const filter = flow.filters.find((/** @type {any} */ f) => f.allMeansLoop && wanted[f.id] && f.label.replace(/^(Select|By) /, '') === s.label);
+      const filter = flow.filters.find((/** @type {any} */ f) => (f.allMeansLoop || f.multiPick) && f.label.replace(/^(Select|By) /, '') === s.label);
       if (!filter) return s;
       const want = wanted[filter.id];
-      if (Array.isArray(want)) {
+      if (Array.isArray(want) && want.length) {
         const names = built.loops[filter.id].options.filter((/** @type {any} */ o) => want.includes(o.value)).map((/** @type {any} */ o) => o.text);
-        return { ...s, value: `${names.length} offices: ${names.join('; ')}` };
+        return { ...s, value: names.length === 1 ? names[0] : `${names.length}: ${names.join('; ')}` };
       }
-      return { ...s, value: filter.allLabel.replace(' ({n})', '').replace('{n}', '') };
+      if (filter.multiPick || want === true) return { ...s, value: filter.allLabel.replace(' ({n})', '').replace('{n}', '') };
+      return s;
     });
-    const projectFilter = flow.filters.find((/** @type {any} */ f) => f.id === 'project');
-    const chosen = projectFilter && built.fields[projectFilter.requestField] && built.fields[projectFilter.requestField] !== projectFilter.empty;
-    const project = chosen ? built.fields[projectFilter.mirrorField] || shown.find((/** @type {any} */ s) => s.label === 'Project')?.value : null;
-    return { ...plan, shown, offices: combos, sizes, project, rows: null, totalPages: combos.length };
+    const project = flow.filters.some((/** @type {any} */ f) => f.multiPick && /** @type {any} */ (sizes)[f.id] > 0);
+    return { ...plan, shown, offices: combos, sizes, project: project ? 'chosen' : null, rows: null, totalPages: combos.length };
   }
   const size = flow.list.request.defaultSize;
   if (several?.offices?.length > 1) return measureSeveral(tab.id, profile, flow, built, plan, several, size);
@@ -313,13 +312,13 @@ async function measure(/** @type {any} */ { tabId, loops, several, categoryNames
 /** @type {Record<string, (payload: any) => unknown>} */
 const handlers = {
   [MSG.RUN_MEASURE]: measure,
-  [MSG.RUN_START]: async ({ plan, clusters, chosen, scope }) => {
+  [MSG.RUN_START]: async ({ plan, clusters, chosen, scope, tables, rowsMode }) => {
     const running = (await store.allRuns()).find((/** @type {any} */ r) => r.status === 'running');
     if (running) throw new Error('A run is already going in another tab. Pause or stop it first.');
     // Only the finished runs the user has left behind are removed.
     for (const old of await store.allRuns()) if (old.dismissed) await store.deleteRun(old.id);
     await chrome.storage.session.set({ runAlive: true });
-    return (await getEngine()).start({ ...plan, clusters, chosen, scope });
+    return (await getEngine()).start({ ...plan, clusters, chosen, scope, tables, rowsMode });
   },
   [MSG.RUN_STATE]: async ({ tabId }) => {
     const run = await runFor(tabId);

@@ -1,7 +1,7 @@
 {
   "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
   "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
-  "profileVersion": "1.4.0",
+  "profileVersion": "1.5.0",
   "capturedAt": "2026-11-06",
   "pageStates": {
     "loginForm": "#txtPassword",
@@ -77,18 +77,14 @@
         "identity": ["#cmbFinancialYear", "#cmboffice", "#generate"]
       },
       "filters": [
-        { "id": "financial_year", "label": "By Financial Year", "control": "select", "panel": true, "selector": "#cmbFinancialYear", "requestField": "financialyear", "empty": "0", "allMeansLoop": true, "allNotAValue": true, "allLabel": "All years, to the current one", "loopFields": { "quater": "{start}-07-1_{end}-06-30" }, "note": "D65: All loops every year up to the current fiscal year, and only with a Project. Quarter is a date range built from the year, so it's sent with each year: All Four Quarter (flow-1 notes)." },
-        { "id": "pe_office", "label": "PE Office", "control": "select", "panel": true, "selector": "#cmboffice", "requestField": "offId", "mirrorField": "offName", "allMeansLoop": true, "allLabel": "All offices ({n})", "note": "The page has no 'all offices' option. The panel adds All, which loops through every office read live (D12)." },
+        { "id": "financial_year", "label": "By Financial Year", "control": "select", "panel": true, "selector": "#cmbFinancialYear", "requestField": "financialyear", "empty": "0", "allMeansLoop": true, "picker": "list", "allLabel": "All years, to the current one", "loopFields": { "quater": "{start}-07-1_{end}-06-30" }, "note": "D65: All loops every year up to the current fiscal year, and only with a Project. Quarter is a date range built from the year, so it's sent with each year: All Four Quarter (flow-1 notes)." },
+        { "id": "pe_office", "label": "PE Office", "control": "select", "panel": true, "selector": "#cmboffice", "requestField": "offId", "mirrorField": "offName", "allMeansLoop": true, "allLabel": "All offices ({n})", "allWithProject": { "value": "0", "label": "All offices" }, "note": "D68: with projects chosen, All is one report with office 0, which the portal answers with the project's own figures (live, 2026-11-10). The page has no 'all offices' option. The panel adds All, which loops through every office read live (D12)." },
         { "id": "quarter", "label": "By Quarter", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#quater", "requestField": "quater", "mirrorField": "quatername", "note": "Owner hides it. One option has a typo in its value (E4)." },
         { "id": "programme", "label": "By Programme", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#program", "requestField": "program", "mirrorField": "programname", "empty": "0", "note": "Owner hides it: often returns nothing (E3)." },
-        { "id": "project", "label": "By Project", "control": "select", "panel": true, "selector": "#project", "requestField": "project", "mirrorField": "projectname", "empty": "0", "note": "D65: shown again for the project grab, a searchable list. It often returns nothing (E3, E5), and the page doesn't refresh it when the office changes." },
+        { "id": "project", "label": "By Project", "control": "select", "panel": true, "selector": "#project", "requestField": "project", "mirrorField": "projectname", "empty": "0", "multiPick": true, "picker": "list", "allLabel": "Not set", "note": "D68: Not set by default; one or many chosen from a searchable list, one report each. D65: shown again for the project grab, a searchable list. It often returns nothing (E3, E5), and the page doesn't refresh it when the office changes." },
         { "id": "budget_type", "label": "Budget Type", "control": "select", "panel": false, "leaveAsPageHasIt": true, "selector": "#cmbBudType", "requestField": "cmbBudType", "mirrorField": "budgetType", "empty": "0", "note": "Left unset, the report returns all three budgets at once." }
       ],
-      "rules": {
-        "required": ["pe_office"],
-        "groups": [{ "id": "first", "anyOf": ["financial_year", "project"] }],
-        "decisions": ["D11", "D12", "D65"]
-      },
+      "rules": { "required": [], "decisions": ["D11", "D12", "D65", "D68"] },
       "report": {
         "request": {
           "url": "/report/ProcTransReport.jsp",

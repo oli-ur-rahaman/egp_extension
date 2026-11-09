@@ -248,11 +248,11 @@ describe('start rules', () => {
     const got = run(flows.contract_info, { contract_award_to: 'A firm', sign_date: window('01/01/2025', '01/01/2024') });
     expect(got.ok).toBe(false);
   });
-  it('Flow 1 needs a login, a year and an office', () => {
+  it('Flow 1 needs a login; years, offices and projects all have defaults (D68)', () => {
     const flow = flows.procurement_transaction_report;
-    expect(run(flow, { financial_year: '2024-2025', pe_office: '__all__' }, false).reasons.join()).toContain('needs a login');
-    expect(run(flow, { financial_year: '2024-2025', pe_office: '__all__' }, true).ok).toBe(true);
-    expect(run(flow, { financial_year: '0', pe_office: '__all__' }, true).ok).toBe(false);
+    expect(run(flow, { financial_year: '__all__', pe_office: '__all__' }, false).reasons.join()).toContain('needs a login');
+    expect(run(flow, { financial_year: '__all__', pe_office: '__all__' }, true).ok).toBe(true);
+    expect(run(flow, { financial_year: ['2024-2025'], pe_office: ['933'], project: ['77'] }, true).ok).toBe(true);
   });
   it('Between needs two values, in order', () => {
     const base = { department: dept, financial_year: '2024-2025' };

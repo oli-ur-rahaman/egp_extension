@@ -26,6 +26,8 @@ export class NetworkError extends Error {}
 export function createEngine({ store, transport, sleep, now = Date.now, pacing, random = Math.random, onChange = () => {}, onEnd = () => {} }) {
   /** Runs with a loop going in this worker. @type {Set<string>} */
   const looping = new Set();
+  /** Pause or Stop pressed while a step is under way, kept here so that step's own save can't lose it. @type {Map<string, 'pause' | 'stop'>} */
+  const asked = new Map();
 
   const save = async (run) => {
     await store.saveRun(run);
@@ -42,6 +44,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
   }
 
   async function finish(run) {
+    asked.delete(run.id);
     run.status = run.stopRequested ? 'stopped' : 'finished';
     run.phase = 'done';
     run.finishedAt = now();
@@ -189,12 +192,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       await pause(run, 'shape', `${PAUSE_TEXT.shape} ${result.reason ?? ''}`.trim());
       return;
     }
-    // A project grab meets many offices and years with nothing for that project: those are counted, not written as rows of zeros.
-    if (result.outcome === 'EMPTY' && run.project) {
-      run.stats.emptyReports = (run.stats.emptyReports ?? 0) + 1;
-      run.officeIndex += 1;
-      return;
-    }
+    if (result.outcome === 'EMPTY') run.stats.emptyReports = (run.stats.emptyReports ?? 0) + 1;
     const labels = office.labels ?? { pe_office: office.text };
     await store.addRows(run.id, result.rows.map((r) => ({
       key: `${office.key ?? office.value}|${r.key}`,
@@ -248,10 +246,17 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
           await retryLater(run, err.message);
         }
         run.activeMs += now() - started;
-        // A pause or Stop pressed during the request wins: re-read before saving this step's progress.
+        const request = asked.get(id);
+        if (request === 'stop') run.stopRequested = true;
+        if (request === 'pause' && run.status === 'running') {
+          asked.delete(id);
+          await pause(run, 'user');
+          return;
+        }
+        // A pause or Stop pressed in another worker wins too: re-read before saving this step's progress.
         const latest = await store.getRun(id);
         if (latest && latest.status === 'running') {
-          run.stopRequested = latest.stopRequested;
+          run.stopRequested = latest.stopRequested || asked.get(id) === 'stop';
           if (run.status === 'running') await save(run);
           else return;
         } else {
@@ -269,7 +274,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
           const waited = now();
           await sleep(pacing.paceMs + random() * pacing.jitterMs);
           const after = await store.getRun(id);
-          if (after) {
+          if (after && !asked.has(id)) {
             after.activeMs += now() - waited;
             await store.saveRun(after);
           }
@@ -301,6 +306,8 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         clusters: plan.clusters ?? [],
         chosen: plan.chosen ?? null,
         scope: plan.scope ?? 'all',
+        tables: plan.tables ?? null,
+        rowsMode: plan.rowsMode ?? 'all',
         project: plan.project ?? null,
         sizes: plan.sizes ?? null,
         size: plan.size,
@@ -337,13 +344,20 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     },
     async pause(id) {
       const run = await store.getRun(id);
-      if (run?.status === 'running') await pause(run, 'user');
+      if (run?.status !== 'running') return run;
+      if (looping.has(id)) {
+        // The loop pauses as soon as its step is saved.
+        asked.set(id, 'pause');
+        return { ...run, status: 'paused', pauseKind: 'user', reason: 'Paused by you.' };
+      }
+      await pause(run, 'user');
       return run;
     },
     /** @param {string} id @param {number} [tabId] the tab to carry on through, if the old one has gone */
     async resume(id, tabId) {
       const run = await store.getRun(id);
       if (!run || run.status !== 'paused') return run;
+      asked.delete(id);
       if (tabId) run.tabId = tabId;
       run.status = 'running';
       run.pauseKind = null;
@@ -360,6 +374,11 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       const run = await store.getRun(id);
       if (!run) return null;
       run.stopRequested = true;
+      if (looping.has(id)) {
+        // The loop finishes as soon as its step is saved.
+        asked.set(id, 'stop');
+        return run;
+      }
       if (run.status === 'paused') {
         run.status = 'running';
         await store.saveRun(run);

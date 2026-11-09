@@ -323,3 +323,9 @@ label.node input { margin-top: 2px; flex: none; }
 .editor-foot { justify-content: flex-end; flex-wrap: wrap; }
 .editor-live { width: 100%; color: var(--muted); font-size: 11px; }
 .settings-intro { padding-bottom: 6px !important; }
+/* List picker (D68) */
+.pick-list { list-style: none; margin: 0; padding: 4px 8px; }
+.pick-list > li { border-radius: 6px; }
+.pick-list > li:hover { background: color-mix(in srgb, var(--text) 6%, transparent); }
+.pick-head { padding: 8px 8px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.pick-head:hover { background: none !important; }

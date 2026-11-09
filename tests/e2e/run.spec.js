@@ -89,11 +89,13 @@ async function downloaded(t) {
       return real(options);
     };
   });
+  // Wait for this file, not the one before it: a new download with a new ID, finished.
+  const last = await t.worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]?.id ?? null);
   await t.panel.locator('#run-download').click();
-  await expect.poll(async () => t.worker.evaluate(async () => {
+  await expect.poll(async () => t.worker.evaluate(async (before) => {
     const [item] = await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 });
-    return item?.state;
-  })).toBe('complete');
+    return item && item.id !== before ? item.state : 'waiting';
+  }, last)).toBe('complete');
   const item = await t.worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]);
   const book = XLSX.read(await readFile(item.filename), { type: 'buffer' });
   const name = await t.panel.evaluate(() => window.lastDownload);
@@ -341,9 +343,9 @@ test('Flow 1, logged in: an office grab gives one sheet per budget, with each of
   const t = await setup({ loggedIn: true, paceMs: 1 });
   try {
     await t.open('procurement_transaction_report');
-    await expect(t.panel.locator('#start-reasons')).toContainText('Choose one of: Financial Year or Project.');
     await t.panel.locator('#f-financial_year').click();
-    await t.panel.locator('#f-financial_year-list li').nth(1).click();
+    await t.panel.locator('#sheet input[data-value]').first().check();
+    await t.panel.locator('#list-done').click();
     await expect(t.panel.locator('#start')).toBeEnabled();
     await t.panel.locator('#start').click();
     await expect(t.panel.locator('#plan-count')).toContainText('reports');
@@ -357,29 +359,6 @@ test('Flow 1, logged in: an office grab gives one sheet per budget, with each of
     expect(own.filter((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toHaveLength(reports);
     expect(own[0]['Financial Year']).toBeTruthy();
     expect(Object.keys(own[0]).some((h) => h.includes('International'))).toBe(false);
-  } finally { await t.close(); }
-});
-
-test('Flow 1: a project grab loops every year to the current one, for one office', async () => {
-  const t = await setup({ loggedIn: true, paceMs: 1 });
-  try {
-    await t.open('procurement_transaction_report');
-    await t.panel.locator('#f-project').click();
-    await t.panel.locator('#f-project-list li').nth(1).click();
-    await t.panel.locator('#f-pe_office').click();
-    await t.panel.locator('#offices-search').fill('Rajshahi PWD Division-1');
-    await t.panel.locator('input[data-office]:visible').first().check();
-    await t.panel.locator('#offices-done').click();
-    await expect(t.panel.locator('#start')).toBeEnabled();
-    await t.panel.locator('#start').click();
-    await expect(t.panel.locator('#plan-sizes')).toContainText('× 1 office');
-    await expect(t.panel.locator('#plan-sizes')).toContainText('Project:');
-    await t.panel.locator('#run-start').click();
-    await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
-    const file = await downloaded(t);
-    const dev = XLSX.utils.sheet_to_json(file.book.Sheets.Development, { raw: true });
-    expect(new Set(dev.map((r) => r['Financial Year'])).size).toBeGreaterThan(5);
-    expect(dev[0].Project).toBeTruthy();
   } finally { await t.close(); }
 });
 
@@ -408,6 +387,105 @@ test('several offices (D66): each office is searched, and only their rows come b
     const file = await downloaded(t);
     expect(file.data.map((r) => r['Tender/Proposal ID']).sort()).toEqual([...expected].sort());
     expect(file.data[0]['Filter: Procuring Entity']).toMatch(/^2 offices: /);
+  } finally { await t.close(); }
+});
+
+test('Flow 1: all 8 combinations of years, offices and projects (D68)', async () => {
+  test.setTimeout(420000);
+  const t = await setup({ loggedIn: true, paceMs: 1 });
+  try {
+    await t.open('procurement_transaction_report');
+    await expect(t.panel.locator('[data-filter]').first()).toBeVisible();
+    // Years up to the current fiscal year (July to June), from the page's own list.
+    const now = new Date();
+    const currentStart = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+    const pageYears = await t.page.evaluate(() => [...document.getElementById('cmbFinancialYear').options].map((o) => o.text.trim()).filter((x) => /^\d{4}-\d{4}$/.test(x)));
+    const allYears = pageYears.filter((y) => Number(y.slice(0, 4)) <= currentStart).length;
+
+    const pickList = async (id, how) => {
+      await t.panel.locator(`#f-${id}`).click();
+      await t.panel.locator('#sheet .sheet-foot .btn', { hasText: 'Clear' }).click();
+      if (how !== 'none') for (let i = 0; i < how; i++) await t.panel.locator('#sheet input[data-value]:not(:checked)').first().check();
+      await t.panel.locator('#list-done').click();
+    };
+    const pickOffices = async (how) => {
+      await t.panel.locator('#f-pe_office').click();
+      await t.panel.locator('#sheet .sheet-foot .btn', { hasText: 'Clear' }).click();
+      if (how !== 'all') {
+        await t.panel.locator('#offices-search').fill('Rajshahi PWD Division');
+        for (let i = 0; i < how; i++) await t.panel.locator('input[data-office]:visible:not(:checked)').first().check();
+      }
+      await t.panel.locator('#offices-done').click();
+    };
+
+    const cases = [
+      { name: '1.1', years: 'all', offices: 'all', projects: 0 },
+      { name: '1.2', years: 'all', offices: 'all', projects: 2 },
+      { name: '1.3', years: 'all', offices: 2, projects: 0 },
+      { name: '1.4', years: 'all', offices: 2, projects: 2 },
+      { name: '1.5', years: 2, offices: 'all', projects: 0 },
+      { name: '1.6', years: 2, offices: 'all', projects: 2 },
+      { name: '1.7', years: 2, offices: 2, projects: 0 },
+      { name: '1.8', years: 2, offices: 2, projects: 2 },
+    ];
+    for (const c of cases) {
+      await pickList('financial_year', c.years === 'all' ? 'none' : c.years);
+      await pickOffices(c.offices);
+      await pickList('project', c.projects || 'none');
+      const years = c.years === 'all' ? allYears : c.years;
+      // With projects and all offices, the portal answers office 0 with the project's figures: one report per year and project.
+      const offices = c.offices === 'all' ? (c.projects ? 1 : 224) : c.offices;
+      const reports = years * offices * Math.max(1, c.projects);
+      await expect(t.panel.locator('#start'), c.name).toBeEnabled();
+      await t.panel.locator('#start').click();
+      await expect(t.panel.locator('#plan-count'), c.name).toHaveText(`${reports.toLocaleString('en-US')} ${reports === 1 ? 'report' : 'reports'}`);
+      // Page 2: national columns, Development and Own Fund only, rows with a number only.
+      await t.panel.locator('input[data-scope="national"]').check();
+      await t.panel.locator('input[data-table="Revenue"]').uncheck();
+      await t.panel.locator('input[data-rows="nonzero"]').check();
+      const before = t.portal.state.reports.length;
+      await t.panel.locator('#run-start').click();
+      if (reports > 100) {
+        // A long one: a few reports are enough to see what it sends; then Stop keeps what's collected.
+        await expect.poll(() => t.portal.state.reports.length - before, { timeout: 30000 }).toBeGreaterThan(5);
+        await t.panel.locator('#run-stop').click();
+        await expect(state(t), c.name).toHaveText('Stopped', { timeout: 30000 });
+      } else {
+        await expect(state(t), c.name).toHaveText('Finished', { timeout: 120000 }).catch(async (err) => {
+          console.log('STALL', c.name, await t.panel.locator('#run-view').innerText(), 'sent', t.portal.state.reports.length - before, 'of', reports);
+          throw err;
+        });
+        expect(t.portal.state.reports.length - before, c.name).toBe(reports);
+      }
+      const sent = t.portal.state.reports.slice(before);
+      // What was sent: the projects chosen, or none; office 0 only when projects are chosen with all offices.
+      if (c.projects) expect(sent.every((r) => r.project !== '0'), c.name).toBe(true);
+      else expect(sent.every((r) => r.project === '0'), c.name).toBe(true);
+      expect(sent.every((r) => (r.office === '0') === (c.projects > 0 && c.offices === 'all')), c.name).toBe(true);
+      const file = await downloaded(t);
+      expect(file.book.SheetNames, c.name).toEqual(['About this grab', 'Development', 'Own Fund']);
+      const dev = XLSX.utils.sheet_to_json(file.book.Sheets.Development, { raw: true });
+      const own = XLSX.utils.sheet_to_json(file.book.Sheets['Own Fund'], { raw: true });
+      const all = [...dev, ...own];
+      // A project shows only under its own office: chosen offices that don't own a chosen project give nothing, as on e-GP.
+      const owned = !(c.projects && c.offices !== 'all') || sent.some((r) => t.portal.ownerOf(r.project) === r.office);
+      if (!owned) {
+        expect(all, c.name).toHaveLength(0);
+        const about = XLSX.utils.sheet_to_json(file.book.Sheets['About this grab'], { header: 1 }).map((r) => r.join(' ')).join(' | ');
+        expect(about, c.name).toContain(`Reports with no rows ${reports}`);
+        await t.panel.locator('#run-new').click();
+        await expect(t.panel.locator('[data-filter]').first(), c.name).toBeVisible();
+        continue;
+      }
+      expect(all.length, c.name).toBeGreaterThan(0);
+      expect(Object.keys(dev[0] ?? own[0]).some((h) => h.includes('International')), c.name).toBe(false);
+      if (c.projects) expect(all.every((r) => r.Project), c.name).toBe(true);
+      // Rows with a number only: no row of all zeros.
+      const numbers = (r) => Object.entries(r).filter(([k]) => /\(No\.\)|BDT|Tenders|%/.test(k)).map(([, v]) => Number(v) || 0);
+      expect(all.every((r) => numbers(r).some((v) => v !== 0)), c.name).toBe(true);
+      await t.panel.locator('#run-new').click();
+      await expect(t.panel.locator('[data-filter]').first(), c.name).toBeVisible();
+    }
   } finally { await t.close(); }
 });
 

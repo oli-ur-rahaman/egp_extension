@@ -64,7 +64,7 @@ const htmlOf = (res, status, body, headers = {}) => {
  */
 export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } = {}) {
   const data = Object.fromEntries(Object.keys(FLOWS).map((id) => [id, buildRows(id, rows[id] ?? 250)]));
-  const state = { loggedIn, latencyMs, requests: [], faults: {} };
+  const state = { loggedIn, latencyMs, requests: [], reports: [], faults: {} };
   const pageRoutes = new Map(Object.entries(profile.flows).map(([id, f]) => [new URL(f.page.url, 'http://x').pathname, id]));
   const listRoutes = new Map(Object.keys(FLOWS).map((id) => [profile.flows[id].list.request.url, id]));
   const detailRoutes = new Map(Object.keys(FLOWS).map((id) => [profile.flows[id].detail.open.url, id]));
@@ -78,6 +78,10 @@ export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } 
     return ids;
   })();
   const officeOf = (index) => officeIds[index % officeIds.length];
+  /** The real server leaves Total and percentage cells for the page's script to fill (live, 2026-11-10). */
+  const rawReport = (html) => html
+    .replace(/(<t[hd][^>]*id="(?:t\d)?total\d+"[^>]*>)[^<]*(<\/t[hd]>)/g, '$1$2')
+    .replace(/(<label[^>]*id="t\dlab\d+_\d+"[^>]*>)[^<]*(<\/label>)/g, '$1$2');
   const officeField = (flowId) => profile.flows[flowId].filters.find((f) => f.id === 'procuring_entity')?.requestField;
 
   function listAnswer(flowId, form) {
@@ -127,7 +131,13 @@ export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } 
       if (faults.sessionEnded) { state.loggedIn = false; return htmlOf(res, 302, '', { Location: '/resources/common/SessionTimedOut.jsp' }); }
       if (!state.loggedIn) return htmlOf(res, 200, read('shared/home-logged-out'));
       if (req.method === 'GET') return htmlOf(res, 200, read('flow1/filter'));
-      return htmlOf(res, 200, read(form.get('offId') === 'empty' ? 'flow1/report-empty' : 'flow1/report'));
+      const project = (form.get('project') ?? '0').trim();
+      const office = (form.get('offId') ?? '').trim();
+      // A project belongs to one office, as on the portal; office 0 with a project gives that project's figures.
+      const owner = project !== '0' && project !== '' ? officeIds[[...project].reduce((a, c) => a + c.charCodeAt(0), 0) % officeIds.length] : null;
+      const empty = office === 'empty' || (owner && office !== '0' && office !== owner);
+      state.reports.push({ office, project, year: form.get('financialyear') });
+      return htmlOf(res, 200, rawReport(read(empty ? 'flow1/report-empty' : 'flow1/report')));
     }
     if (flowOfPage) {
       const prefix = FLOWS[flowOfPage].prefix;
@@ -179,6 +189,8 @@ export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } 
     /** Row IDs that belong to an office. */
     rowIdsOf: (flowId, office) => data[flowId].rows.filter((_, i) => officeOf(i) === office).map((r) => r.id),
     officeIds: () => officeIds,
+    /** The office a Flow 1 project belongs to, on this fake portal. */
+    ownerOf: (project) => officeIds[[...project].reduce((a, c) => a + c.charCodeAt(0), 0) % officeIds.length],
     /** @param {number} [port] */
     start: (port = 0) => new Promise((resolve) => server.listen(port, '127.0.0.1', () => resolve(`http://127.0.0.1:${server.address().port}`))),
     stop: () => new Promise((resolve) => { server.closeAllConnections(); server.close(resolve); }),

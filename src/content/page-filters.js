@@ -261,7 +261,7 @@ export function buildRequest(doc, flow) {
       const blank = isPlaceholder(option, filter);
       fields[filter.requestField] = choice?.value ?? (blank ? filter.empty ?? '' : el.value);
       if (filter.mirrorField) fields[filter.mirrorField] = blank ? '' : option.text;
-      if (filter.allMeansLoop) loops[filter.id] = { field: filter.requestField, mirror: filter.mirrorField, options: optionsOf(el, filter), selected: blank ? null : option };
+      if (filter.allMeansLoop || filter.multiPick) loops[filter.id] = { field: filter.requestField, mirror: filter.mirrorField, options: optionsOf(el, filter), selected: blank ? null : option };
       if (filter.panel) shown.push({ label: label(filter), value: choice?.label ?? (blank ? 'All' : option.text) });
       continue;
     }

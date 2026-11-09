@@ -16,8 +16,19 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
   const tooBig = limit !== null && plan.rows > limit;
   const empty = !report && plan.rows === 0;
   const box = h('div', { id: 'plan-estimate', class: 'estimate' });
-  // D65: National, International or both, as the report shows them side by side.
+  // D65, D68: National, International or both; which tables; all rows or only those with a number.
   let scope = 'all';
+  const tables = new Set((flow.report?.tables ?? []).map((t) => t.budgetType));
+  let rowsMode = 'all';
+  const tableChoice = h('div', { class: 'scope', role: 'group', 'aria-label': 'Tables' },
+    ...(flow.report?.tables ?? []).map((t) => h('label', { class: 'cluster' }, h('input', { type: 'checkbox', 'data-table': t.budgetType, checked: true, onchange: (e) => {
+      if (e.target.checked) tables.add(t.budgetType);
+      else tables.delete(t.budgetType);
+      refresh();
+    } }), h('span', {}, t.budgetType))));
+  const rowsChoice = h('div', { class: 'scope', role: 'radiogroup', 'aria-label': 'Rows' },
+    ...[['all', 'All rows, as the report shows them'], ['nonzero', 'Only rows with a number: leave out rows that are all zeros']].map(([value, text]) =>
+      h('label', { class: 'cluster' }, h('input', { type: 'radio', name: 'rows', value, 'data-rows': value, checked: value === rowsMode, onchange: () => { rowsMode = value; } }), h('span', {}, text))));
   const scopeChoice = h('div', { class: 'scope', role: 'radiogroup', 'aria-label': 'Columns' },
     ...[['all', 'All: National and International'], ['national', 'National only'], ['international', 'International only']].map(([value, text]) =>
       h('label', { class: 'cluster' }, h('input', { type: 'radio', name: 'scope', value, 'data-scope': value, checked: value === scope, onchange: () => { scope = value; } }), h('span', {}, text))));
@@ -45,7 +56,7 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
     if (!mustAgree) agree.checked = false;
     agreeLine.classList.remove('asked');
     // Start stays pressable when only the tick is missing, and says what's missing: a greyed button explains nothing.
-    go.disabled = tooBig || empty;
+    go.disabled = tooBig || empty || (report && tables.size === 0);
   }
   agree.addEventListener('change', refresh);
 
@@ -99,7 +110,7 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
     go.disabled = true;
     const chosen = [...ticked];
     const clusterIds = detail ? detail.clusters.map((c) => c.id).filter((id) => detail.fields.some((f) => f.cluster === id && ticked.has(f.id))) : [];
-    onStart(clusterIds, chosen, scope);
+    onStart(clusterIds, chosen, { scope, tables: report ? [...tables] : null, rowsMode });
   });
 
   return h('div', { class: 'sheet', style: 'display:contents', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Before you start' },
@@ -111,12 +122,14 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
         ? h('p', { class: 'plan-count', id: 'plan-count' }, `${n(plan.offices.length)} ${plan.offices.length === 1 ? 'report' : 'reports'}`)
         : h('p', { class: 'plan-count', id: 'plan-count' }, `${n(plan.rows)} rows`),
       report && h('p', { class: 'plan-sub', id: 'plan-sizes' }, [
-        plan.project ? `Project: ${plan.project.replace(/\.+$/, '')}.` : null,
-        plan.sizes ? `${n(plan.sizes.financial_year ?? 1)} ${plan.sizes.financial_year === 1 ? 'year' : 'years'} × ${n(plan.sizes.pe_office ?? 1)} ${plan.sizes.pe_office === 1 ? 'office' : 'offices'}.` : null,
-        plan.project ? 'Reports with nothing for this project are counted, not written as rows of zeros.' : null,
+        plan.sizes ? `${n(plan.sizes.financial_year ?? 1)} ${plan.sizes.financial_year === 1 ? 'year' : 'years'} × ${plan.project && plan.offices.every((c) => c.fields.offId === '0') ? 'all offices in one report' : `${n(plan.sizes.pe_office ?? 1)} ${plan.sizes.pe_office === 1 ? 'office' : 'offices'}`}${plan.sizes.project ? ` × ${n(plan.sizes.project)} ${plan.sizes.project === 1 ? 'project' : 'projects'}` : ''}.` : null,
       ].filter(Boolean).join(' ')),
       report && h('h3', { class: 'plan-h' }, 'Columns'),
       report && scopeChoice,
+      report && h('h3', { class: 'plan-h' }, 'Tables, one sheet each'),
+      report && tableChoice,
+      report && h('h3', { class: 'plan-h' }, 'Rows'),
+      report && rowsChoice,
       // D66: each office is its own search, so each is named with what the portal holds for it.
       plan.searches && h('div', { id: 'plan-offices', class: 'plan-offices' },
         h('p', { class: 'plan-sub' }, `${n(plan.searches.length)} offices, searched one at a time. The e-GP page itself keeps showing its own search; these are what the tool collects:`),

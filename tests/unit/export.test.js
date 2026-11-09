@@ -154,7 +154,7 @@ describe('workbook', () => {
   it('Flow 1: About and one sheet per budget, with the report\'s own rows and Total rows (D65)', async () => {
     const flow = profile.flows.procurement_transaction_report;
     const report = parseReport(doc(raw('flow1/report')), flow).rows;
-    const rows = ['Office A', 'Office B'].flatMap((office, i) => report.map((r, seq) => ({ key: `${i}|${r.key}`, seq, list: { financial_year: '2024-2025', pe_office: office, budget_type: r.budget, row_type: r.kind, label: r.label, ...r.values } })));
+    const rows = ['Office A', 'Office B'].flatMap((office, i) => report.map((r, seq) => ({ key: `${i}|${r.key}`, seq, list: { financial_year: '2024-2025', pe_office: office, project: 'Road Project', budget_type: r.budget, row_type: r.kind, label: r.label, ...r.values } })));
     const run = baseRun({ flowId: 'procurement_transaction_report', project: 'Road Project', scope: 'national', offices: [{}, {}], officeIndex: 2, shown: [{ label: 'Financial Year', value: '2024-2025' }, { label: 'PE Office', value: 'All offices' }, { label: 'Project', value: 'Road Project' }] });
     const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.5.0', profileVersion: '1.4.0', siteHost: profile.site.host }));
     expect(book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);

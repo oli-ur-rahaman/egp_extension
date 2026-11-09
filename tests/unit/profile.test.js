@@ -81,8 +81,8 @@ describe("the owner's decisions", () => {
     expect(group('experience_info', 'second')).toEqual(['contract_start_date', 'procuring_entity', 'contract_awarded_to', 'company_unique_id']);
     expect(flows.tender_info.rules.window).toEqual({ filter: 'publishing_date', maxYears: 5, currentDateCheckboxes: true });
     // Flow 1 keeps its own: a year and an office.
-    expect(flows.procurement_transaction_report.rules.required).toEqual(['pe_office']);
-    expect(flows.procurement_transaction_report.rules.groups[0].anyOf).toEqual(['financial_year', 'project']);
+    expect(flows.procurement_transaction_report.rules.required).toEqual([]);
+    expect(flows.procurement_transaction_report.filters.find((f) => f.id === 'project').multiPick).toBe(true);
   });
 
   it('a contractor search stays within 5,000 rows when it stands in for Department (D21, D22, D58)', () => {

@@ -5,6 +5,7 @@ import { MSG, request as send } from '../shared/bus.js';
 import { h } from './icons.js';
 import { buildPicker } from './picker.js';
 import { buildOfficePicker } from './office-picker.js';
+import { buildListPicker } from './list-picker.js';
 import { buildOfficeEditor } from './office-editor.js';
 import { isPwdList, loadOfficeTree, rememberLive, TREE_KEY } from '../shared/offices.js';
 import { buildPlanSheet, renderRun } from './run-view.js';
@@ -261,7 +262,29 @@ const on = {
     return pwd ? officeTree : null;
   },
   openOffices,
+  openList,
 };
+
+/** D68: years and projects, one or many. @param {string} id */
+function openList(id) {
+  const filter = current.flow.filters.find((/** @type {any} */ f) => f.id === id);
+  const scan = current.page.filters.find((/** @type {any} */ s) => s.id === id);
+  const value = valueOf(id);
+  const sheet = /** @type {any} */ (buildListPicker({
+    title: filter.label.replace(/^(Select|By) /, ''),
+    noneText: filter.allLabel?.replace(' ({n})', '') ?? 'All',
+    options: scan.options,
+    chosen: Array.isArray(value) ? value : [],
+    onClose: closePicker,
+    onPick: (ids) => {
+      closePicker();
+      change(id, ids.length ? ids : filter.allMeansLoop ? '__all__' : filter.empty ?? '');
+    },
+  }));
+  sheetEl.replaceChildren(sheet);
+  sheetEl.hidden = false;
+  sheet.restore();
+}
 
 // --- Offices (D66)
 
@@ -345,12 +368,12 @@ async function startPlan(values, result) {
     }
     const category = current.flow.filters.find((/** @type {any} */ f) => f.source === 'categoryTree');
     // true: every office or year; a list: those offices (D66); false: what the page has.
-    const loops = Object.fromEntries(current.flow.filters.filter((/** @type {any} */ f) => f.allMeansLoop).map((/** @type {any} */ f) => {
+    const loops = Object.fromEntries(current.flow.filters.filter((/** @type {any} */ f) => f.allMeansLoop || f.multiPick).map((/** @type {any} */ f) => {
       const v = valueOf(f.id);
       return [f.id, v === '__all__' ? true : Array.isArray(v) ? v : false];
     }));
     /** Several offices chosen on a flow whose page takes one: each is its own search. */
-    const several = current.flow.filters.filter((/** @type {any} */ f) => !f.allMeansLoop && Array.isArray(valueOf(f.id))).map((/** @type {any} */ f) => {
+    const several = current.flow.filters.filter((/** @type {any} */ f) => !f.allMeansLoop && !f.multiPick && Array.isArray(valueOf(f.id))).map((/** @type {any} */ f) => {
       const scan = current.page.filters.find((/** @type {any} */ s) => s.id === f.id);
       return { filterId: f.id, offices: valueOf(f.id).map((/** @type {string} */ v) => scan.options.find((/** @type {any} */ o) => o.value === v)).filter(Boolean) };
     })[0] ?? null;
@@ -365,10 +388,10 @@ async function startPlan(values, result) {
       remembered,
       limit,
       onClose: closeSheet,
-      onStart: async (/** @type {string[]} */ clusters, /** @type {string[]} */ chosen, /** @type {string} */ scope) => {
+      onStart: async (/** @type {string[]} */ clusters, /** @type {string[]} */ chosen, /** @type {any} */ choice) => {
         await chrome.storage.local.set({ [key]: chosen });
         try {
-          shownRun = /** @type {any} */ (await ask(MSG.RUN_START, { plan, clusters, chosen, scope }));
+          shownRun = /** @type {any} */ (await ask(MSG.RUN_START, { plan, clusters, chosen, ...(choice ?? {}) }));
           closeSheet();
           drawRun();
         } catch (err) {
@@ -436,12 +459,16 @@ function drawRun() {
 }
 
 /** @returns {Promise<boolean>} true when a run has the screen */
+/** Answers can arrive out of order when a run moves fast; only the newest request's answer is drawn. */
+let runAsk = 0;
 async function checkRun() {
+  const mine = ++runAsk;
   const { run } = /** @type {any} */ (await ask(MSG.RUN_STATE));
+  const profile = run ? await loadProfile() : null;
+  if (mine !== runAsk) return !!shownRun;
   shownRun = run;
   if (!run) return false;
-  const profile = await loadProfile();
-  shownRun = { ...run, flowName: profile.flows[run.flowId].name };
+  shownRun = { ...run, flowName: profile?.flows[run.flowId].name };
   drawRun();
   return true;
 }

@@ -55,13 +55,6 @@ async function setup({ loggedIn = false } = {}) {
 
 const filterCount = (panel) => panel.locator('[data-filter]').count();
 
-/** Long lists are search boxes, short ones plain dropdowns. */
-async function choose(panel, id, label) {
-  const box = panel.locator(`#f-${id}`);
-  if ((await box.evaluate((el) => el.tagName)) === 'SELECT') return box.selectOption({ label });
-  await box.click();
-  await panel.locator(`#f-${id}-list li`, { hasText: label }).first().click();
-}
 const openMore = (panel) => panel.locator('#more-filters summary').click();
 
 test('shows the five flows when no report page is in front', async () => {
@@ -163,10 +156,10 @@ test('Flow 1 logged in: three filters, All offices by default', async () => {
     await t.open('procurement_transaction_report');
     await expect(t.panel.locator('[data-filter]')).toHaveCount(3);
     await expect(t.panel.locator('#f-pe_office')).toHaveText(/^All offices \([\d,]+\)/);
-    await expect(t.panel.locator('#start-reasons')).toContainText('Financial Year');
-    await choose(t.panel, 'financial_year', '2024-2025');
+    // D68: every filter has a default, so a run can start at once.
+    await expect(t.panel.locator('#f-financial_year')).toHaveText(/All years, to the current one/);
+    await expect(t.panel.locator('#f-project')).toHaveText(/Not set/);
     await expect(t.panel.locator('#plan')).toContainText('Filters are ready.');
-    expect(await t.page.locator('#cmbFinancialYear').inputValue()).toBe('2024-2025');
   } finally { await t.close(); }
 });
 

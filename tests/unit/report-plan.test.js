@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { currentFiscalYear, reportCombos } from '../../src/shared/report-plan.js';
-import { evaluateStart } from '../../src/shared/filter-rules.js';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
 const profile = JSON.parse(readFileSync(path.join(root, 'profiles/eprocure.gov.bd.json'), 'utf8'));
@@ -46,13 +45,22 @@ describe('reports a grab makes', () => {
   });
 });
 
-describe('who may start (D65)', () => {
-  const run = (values) => evaluateStart(flow, values, { loggedIn: true, today: now });
-  it('an office grab needs a year', () => {
-    expect(run({ financial_year: '__all__', pe_office: '__all__' }).reasons.join()).toContain('Choose one of: Financial Year or Project.');
-    expect(run({ financial_year: '2024-2025', pe_office: '__all__' }).ok).toBe(true);
+describe('projects (D68)', () => {
+  const withProjects = (year, office) => ({ ...built(year, office), loops: { ...built(year, office).loops, project: { field: 'project', mirror: 'projectname', options: [{ value: '77', text: 'Road' }, { value: '78', text: 'Bridge' }], selected: null } } });
+  it('Not set: one report each, with no project', () => {
+    const { combos } = reportCombos(flow, withProjects(years[1], offices[0]), {}, now);
+    expect(combos).toHaveLength(1);
+    expect(combos[0].fields).toMatchObject({ project: '0', projectname: '' });
   });
-  it('a project grab needs no year or office', () => {
-    expect(run({ financial_year: '__all__', pe_office: '__all__', project: '77' }).ok).toBe(true);
+  it('projects with all offices: office 0, one report per year and project', () => {
+    const { combos, sizes } = reportCombos(flow, withProjects(null, null), { financial_year: ['2024-2025', '2025-2026'], pe_office: true, project: ['77', '78'] }, now);
+    expect(combos).toHaveLength(4);
+    expect(combos.every((c) => c.fields.offId === '0' && c.labels.pe_office === 'All offices')).toBe(true);
+    expect(sizes).toMatchObject({ financial_year: 2, project: 2 });
+  });
+  it('projects with chosen offices: every office, year and project', () => {
+    const { combos } = reportCombos(flow, withProjects(null, null), { financial_year: true, pe_office: ['1', '3'], project: ['78'] }, now);
+    expect(combos).toHaveLength(4 * 2);
+    expect(new Set(combos.map((c) => c.labels.project))).toEqual(new Set(['Bridge']));
   });
 });

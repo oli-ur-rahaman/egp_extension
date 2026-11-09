@@ -109,7 +109,7 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   const columns = [
     { group: 'filter', header: 'Financial Year', type: 'text', width: 12, value: (row) => row.list.financial_year ?? shownOf('Financial Year') },
     { group: 'filter', header: 'Office', type: 'text', width: 28, value: (row) => row.list.pe_office ?? row.list.office },
-    ...(run.project ? [{ group: 'filter', header: 'Project', type: 'text', width: 28, value: () => run.project }] : []),
+    ...(rows.some((r) => r.list.project) ? [{ group: 'filter', header: 'Project', type: 'text', width: 28, value: (row) => row.list.project ?? '' }] : []),
     { group: 'list', header: flow.report.columns.find((c) => c.key === 'method_label')?.header ?? 'Method of Procurement', type: 'text', width: 22, value: (row) => row.list.label ?? (row.list.method ? `${row.list.method}(${row.list.nature})` : row.list.row_type) },
     ...flow.report.columns.filter((c) => c.key !== 'method_label' && inScope(c)).map((c) => ({ group: 'list', header: c.header, key: c.key, type: c.type, width: 13, value: (row) => row.list[c.key] })),
     { group: 'source', header: 'Grabbed at', type: 'datetime', width: 17, value: () => grabbed },
@@ -119,9 +119,14 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   const lastTable = flow.report.tables.at(-1).budgetType;
   // The grand total sits at the end of the last table on the page, so it goes on that sheet.
   const sheetOf = (row) => (row.list.row_type === 'Grand Total' ? lastTable : row.list.budget_type);
+  const chosenTables = flow.report.tables.filter((t) => !run.tables || run.tables.includes(t.budgetType));
+  const numberColumns = columns.filter((c) => c.key && c.type !== 'text');
+  // D68: a row whose every number is zero or blank is left out when the user asked for rows with a number only.
+  const hasNumber = (row) => numberColumns.some((c) => Number(row.list[c.key]) !== 0 && row.list[c.key] !== '' && row.list[c.key] !== undefined && !Number.isNaN(Number(row.list[c.key])));
+  const kept = run.rowsMode === 'nonzero' ? rows.filter(hasNumber) : rows;
   const counts = {};
-  const sheets = flow.report.tables.map((table) => {
-    const own = rows.filter((row) => sheetOf(row) === table.budgetType);
+  const sheets = chosenTables.map((table) => {
+    const own = kept.filter((row) => sheetOf(row) === table.budgetType);
     counts[table.budgetType] = own.length;
     const body = own.map((row) => {
       const isTotal = row.list.row_type !== 'Method';
@@ -153,8 +158,8 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   about.push([]);
   title('What was done');
   para(run.project
-    ? `Project grab: generated the report for the project "${run.project}" for each financial year and office chosen, and kept every row the report shows.`
-    : 'Office grab: generated the report for the financial year chosen, once for each office chosen, and kept every row the report shows.', 44);
+    ? 'Generated the report once for each financial year, office and project chosen, and kept the rows of the tables chosen.'
+    : 'Generated the report once for each financial year and office chosen, and kept the rows of the tables chosen.', 44);
   about.push([]);
   title('The grab');
   kv('Portal', `e-GP Bangladesh, ${siteHost.replace(/^www\./, '')}`);
@@ -169,11 +174,13 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   title('Search criteria');
   for (const item of run.shown) if (item.value !== '-') kv(item.label, item.value);
   kv('Columns', { all: 'National and International', national: 'National only', international: 'International only' }[scope]);
+  kv('Tables', chosenTables.map((t) => t.budgetType).join(', '));
+  kv('Rows', run.rowsMode === 'nonzero' ? `Only rows with a number: ${rows.length - kept.length} rows of zeros left out` : 'All rows, as the report shows them');
   about.push([]);
   title('Is it complete?');
   kv('Reports in this grab / made', `${run.offices?.length ?? 0} / ${run.officeIndex}`);
-  if (run.project) kv('Reports with nothing for this project', String(run.stats.emptyReports ?? 0));
-  for (const table of flow.report.tables) kv(`Rows on the ${table.budgetType} sheet`, String(counts[table.budgetType]));
+  kv('Reports with no rows', String(run.stats.emptyReports ?? 0));
+  for (const table of chosenTables) kv(`Rows on the ${table.budgetType} sheet`, String(counts[table.budgetType]));
   kv('Verdict', verdictOf(flow, run, rows.length).text);
   about.push([]);
   title('Good to know about this file');
