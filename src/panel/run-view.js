@@ -155,7 +155,7 @@ export function renderRun(run, actions, flowName) {
   const numbers = [];
   if (run.offices) {
     numbers.push(['Reports done', `${n(run.officeIndex)} of ${n(run.offices.length)}`], ['Rows collected', n(run.stats.rows)]);
-    if (run.stats.emptyReports) numbers.push(['Nothing for this project', n(run.stats.emptyReports)]);
+    if (run.stats.emptyReports) numbers.push(['Reports with no figures', n(run.stats.emptyReports)]);
   } else {
     numbers.push(['Rows collected', run.expected ? `${n(run.stats.rows)} of ${n(run.expected)}` : n(run.stats.rows)]);
     if (run.searches && run.phase === 'list' && run.status !== 'finished') numbers.push(['Office', `${n(run.searchIndex + 1)} of ${n(run.searches.length)}: ${run.searches[run.searchIndex].labels.office}`]);
