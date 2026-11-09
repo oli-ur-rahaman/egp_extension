@@ -1,7 +1,7 @@
 {
   "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
   "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
-  "profileVersion": "1.2.0",
+  "profileVersion": "1.3.0",
   "capturedAt": "2026-11-06",
   "pageStates": {
     "loginForm": "#txtPassword",
@@ -178,10 +178,14 @@
         }
       ],
       "rules": {
-        "required": ["department", "publishing_date"],
+        "required": [],
+        "groups": [
+          { "id": "first", "anyOf": ["department"] },
+          { "id": "second", "anyOf": ["publishing_date", "procuring_entity", "closing_date"] }
+        ],
         "window": { "filter": "publishing_date", "maxYears": 5, "currentDateCheckboxes": true },
-        "exemptions": [{ "anyOf": ["tender_id", "reference_no"], "lifts": ["publishing_date"], "maxRows": 5000 }],
-        "decisions": ["D12", "D13", "D14", "D22", "D23", "D29", "D37"]
+        "exemptions": [{ "anyOf": ["tender_id", "reference_no"], "lifts": ["second"], "maxRows": 5000 }],
+        "decisions": ["D12", "D13", "D14", "D22", "D23", "D29", "D37", "D58"]
       },
       "list": {
         "request": {
@@ -369,7 +373,14 @@
         },
         { "id": "category", "label": "Category", "control": "tree", "panel": true, "selector": "#txtaCPV", "requestField": "cpvCat", "empty": "", "source": "categoryTree" }
       ],
-      "rules": { "required": ["department", "financial_year"], "decisions": ["D15", "D16", "D17", "D35"] },
+      "rules": {
+        "required": [],
+        "groups": [
+          { "id": "first", "anyOf": ["department"] },
+          { "id": "second", "anyOf": ["financial_year", "procuring_entity", "project_name"] }
+        ],
+        "decisions": ["D15", "D16", "D17", "D35", "D58"]
+      },
       "list": {
         "request": {
           "url": "/SearchServlet",
@@ -538,10 +549,14 @@
         }
       ],
       "rules": {
-        "required": ["department", "sign_date"],
+        "required": [],
+        "groups": [
+          { "id": "first", "anyOf": ["department", "contract_award_to"] },
+          { "id": "second", "anyOf": ["sign_date", "procuring_entity", "advertisement_date", "award_date", "contract_award_to"] }
+        ],
         "window": { "filter": "sign_date", "maxYears": 5 },
-        "exemptions": [{ "anyOf": ["contract_award_to"], "lifts": ["department", "sign_date"], "maxRows": 5000 }],
-        "decisions": ["D19", "D21", "D22", "D31", "D35", "D38"]
+        "exemptions": [{ "anyOf": ["contract_award_to"], "lifts": [], "unless": ["department"], "maxRows": 5000 }],
+        "decisions": ["D19", "D21", "D22", "D31", "D35", "D38", "D58"]
       },
       "list": {
         "request": {
@@ -711,10 +726,17 @@
         }
       ],
       "rules": {
-        "required": ["department", "contract_start_date"],
+        "required": [],
+        "groups": [
+          { "id": "first", "anyOf": ["department", "contract_awarded_to", "company_unique_id"] },
+          { "id": "second", "anyOf": ["contract_start_date", "procuring_entity", "contract_awarded_to", "company_unique_id"] }
+        ],
         "window": { "filter": "contract_start_date", "maxYears": 5 },
-        "exemptions": [{ "anyOf": ["contract_awarded_to", "company_unique_id", "certificate_no"], "lifts": ["department", "contract_start_date"], "maxRows": 5000 }],
-        "decisions": ["D20", "D21", "D22", "D35"]
+        "exemptions": [
+          { "anyOf": ["contract_awarded_to", "company_unique_id"], "lifts": [], "unless": ["department"], "maxRows": 5000 },
+          { "anyOf": ["certificate_no"], "lifts": ["first", "second"], "unless": ["department"], "maxRows": 5000 }
+        ],
+        "decisions": ["D20", "D21", "D22", "D35", "D58"]
       },
       "list": {
         "request": {

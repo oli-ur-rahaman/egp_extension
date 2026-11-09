@@ -27,6 +27,7 @@ function linkParam(anchor, name) {
 }
 
 function splitComma(line) {
+  if (line.trim() === '-' || line.trim() === '') return { before: '', after: '' };
   const at = line.indexOf(',');
   const before = at < 0 ? line : line.slice(0, at);
   // The ID is digits, or '-' or absent on manually entered records.
@@ -36,6 +37,11 @@ function splitComma(line) {
 
 function partValue(part, lines, anchor) {
   const { index } = part;
+  // A cell can start with its link, with no ID line before it: then line 0 is the title, not an ID and reference.
+  const linkText = anchor ? clean(anchor.textContent) : null;
+  const startsWithTitle = linkText && lines[0] === linkText && !/^\d+\s*,/.test(linkText);
+  if (startsWithTitle && typeof index === 'string' && /^0:/.test(index)) return '';
+  if (startsWithTitle && typeof index === 'number' && index >= 1) return index === 1 ? linkText : '';
   if (typeof index === 'number') return lines[index < 0 ? lines.length + index : index] ?? '';
   if (index === 'middle') return lines.slice(1, -1).join('; ');
   if (index.startsWith('link:')) return linkParam(anchor, index.slice(5));

@@ -87,6 +87,8 @@ function valueOf(id) {
     if (filter.source === 'categoryTree') return { names: scan?.name ? [scan.name] : [] };
     return { id: scan?.value ?? '', name: scan?.name ?? '' };
   }
+  // A list on its "no selection" entry has no value, whatever that entry's value is ('0' on some pages).
+  if (scan?.options && !scan.options.some((/** @type {any} */ o) => o.value === scan.value)) return filter.empty ?? '';
   return scan?.value ?? '';
 }
 

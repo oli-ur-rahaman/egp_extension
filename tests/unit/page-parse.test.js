@@ -59,6 +59,16 @@ describe('lists', () => {
     expect(row.values.value_crore).toMatch(/^[\d.]+$/);
   });
 
+  it('Flow 5: a cell holding only its link is a title, with no ID or reference', () => {
+    const flow = profile.flows.experience_info;
+    const html = raw('flow5/list').replace(/(<td class="t-align-center">)\d+, [^<]*<br>(<a [^>]*VieweCmsDetails[^>]*>[^<]*<\/a>)<br>[^<]*/, '$1$2');
+    const row = parseList(doc(`<body><table id="resultTable"><tbody>${html}</tbody></table></body>`), flow).rows[0];
+    expect(row.values.title).not.toBe('');
+    expect(row.values.reference_no).toBe('');
+    expect(row.values.publishing_date).toBe('');
+    expect(row.values.tender_id).toBe('Manual');
+  });
+
   it('Flow 5 splits ID and reference at the comma; a record with no ID says Manual', () => {
     const flow = profile.flows.experience_info;
     const [row] = parseList(listDoc(flow, 'flow5/list'), flow).rows;

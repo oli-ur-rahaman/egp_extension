@@ -153,6 +153,15 @@
       "additionalProperties": false,
       "properties": {
         "required": { "$ref": "#/$defs/strings" },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "anyOf"],
+            "additionalProperties": false,
+            "properties": { "id": { "type": "string" }, "anyOf": { "$ref": "#/$defs/strings" } }
+          }
+        },
         "window": {
           "type": "object",
           "required": ["filter", "maxYears"],
@@ -172,6 +181,7 @@
             "properties": {
               "anyOf": { "$ref": "#/$defs/strings" },
               "lifts": { "$ref": "#/$defs/strings" },
+              "unless": { "$ref": "#/$defs/strings" },
               "maxRows": { "type": "integer", "minimum": 1 }
             }
           }

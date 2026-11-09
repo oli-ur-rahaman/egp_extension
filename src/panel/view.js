@@ -19,8 +19,11 @@ export function banner(kind, text, title, action) {
 }
 
 /** The first entry of a dropdown: All, or a prompt when a choice is required. */
+/** Required on its own: listed as required, or alone in its group (D58). */
+export const mustHave = (flow, id) => flow.rules.required.includes(id) || (flow.rules.groups ?? []).some((g) => g.anyOf.length === 1 && g.anyOf[0] === id);
+
 function emptyLabel(flow, filter) {
-  const required = flow.rules.required.includes(filter.id);
+  const required = mustHave(flow, filter.id);
   return required ? `Choose ${filter.label.replace(/^(Select|By) /, '')}` : 'All';
 }
 
@@ -109,7 +112,7 @@ function treeControl(flow, filter, scan, on) {
   const shown = value?.names?.length ? value.names.join('; ') : value?.name ?? scan.name ?? '';
   return h('div', { class: shown ? 'field-with-clear has-value' : 'field-with-clear' },
     h('button', { id: `f-${filter.id}-open`, type: 'button', class: 'field-button', 'aria-haspopup': 'dialog', onclick: () => on.openTree(filter.id) },
-      h('span', { id: `f-${filter.id}-shown`, class: shown ? 'tree-value' : 'tree-value empty' }, shown || (flow.rules.required.includes(filter.id) ? 'Not chosen' : 'All')),
+      h('span', { id: `f-${filter.id}-shown`, class: shown ? 'tree-value' : 'tree-value empty' }, shown || (mustHave(flow, filter.id) ? 'Not chosen' : 'All')),
       !shown && icon('chevronRight')),
     shown && h('button', { id: `f-${filter.id}-clear`, type: 'button', class: 'icon-btn', 'aria-label': `Clear ${filter.label}`, onclick: () => on.change(filter.id, filter.source === 'departmentTree' ? { id: '', name: '' } : { names: [] }) }, icon('close')));
 }
@@ -125,7 +128,7 @@ function controlFor(flow, filter, scan, on) {
 }
 
 function filterCard(flow, filter, scan, loggedIn, on, note) {
-  const required = flow.rules.required.includes(filter.id);
+  const required = mustHave(flow, filter.id);
   const warn = filter.warnWhen && (filter.warnWhen.state === 'always' || (filter.warnWhen.state === 'loggedIn') === loggedIn) ? filter.warnWhen.text : null;
   const parents = (filter.dependsOn ?? []).map((id) => flow.filters.find((f) => f.id === id)?.label).filter(Boolean);
   const count = scan.options?.length;
@@ -195,7 +198,7 @@ export function renderFlow(state, on, now = new Date()) {
     ? `Window: ${formatDate(win.from)} to ${formatDate(win.to)}, ${spanText(spanBetween(win.from, win.to))}` : null;
 
   const card = (f) => filterCard(flow, f, scans[f.id], page.loggedIn, on, f.id === windowFilter && windowNote);
-  const isMain = (f) => flow.rules.required.includes(f.id) || f.id === windowFilter;
+  const isMain = (f) => flow.rules.required.includes(f.id) || f.id === windowFilter || (flow.rules.groups ?? []).some((g) => g.anyOf.includes(f.id));
   const main = present.filter(isMain);
   const others = present.filter((f) => !isMain(f));
   const fold = others.length > FOLD_ABOVE;

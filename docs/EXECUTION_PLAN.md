@@ -248,7 +248,7 @@ Each row names the module, the ToR clause it satisfies, and when it gets built.
 | **M12** | Activity Log & Audit | **Activity Log** | W3 (skeleton), W9 (final) | M5 |
 | **M13** | Side Panel UI | §5 User Interface | W4–W5, polish W8–W9 | M3, M5 |
 | **M14** | Testing, Documentation, Training & Handover | §6 Deliverables, §10, §11 | W10 (docs drafted throughout) | all |
-| **M15** | Lookup by ID: tender journey and APP details (D56) | **Outside the ToR, by the owner's decision** | After the current plan | M5, M6, M7, M10 |
+| **M15** | Lookup by ID: tender journey and APP details (D56) | **Outside the ToR, by the owner's decision** | **Future work (D64)** | M5, M6, M7, M10 |
 
 ---
 
@@ -669,7 +669,9 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 
 ---
 
-### M15 — Lookup by ID (D56): after the current plan, not built
+### M15 — Lookup by ID (D56): FUTURE WORK (D64), not built
+
+**Status: future work.** The owner set this aside on 2026-11-09 until the current plan is done; it needs a recon session on the live portal first. Presets and history (D60, D63) are future work too.
 
 **Purpose:** today the tool starts from filters and finds many rows. This starts from IDs the user already holds and fetches exactly those. **Outside the ToR and Proposal, by the owner's decision.**
 
@@ -937,6 +939,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-07 | 1 | M13 | **Owner: Start collecting stayed unclickable after ticking fields.** Reproduced on the fake portal with a large search: ticking pushed the estimate past 24 hours, and D27's "I understand" tick locked the button with nothing saying why. Start now stays pressable and asks for the tick. A small search never had this. Also fixed: the word "false" printed in the estimate box. | **Owner's search size not yet confirmed, so this is the likely cause, not a proven one.** M15's questions wait for the owner, who will write them in detail. |
 | 2026-11-07 | 1 | M15, D57–D60 | **Owner's next design recorded:** M15 redesigned with stages and fields, a Detailed report on Flow 3, new required filters, and a local store. **Nothing built or applied yet.** Found: no link from an APP package to its tender on saved pages, which blocks part of the design; a conflict between the new Department rule and the contractor search. Owner confirmed the last Flow 2 test was good. | Awaiting the owner's answers. Live checks of Flows 3, 4, 5 and logged in are still not done. |
 | 2026-11-07 | 1 | M15, D58, D61–D63 | **Owner answered:** contractor filters count as first degree on Flows 4 and 5; one row per Tender ID, all in one sheet; presets and history wanted; no fixed ID limit. Owner gave six study types and a route from APP to tender. All recorded, none built. | Live checks of Flows 3, 4, 5 and logged in are next, then the demo. Not everything is finished; D49 lists what isn't built. |
+| 2026-11-09 | 1 | M3, M6, D58, D64 | **Owner: Flow 3 passed live; asked for all five flows and the new required filters, with M15 as future work.** D58 applied: first and second degree per flow, contractor filters count on Flows 4 and 5. Checked offline against 6,900 real list rows saved on this PC (Flows 2–5): all read. Fixed two faults that check found: Flow 5 rows with no ID line put the title in Ref No. (40 rows); and a list on its "no selection" entry with value `0` counted as chosen (Flow 4 Procuring Entity). 340 unit and 29 browser tests pass. | **Flow 1's only saved real answer was cut short by the recorder at 200,000 characters, so Flow 1 is proven only on the test page.** Live checks of Flows 1, 4, 5 and logged-in Flow 2 still to do. |
 
 **Milestone record**
 
@@ -957,7 +960,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 
-**Now: small live runs with the owner, for the client demo on 8 Nov (D49).** Flow 2 logged out ran live and matched (4 rows). Next: the owner reloads the extension and repeats it on the new build, opening the `.xls` in Excel; then Flows 3, 4, 5, and logged in Flows 1 and 2, watching whether the session survives (D50, insight 64). M15 (D56) waits until the current plan is built, and needs the owner's answers. Not built: see D49. Give the owner numbered clicks for one step, then wait for "done".
+**Now (2026-11-09): live checks of Flows 4 and 5, then Flows 1 and 2 logged in.** Flow 2 and Flow 3 logged out passed live with the owner. The new required filters (D58) are applied. **Flow 1 has never run on the real portal,** and the only saved real report answer was cut off by the recorder, so it proves nothing; the owner calls Flow 1 the most important, so test it first. M15 and the extras are future work (D64).
 
 - **[x] Done 2026-11-07. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
 - **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
@@ -994,7 +997,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Open owner decisions:** Q7 secret code, by Week 9.
 
-**After the client demo, in order:** the remaining live checks; required filters (D58); presets and history (D60, D63); then M15 (D57, D59, D61, D62).
+**Next, in order:** live checks of Flows 4 and 5, then Flows 1 and 2 logged in; required filters (D58) are applied. **Future work (D64):** presets and history (D60, D63); M15 (D57, D59, D61, D62).
 
 **Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
 

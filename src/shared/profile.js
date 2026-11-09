@@ -149,9 +149,12 @@ export function checkConsistency(profile) {
     }
     for (const r of flow.rules.required) hasFilter(r, 'rules.required');
     if (flow.rules.window) hasFilter(flow.rules.window.filter, 'rules.window');
+    const groupIds = (flow.rules.groups ?? []).map((/** @type {any} */ g) => g.id);
+    for (const g of flow.rules.groups ?? []) for (const a of g.anyOf) hasFilter(a, 'rules.groups');
     for (const e of flow.rules.exemptions ?? []) {
       for (const a of e.anyOf) hasFilter(a, 'exemption.anyOf');
-      for (const l of e.lifts) hasFilter(l, 'exemption.lifts');
+      for (const l of e.lifts) if (!groupIds.includes(l)) hasFilter(l, 'exemption.lifts');
+      for (const u of e.unless ?? []) hasFilter(u, 'exemption.unless');
     }
 
     if (flow.pattern === 'report' && !flow.report) problems.push(`${flowId}: a report flow needs "report"`);

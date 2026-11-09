@@ -68,23 +68,28 @@ describe("the owner's decisions", () => {
     expect(panel(flows.contract_info)).not.toContain('category');
   });
 
-  it('applies the mandatory filters (D13, D15, D19, D20)', () => {
-    expect(flows.tender_info.rules.required).toEqual(['department', 'publishing_date']);
+  it('applies the two degrees of required filters (D58)', () => {
+    const group = (flow, id) => flows[flow].rules.groups.find((g) => g.id === id).anyOf;
+    expect(group('tender_info', 'first')).toEqual(['department']);
+    expect(group('tender_info', 'second')).toEqual(['publishing_date', 'procuring_entity', 'closing_date']);
+    expect(group('app_info', 'first')).toEqual(['department']);
+    expect(group('app_info', 'second')).toEqual(['financial_year', 'procuring_entity', 'project_name']);
+    expect(group('contract_info', 'first')).toEqual(['department', 'contract_award_to']);
+    expect(group('contract_info', 'second')).toEqual(['sign_date', 'procuring_entity', 'advertisement_date', 'award_date', 'contract_award_to']);
+    expect(group('experience_info', 'first')).toEqual(['department', 'contract_awarded_to', 'company_unique_id']);
+    expect(group('experience_info', 'second')).toEqual(['contract_start_date', 'procuring_entity', 'contract_awarded_to', 'company_unique_id']);
     expect(flows.tender_info.rules.window).toEqual({ filter: 'publishing_date', maxYears: 5, currentDateCheckboxes: true });
-    expect(flows.app_info.rules.required).toEqual(['department', 'financial_year']);
-    expect(flows.contract_info.rules.required).toEqual(['department', 'sign_date']);
-    expect(flows.contract_info.rules.window.maxYears).toBe(5);
-    expect(flows.experience_info.rules.required).toEqual(['department', 'contract_start_date']);
-    expect(flows.experience_info.rules.window.maxYears).toBe(5);
+    // Flow 1 keeps its own: a year and an office.
+    expect(flows.procurement_transaction_report.rules.required).toEqual(['financial_year', 'pe_office']);
   });
 
-  it('lets a contractor filter lift the requirement, up to 5,000 rows (D21, D22)', () => {
-    expect(flows.contract_info.rules.exemptions).toEqual([{ anyOf: ['contract_award_to'], lifts: ['department', 'sign_date'], maxRows: 5000 }]);
+  it('a contractor search stays within 5,000 rows when it stands in for Department (D21, D22, D58)', () => {
+    expect(flows.contract_info.rules.exemptions).toEqual([{ anyOf: ['contract_award_to'], lifts: [], unless: ['department'], maxRows: 5000 }]);
     const e = flows.experience_info.rules.exemptions[0];
-    expect(e.anyOf).toEqual(expect.arrayContaining(['contract_awarded_to', 'company_unique_id']));
+    expect(e.anyOf).toEqual(['contract_awarded_to', 'company_unique_id']);
     expect(e.maxRows).toBe(5000);
-    // A Tender ID search lifts the window only: Department stays mandatory (D13).
-    expect(flows.tender_info.rules.exemptions[0].lifts).toEqual(['publishing_date']);
+    // A Tender ID search lifts the second degree only: Department stays.
+    expect(flows.tender_info.rules.exemptions[0].lifts).toEqual(['second']);
   });
 
   it('defaults Status and Tender Type to All (flow notes, D20)', () => {

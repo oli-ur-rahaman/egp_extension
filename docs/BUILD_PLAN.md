@@ -34,7 +34,7 @@ Each stage ends when its tests pass **and** the owner has done its check.
 | **B9 Excel** | About + Data sheets, filter columns, statistics, types, combine sprints | M9, M10 | Opens real files in Excel and does both analyses (PE, contractor) |
 | **B10 Self-check and maintenance** | Pre-run check, change report, hidden mode, apply and roll back a repair | M11, M12 | Breaks a setting; the run refuses and names it |
 | **B11 Full runs and handover** | Full live runs, test report, guides, fresh-PC install, training material | M14 | Runs every flow unaided |
-| **B12 Lookup by ID (D56, outside the ToR)** | 1 to 100 Tender IDs traced from tender to experience; 1 to 100 APP IDs with details | M15 | Checks 5 tenders and 3 APPs against the portal |
+| **B12 Lookup by ID (D56, outside the ToR). FUTURE WORK (D64)** | 1 to 100 Tender IDs traced from tender to experience; 1 to 100 APP IDs with details | M15 | Checks 5 tenders and 3 APPs against the portal |
 
 **Why this order:** B3 gives the owner something visible early. B4 comes before collection, so that nothing depends on luck. B6 comes right after B5, because detail data is the point of the tool. Excel is late, but its format is already agreed from the demos.
 

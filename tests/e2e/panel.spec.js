@@ -171,7 +171,7 @@ test('Flow 1 logged in: two filters, All offices by default', async () => {
 test('Flows 3, 4, 5: all filters, required rules named', async () => {
   const t = await setup();
   try {
-    for (const [id, count, reason] of [['app_info', 11, 'Ministry/Division/Organization'], ['contract_info', 15, 'Contract Sign Date'], ['experience_info', 13, 'Contract Start Date']]) {
+    for (const [id, count, reason] of [['app_info', 11, 'Ministry/Division/Organization'], ['contract_info', 15, 'Contract Sign Date, Procuring Entity'], ['experience_info', 13, 'Contract Start Date']]) {
       await t.open(id);
       await expect(t.panel.locator('[data-filter]')).toHaveCount(count);
       await expect(t.panel.locator('#start-warning')).toHaveCount(0);

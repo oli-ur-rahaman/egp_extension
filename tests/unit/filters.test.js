@@ -211,6 +211,25 @@ describe('start rules', () => {
     expect(run(flows.app_info, { department: dept }).ok).toBe(false);
     expect(run(flows.app_info, { department: dept, financial_year: '2024-2025' }).ok).toBe(true);
   });
+  it('D58: the second degree is any one of its filters, and names them all when missing', () => {
+    const missing = run(flows.tender_info, { department: dept });
+    expect(missing.reasons.join()).toContain('Choose one of: Publishing Date, Procuring Entity or Closing Date.');
+    expect(run(flows.tender_info, { department: dept, procuring_entity: '55' }).ok).toBe(true);
+    expect(run(flows.tender_info, { department: dept, closing_date: window('01/01/2024', '31/12/2024') }).ok).toBe(true);
+    expect(run(flows.tender_info, { department: dept, closing_date: window('01/01/2018', '31/12/2024') }).reasons.join()).toContain('limit is 5 years');
+    expect(run(flows.app_info, { department: dept, project_name: '9' }).ok).toBe(true);
+    expect(run(flows.app_info, { project_name: '9' }).reasons.join()).toContain('Choose Ministry/Division/Organization.');
+    expect(run(flows.contract_info, { department: dept, award_date: '01/01/2025' }).ok).toBe(true);
+    expect(run(flows.contract_info, { department: dept, procuring_entity: '55' }).ok).toBe(true);
+    expect(run(flows.contract_info, { department: dept }).reasons.join()).toContain('Choose one of: Contract Sign Date, Procuring Entity, Advertisement Date, Date of Notification of Award or Contract Award to.');
+    expect(run(flows.experience_info, { department: dept, procuring_entity: '55' }).ok).toBe(true);
+    expect(run(flows.experience_info, { procuring_entity: '55' }).reasons.join()).toContain('Choose one of: Ministry/Division/Organization, Contract Awarded To or Company Unique ID.');
+  });
+  it('D58: a contractor search with Department named has no row limit', () => {
+    const both = run(flows.contract_info, { department: dept, contract_award_to: 'A firm' });
+    expect(both.ok).toBe(true);
+    expect(both.exemptionUsed).toBe(false);
+  });
   it('Flow 4 needs Department and a sign-date window, unless a contractor is named (D19, D21)', () => {
     expect(run(flows.contract_info, {}).ok).toBe(false);
     expect(run(flows.contract_info, { department: dept, sign_date: window('01/01/2021', '31/12/2025') }).ok).toBe(true);

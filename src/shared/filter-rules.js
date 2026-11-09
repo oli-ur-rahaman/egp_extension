@@ -78,11 +78,23 @@ export function evaluateStart(flow, values, { loggedIn, today }) {
   const given = (/** @type {string} */ id) => isSet(byId[id], values[id]);
   if (flow.login.policy === 'required' && !loggedIn) reasons.push(`${flow.name} needs a login. Log in, then open this page again.`);
 
-  const used = (flow.rules.exemptions ?? []).filter((/** @type {any} */ e) => e.anyOf.some(given));
+  const name = (/** @type {string} */ id) => byId[id].label.replace(/^(Select|By) /, '');
+  // An exemption is used when its filter is given, unless the filter it stands in for is given too (D22, D58).
+  const used = (flow.rules.exemptions ?? []).filter((/** @type {any} */ e) => e.anyOf.some(given) && !(e.unless ?? []).some(given));
   const lifted = new Set(used.flatMap((/** @type {any} */ e) => e.lifts));
   for (const id of flow.rules.required) {
-    if (!lifted.has(id) && !given(id)) reasons.push(`Choose ${byId[id].label.replace(/^(Select|By) /, '')}.`);
+    if (!lifted.has(id) && !given(id)) reasons.push(`Choose ${name(id)}.`);
   }
+  // D58: each group needs at least one of its filters.
+  const groups = flow.rules.groups ?? [];
+  for (const group of groups) {
+    if (lifted.has(group.id) || group.anyOf.some(given)) continue;
+    const names = group.anyOf.map(name);
+    reasons.push(names.length === 1 ? `Choose ${names[0]}.` : `Choose one of: ${names.slice(0, -1).join(', ')} or ${names.at(-1)}.`);
+  }
+  /** A date range that can meet a group's need must be whole and within the limit. @param {string} id */
+  const isSpan = (id) => flow.rules.window?.filter === id || groups.some((/** @type {any} */ g) => g.anyOf.includes(id));
+  const spanLifted = (/** @type {string} */ id) => lifted.has(id) || groups.some((/** @type {any} */ g) => g.anyOf.includes(id) && lifted.has(g.id));
 
   // Every date range is checked for sense; only the mandatory one has a span limit.
   /** @type {{ from: Date, to: Date, span: string } | null} */
@@ -91,18 +103,19 @@ export function evaluateStart(flow, values, { loggedIn, today }) {
     if (!given(filter.id)) continue;
     const value = values[filter.id];
     const { from, to } = resolveWindow(value, today);
-    const isWindow = flow.rules.window?.filter === filter.id;
+    const isWindow = isSpan(filter.id);
     if (!value.fromToday && value.from?.trim() && !from) reasons.push(`${filter.label} From isn't a real date. Use dd/mm/yyyy.`);
     if (!value.toToday && value.to?.trim() && !to) reasons.push(`${filter.label} To isn't a real date. Use dd/mm/yyyy.`);
-    if (isWindow && !lifted.has(filter.id) && (!from || !to)) {
+    if (isWindow && !spanLifted(filter.id) && (!from || !to)) {
       if (!from && !value.from?.trim()) reasons.push(`Enter ${filter.label} From.`);
       if (!to && !value.to?.trim()) reasons.push(`Enter ${filter.label} To.`);
     }
     if (from && to && from > to) reasons.push(`${filter.label}: From must not be after To.`);
     if (isWindow && from && to && from <= to) {
-      window = { from, to, span: spanText(spanBetween(from, to)) };
-      const max = flow.rules.window.maxYears;
-      if (!lifted.has(filter.id) && !withinYears(from, to, max)) reasons.push(`${filter.label} spans ${window.span}. The limit is ${max} years.`);
+      const span = { from, to, span: spanText(spanBetween(from, to)) };
+      if (flow.rules.window?.filter === filter.id) window = span;
+      const max = flow.rules.window?.maxYears ?? 5;
+      if (!spanLifted(filter.id) && !withinYears(from, to, max)) reasons.push(`${filter.label} spans ${span.span}. The limit is ${max} years.`);
     }
   }
   const estimated = flow.filters.find((/** @type {any} */ f) => f.control === 'operatorValue');
