@@ -69,11 +69,24 @@ export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } 
   const listRoutes = new Map(Object.keys(FLOWS).map((id) => [profile.flows[id].list.request.url, id]));
   const detailRoutes = new Map(Object.keys(FLOWS).map((id) => [profile.flows[id].detail.open.url, id]));
 
+  /** Each row belongs to one office, in turn from PWD's office list, so an office search finds only its own (as the portal does). */
+  const officeIds = (() => {
+    const w = new Window();
+    w.document.write(read('shared/office-combo'));
+    const ids = [...w.document.querySelectorAll('option')].map((o) => o.value.trim()).filter(Boolean);
+    w.close();
+    return ids;
+  })();
+  const officeOf = (index) => officeIds[index % officeIds.length];
+  const officeField = (flowId) => profile.flows[flowId].filters.find((f) => f.id === 'procuring_entity')?.requestField;
+
   function listAnswer(flowId, form) {
     const { prefix, searchField } = FLOWS[flowId];
     const { header, rows: all } = data[flowId];
     const search = form.get(searchField);
-    const matches = search && search.trim() ? all.filter((r) => r.id === search.trim()) : all;
+    const office = (form.get(officeField(flowId)) ?? '').trim();
+    let matches = search && search.trim() ? all.filter((r) => r.id === search.trim()) : all;
+    if (office && office !== '0') matches = matches.filter((r) => officeOf(all.indexOf(r)) === office);
     if (!matches.length) return read(`${prefix}/list-empty`);
     const size = Number(form.get('size')) || 10;
     const page = Number(form.get('pageNo')) || 1;
@@ -163,6 +176,9 @@ export function createMockPortal({ rows = {}, loggedIn = false, latencyMs = 0 } 
     setLoggedIn(value) { state.loggedIn = value; },
     /** Row IDs held for a flow, so a test can check for losses. */
     rowIds: (flowId) => data[flowId].rows.map((r) => r.id),
+    /** Row IDs that belong to an office. */
+    rowIdsOf: (flowId, office) => data[flowId].rows.filter((_, i) => officeOf(i) === office).map((r) => r.id),
+    officeIds: () => officeIds,
     /** @param {number} [port] */
     start: (port = 0) => new Promise((resolve) => server.listen(port, '127.0.0.1', () => resolve(`http://127.0.0.1:${server.address().port}`))),
     stop: () => new Promise((resolve) => { server.closeAllConnections(); server.close(resolve); }),

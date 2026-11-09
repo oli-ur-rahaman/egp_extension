@@ -251,7 +251,8 @@ async function measureSeveral(tabId, profile, flow, built, plan, several, size) 
     // Exact for one page; for more, the last page's size isn't known until the run reaches it.
     rows += total <= 1 ? first.rows?.length ?? 0 : Math.round((total - 0.5) * size);
     pages += total;
-    searches.push({ key: office.value, fields: { [filter.requestField]: office.value }, labels: { office: office.text } });
+    const officeRows = total <= 1 ? first.rows?.length ?? 0 : Math.round((total - 0.5) * size);
+    searches.push({ key: office.value, fields: { [filter.requestField]: office.value }, labels: { office: office.text }, rows: officeRows, pages: total });
     await new Promise((r) => setTimeout(r, 300)); // polite between offices
   }
   const label = filter.label.replace(/^(Select|By) /, '');

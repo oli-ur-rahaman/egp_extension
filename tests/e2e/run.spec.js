@@ -383,28 +383,30 @@ test('Flow 1: a project grab loops every year to the current one, for one office
   } finally { await t.close(); }
 });
 
-test('several offices (D66): Flow 2 searches each one; Flow 1 reports only those', async () => {
-  const t = await setup({ rows: 30, loggedIn: false });
+test('several offices (D66): each office is searched, and only their rows come back', async () => {
+  // 600 rows spread over the 224 offices, so each office has 2 or 3, and the department as a whole 600.
+  const t = await setup({ rows: 600 });
   try {
     await t.open('tender_info');
     await t.panel.locator('#warning-proceed').click();
     await chooseDepartment(t);
     await t.panel.locator('#f-procuring_entity').click();
     await t.panel.locator('#offices-search').fill('Rajshahi PWD Division');
-    await t.panel.locator('input[data-office]:visible').nth(0).check();
-    await t.panel.locator('input[data-office]:visible').nth(1).check();
+    const boxes = t.panel.locator('input[data-office]:visible');
+    await boxes.nth(0).check();
+    await boxes.nth(1).check();
+    const chosen = [await boxes.nth(0).getAttribute('data-office'), await boxes.nth(1).getAttribute('data-office')];
     await t.panel.locator('#offices-done').click();
-    const listUrl = profile.flows.tender_info.list.request.url;
-    const before = t.portal.state.requests.filter((r) => r.path === listUrl).length;
+    await expect(t.panel.locator('#f-procuring_entity')).toHaveText(/^2 offices/);
     await t.panel.locator('#start').click();
-    await expect(t.panel.locator('#plan-count')).toBeVisible();
+    const expected = [...t.portal.rowIdsOf('tender_info', chosen[0]), ...t.portal.rowIdsOf('tender_info', chosen[1])];
+    await expect(t.panel.locator('#plan-count')).toHaveText(`${expected.length} rows`);
+    // Each office is named, with its own rows.
+    for (const office of chosen) await expect(t.panel.locator(`#plan-offices li[data-office="${office}"]`)).toContainText(`${t.portal.rowIdsOf('tender_info', office).length} rows`);
     await t.panel.locator('#run-start').click();
     await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
-    // Two measuring requests, then a sweep per office. The fake portal gives every office the same 30 rows, kept once;
-    // so the second office looks short and gets the second search too. On the real portal each office has its own rows.
-    expect(t.portal.state.requests.filter((r) => r.path === listUrl).length - before).toBeGreaterThanOrEqual(4);
     const file = await downloaded(t);
-    expect(file.data).toHaveLength(30);
+    expect(file.data.map((r) => r['Tender/Proposal ID']).sort()).toEqual([...expected].sort());
     expect(file.data[0]['Filter: Procuring Entity']).toMatch(/^2 offices: /);
   } finally { await t.close(); }
 });

@@ -117,7 +117,11 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
       ].filter(Boolean).join(' ')),
       report && h('h3', { class: 'plan-h' }, 'Columns'),
       report && scopeChoice,
-      !report && h('p', { class: 'plan-sub' }, empty ? 'The portal has no records for these filters.' : `${n(plan.totalPages)} list ${plan.totalPages === 1 ? 'page' : 'pages'} at ${plan.size} rows each, as the portal counts them right now.`),
+      // D66: each office is its own search, so each is named with what the portal holds for it.
+      plan.searches && h('div', { id: 'plan-offices', class: 'plan-offices' },
+        h('p', { class: 'plan-sub' }, `${n(plan.searches.length)} offices, searched one at a time. The e-GP page itself keeps showing its own search; these are what the tool collects:`),
+        h('ul', {}, ...plan.searches.map((s) => h('li', { 'data-office': s.key }, h('span', {}, s.labels.office), h('b', {}, `${s.pages > 1 ? 'about ' : ''}${n(s.rows)} rows`))))),
+      !report && !plan.searches && h('p', { class: 'plan-sub' }, empty ? 'The portal has no records for these filters.' : `${n(plan.totalPages)} list ${plan.totalPages === 1 ? 'page' : 'pages'} at ${plan.size} rows each, as the portal counts them right now.`),
       tooBig && banner('bad', `A search by this kind of filter can't go over ${n(limit)} rows. Add Department and a date window to narrow it.`, 'Too many rows'),
       detail && h('h3', { class: 'plan-h' }, 'Detail-page data to collect'),
       detail && h('p', { class: 'hint' }, "Open a group to pick its fields. One page holds them all, so ticking more doesn't take longer. Only what you tick goes in the file."),
@@ -141,6 +145,7 @@ export function renderRun(run, actions, flowName) {
     if (run.stats.emptyReports) numbers.push(['Nothing for this project', n(run.stats.emptyReports)]);
   } else {
     numbers.push(['Rows collected', run.expected ? `${n(run.stats.rows)} of ${n(run.expected)}` : n(run.stats.rows)]);
+    if (run.searches && run.phase === 'list' && run.status !== 'finished') numbers.push(['Office', `${n(run.searchIndex + 1)} of ${n(run.searches.length)}: ${run.searches[run.searchIndex].labels.office}`]);
     if (run.phase === 'list' && run.status !== 'finished') numbers.push(['List page', `${n(run.page)} of ${n(run.totalPages)}`]);
     if (run.clusters.length) numbers.push(['Detail pages read', `${n(run.stats.detailDone)} of ${n(run.stats.detailTotal || run.expected)}`]);
     if (run.stats.refused) numbers.push(['Refused by the portal', n(run.stats.refused)]);
