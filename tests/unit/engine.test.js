@@ -309,6 +309,26 @@ describe('when things go wrong', () => {
     expect((await settled(store, run.id)).stats.detailDone).toBe(30);
   });
 
+  it('Flow 1 never asks a separate page about the session, and nothing asks before the first request', async () => {
+    const t = portal(0);
+    const { engine, store } = setup(t);
+    const offices = Array.from({ length: 7 }, (_, i) => ({ value: String(i), text: `O${i}` }));
+    const run = await engine.start(plan({ loggedIn: true, offices, loop: { field: 'offId', mirror: 'offName' }, flowId: 'procurement_transaction_report' }));
+    expect((await settled(store, run.id)).status).toBe('finished');
+    expect(t.calls.session).toBe(0);
+    expect(t.calls.report).toBe(7);
+  });
+
+  it('a retry says why', async () => {
+    const t = portal(2, { faults: { list1: 'network' } });
+    const seen = [];
+    const store = memoryStore();
+    const engine = createEngine({ store, transport: t, pacing, sleep: async () => { seen.push((await store.allRuns())[0].reason); }, random: () => 0 });
+    const run = await engine.start(plan());
+    await settled(store, run.id);
+    expect(seen.find((r) => r?.startsWith("The portal didn't answer"))).toContain('(down)');
+  });
+
   it('Flow 1 makes one report per office', async () => {
     const t = portal(0);
     const { engine, store } = setup(t);

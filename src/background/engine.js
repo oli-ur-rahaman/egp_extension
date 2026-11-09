@@ -70,7 +70,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     }
     run.attempts += 1;
     run.retrying = true;
-    run.reason = `The portal didn't answer. Trying again in ${wait} seconds (attempt ${run.attempts} of ${pacing.backoffSeconds.length}).`;
+    run.reason = `The portal didn't answer${reason ? ` (${reason})` : ''}. Trying again in ${wait} seconds (attempt ${run.attempts} of ${pacing.backoffSeconds.length}).`;
     await save(run);
     await sleep(wait * 1000 * (1 + random() * 0.2));
   }
@@ -172,7 +172,8 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
 
   /** The session is checked by a request: a page can show Logout after the session has ended (insight 64). */
   async function sessionGone(run) {
-    if (!run.loggedIn || run.requests % pacing.sessionCheckEvery !== 0 || run.sessionCheckedAt === run.requests) return false;
+    // Not on Flow 1: every report answer already shows a login wall. Not before the first request: it has only just been seen.
+    if (!run.loggedIn || run.offices || run.requests === 0 || run.requests % pacing.sessionCheckEvery !== 0 || run.sessionCheckedAt === run.requests) return false;
     const { loggedIn } = await transport.session(run);
     run.sessionCheckedAt = run.requests;
     if (loggedIn) return false;
