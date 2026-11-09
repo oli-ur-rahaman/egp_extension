@@ -5,8 +5,8 @@ import { MSG, request as send } from '../shared/bus.js';
 import { h } from './icons.js';
 import { buildPicker } from './picker.js';
 import { buildOfficePicker } from './office-picker.js';
-import { buildOfficeSettings } from './office-settings.js';
-import { isPwdList, loadOfficeTree } from '../shared/offices.js';
+import { buildOfficeEditor } from './office-editor.js';
+import { isPwdList, loadOfficeTree, rememberLive, TREE_KEY } from '../shared/offices.js';
 import { buildPlanSheet, renderRun } from './run-view.js';
 import { buildWorkbook, fileName } from '../shared/export.js';
 import { buildXlsx } from '../shared/xlsx-writer.js';
@@ -253,7 +253,12 @@ const on = {
   /** D66: the office picker applies to PWD's office lists. @param {string} id */
   officeTree: (id) => {
     const scan = current.page.filters.find((/** @type {any} */ s) => s.id === id);
-    return officeTree && scan?.options && isPwdList(officeTree.tree, scan.options) ? officeTree : null;
+    const pwd = officeTree && scan?.options && isPwdList(officeTree.tree, scan.options);
+    if (pwd && JSON.stringify(officeTree.live?.options) !== JSON.stringify(scan.options)) {
+      officeTree.live = { at: Date.now(), options: scan.options };
+      rememberLive(scan.options);
+    }
+    return pwd ? officeTree : null;
   },
   openOffices,
 };
@@ -276,11 +281,6 @@ function openOffices(id) {
   const scan = current.page.filters.find((/** @type {any} */ s) => s.id === id);
   const value = valueOf(id);
   const chosen = Array.isArray(value) ? value : value && value !== '__all__' && value !== (filter.empty ?? '') ? [value] : [];
-  // Offices the tree doesn't know are remembered, so the Office hierarchy screen can place them.
-  const unknown = scan.options.filter((/** @type {any} */ o) => !(o.value in officeTree.tree.egpOffices));
-  if (unknown.length) {
-    chrome.storage.local.get('officesSeen').then((got) => chrome.storage.local.set({ officesSeen: { ...(got.officesSeen ?? {}), ...Object.fromEntries(unknown.map((/** @type {any} */ o) => [o.value, o.text])) } }));
-  }
   const sheet = /** @type {any} */ (buildOfficePicker({
     title: filter.label.replace(/^(Select|By) /, ''),
     tree: officeTree.tree,
@@ -302,20 +302,29 @@ function openOffices(id) {
   sheet.restore();
 }
 
+/** D67: the hierarchy editor, checked against the office list e-GP shows now, or last showed. */
 async function openSettings() {
-  if (!officeTree) await loadOffices();
+  await loadOffices();
   if (!officeTree) return;
-  const seen = /** @type {any} */ ((await chrome.storage.local.get('officesSeen')).officesSeen ?? {});
-  sheetEl.replaceChildren(buildOfficeSettings({
+  // The page in front, if it shows PWD's offices; else the list seen last; else the one the tool came with.
+  const onPage = current?.page?.filters?.find((/** @type {any} */ s) => s.options && isPwdList(officeTree.tree, s.options))?.options;
+  if (onPage) await rememberLive(onPage);
+  const live = onPage ?? officeTree.live?.options ?? Object.entries(officeTree.shipped.egpOffices).map(([value, text]) => ({ value, text }));
+  const liveFrom = onPage ? 'on this page now' : officeTree.live ? `on ${new Date(officeTree.live.at).toLocaleString('en-GB')}` : 'when the tool was built; open an e-GP page with the office list to check it now';
+  sheetEl.replaceChildren(buildOfficeEditor({
     tree: officeTree.tree,
-    overrides: officeTree.overrides,
-    seen,
+    shipped: officeTree.shipped,
+    live,
+    liveFrom,
+    onSave: async (tree) => {
+      await chrome.storage.local.set({ [TREE_KEY]: { nodes: tree.nodes } });
+      await loadOffices();
+    },
     onClose: () => {
       sheetEl.hidden = true;
       sheetEl.replaceChildren();
       if (current?.flowId && !shownRun) render();
     },
-    onSaved: () => loadOffices(),
   }));
   sheetEl.hidden = false;
 }

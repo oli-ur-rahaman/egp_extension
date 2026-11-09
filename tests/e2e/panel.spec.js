@@ -1,9 +1,11 @@
+/* global chrome */
 // The real panel on the fake portal. Every request to the portal's address is answered by the mock; any other outside request fails the test.
 // Run `npm run build` first.
 import { test, expect, chromium } from '@playwright/test';
-import { mkdtemp, rm, readFile } from 'node:fs/promises';
+import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import * as XLSX from '../../vendor/xlsx.js';
 import { createMockPortal } from '../mock-server/server.js';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
@@ -373,15 +375,106 @@ test('the office picker: clusters, kinds of office, several offices, and the hie
     await expect(t.panel.locator('#offices-done')).toHaveText(/^Done \(\d+\)$/);
     await t.panel.locator('#offices-close').click();
 
-    // The hierarchy screen: place an office that fits nowhere, and it moves out of that cluster.
+  } finally { await t.close(); }
+});
+
+test('the office hierarchy editor: drag, keyboard, undo, vanished offices, Excel out and in (D67)', async () => {
+  test.setTimeout(120000);
+  const t = await setup();
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await t.panel.locator('#f-department-open').click();
+    await t.panel.locator('.tree .node').first().click();
+    await expect(t.panel.locator('[data-count="procuring_entity"]')).toHaveText(/^\d{2,} items$/);
+    // e-GP stops listing one office that the hierarchy has.
+    const tree = JSON.parse(await readFile(path.join(root, 'profiles/pwd-offices.json'), 'utf8'));
+    const firstLinked = (nodes) => {
+      for (const n of nodes) {
+        if (n.egpId && n.level === 4) return n;
+        const f = firstLinked(n.children);
+        if (f) return f;
+      }
+      return null;
+    };
+    const vanished = firstLinked(tree.nodes);
+    await t.page.evaluate((id) => [...document.getElementById('cmbOffice').options].find((o) => o.value === id).remove(), vanished.egpId);
+    await t.panel.waitForTimeout(300); // the panel saves its state a moment after a change
+    await t.panel.reload();
+    await t.page.bringToFront();
+    await expect(t.panel.locator('[data-filter]').first()).toBeVisible();
+
     await t.panel.locator('#settings').click();
-    await expect(t.panel.locator('.settings-head').first()).toContainText('Not in the hierarchy');
-    const before = Number((await t.panel.locator('.settings-head').first().textContent()).replace(/\D/g, ''));
-    const first = t.panel.locator('.settings-list li[data-office]').first();
-    await first.locator('[data-move]').click();
-    await first.locator('input[role="combobox"]').fill('Rajshahi PWD Circle');
-    await first.locator('.combo-list li').first().click();
-    await expect(t.panel.locator('.settings-head').first()).toHaveText(`Not in the hierarchy (${before - 1})`);
+    const unset = t.panel.locator('#editor-unset');
+    await expect(unset.locator('h3')).toContainText('Not set (39)');
+    // Gone from e-GP: hidden, with a switch to show it.
+    await expect(t.panel.locator('#editor-gone')).toContainText('Show 1 office no longer on e-GP');
+    await expect(t.panel.locator(`[data-node="${vanished.id}"]`)).toHaveCount(0);
+
+    // Drag a Not set office onto a zone: it goes under it.
+    const loose = unset.locator('.editor-row').first();
+    const target = t.panel.locator('.editor-row[aria-level="2"]').first();
+    await target.scrollIntoViewIfNeeded();
+    await loose.dragTo(target);
+    await expect(t.panel.locator('#editor-message')).toContainText('Placed');
+    await expect(unset.locator('h3')).toContainText('Not set (38)');
+    // The office the editor says it placed now sits under the zone, a level down.
+    const placedName = /^Placed (.*) under /.exec(await t.panel.locator('#editor-message').textContent())[1];
+    await expect(t.panel.locator('.editor-row[aria-level="3"]', { hasText: placedName })).toHaveCount(1);
+    // Undo puts it back.
+    await t.panel.locator('#editor-undo').click();
+    await expect(unset.locator('h3')).toContainText('Not set (39)');
+    // Keyboard: Alt and an arrow moves an office.
+    const zone = t.panel.locator('.editor-row[aria-level="2"]').nth(1);
+    const zoneId = await zone.getAttribute('data-node');
+    await zone.focus();
+    await t.panel.keyboard.press('Alt+ArrowUp');
+    await expect(t.panel.locator('#editor-message')).toContainText('Moved');
+    await expect(t.panel.locator('.editor-row[aria-level="2"]').first()).toHaveAttribute('data-node', zoneId);
+    // Dragging a placed office onto Not set takes it out. Searching first brings it into view beside Not set.
+    await t.panel.locator('#editor-search').fill('PWD Training Academy');
+    const leaf = t.panel.locator('.editor-row[data-node]', { hasText: 'PWD Training Academy' }).first();
+    await leaf.dragTo(unset.locator('h3'));
+    await t.panel.locator('#editor-search').fill('');
+    await expect(unset.locator('h3')).toContainText('Not set (40)');
+
+    // Excel out: the template with its three sheets.
+    await t.panel.evaluate(() => {
+      const real = chrome.downloads.download.bind(chrome.downloads);
+      chrome.downloads.download = (options) => {
+        window.lastDownload = options.filename;
+        return real(options);
+      };
+    });
+    await t.panel.locator('#editor-export').click();
+    const worker = t.panel.context().serviceWorkers()[0];
+    await expect.poll(() => worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]?.state)).toBe('complete');
+    const file = await worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0].filename);
+    expect(await t.panel.evaluate(() => window.lastDownload)).toBe('pdms-office-hierarchy.xls');
+    const book = XLSX.read(await readFile(file), { type: 'buffer' });
+    expect(book.SheetNames).toEqual(['How to fill', 'Office Hierarchy', 'e-GP offices']);
+    const rows = XLSX.utils.sheet_to_json(book.Sheets['Office Hierarchy'], { header: 1 });
+    expect(rows[0]).toEqual(['Level', 'Office', 'e-GP office ID', 'Name on e-GP', 'On e-GP now']);
+    expect(rows.filter((r) => r[0] === 'Not set')).toHaveLength(40);
+
+    // Excel in: a small hierarchy typed into the template replaces the tree; the rest of e-GP's offices are Not set.
+    const live = XLSX.utils.sheet_to_json(book.Sheets['e-GP offices'], { header: 1 }).slice(1);
+    const sheet = XLSX.utils.aoa_to_sheet([['Level', 'Office', 'e-GP office ID'], ['Chief Engineer', 'Chief Engineer'], ['Zone', 'Test Zone', String(live[0][0])], ['Circle', 'Test Circle', String(live[1][0])], ['Division', 'Test Division', String(live[2][0])]]);
+    const out = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(out, sheet, 'Office Hierarchy');
+    const upload = path.join(os.tmpdir(), `egp-import-${Date.now()}.xlsx`);
+    await writeFile(upload, XLSX.write(out, { type: 'buffer', bookType: 'xlsx' }));
+    t.panel.once('dialog', (d) => d.accept());
+    await t.panel.locator('#editor-file').setInputFiles(upload);
+    await expect(t.panel.locator('#editor-message')).toContainText('Imported');
+    await t.panel.locator('#editor-search').fill('Test Division');
+    await expect(t.panel.locator('.editor-row[aria-level="4"]')).toHaveText(/Test Division/);
+    await t.panel.locator('#editor-search').fill('');
+    await expect(unset.locator('h3')).toContainText(`Not set (${live.length - 3})`);
+
+    // The office picker uses the new hierarchy.
     await t.panel.locator('#settings-close').click();
+    await t.panel.locator('#f-procuring_entity').click();
+    await expect(t.panel.locator('#sheet')).toContainText('Test Circle');
   } finally { await t.close(); }
 });

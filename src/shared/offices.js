@@ -2,14 +2,28 @@
 // D66: PWD's offices as the owner's hierarchy places them. The shipped tree comes from profiles/pwd-offices.json;
 // the user's own placements, made in the Office hierarchy screen, are kept in the browser and win.
 
-export const OVERRIDES_KEY = 'officeOverrides';
+export const TREE_KEY = 'officeTree';
+export const LIVE_KEY = 'officesLive';
 
-/** Reads the shipped tree and the user's placements. Panel only. */
+/**
+ * Reads the hierarchy: the user's own (D67) if they've changed it, else the one shipped. Panel only.
+ * The known e-GP offices are the shipped list plus any the user's tree links.
+ */
 export async function loadOfficeTree() {
   const response = await fetch(chrome.runtime.getURL('profiles/pwd-offices.json'));
-  const tree = await response.json();
-  const overrides = (await chrome.storage.local.get(OVERRIDES_KEY))[OVERRIDES_KEY] ?? {};
-  return { tree, overrides };
+  const shipped = await response.json();
+  const got = await chrome.storage.local.get([TREE_KEY, LIVE_KEY]);
+  const own = got[TREE_KEY];
+  const tree = own ? { ...shipped, nodes: own.nodes } : shipped;
+  const egpOffices = { ...shipped.egpOffices };
+  const walk = (nodes) => nodes.forEach((n) => { if (n.egpId) egpOffices[n.egpId] = n.egpName ?? n.name; walk(n.children); });
+  walk(tree.nodes);
+  return { tree: { ...tree, egpOffices }, shipped, overrides: {}, live: got[LIVE_KEY] ?? null };
+}
+
+/** Remembers the office list e-GP showed last, for the hierarchy screen. */
+export async function rememberLive(options) {
+  await chrome.storage.local.set({ [LIVE_KEY]: { at: Date.now(), options } });
 }
 
 /** Every node, with the path of names above it. */

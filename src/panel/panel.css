@@ -288,11 +288,38 @@ label.node input { margin-top: 2px; flex: none; }
 .tree .count, .tree .own { color: var(--muted); font-size: 11px; font-weight: 400; }
 .tree li[hidden], .tree[hidden] { display: none; }
 .settings-intro { flex: none; margin: 0; padding: 0 16px 10px; color: var(--muted); font-size: 12px; line-height: 17px; }
-.settings-list { list-style: none; margin: 0; padding: 0; }
-.settings-head { padding: 10px 16px 4px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
-.settings-list > li[data-office] { padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--divider); }
-.settings-row { display: flex; align-items: flex-start; gap: 8px; }
-.settings-name { flex: 1; min-width: 0; line-height: 18px; overflow-wrap: anywhere; }
-.settings-name small { display: block; color: var(--muted); font-size: 11px; }
-.settings-name .tag { margin-left: 6px; }
-.settings-move { padding: 6px 0 4px; }
+/* Office hierarchy editor (D67) */
+.editor-tools { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 6px 16px 0; }
+.editor-tools .tick { margin: 0; }
+.editor-message { margin: 0; font-size: 12px; color: var(--ok); }
+.editor-message.bad { color: var(--error); font-weight: 600; }
+.editor-message:empty { display: none; }
+.editor-unset { margin: 4px 8px 8px; padding: 0 4px 4px; border: 1px dashed var(--divider); border-radius: 10px; background: var(--surface-2); max-height: 24vh; overflow-y: auto; scrollbar-width: thin; }
+.editor-unset.shut { padding-bottom: 0; }
+.editor-unset h3 { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 2px; margin: 0 !important; padding: 2px 0; background: inherit; }
+.editor-unset h3 .twist { width: 28px; height: 28px; }
+.editor-unset h3 small { margin-left: 4px; }
+.editor-unset h3 { margin: 2px 8px 6px; font-size: 13px; font-weight: 600; }
+.editor-unset h3 small { font-weight: 400; color: var(--muted); }
+.editor-unset.drop-unset { border-color: var(--primary); background: var(--primary-soft); }
+.editor-row { display: flex; align-items: center; gap: 4px; min-height: 36px; padding: 2px 8px 2px calc(4px + var(--depth, 0) * 18px); border-radius: 6px; cursor: grab; user-select: none; }
+.editor-row:hover { background: color-mix(in srgb, var(--text) 6%, transparent); }
+.editor-row:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.editor-row.dragging { opacity: .45; }
+.editor-row .grip { flex: none; width: 16px; height: 16px; color: var(--muted); stroke-width: 3; }
+.editor-row .twist, .editor-row .twist-gap { width: 28px; height: 28px; }
+.editor-name { flex: 1; min-width: 0; line-height: 18px; overflow-wrap: anywhere; }
+.editor-name small { display: block; color: var(--muted); font-size: 11px; }
+.editor-row.heading .editor-name { color: var(--muted); font-style: italic; }
+.editor-row.gone .editor-name { color: var(--muted); text-decoration: line-through; }
+.level-chip { flex: none; padding: 1px 8px; border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: 11px; }
+.editor-row.loose .level-chip { background: #fef7e0; color: #8a5300; }
+.editor-branch > .editor-branch { background: color-mix(in srgb, var(--primary) 4%, transparent); }
+.editor-row.drop-before { box-shadow: inset 0 3px 0 var(--primary); }
+.editor-row.drop-after { box-shadow: inset 0 -3px 0 var(--primary); }
+.editor-row.drop-inside { background: var(--primary-soft); outline: 2px solid var(--primary); outline-offset: -2px; }
+.editor-foot { flex-wrap: wrap; gap: 4px; padding: 8px 12px; }
+.editor-foot .btn { padding: 6px 9px; font-size: 13px; min-height: 32px; }
+.editor-foot { justify-content: flex-end; flex-wrap: wrap; }
+.editor-live { width: 100%; color: var(--muted); font-size: 11px; }
+.settings-intro { padding-bottom: 6px !important; }
