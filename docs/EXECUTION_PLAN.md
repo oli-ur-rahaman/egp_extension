@@ -948,6 +948,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-10 | 1 | M13, D67 | **Office hierarchy editor rebuilt to the owner's design:** drag and drop, keyboard moves, Undo, Not set for new offices, hidden vanished offices, Excel export as template and import with row-by-row checks. Tested by driving it in the browser: real drags, keyboard, Undo, a vanished office, export read back, import of a typed sheet, the picker using the result. Screens checked at the panel's size and tightened. 368 unit and 33 browser tests pass on the fake portal. | Owner to try it on the real e-GP page. |
 | 2026-11-10 | 1 | Flow 1 (M3, M6, M10, M13), D68 | **Owner: office hierarchy editor passed (drag, Excel, run). Flow 1 rebuilt to the owner's 8 combinations.** Claude ran small live requests itself in the controlled Chrome (owner's permission, read-only report page): found the cause of the failing project combinations (blank Total cells read as empty) and that office 0 gives a project's figures. Also found and fixed on the way: Flow 1 filters printing as text when none is required; Stop or Pause could be lost if pressed mid-save; the panel could show a stale "Collecting" when answers arrived out of order. All 8 combinations pass on the fake portal five times in a row; 369 unit and 33 browser tests pass. | Next: the 8 combinations live, small. |
 | 2026-11-10 | 1 | Flow 1, D68 | **All 8 Flow 1 combinations ran live through the panel (Claude, in the controlled Chrome, owner logged in):** every combination sent what it should (office 0 only for projects with all offices; projects only when chosen), finished or stopped as designed, and the downloaded file read back right. Self-run log runs 13–14. Noted: projects with all offices (office 0) found figures in 6 of 34 year-reports, against 2 under the two offices chosen, so a project's history can sit under other offices too. | Owner to try Flow 1 on v0.8.1. Live checks of Flows 4 and 5 still to do. |
+| 2026-11-10 | 1 | — | **End of day, home PC; handover to the office PC.** A fresh clone of GitHub installed, passed 369 unit and 33 browser tests and built v0.8.1. Live Flow 1 script moved into the repo (`tools/recon/live-flow1.js`, `live-reload.js`). Resume-here and README say what doesn't travel (hierarchy edits: carry by Excel). | Owner starts at the office: pull, `npm ci`, build, reload the extension. |
 
 **Milestone record**
 
@@ -964,7 +965,19 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (updated 2026-11-07, end of day, home PC; valid on either PC)
+### ▶ Resume here (updated 2026-11-10, end of day, home PC; next: the office PC)
+
+**Office PC, first thing (owner, 2026-11-10: work and show the client from the office):**
+1. `cd C:\egp_extension`, `git pull`, `npm ci` (the lockfile has changed since the office PC last ran), `npm run build`. If the office PC has never run browser tests: `npx playwright install chromium`.
+2. In Chrome: `chrome://extensions` → reload the eGP Extractor card (or Load unpacked → `C:\egp_extension\dist` if it isn't there). It must show **version 0.8.1**.
+3. `npm run verify` should end green: 369 unit tests. `npm run e2e` (about 5 minutes): 33 browser tests. A fresh clone of GitHub was checked on 2026-11-10 and passed both, so nothing needed is missing from the repo.
+4. **What lives only in the home PC's browser and doesn't travel:** office hierarchy changes (carry them with Office hierarchy → Export Excel at home, Import Excel at the office), finished runs, and the panel's remembered choices. The shipped hierarchy (`profiles/pwd-offices.json`) is in the repo. Also home-only and git-ignored: `recon/raw/` (saved live captures) and the owner's `project_scope/*.xlsx`; only needed to rebuild fixtures or the shipped office tree.
+5. Live Flow 1 check from the office: `npm run chrome`, owner logs in there, opens Flow 1, loads `dist/`, opens the panel; then `node tools/recon/live-flow1.js` (or `ONLY=1.8 node tools/recon/live-flow1.js`). Log it in `docs/recon/self-run-log.md`.
+
+**What to show the client (proven live):** Flow 2 logged out (small runs, file checked by the owner); Flow 3 logged out (owner: worked); Flow 1 logged in, all 8 combinations (run 14 of the self-run log); the office picker and hierarchy editor (owner: drag and Excel worked). **Not yet run live:** Flows 4 and 5, logged-in Flow 2, and anything long. Show small searches.
+
+**The atlas** (claude.ai artifact) couldn't be updated from this session: the artifact tools connected to a different claude.ai account and couldn't find it. The progress log in this file is complete; bring the atlas up to date from the account that owns it.
+
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 

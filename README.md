@@ -31,6 +31,8 @@ npm run build
 
 Then load the extension in Chrome: `chrome://extensions` → turn on **Developer mode** → **Load unpacked** → pick `C:\egp_extension\dist`. Click the toolbar icon to open the side panel.
 
+**What doesn't travel through GitHub** (it lives in one PC's browser or is git-ignored): your office hierarchy changes (use the panel's Office hierarchy → Export Excel, then Import Excel on the other PC), finished runs, `recon/raw/` captures and `project_scope/*.xlsx`.
+
 ## Daily routine (two PCs)
 
 **Start of the day, on whichever PC you're at:**
