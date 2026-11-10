@@ -156,6 +156,8 @@ export function renderRun(run, actions, flowName) {
   if (run.offices) {
     numbers.push(['Reports done', `${n(run.officeIndex)} of ${n(run.offices.length)}`], ['Rows collected', n(run.stats.rows)]);
     if (run.stats.emptyReports) numbers.push(['Reports with no figures', n(run.stats.emptyReports)]);
+    // What the file will hold, so the choice made before Start can be seen (owner, 2026-11-11).
+    numbers.push(['In the file', `${(run.tables ?? ['Development', 'Revenue', 'Own Fund']).join(', ')}; ${{ all: 'National and International', national: 'National only', international: 'International only' }[run.scope ?? 'all']}; ${run.rowsMode === 'nonzero' ? 'rows with a number' : 'all rows'}`]);
   } else {
     numbers.push(['Rows collected', run.expected ? `${n(run.stats.rows)} of ${n(run.expected)}` : n(run.stats.rows)]);
     if (run.searches && run.phase === 'list' && run.status !== 'finished') numbers.push(['Office', `${n(run.searchIndex + 1)} of ${n(run.searches.length)}: ${run.searches[run.searchIndex].labels.office}`]);

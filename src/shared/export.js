@@ -109,7 +109,8 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   const columns = [
     { group: 'filter', header: 'Financial Year', type: 'text', width: 12, value: (row) => row.list.financial_year ?? shownOf('Financial Year') },
     { group: 'filter', header: 'Office', type: 'text', width: 28, value: (row) => row.list.pe_office ?? row.list.office },
-    ...(rows.some((r) => r.list.project) ? [{ group: 'filter', header: 'Project', type: 'text', width: 28, value: (row) => row.list.project ?? '' }] : []),
+    // D69: the three search columns are always there, so every file has the same shape.
+    { group: 'filter', header: 'Project', type: 'text', width: 28, value: (row) => row.list.project || 'Not set' },
     { group: 'list', header: flow.report.columns.find((c) => c.key === 'method_label')?.header ?? 'Method of Procurement', type: 'text', width: 22, value: (row) => row.list.label ?? (row.list.method ? `${row.list.method}(${row.list.nature})` : row.list.row_type) },
     ...flow.report.columns.filter((c) => c.key !== 'method_label' && inScope(c)).map((c) => ({ group: 'list', header: c.header, key: c.key, type: c.type, width: 13, value: (row) => row.list[c.key] })),
     { group: 'source', header: 'Grabbed at', type: 'datetime', width: 17, value: () => grabbed },

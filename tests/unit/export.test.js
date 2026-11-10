@@ -160,6 +160,12 @@ describe('workbook', () => {
     expect(book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);
     const dev = XLSX.utils.sheet_to_json(book.Sheets.Development, { raw: true });
     expect(dev[0]).toMatchObject({ 'Financial Year': '2024-2025', Office: 'Office A', Project: 'Road Project', 'Method of Procurement': 'OTM(Goods)' });
+    // With no project chosen, the column is still there and says so (D69).
+    const bare = rows.map((r) => ({ ...r, list: { ...r.list, project: undefined } }));
+    const plain = await readBack(buildWorkbook({ flow, run: { ...run, project: null }, rows: bare, toolVersion: '0.8.2', profileVersion: '1.5.0', siteHost: profile.site.host }));
+    const first = XLSX.utils.sheet_to_json(plain.Sheets.Development, { raw: true })[0];
+    expect(Object.keys(first).slice(0, 3)).toEqual(['Financial Year', 'Office', 'Project']);
+    expect(first.Project).toBe('Not set');
     expect(dev.filter((r) => r['Method of Procurement'] === 'Total Development Budget')).toHaveLength(2);
     const headers = Object.keys(dev[0]);
     expect(headers.some((h) => h.includes('International'))).toBe(false);

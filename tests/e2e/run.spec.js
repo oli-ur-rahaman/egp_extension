@@ -445,6 +445,7 @@ test('Flow 1: all 8 combinations of years, offices and projects (D68)', async ()
       await t.panel.locator('input[data-rows="nonzero"]').check();
       const before = t.portal.state.reports.length;
       await t.panel.locator('#run-start').click();
+      await expect(t.panel.locator('#run-numbers'), c.name).toContainText('Development, Own Fund; National only; rows with a number');
       if (reports > 100) {
         // A long one: a few reports are enough to see what it sends; then Stop keeps what's collected.
         await expect.poll(() => t.portal.state.reports.length - before, { timeout: 30000 }).toBeGreaterThan(5);
@@ -479,7 +480,9 @@ test('Flow 1: all 8 combinations of years, offices and projects (D68)', async ()
       }
       expect(all.length, c.name).toBeGreaterThan(0);
       expect(Object.keys(dev[0] ?? own[0]).some((h) => h.includes('International')), c.name).toBe(false);
-      if (c.projects) expect(all.every((r) => r.Project), c.name).toBe(true);
+      // The three search columns are on every sheet (D69); Project says Not set when none was chosen.
+      expect(Object.keys(dev[0] ?? own[0]).slice(0, 3), c.name).toEqual(['Financial Year', 'Office', 'Project']);
+      expect(all.every((r) => (c.projects ? r.Project !== 'Not set' : r.Project === 'Not set')), c.name).toBe(true);
       // Rows with a number only: no row of all zeros.
       const numbers = (r) => Object.entries(r).filter(([k]) => /\(No\.\)|BDT|Tenders|%/.test(k)).map(([, v]) => Number(v) || 0);
       expect(all.every((r) => numbers(r).some((v) => v !== 0)), c.name).toBe(true);
