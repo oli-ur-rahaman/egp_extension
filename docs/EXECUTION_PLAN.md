@@ -953,6 +953,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-11 | 1 | M13, D70 | **Owner: the swapped tab icon changed e-GP's natural look.** Now the tab goes into a blue "eGP Extractor" tab group while the panel is open; the website is untouched, and pages marked by the old version get their own icon back. Checked in Chromium: the built extension groups, labels and ungroups a tab. 370 unit and 33 browser tests pass. | Owner to check in real Chrome on v0.8.3. |
 | 2026-11-11 | 1 | M13, M10, D71, D72 | **Table choice fault found and proven, then fixed:** a rebuild without reloading the extension leaves an old background under a new panel, which ignored the choice (reproduced exactly with v0.7.0). The panel now detects it and blocks Start (D71). Grand total row removed (D72). 370 unit and 34 browser tests pass; owner: "works fine now, test ok". | — |
 | 2026-11-11 | 1 | M13, M10, D73 | **Renamed to Procurement Data Management System (PDMS);** tab group and panel say PDMS; Excel files are `PDMS_<date>_<hh-mm-ss>.xls`. 370 unit and 34 browser tests pass. | Owner reloads the extension: it now appears as PDMS in chrome://extensions. |
+| 2026-11-11 | 1 | D70–D73 | **Owner tested v0.9.0: all ok** (name, tab group, file names, tables, no grand total). | Next: live checks of Flows 4 and 5, then logged-in Flow 2. |
 
 **Milestone record**
 
