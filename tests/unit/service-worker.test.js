@@ -19,10 +19,16 @@ beforeAll(async () => {
       setBadgeBackgroundColor: async () => {},
       setBadgeText: async (o) => { calls.push(['badge', o]); },
     },
-    scripting: { executeScript: async (o) => { calls.push(['mark', { tabId: o.target.tabId, on: o.args[0] }]); } },
+    scripting: { executeScript: async (o) => { calls.push(['page', { tabId: o.target.tabId }]); } },
+    tabGroups: { update: async (id, o) => { calls.push(['label', { id, ...o }]); } },
     storage: { session: { get: async () => ({}), set: async () => {} } },
     alarms: { create: () => {}, onAlarm: listener() },
-    tabs: { onActivated: listener(), onUpdated: listener(), onRemoved: listener() },
+    tabs: {
+      onActivated: listener(), onUpdated: listener(), onRemoved: listener(),
+      get: async (id) => ({ id, groupId: id === 7 ? 99 : -1 }),
+      group: async (o) => { calls.push(['group', o]); return 500; },
+      ungroup: async (id) => { calls.push(['ungroup', id]); },
+    },
   };
   await import('../../src/background/service-worker.js');
 });
@@ -42,11 +48,20 @@ describe('the panel belongs to one tab (D43)', () => {
       ['open', { tabId: 42 }],
     ]);
   });
-  it('the click also marks that tab (D46)', () => {
+  it('the click puts that tab in a labelled tab group, and leaves the website as it is (D70)', async () => {
     calls.length = 0;
     clicked({ id: 42 });
+    await new Promise((r) => setTimeout(r, 20));
     expect(calls).toContainEqual(['badge', { tabId: 42, text: 'ON' }]);
-    expect(calls).toContainEqual(['mark', { tabId: 42, on: true }]);
+    expect(calls).toContainEqual(['group', { tabIds: 42 }]);
+    expect(calls).toContainEqual(['label', { id: 500, title: 'eGP Extractor', color: 'blue', collapsed: false }]);
+  });
+  it('a tab already in a group the user made stays in it', async () => {
+    calls.length = 0;
+    clicked({ id: 7 });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(calls.some(([k]) => k === 'group')).toBe(false);
+    expect(calls).toContainEqual(['badge', { tabId: 7, text: 'ON' }]);
   });
   it('a tab with no ID is ignored', () => {
     calls.length = 0;

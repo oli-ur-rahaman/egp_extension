@@ -10,31 +10,45 @@ import { loadProfile } from '../shared/profile.js';
 
 const startedAt = Date.now();
 
-/** The same mark as the toolbar icon, shown on the page's tab while the panel is open on it (D46). */
-const TAB_MARK = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#0b57d0"/><rect x="10" y="12" width="28" height="24" rx="3" fill="#fff"/><rect x="10" y="12" width="28" height="7" rx="3" fill="#a8c7fa"/><path d="M10 26h28M19.5 19v17M29 19v17" stroke="#0b57d0" stroke-width="2"/></svg>')}`;
-
-/** Runs on the page. Puts the mark in place of the page's own tab icon, or puts the page's icon back. @param {boolean} on @param {string} href */
-function setTabIcon(on, href) {
+/** Runs on the page: an older version swapped the site's tab icon (D46); this puts the site's own back. The site is never changed now. */
+function restoreTabIcon() {
   const held = /** @type {any} */ (window);
   document.getElementById('egp-tab-mark')?.remove();
-  if (on) {
-    held.__egpTabIcons ??= [...document.getElementsByTagName('link')].filter((link) => link.relList.contains('icon'));
-    for (const link of held.__egpTabIcons) link.remove();
-    const mark = document.createElement('link');
-    mark.id = 'egp-tab-mark';
-    mark.rel = 'icon';
-    mark.href = href;
-    document.head.append(mark);
-  } else if (held.__egpTabIcons) {
+  if (held.__egpTabIcons) {
     document.head.append(...held.__egpTabIcons);
     held.__egpTabIcons = undefined;
   }
 }
 
-/** Shows or removes the tab's mark. A tab the extension can't reach (not e-GP) simply has none. @param {number} tabId @param {boolean} on */
-function markTab(tabId, on) {
+const GROUPS_KEY = 'egpGroups';
+const GROUP_TITLE = 'eGP Extractor';
+
+/**
+ * D70: the tab with the panel sits in a labelled tab group, Chrome's own way of marking a tab, so the website looks as it always does.
+ * A tab already in a group the user made is left in it. Only a group this tool made is undone. The toolbar icon says ON for that tab.
+ * @param {number} tabId @param {boolean} on
+ */
+async function markTab(tabId, on) {
   chrome.action.setBadgeText({ tabId, text: on ? 'ON' : '' }).catch(() => {});
-  chrome.scripting.executeScript({ target: { tabId }, func: setTabIcon, args: [on, TAB_MARK] }).catch(() => {});
+  chrome.scripting.executeScript({ target: { tabId }, func: restoreTabIcon }).catch(() => {});
+  try {
+    const groups = /** @type {Record<string, number>} */ ((await chrome.storage.session.get(GROUPS_KEY))[GROUPS_KEY] ?? {});
+    const tab = await chrome.tabs.get(tabId);
+    if (on) {
+      if (tab.groupId !== -1) return;
+      const groupId = await chrome.tabs.group({ tabIds: tabId });
+      await chrome.tabGroups.update(groupId, { title: GROUP_TITLE, color: 'blue', collapsed: false });
+      groups[tabId] = groupId;
+    } else if (groups[tabId] !== undefined) {
+      if (tab.groupId === groups[tabId]) await chrome.tabs.ungroup(tabId);
+      delete groups[tabId];
+    } else {
+      return;
+    }
+    await chrome.storage.session.set({ [GROUPS_KEY]: groups });
+  } catch {
+    // A closed tab, or one Chrome won't group (a window of its own kind): the badge still marks it.
+  }
 }
 
 /** Which tabs have the panel on, kept in session storage because this worker sleeps. */

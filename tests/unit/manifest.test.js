@@ -19,7 +19,7 @@ describe('manifest.json', () => {
   });
 
   it('requests exactly the agreed permissions', () => {
-    expect([...manifest.permissions].sort()).toEqual(['alarms', 'downloads', 'notifications', 'scripting', 'sidePanel', 'storage', 'tabs']);
+    expect([...manifest.permissions].sort()).toEqual(['alarms', 'downloads', 'notifications', 'scripting', 'sidePanel', 'storage', 'tabGroups', 'tabs']);
   });
 
   it('never requests proxy, cookies, webRequest or broad host access', () => {
