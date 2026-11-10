@@ -185,8 +185,8 @@ describe('workbook', () => {
   });
 
   it('names the file by flow and time, and marks a partial one', () => {
-    const name = fileName(profile.flows.tender_info, baseRun({ status: 'stopped' }), 'tender_info');
-    expect(name).toMatch(/^pdms_tender_info_\d{4}-\d{2}-\d{2}_\d{4}_partial\.xls$/);
+    const name = fileName(profile.flows.tender_info, baseRun({ status: 'stopped' }), 'tender_info', 'xls', new Date(2026, 10, 11, 9, 5, 7));
+    expect(name).toBe('PDMS_2026-11-11_09-05-07.xls');
   });
 
   it('handles characters Excel would refuse, and long text', async () => {

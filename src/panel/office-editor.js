@@ -203,7 +203,7 @@ export function buildOfficeEditor({ tree: start, shipped, live, liveFrom, onSave
     const placed = new Set(rows.filter((r) => r[0] !== 'Not set' && r[2]).map((r) => r[2]));
     const sheets = [
       { name: 'How to fill', widths: [100], hideGrid: true, rows: [
-        [{ v: 'PWD office hierarchy, for eGP Extractor', s: { bold: true, size: 14 } }],
+        [{ v: 'PWD office hierarchy, for the Procurement Data Management System (PDMS)', s: { bold: true, size: 14 } }],
         [{ v: `Downloaded ${new Date().toLocaleString('en-GB')}. e-GP offices as seen ${liveFrom}.` }],
         [],
         ...[
@@ -219,7 +219,7 @@ export function buildOfficeEditor({ tree: start, shipped, live, liveFrom, onSave
       { name: SHEET_EGP, widths: [14, 60, 12], freeze: true, rows: [['e-GP office ID', 'Name on e-GP', 'Placed'].map((x) => ({ v: x, s: head })), ...live.map((o) => [cell(o.value), cell(o.text), cell(placed.has(o.value) ? 'Yes' : 'Not set')])] },
     ];
     const url = URL.createObjectURL(buildXls(sheets));
-    await chrome.downloads.download({ url, filename: 'pdms-office-hierarchy.xls' });
+    await chrome.downloads.download({ url, filename: 'PDMS_office_hierarchy.xls' });
     setTimeout(() => URL.revokeObjectURL(url), 60000);
     say('Downloaded. Edit it in Excel, then Import Excel.');
   }

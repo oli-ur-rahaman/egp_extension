@@ -54,7 +54,7 @@ describe('the panel belongs to one tab (D43)', () => {
     await new Promise((r) => setTimeout(r, 20));
     expect(calls).toContainEqual(['badge', { tabId: 42, text: 'ON' }]);
     expect(calls).toContainEqual(['group', { tabIds: 42 }]);
-    expect(calls).toContainEqual(['label', { id: 500, title: 'eGP Extractor', color: 'blue', collapsed: false }]);
+    expect(calls).toContainEqual(['label', { id: 500, title: 'PDMS', color: 'blue', collapsed: false }]);
   });
   it('a tab already in a group the user made stays in it', async () => {
     calls.length = 0;

@@ -169,7 +169,7 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   kv('Time taken', lasted(finished - run.startedAt));
   kv('Login state', run.loggedIn ? 'Logged in' : 'Logged out');
   kv('Interruptions', run.interruptions.length ? `${run.interruptions.length}, each resumed. No data lost.` : 'None');
-  kv('Tool / rules version', `PDMS eGP Extractor ${toolVersion} / site rules ${profileVersion}`);
+  kv('Tool / rules version', `Procurement Data Management System (PDMS) ${toolVersion} / site rules ${profileVersion}`);
   about.push([]);
   title('Search criteria');
   for (const item of run.shown) if (item.value !== '-') kv(item.label, item.value);
@@ -256,7 +256,7 @@ export function buildWorkbook({ flow, run, rows, toolVersion, profileVersion, si
   kv('Time taken', lasted(finished - run.startedAt));
   kv('Login state', run.loggedIn ? 'Logged in' : flow.login.startWarning ? 'Logged out. LTM and some other methods are not listed on this page when logged out.' : 'Logged out');
   kv('Interruptions', run.interruptions.length ? `${run.interruptions.length}, each resumed. No data lost.` : 'None');
-  kv('Tool / rules version', `PDMS eGP Extractor ${toolVersion} / site rules ${profileVersion}`);
+  kv('Tool / rules version', `Procurement Data Management System (PDMS) ${toolVersion} / site rules ${profileVersion}`);
   gap();
   title('Filter conditions you set');
   for (const item of run.shown) if (item.value !== '-') kv(item.label, item.value);
@@ -338,10 +338,8 @@ export function buildWorkbook({ flow, run, rows, toolVersion, profileVersion, si
   ];
 }
 
-/** pdms_<flow>_<yyyy-mm-dd_hhmm>.xls, marked when partial (M10-T05, T06, D54). */
-export function fileName(flow, run, flowId, extension = 'xls') {
-  const d = new Date(run.finishedAt ?? Date.now());
+/** PDMS_<yyyy-mm-dd>_<hh-mm-ss>.xls, the local date and time the file is made (owner, D73). A partial file says so on its About sheet. */
+export function fileName(_flow, _run, _flowId, extension = 'xls', now = new Date()) {
   const p = (n) => String(n).padStart(2, '0');
-  const partial = run.status === 'finished' ? '' : '_partial';
-  return `pdms_${flowId}_${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${partial}.${extension}`;
+  return `PDMS_${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}_${p(now.getHours())}-${p(now.getMinutes())}-${p(now.getSeconds())}.${extension}`;
 }

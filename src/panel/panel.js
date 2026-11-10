@@ -591,7 +591,7 @@ function showStaleBuild() {
   const reload = h('button', { id: 'reload-extension', type: 'button', class: 'btn filled', onclick: () => {
     chrome.tabs.create({ url: `chrome://extensions/?id=${chrome.runtime.id}` });
   } }, 'Open the reload button');
-  const box = banner('bad', 'The extension was rebuilt but not reloaded, so the panel and the part that runs searches are different versions, and choices made here could be ignored. On the page this opens, press the round reload arrow on eGP Extractor, then open the panel again.', 'Reload needed', reload);
+  const box = banner('bad', 'The extension was rebuilt but not reloaded, so the panel and the part that runs searches are different versions, and choices made here could be ignored. On the page this opens, press the round reload arrow on PDMS, then open the panel again.', 'Reload needed', reload);
   box.id = 'stale-build';
   document.body.prepend(box);
 }

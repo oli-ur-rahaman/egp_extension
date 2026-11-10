@@ -1,4 +1,4 @@
-# PDMS eGP Extractor
+# Procurement Data Management System (PDMS)
 
 A private Chrome (MV3) extension for the Public Works Department's Procurement Data Management System (PDMS). It collects report data from the Bangladesh e-GP portal (`eprocure.gov.bd`) into Excel. It works inside your own logged-in session and never handles your password.
 

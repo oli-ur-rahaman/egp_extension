@@ -123,7 +123,7 @@ test('Flow 2, whole journey: measure, choose, collect, download', async () => {
     expect(made.filter((r) => r.path === profile.flows.tender_info.list.request.url)).toHaveLength(3);
     expect(t.context.pages()).toHaveLength(3);
     const file = await downloaded(t);
-    expect(file.name).toMatch(/^pdms_tender_info_.*\.xls$/);
+    expect(file.name).toMatch(/^PDMS_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.xls$/);
     expect(file.book.SheetNames).toEqual(['About this grab', 'Data']);
     expect(file.data).toHaveLength(230);
     expect(new Set(file.data.map((r) => r['Tender/Proposal ID'])).size).toBe(230);
@@ -213,7 +213,7 @@ test('a block stops the run at once, with nothing retried and nothing lost', asy
     expect(t.portal.state.requests.length).toBe(count);
     // What was collected can still be downloaded, marked partial.
     const file = await downloaded(t);
-    expect(file.name).toContain('_partial');
+    expect(XLSX.utils.sheet_to_json(file.book.Sheets['About this grab'], { header: 1 }).flat().join(' ')).toContain('Partial');
     expect(file.data).toHaveLength(20);
   } finally { await t.close(); }
 });
@@ -251,7 +251,7 @@ test('the user can pause, resume, stop; Stop keeps what was collected', async ()
     await t.panel.locator('#run-stop').click();
     await expect(state(t)).toHaveText('Stopped');
     const file = await downloaded(t);
-    expect(file.name).toContain('_partial');
+    expect(XLSX.utils.sheet_to_json(file.book.Sheets['About this grab'], { header: 1 }).flat().join(' ')).toContain('Partial');
     const about = XLSX.utils.sheet_to_json(file.book.Sheets['About this grab'], { header: 1 }).flat();
     expect(about.join(' ')).toContain('Partial');
   } finally { await t.close(); }

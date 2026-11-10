@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "PDMS eGP Extractor",
-  "short_name": "eGP Extractor",
-  "version": "0.8.4",
+  "name": "Procurement Data Management System (PDMS)",
+  "short_name": "PDMS",
+  "version": "0.9.0",
   "description": "Collects report data from the e-GP portal into Excel, inside your own logged-in session.",
   "minimum_chrome_version": "116",
   "permissions": ["sidePanel", "storage", "scripting", "tabs", "tabGroups", "downloads", "notifications", "alarms"],
@@ -16,7 +16,7 @@
   },
   "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
   "action": {
-    "default_title": "Open eGP Extractor",
+    "default_title": "Open PDMS",
     "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
   },
   "content_security_policy": {

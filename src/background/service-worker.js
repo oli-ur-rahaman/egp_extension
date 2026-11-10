@@ -22,7 +22,7 @@ function restoreTabIcon() {
 }
 
 const GROUPS_KEY = 'egpGroups';
-const GROUP_TITLE = 'eGP Extractor';
+const GROUP_TITLE = 'PDMS';
 
 /**
  * D70: the tab with the panel sits in a labelled tab group, Chrome's own way of marking a tab, so the website looks as it always does.
@@ -216,7 +216,7 @@ function runEnded(run) {
   chrome.notifications.create({
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
-    title: run.status === 'paused' ? 'eGP Extractor paused' : 'eGP Extractor finished',
+    title: run.status === 'paused' ? 'PDMS paused' : 'PDMS finished',
     message: run.status === 'paused' ? run.reason ?? 'The run has paused.' : `${run.stats.rows.toLocaleString('en-US')} rows collected. Open the panel to download the Excel file.`,
   }).catch(() => {});
 }

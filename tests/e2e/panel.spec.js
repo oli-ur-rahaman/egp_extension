@@ -443,7 +443,7 @@ test('the office hierarchy editor: drag, keyboard, undo, vanished offices, Excel
     const worker = t.panel.context().serviceWorkers()[0];
     await expect.poll(() => worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]?.state)).toBe('complete');
     const file = await worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0].filename);
-    expect(await t.panel.evaluate(() => window.lastDownload)).toBe('pdms-office-hierarchy.xls');
+    expect(await t.panel.evaluate(() => window.lastDownload)).toBe('PDMS_office_hierarchy.xls');
     const book = XLSX.read(await readFile(file), { type: 'buffer' });
     expect(book.SheetNames).toEqual(['How to fill', 'Office Hierarchy', 'e-GP offices']);
     const rows = XLSX.utils.sheet_to_json(book.Sheets['Office Hierarchy'], { header: 1 });
