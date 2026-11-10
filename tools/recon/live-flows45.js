@@ -1,0 +1,158 @@
+// @ts-nocheck: a live check script; it drives the panel and only counts what comes back.
+// Live check of Flows 4 and 5 through the panel in the debug Chrome: PWD, one office, a short date window, detail pages on.
+// Public pages: works logged out. Prints counts and shapes only.
+//   npm run chrome            (once; nothing to log in to)
+//   node tools/recon/live-flows45.js
+// OFFICE (default 1552), FROM and TO (default 01/07/2025 to 31/12/2025) can be set as environment variables.
+// Log each run in docs/recon/self-run-log.md.
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
+import { readFileSync } from 'node:fs';
+const root = process.cwd();
+const { chromium } = await import(pathToFileURL(path.join(root, 'node_modules/@playwright/test/index.mjs')).href);
+const XLSX = await import(pathToFileURL(path.join(root, 'vendor/xlsx.js')).href);
+const profile = JSON.parse(readFileSync(path.join(root, 'profiles/eprocure.gov.bd.json'), 'utf8'));
+const OFFICE = process.env.OFFICE ?? '1552';
+const FROM = process.env.FROM ?? '01/07/2025';
+const TO = process.env.TO ?? '31/12/2025';
+const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
+
+const browser = await chromium.connectOverCDP('http://127.0.0.1:9222').catch(() => {
+  console.error('No debug Chrome on port 9222. Run `npm run chrome`, then run this again.');
+  process.exit(1);
+});
+const context = browser.contexts()[0];
+/** The extension's ID, from the debug profile's own settings: the one loaded from this repo's dist/. */
+function extensionId() {
+  const prefs = JSON.parse(readFileSync(path.join(root, '.chrome-debug-profile', 'Default', 'Secure Preferences'), 'utf8'));
+  const dist = path.join(root, 'dist').toLowerCase();
+  return Object.entries(prefs.extensions?.settings ?? {}).find(([, v]) => (v.path ?? '').toLowerCase() === dist)?.[0];
+}
+let sw = context.serviceWorkers().find((w) => w.url().startsWith('chrome-extension://'));
+if (!sw) {
+  // Its background sleeps when idle: opening one of its pages wakes it.
+  const extId = extensionId();
+  if (!extId) throw new Error('The extension is not loaded in the debug Chrome: load dist/ there once (chrome://extensions, Load unpacked).');
+  const waking = await context.newPage();
+  await waking.goto(`chrome-extension://${extId}/panel/index.html`).catch(() => {});
+  sw = context.serviceWorkers().find((w) => w.url().startsWith('chrome-extension://')) ?? (await context.waitForEvent('serviceworker', { timeout: 15000 }));
+  await waking.close();
+}
+const id = new URL(sw.url()).host;
+// Make sure the extension running is the build on disk, by its build stamp (D71): Chrome can keep a cached
+// background after a restart, even though the version number it shows is the new one.
+const stamp = /"(\d{4}-\d{2}-\d{2}T[\d:.]+Z)"/.exec(readFileSync(path.join(root, 'dist', 'background.js'), 'utf8'))?.[1];
+const running = async () => {
+  const p = await context.newPage();
+  await p.goto(`chrome-extension://${id}/panel/index.html`).catch(() => {});
+  const reply = await p.evaluate(() => chrome.runtime.sendMessage({ type: 'sw/ping' })).catch(() => null);
+  await p.close();
+  return reply?.buildId;
+};
+if ((await running()) !== stamp) {
+  console.log('the running extension is not the build on disk: reloading it');
+  await sw.evaluate(() => chrome.runtime.reload()).catch(() => {});
+  await new Promise((r) => setTimeout(r, 4000));
+  sw = context.serviceWorkers().find((w) => w.url().startsWith(`chrome-extension://${id}`)) ?? (await context.waitForEvent('serviceworker', { timeout: 15000 }));
+  if ((await running()) !== stamp) throw new Error('Still not the build on disk after a reload: press the reload arrow in chrome://extensions.');
+}
+console.log('extension', await sw.evaluate(() => chrome.runtime.getManifest().version));
+
+const cases = [
+  { name: 'Flow 4', flowId: 'contract_info', date: 'sign_date', key: 'Tender/Proposal ID' },
+  { name: 'Flow 5', flowId: 'experience_info', date: 'contract_start_date', key: 'Record ID' },
+];
+
+for (const c of cases) {
+  if (only && !only.includes(c.name.replace(' ', ''))) continue;
+  const flow = profile.flows[c.flowId];
+  const page = await context.newPage();
+  let step = 'opening';
+  try {
+    await page.goto(profile.site.baseUrl + flow.page.url, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(1500);
+    const tabId = await sw.evaluate(async (url) => (await chrome.tabs.query({})).find((t) => t.url?.includes(url))?.id, flow.page.url.split('?')[0]);
+    const panel = await context.newPage();
+    panel.setDefaultTimeout(30000);
+    await panel.goto(`chrome-extension://${id}/panel/index.html?tab=${tabId}`);
+    await page.bringToFront();
+    await panel.locator('[data-filter]').first().waitFor();
+    // Department: Ministry of Housing and Public Works, then Public Works Department.
+    step = 'department picker';
+    await panel.locator('#f-department-open').click();
+    const ministry = panel.locator('.tree li', { hasText: /Housing (and|&) Public Works/ }).first();
+    step = 'ministry arrow';
+    await ministry.locator('.twist').first().click();
+    const pwd = panel.locator('.tree .node', { hasText: /^\s*Public Works Department/ }).first();
+    await pwd.waitFor({ timeout: 15000 }).catch(async () => {
+      throw new Error(`no Public Works Department under the ministry; under it: ${(await ministry.locator('.tree .node').allInnerTexts()).slice(0, 8).join(' | ')}`);
+    });
+    await pwd.click();
+    await panel.locator(`[data-count="procuring_entity"]`).filter({ hasText: /\d{2,} items/ }).waitFor();
+    // One office, from the office picker.
+    const officeName = await page.evaluate((v) => [...document.getElementById('cmbOffice').options].find((o) => o.value.trim() === v)?.text.trim(), OFFICE);
+    step = 'office picker';
+    await panel.locator('#f-procuring_entity').click();
+    await panel.locator('#offices-search').fill(officeName);
+    step = 'office tick';
+    await panel.locator(`input[data-office="${OFFICE}"]`).first().check();
+    step = 'office done';
+    await panel.locator('#offices-done').click();
+    // A short date window.
+    await panel.locator(`#f-${c.date}-from`).fill(FROM);
+    await panel.locator(`#f-${c.date}-from`).blur();
+    await panel.locator(`#f-${c.date}-to`).fill(TO);
+    await panel.locator(`#f-${c.date}-to`).blur();
+    await panel.waitForTimeout(800);
+    const reasons = await panel.locator('#start-reasons').count() ? await panel.locator('#start-reasons').innerText() : '';
+    if (reasons) throw new Error(`Start is held: ${reasons}`);
+    step = 'Start';
+    await panel.locator('#start').click();
+    await panel.locator('#plan-count').waitFor({ timeout: 90000 });
+    const plan = await panel.locator('#plan-count').textContent();
+    const planRows = Number(plan.replace(/\D/g, ''));
+    // The page shows the same search (D53): its own page count.
+    await page.waitForTimeout(4000);
+    const pagePages = await page.evaluate(() => document.getElementById('totalPages')?.value ?? document.querySelector('[id="totalPages"]')?.getAttribute('value') ?? null);
+    const pageRows = await page.evaluate(() => ({
+      rows: [...document.querySelectorAll('#resultTable tr')].filter((r) => r.querySelector('td')).length,
+      noRecord: !!document.getElementById('noRecordFound'),
+      office: document.getElementById('cmbOffice')?.value,
+      dates: [...document.querySelectorAll('input')].filter((i) => /contract(Signe|Start)Date/i.test(i.id)).map((i) => `${i.id}=${i.value}`).join(' '),
+    }));
+    console.log(`  ${c.name} page after its own Search: ${JSON.stringify(pageRows)}`);
+    // Every field group ticked.
+    for (const box of await panel.locator('input[data-cluster]').all()) await box.check();
+    if (await panel.locator('#plan-agree-line').isVisible()) await panel.locator('#plan-agree').check();
+    step = `Start collecting, plan ${plan}, button disabled ${await panel.locator('#run-start').isDisabled()}`;
+    await panel.locator('#run-start').click();
+    const t0 = Date.now();
+    await panel.locator('#run-state').filter({ hasText: /Finished|Paused|Stopped/ }).waitFor({ timeout: 20 * 60000 });
+    const state = (await panel.locator('#run-view').innerText()).replace(/\s+/g, ' ').slice(0, 220);
+    const last = await sw.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]?.id ?? null);
+    await panel.locator('#run-download').click();
+    let item;
+    for (let i = 0; i < 40; i++) {
+      item = await sw.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]);
+      if (item && item.id !== last && item.state === 'complete') break;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+    const book = XLSX.read(readFileSync(item.filename), { type: 'buffer' });
+    const data = XLSX.utils.sheet_to_json(book.Sheets.Data, { raw: true });
+    const read = data.filter((r) => r['Detail page'] === 'Read').length;
+    const keys = new Set(data.map((r) => r[c.key])).size;
+    const filled = (h) => data.filter((r) => r[h] !== undefined && r[h] !== '').length;
+    const detailHeads = Object.keys(data[0] ?? {}).filter((h) => !h.startsWith('Filter:'));
+    const emptyDetail = detailHeads.filter((h) => filled(h) === 0);
+    const verdict = XLSX.utils.sheet_to_json(book.Sheets['About this grab'], { header: 1 }).find((r) => r[0] === 'Verdict')?.[1];
+    console.log(`${c.name}: plan ${plan} (page shows ${pagePages} pages at size 10) | file ${data.length} rows, ${keys} distinct ${c.key}, detail read ${read} | columns ${detailHeads.length}, always empty: ${emptyDetail.length} | verdict ${verdict} | ${Math.round((Date.now() - t0) / 1000)} s | panel: ${state}`);
+    if (emptyDetail.length) console.log(`  empty in every row: ${emptyDetail.join('; ')}`);
+    console.log(`  rows match plan: ${data.length === planRows}`);
+    await panel.close();
+  } catch (err) {
+    console.log(`${c.name} FAILED at ${step}: ${String(err.message).split('\n')[0]}`);
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+await browser.close().catch(() => {});

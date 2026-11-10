@@ -954,6 +954,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-11 | 1 | M13, M10, D71, D72 | **Table choice fault found and proven, then fixed:** a rebuild without reloading the extension leaves an old background under a new panel, which ignored the choice (reproduced exactly with v0.7.0). The panel now detects it and blocks Start (D71). Grand total row removed (D72). 370 unit and 34 browser tests pass; owner: "works fine now, test ok". | — |
 | 2026-11-11 | 1 | M13, M10, D73 | **Renamed to Procurement Data Management System (PDMS);** tab group and panel say PDMS; Excel files are `PDMS_<date>_<hh-mm-ss>.xls`. 370 unit and 34 browser tests pass. | Owner reloads the extension: it now appears as PDMS in chrome://extensions. |
 | 2026-11-11 | 1 | D70–D73 | **Owner tested v0.9.0: all ok** (name, tab group, file names, tables, no grand total). | Next: live checks of Flows 4 and 5, then logged-in Flow 2. |
+| 2026-11-11 | 1 | B5, B6 live; Flows 4, 5 | **Flows 4 and 5 passed live (Claude, debug Chrome, logged out, through the panel):** Flow 4, PWD office 1552, sign dates Jul 2023–Jun 2024: 166 rows, matching the page's 17 pages; every detail page read; no empty column; Complete. Flow 5, same office and window: 1 row, as the page showed; Complete. Self-run log run 15; script `tools/recon/live-flows45.js`. Found: a cached old background after a Chrome restart (insight 91), caught by D71. | Next: logged-in Flow 2, small run, with the owner logging in. |
 
 **Milestone record**
 
@@ -986,7 +987,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
 
-**Now (2026-11-10): Flow 1 passed live in all 8 combinations; the owner tries it.** Then live checks of Flows 4 and 5, and logged-in Flow 2. M15 and the extras are future work (D64).
+**Now (2026-11-11): every flow has run live except logged-in Flow 2.** Next: the owner logs in to the debug Chrome; a small logged-in Flow 2 run, watching the session hold. Then one longer run, the owner's stage checks (close Chrome, cut network, log out mid-run), sprints and slow-down handling. M15 and the extras are future work (D64).
 
 - **[x] Done 2026-11-07. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
 - **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
