@@ -22,7 +22,7 @@ beforeAll(async () => {
     scripting: { executeScript: async (o) => { calls.push(['page', { tabId: o.target.tabId }]); } },
     tabGroups: { update: async (id, o) => { calls.push(['label', { id, ...o }]); } },
     storage: { session: { get: async () => ({}), set: async () => {} } },
-    alarms: { create: () => {}, onAlarm: listener() },
+    alarms: { create: () => {}, get: async () => undefined, onAlarm: listener() },
     tabs: {
       onActivated: listener(), onUpdated: listener(), onRemoved: listener(),
       get: async (id) => ({ id, groupId: id === 7 ? 99 : -1 }),

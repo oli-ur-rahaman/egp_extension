@@ -7,6 +7,7 @@ import { buildXls } from '../shared/xls-writer.js';
 import * as XLSX from '../../vendor/xlsx.js';
 import { copyTree, findNode, fromRows, HEADERS, LEVEL_NAMES, moveNode, nudge, placeOffice, reconcile, SHEET_EGP, SHEET_OFFICES, toRows, unsetOffice } from '../shared/office-tree-edit.js';
 import { h, icon } from './icons.js';
+import { saveFile } from './save-file.js';
 
 const GRIP = 'M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01';
 
@@ -218,9 +219,7 @@ export function buildOfficeEditor({ tree: start, shipped, live, liveFrom, onSave
       { name: SHEET_OFFICES, widths: [16, 60, 14, 50, 12], freeze: true, rows: [HEADERS.map((x) => ({ v: x, s: head })), ...rows.map((r) => r.map(cell))] },
       { name: SHEET_EGP, widths: [14, 60, 12], freeze: true, rows: [['e-GP office ID', 'Name on e-GP', 'Placed'].map((x) => ({ v: x, s: head })), ...live.map((o) => [cell(o.value), cell(o.text), cell(placed.has(o.value) ? 'Yes' : 'Not set')])] },
     ];
-    const url = URL.createObjectURL(buildXls(sheets));
-    await chrome.downloads.download({ url, filename: 'PDMS_office_hierarchy.xls' });
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    await saveFile(buildXls(sheets), 'PDMS_office_hierarchy.xls');
     say('Downloaded. Edit it in Excel, then Import Excel.');
   }
 

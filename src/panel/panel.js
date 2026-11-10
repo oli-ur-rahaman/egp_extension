@@ -11,6 +11,7 @@ import { buildOfficeEditor } from './office-editor.js';
 import { isPwdList, loadOfficeTree, rememberLive, TREE_KEY } from '../shared/offices.js';
 import { buildPlanSheet, renderRun } from './run-view.js';
 import { buildWorkbook, fileName } from '../shared/export.js';
+import { saveFile } from './save-file.js';
 import { buildXlsx } from '../shared/xlsx-writer.js';
 import { buildXls, XLS_MAX_COLS, XLS_MAX_ROWS } from '../shared/xls-writer.js';
 import { loadProfile } from '../shared/profile.js';
@@ -442,9 +443,7 @@ const runActions = {
       // D54: .xls, unless the file is too big for that format.
       const fits = sheets.every((sheet) => sheet.rows.length <= XLS_MAX_ROWS && Math.max(0, ...sheet.rows.map((r) => r.length)) <= XLS_MAX_COLS);
       const blob = fits ? buildXls(sheets) : await buildXlsx(sheets);
-      const url = URL.createObjectURL(blob);
-      await chrome.downloads.download({ url, filename: fileName(flow, shownRun, shownRun.flowId, fits ? 'xls' : 'xlsx') });
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      await saveFile(blob, fileName(flow, shownRun, shownRun.flowId, fits ? 'xls' : 'xlsx'));
       setStatus('ok', 'Ready');
     } catch (err) {
       showError(err);

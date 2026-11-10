@@ -416,14 +416,31 @@ async function wakeRuns() {
     else await engine.markInterrupted(run);
   }
 }
-chrome.alarms.create('run-watch', { periodInMinutes: 1 });
+/**
+ * A run paused because the portal stopped answering carries on by itself once it answers again (M8-MC2).
+ * The browser's 'online' signal can't be relied on: it reaches this worker only while it's awake (Chrome stops an idle
+ * worker after 30 s), and only if Windows saw the network go. So each minute's check asks the portal once, without
+ * cookies, so a login is untouched (owner's test, 2026-11-11: the run waited for Resume).
+ */
+async function resumeAfterNetwork() {
+  const waiting = (await store.allRuns()).filter((/** @type {any} */ r) => r.status === 'paused' && r.pauseKind === 'network');
+  if (!waiting.length) return;
+  const { site } = await getProfile();
+  const answers = await fetch(site.baseUrl, { method: 'HEAD', credentials: 'omit', cache: 'no-store' }).then(() => true, () => false);
+  if (!answers) return;
+  const engine = await getEngine();
+  for (const run of waiting) await engine.resume(run.id);
+}
+// Made once, not at every start: making it again restarts its countdown, and this worker restarts about every
+// 30 s while the panel is open, so the check could be put off for ever.
+chrome.alarms.get('run-watch').then((alarm) => { if (!alarm) chrome.alarms.create('run-watch', { periodInMinutes: 1 }); });
 chrome.alarms.onAlarm.addListener(() => {
   wakeRuns().catch((err) => console.error('[sw] wakeRuns failed', err));
+  resumeAfterNetwork().catch((err) => console.error('[sw] resumeAfterNetwork failed', err));
 });
 wakeRuns().catch((err) => console.error('[sw] wakeRuns failed', err));
 
-// The network came back: a run that paused for it carries on by itself (M8-MC2).
-self.addEventListener('online', async () => {
-  const engine = await getEngine();
-  for (const run of await store.allRuns()) if (run.status === 'paused' && run.pauseKind === 'network') await engine.resume(run.id);
+// The faster path, when the signal does arrive.
+self.addEventListener('online', () => {
+  resumeAfterNetwork().catch((err) => console.error('[sw] resumeAfterNetwork failed', err));
 });

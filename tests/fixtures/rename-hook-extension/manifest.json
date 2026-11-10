@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Rename hook (test stand-in)",
+  "description": "Hooks Chrome's naming of downloads and suggests nothing, as download managers do. Used by tests/e2e/download-name.spec.js.",
+  "version": "1.0",
+  "permissions": ["downloads"],
+  "background": { "service_worker": "bg.js" }
+}

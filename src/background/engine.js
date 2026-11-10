@@ -7,7 +7,7 @@ const PAUSE_TEXT = {
   login: 'The session has ended. Log in to e-GP in this tab, then press Resume.',
   account: 'The portal is asking for account details. Press Update Later on the page, then press Resume.',
   block: 'The portal answered with a block or CAPTCHA. The run stopped at once and will not retry by itself. Everything so far is saved. Try again later.',
-  network: "The portal isn't answering. Everything so far is saved. The run carries on when the network returns, or press Resume.",
+  network: "The portal isn't answering. Everything so far is saved. The run carries on by itself within a minute of the network returning, or press Resume.",
   shape: "The portal's page has changed, so reading it could give wrong data. The run stopped. Everything so far is saved.",
   tab: 'The e-GP tab was closed or left the portal. Everything so far is saved. Open e-GP in a tab, open this panel there, and press Resume.',
   chrome: 'Chrome was closed during the run. Everything so far is saved. Press Resume to carry on.',

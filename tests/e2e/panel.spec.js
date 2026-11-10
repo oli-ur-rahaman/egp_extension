@@ -433,10 +433,11 @@ test('the office hierarchy editor: drag, keyboard, undo, vanished offices, Excel
 
     // Excel out: the template with its three sheets.
     await t.panel.evaluate(() => {
-      const real = chrome.downloads.download.bind(chrome.downloads);
-      chrome.downloads.download = (options) => {
-        window.lastDownload = options.filename;
-        return real(options);
+      // The panel saves through a link that carries the name (save-file.js).
+      const real = HTMLAnchorElement.prototype.click;
+      HTMLAnchorElement.prototype.click = function click() {
+        if (this.download) window.lastDownload = this.download;
+        return real.call(this);
       };
     });
     await t.panel.locator('#editor-export').click();

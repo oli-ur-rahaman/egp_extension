@@ -83,10 +83,11 @@ const state = (t) => t.panel.locator('#run-state');
 async function downloaded(t) {
   // The browser under test saves under its own name, so the name is read where the panel gives it.
   await t.panel.evaluate(() => {
-    const real = chrome.downloads.download.bind(chrome.downloads);
-    chrome.downloads.download = (options) => {
-      window.lastDownload = options.filename;
-      return real(options);
+    // The panel saves through a link that carries the name (save-file.js).
+    const real = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function click() {
+      if (this.download) window.lastDownload = this.download;
+      return real.call(this);
     };
   });
   // Wait for this file, not the one before it: a new download with a new ID, finished.
@@ -235,6 +236,24 @@ test('the network going down pauses; on return it resumes with nothing lost', as
     const file = await downloaded(t);
     expect(file.data).toHaveLength(30);
     expect(file.data.every((r) => ['Read', 'Refused by portal'].includes(r['Detail page']))).toBe(true);
+  } finally { await t.close(); }
+});
+
+test('after a network pause, the run carries on by itself once the portal answers, with no Resume pressed (M8-MC2)', async () => {
+  // Owner's test, 2026-11-11: the run waited for Resume. The minute check now asks the portal and carries on.
+  test.setTimeout(240000);
+  const t = await setup({ rows: 30, paceMs: 40 });
+  try {
+    await flow2Plan(t);
+    await cluster(t, 'identity').check();
+    await t.panel.locator('#run-start').click();
+    await expect(t.panel.locator('#run-numbers')).toContainText(/Detail pages read[1-9]/);
+    t.portal.setFaults({ drop: true });
+    await expect(state(t)).toHaveText('Paused', { timeout: 30000 });
+    await expect(t.panel.locator('#run-view')).toContainText('within a minute of the network returning');
+    t.portal.setFaults({});
+    await expect(state(t)).toHaveText('Finished', { timeout: 150000 });
+    await expect(t.panel.locator('#run-numbers')).toContainText('30 of 30');
   } finally { await t.close(); }
 });
 
