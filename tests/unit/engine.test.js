@@ -1,7 +1,10 @@
 // M5, M8: the run engine against a scripted portal. Fake portal pages are in the e2e tests; these drive the faults exactly.
 import { describe, expect, it } from 'vitest';
 import { createEngine, NetworkError, TabGone } from '../../src/background/engine.js';
-import { estimate, progressOf, timeLeft } from '../../src/shared/estimate.js';
+import { estimate, progressOf, roundTime, timeLeft } from '../../src/shared/estimate.js';
+import { readFileSync } from 'node:fs';
+
+const profile = JSON.parse(readFileSync(new URL('../../profiles/eprocure.gov.bd.json', import.meta.url), 'utf8'));
 
 function memoryStore() {
   const runs = new Map();
@@ -348,6 +351,17 @@ describe('estimate (D27)', () => {
     expect(small.text).toMatch(/^About \d+ minutes to \d+ minutes$/);
     expect(estimate({ pacing: p, listRequests: 100, detailRequests: 10000 }).level).toBe('long');
     expect(estimate({ pacing: p, listRequests: 100, detailRequests: 40000 }).level).toBe('unrealistic');
+  });
+  it('says "1 hour", not "1 hours"', () => {
+    expect(roundTime(3600)).toBe('1 hour');
+    expect(roundTime(5400)).toBe('1.5 hours');
+  });
+  it('the profile pacing covers the live one-hour run (self-run log run 17)', () => {
+    // Flow 4, 12 list pages and 1,191 detail pages, took 72 minutes live.
+    const live = estimate({ pacing: profile.pageStates.pacing, listRequests: 12, detailRequests: 1191 });
+    expect(Math.abs(live.low - 72 * 60) / (72 * 60)).toBeLessThan(0.05); // the expected time, within 5%
+    expect(live.high).toBeGreaterThanOrEqual(72 * 60);
+    expect(live.text).toBe('About 1 hour to 2 hours');
   });
   it('progress runs from 0 to 1 and time left comes from measured speed', () => {
     const run = { phase: 'detail', status: 'running', totalPages: 2, sweep: 1, page: 2, expected: 100, clusters: ['a'], requests: 10, activeMs: 40000, offices: null, stats: { rows: 100, detailTotal: 100, detailDone: 49, detailFailed: 0, refused: 0 } };

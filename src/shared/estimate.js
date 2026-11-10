@@ -7,7 +7,10 @@ export function roundTime(seconds) {
   if (seconds < 90) return 'under 2 minutes';
   if (seconds < HOUR) return `${Math.round(seconds / 60)} minutes`;
   const hours = seconds / HOUR;
-  if (hours < 48) return `${hours < 10 ? Math.round(hours * 2) / 2 : Math.round(hours)} hours`;
+  if (hours < 48) {
+    const rounded = hours < 10 ? Math.round(hours * 2) / 2 : Math.round(hours);
+    return `${rounded} hour${rounded === 1 ? '' : 's'}`;
+  }
   return `${Math.round(hours / 24)} days`;
 }
 
