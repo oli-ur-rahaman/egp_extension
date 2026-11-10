@@ -117,9 +117,8 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
     { group: 'source', header: 'Login state', type: 'text', width: 12, value: () => (run.loggedIn ? 'Logged in' : 'Logged out') },
   ];
   const head = columns.map((c) => ({ v: c.header, s: { bold: true, color: 'FFFFFF', fill: FILL[c.group], border: true, wrap: true, h: 'center', v: 'center' } }));
-  const lastTable = flow.report.tables.at(-1).budgetType;
-  // The grand total sits at the end of the last table on the page, so it goes on that sheet.
-  const sheetOf = (row) => (row.list.row_type === 'Grand Total' ? lastTable : row.list.budget_type);
+  // No grand total row (D72); a run saved by an older version may still hold one, and it's left out here.
+  const sheetOf = (row) => (row.list.row_type === 'Grand Total' ? null : row.list.budget_type);
   const chosenTables = flow.report.tables.filter((t) => !run.tables || run.tables.includes(t.budgetType));
   const numberColumns = columns.filter((c) => c.key && c.type !== 'text');
   // D68: a row whose every number is zero or blank is left out when the user asked for rows with a number only.

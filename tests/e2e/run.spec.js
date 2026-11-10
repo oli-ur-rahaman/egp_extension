@@ -356,7 +356,8 @@ test('Flow 1, logged in: an office grab gives one sheet per budget, with each of
     const file = await downloaded(t);
     expect(file.book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);
     const own = XLSX.utils.sheet_to_json(file.book.Sheets['Own Fund'], { raw: true });
-    expect(own.filter((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toHaveLength(reports);
+    expect(own.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
+    expect(own.filter((r) => r['Method of Procurement'] === 'Total Own Fund')).toHaveLength(reports);
     expect(own[0]['Financial Year']).toBeTruthy();
     expect(Object.keys(own[0]).some((h) => h.includes('International'))).toBe(false);
   } finally { await t.close(); }

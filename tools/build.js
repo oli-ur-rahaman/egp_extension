@@ -29,9 +29,15 @@ async function copyStatic() {
   }
 }
 
+// D71: one stamp per build, in the panel and the background alike. Chrome reloads the panel's files from disk, but keeps an old
+// background running until the extension is reloaded; the panel compares the two and says so.
+const buildId = new Date().toISOString();
+const define = { __BUILD_ID__: JSON.stringify(buildId) };
+
 /** @type {import('esbuild').BuildOptions} */
 const options = {
   absWorkingDir: root,
+  define,
   entryPoints: {
     background: 'src/background/service-worker.js',
     'panel/panel': 'src/panel/panel.js',
@@ -58,6 +64,7 @@ const options = {
 /** @type {import('esbuild').BuildOptions} */
 const agentOptions = {
   absWorkingDir: root,
+  define,
   entryPoints: { 'content/agent': 'src/content/agent.js' },
   outdir: dist,
   bundle: true,

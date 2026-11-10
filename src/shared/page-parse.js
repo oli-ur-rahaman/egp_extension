@@ -166,7 +166,7 @@ function percentOf(column, row) {
 }
 
 /**
- * Reads the report's tables into flat rows: one per method, one per budget total, and a grand total.
+ * Reads the report's tables into flat rows: one per method and one per budget total.
  * @returns {{ rows: any[] }}
  */
 export function parseReport(doc, flow) {
@@ -176,7 +176,6 @@ export function parseReport(doc, flow) {
   const text = (id) => clean(doc.getElementById(id)?.textContent);
   const number = (raw) => (raw === report.notApplicableText ? '' : raw);
   const rows = [];
-  const grand = {};
   for (const table of report.tables) {
     const sums = {};
     const lineCell = (col, row) => report.cell.replace('{table}', table.number).replace('{col}', col).replace('{row}', row);
@@ -196,14 +195,10 @@ export function parseReport(doc, flow) {
       if (c.formula) continue;
       const shown = number(text(report.totalCell.replace('{table}', table.number).replace('{col}', c.col - 2)));
       raw[`col${c.col}`] = shown !== '' ? shown : String(sums[`col${c.col}`] ?? 0);
-      grand[`col${c.col}`] = (grand[`col${c.col}`] ?? 0) + (Number(raw[`col${c.col}`]) || 0);
     }
     for (const c of cols) values[c.key] = c.formula ? percentOf(c, raw) : raw[`col${c.col}`];
     rows.push({ key: `${table.number}.total`, kind: 'Budget Total', label: table.totalLabel, budget: table.budgetType, method: '', nature: '', values });
   }
-  const values = {};
-  const raw = Object.fromEntries(Object.entries(grand).map(([k, v]) => [k, String(Math.round(v * 1000) / 1000)]));
-  for (const c of cols) values[c.key] = c.formula ? percentOf(c, raw) : raw[`col${c.col}`];
-  rows.push({ key: 'grand', kind: 'Grand Total', label: report.tables.find((t) => t.grandTotalLabel)?.grandTotalLabel ?? 'Grand Total', budget: 'All', method: '', nature: '', values });
+  // No grand total row: it adds three budgets together and confused readers of the file (owner, D72).
   return { rows };
 }

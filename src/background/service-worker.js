@@ -1,6 +1,7 @@
 // Service worker: the brain. It owns the run (D47, M5) and connects the panel to the page in the user's tab.
 
 import { MSG } from '../shared/bus.js';
+import { BUILD_ID } from '../build-id.js';
 import { progressOf } from '../shared/estimate.js';
 import { reportCombos } from '../shared/report-plan.js';
 import { createEngine, NetworkError, TabGone } from './engine.js';
@@ -354,6 +355,7 @@ const handlers = {
 
   [MSG.PING]: () => ({
     version: chrome.runtime.getManifest().version,
+    buildId: BUILD_ID,
     startedAt,
     uptimeMs: Date.now() - startedAt,
   }),

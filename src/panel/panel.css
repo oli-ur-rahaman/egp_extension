@@ -329,3 +329,6 @@ label.node input { margin-top: 2px; flex: none; }
 .pick-list > li:hover { background: color-mix(in srgb, var(--text) 6%, transparent); }
 .pick-head { padding: 8px 8px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
 .pick-head:hover { background: none !important; }
+/* D71: an old background with a new panel. Nothing may start until it's reloaded. */
+#stale-build { margin: 8px; }
+.stale-build #start, .stale-build #run-start { pointer-events: none; opacity: .4; }

@@ -171,7 +171,9 @@ describe('workbook', () => {
     expect(headers.some((h) => h.includes('International'))).toBe(false);
     expect(headers.some((h) => h.includes('National'))).toBe(true);
     const own = XLSX.utils.sheet_to_json(book.Sheets['Own Fund'], { raw: true });
-    expect(own.filter((r) => r['Method of Procurement'] === 'GRAND TOTAL').map((r) => r.Office)).toEqual(['Office A', 'Office B']);
+    // No grand total row (D72); each office keeps its Own Fund total.
+    expect(own.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
+    expect(own.filter((r) => r['Method of Procurement'] === 'Total Own Fund').map((r) => r.Office)).toEqual(['Office A', 'Office B']);
   });
 
   it('says so plainly when a file isn\'t complete', () => {

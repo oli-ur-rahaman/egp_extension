@@ -128,24 +128,23 @@ describe('detail pages', () => {
 
 describe('report (Flow 1)', () => {
   const flow = profile.flows.procurement_transaction_report;
-  it('gives method rows, budget totals and a grand total', () => {
+  it('gives method rows and budget totals, and no grand total (D72)', () => {
     const { rows } = parseReport(doc(raw('flow1/report')), flow);
     expect(rows.filter((r) => r.kind === 'Budget Total').map((r) => r.budget)).toEqual(['Development', 'Revenue', 'Own Fund']);
-    expect(rows.at(-1).kind).toBe('Grand Total');
+    expect(rows.some((r) => r.kind === 'Grand Total')).toBe(false);
     const method = rows[0];
     expect(method.kind).toBe('Method');
     expect(method.method).toBe('OTM');
     expect(method.nature).toBe('Goods');
     expect(method.values.planned_packages_national).toBe('4');
   });
-  it('method rows add up to each budget total, and those to the grand total', () => {
+  it('method rows add up to each budget total', () => {
     const { rows } = parseReport(doc(raw('flow1/report')), flow);
     const sum = (list, key) => list.reduce((a, r) => a + (Number(r.values[key]) || 0), 0);
     for (const budget of ['Development', 'Revenue']) {
       const lines = rows.filter((r) => r.budget === budget);
       expect(sum(lines.filter((r) => r.kind === 'Method'), 'planned_packages_national')).toBe(sum(lines.filter((r) => r.kind === 'Budget Total'), 'planned_packages_national'));
     }
-    expect(sum(rows.filter((r) => r.kind === 'Budget Total'), 'planned_packages_national')).toBe(sum(rows.filter((r) => r.kind === 'Grand Total'), 'planned_packages_national'));
   });
   it('works the percentages out itself, because the raw answer leaves them to a script', () => {
     const { rows } = parseReport(doc(raw('flow1/report')), flow);

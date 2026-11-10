@@ -2,6 +2,7 @@
 // Chrome closes a tab's panel when the user moves to another tab, so what only the panel holds is saved per tab (D45).
 
 import { MSG, request as send } from '../shared/bus.js';
+import { BUILD_ID } from '../build-id.js';
 import { h } from './icons.js';
 import { buildPicker } from './picker.js';
 import { buildOfficePicker } from './office-picker.js';
@@ -580,5 +581,18 @@ holdConnection();
 loadOffices();
 ask(MSG.PING).then((/** @type {any} */ reply) => {
   versionEl.textContent = `v${reply.version}`;
+  // D71: a build written to disk while Chrome runs gives a new panel and an old background, which would quietly ignore new choices.
+  if (reply.buildId !== BUILD_ID) showStaleBuild();
 }, () => {});
+
+function showStaleBuild() {
+  document.body.classList.add('stale-build');
+  // Chrome's own page, at this extension's card: its reload arrow always works. A run going is paused by it and can be resumed.
+  const reload = h('button', { id: 'reload-extension', type: 'button', class: 'btn filled', onclick: () => {
+    chrome.tabs.create({ url: `chrome://extensions/?id=${chrome.runtime.id}` });
+  } }, 'Open the reload button');
+  const box = banner('bad', 'The extension was rebuilt but not reloaded, so the panel and the part that runs searches are different versions, and choices made here could be ignored. On the page this opens, press the round reload arrow on eGP Extractor, then open the panel again.', 'Reload needed', reload);
+  box.id = 'stale-build';
+  document.body.prepend(box);
+}
 refresh();

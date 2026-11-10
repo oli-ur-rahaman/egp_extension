@@ -471,3 +471,41 @@ test('the office hierarchy editor: drag, keyboard, undo, vanished offices, Excel
     await expect(t.panel.locator('#sheet')).toContainText('Test Circle');
   } finally { await t.close(); }
 });
+
+test('a rebuilt but unreloaded extension: the panel says so and nothing can start (D71)', async () => {
+  // Build A runs; build B's panel files are on disk. Simulated by giving the panel a different build stamp than the running background.
+  const { cp } = await import('node:fs/promises');
+  const ext = await mkdtemp(path.join(os.tmpdir(), 'egp-stale-'));
+  await cp(dist, ext, { recursive: true });
+  const panelFile = path.join(ext, 'panel', 'panel.js');
+  await writeFile(panelFile, (await readFile(panelFile, 'utf8')).replace(/"\d{4}-\d{2}-\d{2}T[\d:.]+Z"/, '"2000-01-01T00:00:00.000Z"'));
+  const portal = createMockPortal({ loggedIn: true });
+  const mock = await portal.start();
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'egp-e2e-'));
+  const context = await chromium.launchPersistentContext(dir, { channel: 'chromium', args: [`--disable-extensions-except=${ext}`, `--load-extension=${ext}`] });
+  try {
+    await context.route(/^https?:\/\//, async (route) => {
+      const url = route.request().url();
+      if (!url.startsWith(BASE)) return route.abort();
+      const res = await fetch(mock + url.slice(BASE.length), { method: route.request().method(), headers: { 'Content-Type': route.request().headers()['content-type'] ?? 'text/plain' }, body: route.request().postData() ?? undefined });
+      return route.fulfill({ status: res.status, contentType: res.headers.get('content-type') ?? 'text/html', body: await res.text() });
+    });
+    const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+    const page = await context.newPage();
+    const tabId = await worker.evaluate(async () => (await chrome.tabs.query({ active: true }))[0].id);
+    await page.goto(BASE + profile.flows.procurement_transaction_report.page.url);
+    const panel = await context.newPage();
+    await panel.goto(`chrome-extension://${new URL(worker.url()).host}/panel/index.html?tab=${tabId}`);
+    await expect(panel.locator('#stale-build')).toContainText('Reload needed');
+    await expect(panel.locator('#start')).toHaveCSS('pointer-events', 'none');
+    const opened = context.waitForEvent('page');
+    await panel.locator('#reload-extension').click();
+    expect((await opened).url()).toMatch(/^chrome:\/\/extensions\/\?id=/);
+  } finally {
+    await context.close();
+    await portal.stop();
+    await rm(dir, { recursive: true, force: true });
+    await rm(ext, { recursive: true, force: true });
+  }
+});
+
