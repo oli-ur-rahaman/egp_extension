@@ -1,4 +1,5 @@
 // @ts-nocheck: a live check script; it drives the panel and only counts what comes back.
+/* global chrome */
 // Live check of Flows 4 and 5 through the panel in the debug Chrome: PWD, one office, a short date window, detail pages on.
 // Public pages: works logged out. Prints counts and shapes only.
 //   npm run chrome            (once; nothing to log in to)
