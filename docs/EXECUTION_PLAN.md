@@ -518,7 +518,7 @@ Every module below lists purpose, the pages it touches, tasks, Claude's automate
 - **Automated (fault-injection suite on the mock):** M8-AT1 429, 5xx, hangs, malformed HTML, session drop. Each one is classified correctly and reaches the correct ladder level · M8-AT2 after any fault sequence, the final dataset equals the fault-free dataset · M8-AT3 the governor slows down when injected latency rises · M8-AT4 CAPTCHA signature → pause, zero retries.
 - **Manual:**
   - [ ] M8-MC1 Force a logout mid-run (log out in another tab). The extension pauses and tells you; after you log in, it resumes cleanly.
-  - [~] M8-MC2 Disconnect the network mid-run. It backs off, then recovers, with no data lost. *(Owner 2026-11-11, v0.9.0: paused after 45 s, data intact, but needed Resume. Fixed in v0.9.1; owner to repeat.)*
+  - [~] M8-MC2 Disconnect the network mid-run. It backs off, then recovers, with no data lost. *(Owner 2026-11-11, v0.9.0: paused after 45 s, data intact, but needed Resume. Fixed in v0.9.1. Owner's repeat on v0.9.1: file `PDMS_2026-11-11_04-12-17.xls`, right name, 101 rows, all detail read, Complete, 10 min; whether it resumed without a click is still to be confirmed by the owner.)*
   - [ ] M8-MC3 Close the browser mid-run. On reopen it offers to resume and does it correctly.
 - **Gate G3 (end W7):** M7, M8, full M2 pass → **demo M3 → invoice 40%.**
 
@@ -958,6 +958,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-11 | 1 | B5, B6 live; Flow 2 logged in | **Logged-in Flow 2 passed live:** 126 rows (116 LTM, 10 RFQU, none reachable logged out), every detail page read, Complete; **the session held through the run** (checked with the portal before and after). Self-run log run 16. **Every flow has now run live.** | Next: one longer run (about an hour), then the owner's stage checks (close Chrome, cut network, log out mid-run). |
 | 2026-11-11 | 1 | B6 long run; D27 estimate | **One-hour live run passed:** Flow 4, logged out, PWD, all offices, sign dates Sep–Oct 2025: 1,191 rows, every detail page read, 0 retries, 0 interruptions, no block, Complete, 72 min (3.6 s per request). Self-run log run 17. **The time estimate was too high** (said 1.5 to 2 hours): a detail page was costed at 0.5 s, measured 0.1–0.25 s over runs 15–17. Profile 1.5.1 sets 0.2 s; the panel now says "About 1 hour to 2 hours". Also fixed "1 hours" to "1 hour". Unit test pins the estimate to this run. | Next: the owner's stage checks (close Chrome, cut network, log out mid-run). |
 | 2026-11-11 | 1 | M8-MC2, D73; M8-T, M10 | **Owner cut the network mid-run (Flow 4, v0.9.0):** paused after 45 s with the right message, nothing lost, file data ok; but **it waited for Resume**, and **the file was named by a random ID**, not `PDMS_<date>_<time>.xls`. **Both found with evidence, both fixed in v0.9.1.** (1) Name: three extensions on the owner's Chrome (IDM Integration Module, Seedr, Video DownloadHelper) hook Chrome's naming of downloads; Chrome then drops the name passed to `chrome.downloads.download` when such an extension was installed after PDMS. Reproduced with a stand-in hook in both install orders; the debug Chrome, without them, always gave the right name. Now saved through a link that carries the name: right in both orders. (2) Resume: it hung on the browser's `online` signal, which reaches the background only while it's awake and only if Windows saw the network go; the minute check never looked at network pauses, and re-made its alarm at every background start, which can put it off for ever. Now each minute's check asks the portal once (no cookies) and carries on when it answers; the alarm is made once. New browser tests: file name with a download manager installed before and after PDMS; automatic resume with no click (fails on the old code, passes now). 372 unit, 37 browser tests pass. | Owner: reload PDMS (v0.9.1), repeat the network check; check the file name. Then close Chrome mid-run, log out mid-run. |
+| 2026-11-11 | 1 | M8-MC2, D73 | **Owner repeated the network check on v0.9.1:** the file is named `PDMS_2026-11-11_04-12-17.xls` (name fixed); read back: 101 rows, 101 distinct IDs, all detail pages read, Complete, 10 min, file says 0.9.1 / rules 1.5.1. Owner to confirm it resumed without a click. | Next (office PC): stage checks M8-MC3/M5-MC2 (close Chrome mid-run) and M8-MC1 (log out mid-run). |
 
 **Milestone record**
 
@@ -974,12 +975,15 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (updated 2026-11-10, end of day, home PC; next: the office PC)
+### ▶ Resume here (updated 2026-11-11, end of day, home PC; next: the office PC)
+
+**Next, in order (2026-11-11):** (1) owner confirms the network check resumed without a click (M8-MC2); (2) close Chrome mid-run, reopen, resume (M5-MC2, M8-MC3); (3) log out mid-run, log in, resume (M8-MC1); (4) then build: sprint splitting (D27), slow-down handling (M8), self-check and log screens (M11, M12); (5) full runs, guides, handover. All five flows have run live; Flow 5 ran (run 15) but only 1 row came back for that office and window, so a bigger Flow 5 run is worth one live check. Current build **v0.9.1**: 372 unit tests, 37 browser tests.
+
 
 **Office PC, first thing (owner, 2026-11-10: work and show the client from the office):**
 1. `cd C:\egp_extension`, `git pull`, `npm ci` (the lockfile has changed since the office PC last ran), `npm run build`. If the office PC has never run browser tests: `npx playwright install chromium`.
-2. In Chrome: `chrome://extensions` → reload the PDMS card (or Load unpacked → `C:\egp_extension\dist` if it isn't there). It must show **version 0.9.0**, named **Procurement Data Management System (PDMS)**.
-3. `npm run verify` should end green: 369 unit tests. `npm run e2e` (about 5 minutes): 33 browser tests. A fresh clone of GitHub was checked on 2026-11-10 and passed both, so nothing needed is missing from the repo.
+2. In Chrome: `chrome://extensions` → reload the PDMS card (or Load unpacked → `C:\egp_extension\dist` if it isn't there). It must show **version 0.9.1**, named **Procurement Data Management System (PDMS)**.
+3. `npm run verify` should end green: 372 unit tests. `npm run e2e` (about 6 minutes): 37 browser tests. A fresh clone of GitHub was checked on 2026-11-10 and passed both, so nothing needed is missing from the repo.
 4. **What lives only in the home PC's browser and doesn't travel:** office hierarchy changes (carry them with Office hierarchy → Export Excel at home, Import Excel at the office), finished runs, and the panel's remembered choices. The shipped hierarchy (`profiles/pwd-offices.json`) is in the repo. Also home-only and git-ignored: `recon/raw/` (saved live captures) and the owner's `project_scope/*.xlsx`; only needed to rebuild fixtures or the shipped office tree.
 5. Live Flow 1 check from the office: `npm run chrome`, owner logs in there, opens Flow 1, loads `dist/`, opens the panel; then `node tools/recon/live-flow1.js` (or `ONLY=1.8 node tools/recon/live-flow1.js`). Log it in `docs/recon/self-run-log.md`.
 
