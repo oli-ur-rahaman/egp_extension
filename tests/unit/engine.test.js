@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { createEngine, NetworkError, TabGone } from '../../src/background/engine.js';
 import { estimate, progressOf, roundTime, timeLeft } from '../../src/shared/estimate.js';
+import { logFileName, logJson, logText } from '../../src/shared/run-log.js';
 import { readFileSync } from 'node:fs';
 
 const profile = JSON.parse(readFileSync(new URL('../../profiles/eprocure.gov.bd.json', import.meta.url), 'utf8'));
@@ -68,8 +69,8 @@ function setup(transport, store = memoryStore()) {
 }
 
 /** Waits for the run to stop moving. */
-async function settled(store, id) {
-  for (let i = 0; i < 2000; i++) {
+async function settled(store, id, tries = 2000) {
+  for (let i = 0; i < tries; i++) {
     const run = await store.getRun(id);
     if (run.status !== 'running') return run;
     await new Promise((r) => setTimeout(r, 1));
@@ -398,6 +399,10 @@ describe('sprints (D27) and slowing down (M8-T01)', () => {
     expect(detailWaits.slice(0, 12).every((w) => w === 1000)).toBe(true); // normal until the slow answers outnumber the rest
     expect(detailWaits.at(-1)).toBe(1000); // and normal again at the end
     expect(got.slow).toBeNull();
+    // M12: both changes are in the log, once each.
+    const texts = got.log.map((e) => e.text);
+    expect(texts.filter((x) => /^The portal is answering slowly: about 0\.5 s a page, against 0\.1 s at the start\. Waiting 4 times/.test(x))).toHaveLength(1);
+    expect(texts.filter((x) => /^The portal is back to its normal speed/.test(x))).toHaveLength(1);
   });
 
   it('says why it is going slower while it does', async () => {
@@ -437,5 +442,121 @@ describe('estimate (D27)', () => {
     expect(progressOf(run)).toBeCloseTo(51 / 102, 3);
     expect(timeLeft(run)).toBe('3 minutes');
     expect(progressOf({ ...run, phase: 'done' })).toBe(1);
+  });
+});
+
+describe('activity log (M12)', () => {
+  const texts = (run) => run.log.map((e) => `${e.level}: ${e.text}`);
+
+  it('every change of state writes one entry, in order (M12-AT1)', async () => {
+    const t = portal(5, { faults: { detail2: { outcome: 'REFUSED' }, detail3: 'network', detail5: { outcome: 'UNKNOWN', reason: 'no table' } } });
+    const { engine, store } = setup(t);
+    const run = await engine.start(plan({ rows: 5, clusters: ['identity'], loggedIn: true }));
+    const got = await settled(store, run.id);
+    expect(got.status).toBe('finished');
+    expect(texts(got)).toEqual([
+      'info: Started: 5 rows on 1 list page; with detail pages. Logged in.',
+      'info: List done: 5 rows. Reading 5 detail pages.',
+      'info: The portal refused the detail page of r1.',
+      "warn: The portal didn't answer (down). Trying again in 0 seconds (attempt 1 of 3).",
+      "warn: Couldn't read the detail page of r3: no table",
+      "info: Finished: 5 rows, 3 detail pages read, 1 couldn't be read, 1 refused by the portal. Collecting time: under a minute.",
+    ]);
+  });
+
+  it('pauses and resumes say why and who', async () => {
+    const t = portal(4, { faults: { detail2: { outcome: 'LOGIN_WALL' } } });
+    const { engine, store } = setup(t);
+    const run = await engine.start(plan({ rows: 4, clusters: ['identity'] }));
+    expect((await settled(store, run.id)).pauseKind).toBe('login');
+    await engine.resume(run.id);
+    const got = await settled(store, run.id);
+    expect(texts(got)).toContain('warn: Paused: The session has ended. Log in to e-GP in this tab, then press Resume.');
+    expect(texts(got)).toContain('info: Resumed by you.');
+    expect(texts(got).at(-1)).toMatch(/^info: Finished: 4 rows, 4 detail pages read\./);
+
+    const t2 = portal(3, { faults: { list1: 'network', list2: 'network', list3: 'network', list4: 'network' } });
+    const two = setup(t2);
+    const run2 = await two.engine.start(plan({ rows: 3 }));
+    expect((await settled(two.store, run2.id)).pauseKind).toBe('network');
+    await two.engine.resume(run2.id, undefined, 'network');
+    const got2 = await settled(two.store, run2.id);
+    expect(texts(got2)).toContain('info: Resumed by itself: the portal answers again.');
+    expect(texts(got2).filter((x) => x.startsWith('warn: Paused: The portal isn'))).toHaveLength(1);
+  });
+
+  it('a retry reads as one sentence: no doubled full stop, "1 second"', async () => {
+    const t = portal(2, { faults: { list1: 'network' } });
+    t.list = ((list) => async (...args) => {
+      if (t.calls.list === 0) {
+        t.calls.list++;
+        throw new NetworkError('The network request failed.');
+      }
+      return list(...args);
+    })(t.list);
+    const store = memoryStore();
+    const engine = createEngine({ store, transport: t, pacing: { ...pacing, backoffSeconds: [1, 2] }, sleep: async () => {}, random: () => 0 });
+    const run = await engine.start(plan({ rows: 2 }));
+    const got = await settled(store, run.id);
+    expect(texts(got)).toContain("warn: The portal didn't answer (The network request failed). Trying again in 1 second (attempt 1 of 2).");
+  });
+
+  it('a block is logged as a problem; Stop says it was you', async () => {
+    const { engine, store } = setup(portal(5, { faults: { detail2: { outcome: 'RATE_LIMITED' } } }));
+    const run = await engine.start(plan({ rows: 5, clusters: ['identity'] }));
+    const got = await settled(store, run.id);
+    expect(texts(got).at(-1)).toMatch(/^error: Paused: The portal answered with a block or CAPTCHA/);
+    await engine.stop(run.id);
+    const stopped = await settled(store, run.id);
+    expect(texts(stopped).at(-1)).toMatch(/^info: Stopped by you: /);
+  });
+
+  it('a very long run keeps its first entries and its latest ones', { timeout: 60000 }, async () => {
+    const refuseAll = Object.fromEntries(Array.from({ length: 2100 }, (_, i) => [`detail${i + 1}`, { outcome: 'REFUSED' }]));
+    const { engine, store } = setup(portal(2100, { faults: refuseAll }));
+    const run = await engine.start(plan({ rows: 2100, totalPages: 21, clusters: ['identity'] }));
+    const got = await settled(store, run.id, 60000);
+    expect(got.log).toHaveLength(2000);
+    expect(got.log[0].text).toMatch(/^Started: 2,100 rows/);
+    expect(got.log.at(-1).text).toMatch(/^Finished: 2,100 rows/);
+  });
+
+  it('holds no password, cookie or token, in the run or in either file (M12-AT2)', async () => {
+    const t = portal(3, { faults: { detail1: 'network', detail2: { outcome: 'LOGIN_WALL' } } });
+    const { engine, store } = setup(t);
+    const shown = [{ label: 'Procuring Entity', value: 'Office A' }, { label: 'Sign date', value: '01/07/2023 to 30/06/2024' }];
+    const run = await engine.start(plan({ rows: 3, clusters: ['identity'], shown, loggedIn: true }));
+    await settled(store, run.id);
+    await engine.resume(run.id);
+    const got = await settled(store, run.id);
+    const files = [logText(got, { flowName: 'Flow 4', toolVersion: '0.11.0' }), logJson(got, { flowName: 'Flow 4', toolVersion: '0.11.0' }), JSON.stringify(got.log)];
+    for (const file of files) expect(file).not.toMatch(/password|passwd|cookie|token|jsessionid|secret|credential/i);
+  });
+
+  it('the text file reads as a record, and the names match the data file', () => {
+    const at = new Date(2026, 10, 12, 23, 59, 50).getTime();
+    const run = { flowId: 'contract_info', startedAt: at, shown: [{ label: 'Office', value: 'A' }, { label: 'Status', value: '-' }], log: [
+      { at, level: 'info', text: 'Started: 3 rows.' },
+      { at: at + 20000, level: 'warn', text: 'Slow.' },
+      { at: at + 30000, level: 'error', text: 'Blocked.' },
+    ] };
+    const text = logText(run, { flowName: 'Flow 4 · Contract Information', toolVersion: '0.11.0' });
+    expect(text.split('\r\n')).toEqual([
+      'PDMS activity log',
+      'Report: Flow 4 · Contract Information',
+      "Started: 2026-11-12 23:59:50 (this PC's time)",
+      'PDMS version: 0.11.0',
+      'Filters:',
+      '  Office: A',
+      '',
+      '23:59:50  Started: 3 rows.',
+      '-- 2026-11-13 --',
+      '00:00:10  Warning: Slow.',
+      '00:00:20  Problem: Blocked.',
+      '',
+    ]);
+    expect(JSON.parse(logJson(run)).log).toHaveLength(3);
+    expect(logText({ ...run, log: undefined })).toMatch(/started before PDMS kept a log/);
+    expect(logFileName('txt', new Date(2026, 10, 12, 4, 5, 6))).toBe('PDMS_log_2026-11-12_04-05-06.txt');
   });
 });

@@ -239,6 +239,61 @@ test('the network going down pauses; on return it resumes with nothing lost', as
   } finally { await t.close(); }
 });
 
+test('the Activity section tells what happened, stays open while the run goes on, and saves as a text file (M12)', async () => {
+  const t = await setup({ rows: 30, paceMs: 40 });
+  try {
+    await flow2Plan(t);
+    await cluster(t, 'identity').check();
+    await t.panel.locator('#run-start').click();
+    const activity = t.panel.locator('#run-activity');
+    await expect(activity).not.toHaveAttribute('open'); // folded by default
+    await activity.locator('summary').click();
+    await expect(t.panel.locator('#run-numbers')).toContainText(/Detail pages read[1-9]/);
+    t.portal.setFaults({ drop: true });
+    await expect(state(t)).toHaveText('Paused', { timeout: 30000 });
+    t.portal.setFaults({});
+    await t.panel.locator('#run-resume').click();
+    await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
+    // Still open after every redraw of the run's screen.
+    await expect(t.panel.locator('#run-activity')).toHaveAttribute('open');
+    const lines = await t.panel.locator('.activity-list li').allInnerTexts();
+    const said = lines.map((x) => x.replace(/^\d\d:\d\d:\d\d\s+/, ''));
+    // Newest first.
+    expect(said[0]).toMatch(/^Finished: 30 rows, \d+ detail pages read(, \d+ refused by the portal)?\. Collecting time: /);
+    expect(said.at(-1)).toMatch(/^Started: 30 rows on 1 list page; with detail pages\. Logged out\.$/);
+    expect(said).toContain('Resumed by you.');
+    expect(said.some((x) => x.startsWith("Paused: The portal isn't answering."))).toBe(true);
+    expect(said.some((x) => x.startsWith("The portal didn't answer"))).toBe(true); // the retries before the pause
+    await expect(t.panel.locator('.activity-count')).toHaveText(/^\d+ entries, \d+ to look at$/);
+    // At a side panel's width, for a look before it's shown to anyone (feedback: UI standard).
+    await t.panel.setViewportSize({ width: 400, height: 900 });
+    await t.panel.locator('#run-activity').scrollIntoViewIfNeeded();
+    await t.panel.screenshot({ path: path.join(root, 'test-results', 'activity.png') });
+
+    await t.panel.evaluate(() => {
+      const real = HTMLAnchorElement.prototype.click;
+      HTMLAnchorElement.prototype.click = function click() {
+        if (this.download) window.lastDownload = this.download;
+        return real.call(this);
+      };
+    });
+    const last = await t.worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]?.id ?? null);
+    await t.panel.locator('#log-save-txt').click();
+    await expect.poll(async () => t.worker.evaluate(async (before) => {
+      const [item] = await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 });
+      return item && item.id !== before ? item.state : 'waiting';
+    }, last), { timeout: 15000 }).toBe('complete');
+    const item = await t.worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]);
+    expect(await t.panel.evaluate(() => window.lastDownload)).toMatch(/^PDMS_log_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.txt$/);
+    const text = await readFile(item.filename, 'utf8');
+    expect(text).toMatch(/^PDMS activity log\r\nReport: Tender Info\r\n/);
+    expect(text).toMatch(/\r\nPDMS version: \d+\.\d+\.\d+\r\n/);
+    expect(text).toMatch(/\d\d:\d\d:\d\d {2}Warning: Paused: The portal isn't answering/);
+    expect(text).toMatch(/\d\d:\d\d:\d\d {2}Finished: 30 rows/);
+    expect(text).not.toMatch(/password|cookie|token|jsessionid/i);
+  } finally { await t.close(); }
+});
+
 test('after a network pause, the run carries on by itself once the portal answers, with no Resume pressed (M8-MC2)', async () => {
   // Owner's test, 2026-11-11: the run waited for Resume. The minute check now asks the portal and carries on.
   test.setTimeout(240000);

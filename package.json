@@ -1,6 +1,6 @@
 {
   "name": "egp-ext",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "description": "PDMS eGP Extractor: private Chrome MV3 extension that collects report data from eprocure.gov.bd into Excel.",
   "type": "module",

@@ -431,7 +431,7 @@ async function resumeAfterNetwork() {
   const answers = await fetch(site.baseUrl, { method: 'HEAD', credentials: 'omit', cache: 'no-store' }).then(() => true, () => false);
   if (!answers) return;
   const engine = await getEngine();
-  for (const run of waiting) await engine.resume(run.id);
+  for (const run of waiting) await engine.resume(run.id, undefined, 'network');
 }
 // Made once, not at every start: making it again restarts its countdown, and this worker restarts about every
 // 30 s while the panel is open, so the check could be put off for ever.

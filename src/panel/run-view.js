@@ -2,6 +2,7 @@
 // What the user sees just before a run (size, checkerboard, estimate) and during it.
 
 import { estimate, progressOf, timeLeft } from '../shared/estimate.js';
+import { clock } from '../shared/run-log.js';
 import { h, icon } from './icons.js';
 import { banner } from './view.js';
 
@@ -147,6 +148,30 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
         go)));
 }
 
+/** The Activity section stays open or shut across redraws, which come with every step. */
+let activityOpen = false;
+/** The panel shows the latest entries; the saved log holds them all. */
+const ACTIVITY_SHOWN = 200;
+
+/** M12-T02: what happened in this run, newest first, in plain words. Folded by default. */
+function activity(run, actions) {
+  const log = run.log ?? [];
+  const latest = log.slice(-ACTIVITY_SHOWN).reverse();
+  const warnings = log.filter((e) => e.level !== 'info').length;
+  const box = h('details', { id: 'run-activity', class: 'section activity', open: activityOpen, ontoggle: (e) => { activityOpen = e.target.open; } },
+    h('summary', {}, icon('chevronRight'), h('span', {}, 'Activity'),
+      h('small', { class: 'activity-count' }, `${log.length} ${log.length === 1 ? 'entry' : 'entries'}${warnings ? `, ${warnings} to look at` : ''}`)),
+    log.length
+      ? h('ol', { class: 'activity-list', 'aria-live': 'polite' }, ...latest.map((e) => h('li', { class: `activity-${e.level}` },
+        h('time', {}, clock(e.at)), h('span', {}, e.text))))
+      : h('p', { class: 'hint' }, 'Nothing logged yet.'),
+    log.length > ACTIVITY_SHOWN && h('p', { class: 'hint' }, `The latest ${ACTIVITY_SHOWN} are shown. The saved log holds all ${log.length}.`),
+    h('div', { class: 'activity-save' },
+      h('button', { id: 'log-save-txt', type: 'button', class: 'btn text', onclick: () => actions.saveLog('txt') }, 'Save log'),
+      h('button', { id: 'log-save-json', type: 'button', class: 'btn text', onclick: () => actions.saveLog('json') }, 'Save as JSON')));
+  return box;
+}
+
 /** The run's own screen. */
 export function renderRun(run, actions, flowName) {
   const open = run.status === 'running' || run.status === 'paused';
@@ -190,5 +215,6 @@ export function renderRun(run, actions, flowName) {
         h('button', { id: 'run-download', type: 'button', class: open ? 'btn' : 'btn filled', onclick: actions.download }, open ? 'Download what I have' : 'Download Excel'),
         !open && h('button', { id: 'run-new', type: 'button', class: 'btn text', onclick: actions.finishAndClear }, 'New search')),
       open && h('p', { class: 'run-note' }, 'You can work in other tabs; this never brings a tab to the front. Keep the e-GP tab open. Progress is saved after every step.'),
-      !open && h('p', { class: 'run-note' }, 'New search removes this run from the tool. Download the file first.')));
+      !open && h('p', { class: 'run-note' }, 'New search removes this run from the tool. Download the file first.')),
+    activity(run, actions));
 }

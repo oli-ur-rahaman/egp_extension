@@ -32,6 +32,26 @@ const median = (xs) => {
 /** After this many detail pages in a row that don't read, the portal has probably changed, so the run stops. */
 const MAX_BAD_IN_A_ROW = 5;
 
+/** M12: a run's log keeps its first entries and its latest ones, so a very long run's record stays a sensible size. */
+const LOG_MAX = 2000;
+const LOG_KEEP_FIRST = 20;
+
+const count = (value) => (value ?? 0).toLocaleString('en-US');
+const plural = (value, word) => `${count(value)} ${word}${value === 1 ? '' : 's'}`;
+const duration = (ms) => {
+  const minutes = Math.round(ms / 60000);
+  if (minutes < 1) return 'under a minute';
+  if (minutes < 90) return plural(minutes, 'minute');
+  return `${Math.round(minutes / 6) / 10} hours`;
+};
+const secs = (ms) => (ms < 10000 ? (Math.round(ms / 100) / 10).toFixed(1) : String(Math.round(ms / 1000)));
+
+/** Entries written in another worker win; this worker's own since `since` are added after them. */
+function mergeLog(mine = [], theirs = [], since = 0) {
+  const seen = new Set(theirs.map((e) => `${e.at}|${e.text}`));
+  return [...theirs, ...mine.filter((e) => e.at >= since && !seen.has(`${e.at}|${e.text}`))].sort((a, b) => a.at - b.at);
+}
+
 export class TabGone extends Error {}
 export class NetworkError extends Error {}
 
@@ -69,9 +89,19 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     const normalMs = Math.max(median(s.first), 1);
     const nowMs = median(s.last);
     const ratio = nowMs / normalMs;
+    const was = run.slow;
     if (ratio >= rule.slowAt) run.slow = { kind, factor: Math.min(rule.maxFactor, Math.round(ratio * 10) / 10), normalMs, nowMs };
     else if (ratio <= rule.normalAt && run.slow?.kind === kind) run.slow = null;
     else if (run.slow?.kind === kind) run.slow = { ...run.slow, nowMs };
+    if (!was && run.slow) note(run, 'warn', `The portal is answering slowly: about ${secs(nowMs)} s a page, against ${secs(normalMs)} s at the start. Waiting ${run.slow.factor} times as long between pages.`);
+    if (was && !run.slow) note(run, 'info', `The portal is back to its normal speed (about ${secs(nowMs)} s a page). Normal pace again.`);
+  }
+
+  /** M12: one line in the run's own log. Events only, not every page, in the words the panel uses. */
+  function note(run, level, text) {
+    run.log ??= [];
+    run.log.push({ at: now(), level, text });
+    if (run.log.length > LOG_MAX) run.log.splice(LOG_KEEP_FIRST, run.log.length - LOG_MAX);
   }
 
   /** Runs with a loop going in this worker. @type {Set<string>} */
@@ -89,6 +119,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     run.pauseKind = kind;
     run.reason = detail ?? PAUSE_TEXT[kind];
     run.interruptions.push({ at: now(), kind });
+    note(run, kind === 'user' || kind === 'sprint' ? 'info' : kind === 'block' || kind === 'shape' ? 'error' : 'warn', `Paused: ${run.reason}`);
     await save(run);
     onEnd(run);
   }
@@ -100,6 +131,13 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     run.finishedAt = now();
     run.reason = null;
     run.stats.rows = await store.countRows(run.id);
+    const st = run.stats;
+    const parts = [plural(st.rows, 'row')];
+    if (run.offices) parts.push(`${count(run.officeIndex)} of ${plural(run.offices.length, 'report')} read`);
+    if (run.clusters.length) parts.push(`${count(st.detailDone)} detail ${st.detailDone === 1 ? 'page' : 'pages'} read`);
+    if (st.detailFailed) parts.push(`${count(st.detailFailed)} couldn't be read`);
+    if (st.refused) parts.push(`${count(st.refused)} refused by the portal`);
+    note(run, 'info', `${run.status === 'stopped' ? 'Stopped by you' : 'Finished'}: ${parts.join(', ')}. Collecting time: ${duration(run.activeMs)}.`);
     await save(run);
     onEnd(run);
   }
@@ -123,7 +161,10 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     }
     run.attempts += 1;
     run.retrying = true;
-    run.reason = `The portal didn't answer${reason ? ` (${reason})` : ''}. Trying again in ${wait} seconds (attempt ${run.attempts} of ${pacing.backoffSeconds.length}).`;
+    // The reason may end in its own full stop: it goes in brackets mid-sentence here.
+    const why = reason ? ` (${String(reason).replace(/\.$/, '')})` : '';
+    run.reason = `The portal didn't answer${why}. Trying again in ${wait} second${wait === 1 ? '' : 's'} (attempt ${run.attempts} of ${pacing.backoffSeconds.length}).`;
+    note(run, 'warn', run.reason);
     await save(run);
     await sleep(wait * 1000 * (1 + random() * 0.2));
   }
@@ -134,6 +175,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
   /** One search is done: the next office, or the detail pages. */
   function nextSearch(run, distinct, expected) {
     run.expectedDone = (run.expectedDone ?? 0) + expected;
+    if (run.searches) note(run, 'info', `Office ${count(run.searchIndex + 1)} of ${count(run.searches.length)} searched: ${run.searches[run.searchIndex].labels?.office ?? ''}, ${plural(distinct - (run.searchStart ?? 0), 'row')}.`);
     if (run.searches && run.searchIndex < run.searches.length - 1) {
       run.searchIndex += 1;
       run.searchStart = distinct;
@@ -148,6 +190,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
     run.note = null;
     run.phase = run.clusters.length ? 'detail' : 'done';
     run.stats.detailTotal = run.clusters.length ? distinct : 0;
+    note(run, 'info', `List done: ${plural(distinct, 'row')}.${run.clusters.length && distinct ? ` Reading ${plural(distinct, 'detail page')}.` : ''}`);
   }
 
   /** Sets up the second sweep, or moves on. */
@@ -164,6 +207,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       run.size = run.repeatSize;
       run.page = 1;
       run.note = `${(expected - found).toLocaleString('en-US')} rows were hidden by the portal's sorting. Searching the list once more to find them.`;
+      note(run, 'warn', run.note);
       return;
     }
     nextSearch(run, distinct, run.searchExpected ?? expected);
@@ -183,6 +227,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         if (!run.searches) {
           run.expected = 0;
           run.phase = 'done';
+          note(run, 'info', 'The portal has no records for this search.');
         } else {
           nextSearch(run, await store.countRows(run.id), 0);
           if (run.phase === 'detail' && run.stats.detailTotal === 0) run.phase = 'done';
@@ -190,6 +235,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       } else {
         // Rows moved during a long run, so this page no longer exists: the page before was the last full one.
         run.totalPages = run.page - 1;
+        note(run, 'warn', `Page ${count(run.page)} of the list no longer exists: rows moved during the run. The list ends at page ${count(run.totalPages)}.`);
         await endOfSweep(run, run.size);
       }
       return;
@@ -215,16 +261,22 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       run.stats.detailDone += 1;
       run.badInARow = 0;
       if (result.lots > 1) run.stats.multiLot += 1;
-      for (const label of result.unknown ?? []) if (!run.unknownLabels.includes(label)) run.unknownLabels.push(label);
+      for (const label of result.unknown ?? []) {
+        if (run.unknownLabels.includes(label)) continue;
+        run.unknownLabels.push(label);
+        note(run, 'warn', `A field the tool doesn't know, on the detail page of ${row.key}: "${label}". Not collected.`);
+      }
       return;
     }
     if (result.outcome === 'REFUSED') {
       await store.saveDetail(run.id, row.key, { detail: null, outcome: 'refused' });
+      note(run, 'info', `The portal refused the detail page of ${row.key}.`);
       run.stats.refused += 1;
       run.badInARow = 0;
       return;
     }
     await store.saveDetail(run.id, row.key, { detail: null, outcome: 'failed', reason: result.reason });
+    note(run, 'warn', `Couldn't read the detail page of ${row.key}${result.reason ? `: ${result.reason}` : '.'}`);
     run.stats.detailFailed += 1;
     run.badInARow += 1;
     if (run.badInARow >= MAX_BAD_IN_A_ROW) await pause(run, 'shape', `${PAUSE_TEXT.shape} ${result.reason ?? ''}`.trim());
@@ -323,6 +375,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
             run.pauseKind = latest.pauseKind;
             run.reason = latest.reason;
             run.interruptions = latest.interruptions;
+            run.log = mergeLog(run.log, latest.log, started);
             await save(run);
           }
           return;
@@ -397,7 +450,12 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         speed: {},
         slow: null,
         stats: { rows: 0, detailTotal: 0, detailDone: 0, detailFailed: 0, refused: 0, multiLot: 0 },
+        log: [],
       };
+      const login = plan.loggedIn === true ? ' Logged in.' : plan.loggedIn === false ? ' Logged out.' : '';
+      note(run, 'info', plan.offices
+        ? `Started: ${plural(plan.offices.length, 'report')} to read.${login}`
+        : `Started: ${plural(plan.rows ?? 0, 'row')} on ${plural(plan.totalPages ?? 1, 'list page')}${plan.searches ? `, ${count(plan.searches.length)} offices searched one at a time` : ''}; ${run.clusters.length ? 'with detail pages' : 'list only'}.${login}`);
       await store.saveRun(run);
       onChange(run);
       loop(run.id);
@@ -414,8 +472,11 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       await pause(run, 'user');
       return run;
     },
-    /** @param {string} id @param {number} [tabId] the tab to carry on through, if the old one has gone */
-    async resume(id, tabId) {
+    /**
+     * @param {string} id @param {number} [tabId] the tab to carry on through, if the old one has gone
+     * @param {'you' | 'network'} [by] who resumed it, for the log
+     */
+    async resume(id, tabId, by = 'you') {
       const run = await store.getRun(id);
       if (!run || run.status !== 'paused') return run;
       asked.delete(id);
@@ -424,6 +485,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         run.sprint = (run.sprint ?? 1) + 1;
         run.sprintFromMs = run.activeMs;
       }
+      note(run, 'info', `${by === 'network' ? 'Resumed by itself: the portal answers again' : 'Resumed by you'}.${run.pauseKind === 'sprint' ? ` Sprint ${count(run.sprint)}.` : ''}`);
       run.status = 'running';
       run.pauseKind = null;
       run.reason = null;

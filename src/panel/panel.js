@@ -12,6 +12,7 @@ import { isPwdList, loadOfficeTree, rememberLive, TREE_KEY } from '../shared/off
 import { buildPlanSheet, renderRun } from './run-view.js';
 import { buildWorkbook, fileName } from '../shared/export.js';
 import { saveFile } from './save-file.js';
+import { logFileName, logJson, logText } from '../shared/run-log.js';
 import { buildXlsx } from '../shared/xlsx-writer.js';
 import { buildXls, XLS_MAX_COLS, XLS_MAX_ROWS } from '../shared/xls-writer.js';
 import { loadProfile } from '../shared/profile.js';
@@ -432,6 +433,16 @@ const runActions = {
     await ask(MSG.RUN_DISMISS, { runId: shownRun.id });
     shownRun = null;
     refresh();
+  },
+  /** M12-T03: the run's activity log as a file. @param {'txt' | 'json'} ext */
+  async saveLog(ext) {
+    try {
+      const about = { flowName: shownRun.flowName ?? current?.flow?.name, toolVersion: chrome.runtime.getManifest().version };
+      const text = ext === 'json' ? logJson(shownRun, about) : logText(shownRun, about);
+      await saveFile(new Blob([text], { type: ext === 'json' ? 'application/json' : 'text/plain' }), logFileName(ext));
+    } catch (err) {
+      showError(err);
+    }
   },
   async download() {
     setStatus('pending', 'Making the Excel file…');
