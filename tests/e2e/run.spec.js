@@ -294,6 +294,51 @@ test('the Activity section tells what happened, stays open while the run goes on
   } finally { await t.close(); }
 });
 
+test('finished runs are cleared 30 days after they finish; a paused one never is (M12-T05, D76)', async () => {
+  const t = await setup();
+  try {
+    const DAY = 24 * 3600 * 1000;
+    const runs = [
+      { id: 'old-finished', status: 'finished', ageDays: 31 },
+      { id: 'old-stopped', status: 'stopped', ageDays: 90 },
+      { id: 'young-finished', status: 'finished', ageDays: 29 },
+      { id: 'old-paused', status: 'paused', ageDays: 400 },
+    ];
+    const ids = () => t.worker.evaluate(() => new Promise((resolve) => {
+      const req = indexedDB.open('pdms-runs');
+      req.onsuccess = () => {
+        const get = req.result.transaction('runs').objectStore('runs').getAllKeys();
+        get.onsuccess = () => { req.result.close(); resolve(get.result.sort()); };
+      };
+    }));
+    await t.worker.evaluate(({ runs, DAY }) => new Promise((resolve) => {
+      const req = indexedDB.open('pdms-runs');
+      req.onsuccess = () => {
+        const tx = req.result.transaction(['runs', 'rows'], 'readwrite');
+        for (const r of runs) {
+          const ended = Date.now() - r.ageDays * DAY;
+          tx.objectStore('runs').put({ id: r.id, tabId: 1, flowId: 'tender_info', status: r.status, dismissed: false, startedAt: ended - 3600000, finishedAt: r.status === 'paused' ? null : ended });
+          tx.objectStore('rows').put({ runId: r.id, key: 'k1', seq: 0, pending: 0, list: {} });
+        }
+        tx.oncomplete = () => { req.result.close(); resolve(); };
+      };
+    }), { runs, DAY });
+    expect(await ids()).toEqual(['old-finished', 'old-paused', 'old-stopped', 'young-finished']);
+    // The worker's regular check, brought forward: an unpacked extension's alarm can fire at once.
+    await t.worker.evaluate(() => chrome.alarms.create('test-tick', { when: Date.now() + 200 }));
+    await expect.poll(ids, { timeout: 15000 }).toEqual(['old-paused', 'young-finished']);
+    // Their rows go with them.
+    const rows = await t.worker.evaluate(() => new Promise((resolve) => {
+      const req = indexedDB.open('pdms-runs');
+      req.onsuccess = () => {
+        const get = req.result.transaction('rows').objectStore('rows').getAll();
+        get.onsuccess = () => { req.result.close(); resolve(get.result.map((r) => r.runId).sort()); };
+      };
+    }));
+    expect(rows).toEqual(['old-paused', 'young-finished']);
+  } finally { await t.close(); }
+});
+
 test('after a network pause, the run carries on by itself once the portal answers, with no Resume pressed (M8-MC2)', async () => {
   // Owner's test, 2026-11-11: the run waited for Resume. The minute check now asks the portal and carries on.
   test.setTimeout(240000);

@@ -8,6 +8,7 @@ import { createEngine, NetworkError, TabGone } from './engine.js';
 import { createStore } from './store.js';
 import { detectFlow, isPortal } from '../shared/flow-detect.js';
 import { loadProfile } from '../shared/profile.js';
+import { expiredRuns } from '../shared/retention.js';
 
 const startedAt = Date.now();
 
@@ -436,11 +437,17 @@ async function resumeAfterNetwork() {
 // Made once, not at every start: making it again restarts its countdown, and this worker restarts about every
 // 30 s while the panel is open, so the check could be put off for ever.
 chrome.alarms.get('run-watch').then((alarm) => { if (!alarm) chrome.alarms.create('run-watch', { periodInMinutes: 1 }); });
+/** M12-T05, D76: finished runs left more than 30 days are cleared, rows and all. Never one running or paused. */
+async function clearOldRuns() {
+  for (const run of expiredRuns(await store.allRuns(), Date.now())) await store.deleteRun(run.id);
+}
 chrome.alarms.onAlarm.addListener(() => {
   wakeRuns().catch((err) => console.error('[sw] wakeRuns failed', err));
+  clearOldRuns().catch((err) => console.error('[sw] clearOldRuns failed', err));
   resumeAfterNetwork().catch((err) => console.error('[sw] resumeAfterNetwork failed', err));
 });
 wakeRuns().catch((err) => console.error('[sw] wakeRuns failed', err));
+clearOldRuns().catch((err) => console.error('[sw] clearOldRuns failed', err));
 
 // The faster path, when the signal does arrive.
 self.addEventListener('online', () => {

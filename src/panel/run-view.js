@@ -3,6 +3,7 @@
 
 import { estimate, progressOf, timeLeft } from '../shared/estimate.js';
 import { clock } from '../shared/run-log.js';
+import { KEEP_FINISHED_DAYS } from '../shared/retention.js';
 import { h, icon } from './icons.js';
 import { banner } from './view.js';
 
@@ -215,6 +216,6 @@ export function renderRun(run, actions, flowName) {
         h('button', { id: 'run-download', type: 'button', class: open ? 'btn' : 'btn filled', onclick: actions.download }, open ? 'Download what I have' : 'Download Excel'),
         !open && h('button', { id: 'run-new', type: 'button', class: 'btn text', onclick: actions.finishAndClear }, 'New search')),
       open && h('p', { class: 'run-note' }, 'You can work in other tabs; this never brings a tab to the front. Keep the e-GP tab open. Progress is saved after every step.'),
-      !open && h('p', { class: 'run-note' }, 'New search removes this run from the tool. Download the file first.')),
+      !open && h('p', { class: 'run-note' }, `New search removes this run from the tool. Download the file first. If left, it is cleared ${KEEP_FINISHED_DAYS} days after it finished.`)),
     activity(run, actions));
 }

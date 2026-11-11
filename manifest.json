@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Procurement Data Management System (PDMS)",
   "short_name": "PDMS",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Collects report data from the e-GP portal into Excel, inside your own logged-in session.",
   "minimum_chrome_version": "116",
   "permissions": ["sidePanel", "storage", "scripting", "tabs", "tabGroups", "downloads", "notifications", "alarms"],
