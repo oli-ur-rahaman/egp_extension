@@ -4,7 +4,7 @@
 // Public pages: works logged out. Prints counts and shapes only.
 //   npm run chrome            (once; nothing to log in to)
 //   node tools/recon/live-flows45.js
-// OFFICE (default 1552), FROM and TO (default 01/07/2025 to 31/12/2025) can be set as environment variables.
+// OFFICE (default 1552, or all), FROM and TO (default 01/07/2025 to 31/12/2025) can be set as environment variables.
 // Logged in: TAB=own uses the flow's page the owner opened from the menu, and never opens a portal page in a new tab
 // (that can end the session, insight 64). Run one flow at a time: ONLY=Flow4 or ONLY=Flow5. It prints the login state
 // from the portal's answer before and after, and whether the department can still be chosen (D35's open question).
@@ -85,15 +85,30 @@ for (const c of cases) {
     return !r.url.includes(states.sessionEnded.urlContains) && !!d.querySelector(states.logoutLink) && !d.querySelector(states.loginForm);
   }, profile.pageStates).catch(() => null);
   let step = 'opening';
+  let panel = null;
   try {
     if (!OWN) await page.goto(profile.site.baseUrl + flow.page.url, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500);
     console.log(`  ${c.name} logged in before: ${await loggedIn()}`);
     const tabId = await sw.evaluate(async (url) => (await chrome.tabs.query({})).find((t) => t.url?.includes(url))?.id, flow.page.url.split('?')[0]);
-    const panel = await context.newPage();
+    panel = await context.newPage();
     panel.setDefaultTimeout(30000);
     await panel.goto(`chrome-extension://${id}/panel/index.html?tab=${tabId}`);
     await page.bringToFront();
+    step = 'panel filters';
+    // A finished run from an earlier check stays on this tab's panel until New search: clear it (its file was saved then).
+    await panel.locator('[data-filter], #run-new').first().waitFor();
+    await panel.waitForTimeout(1500);
+    await panel.screenshot({ path: path.join(root, 'recon', 'raw', `live-flows45-start-${Date.now()}.png`), fullPage: true }).catch(() => {});
+    if (await panel.locator('#run-new').isVisible()) {
+      console.log('  an earlier finished run was on the panel: pressed New search');
+      await panel.locator('#run-new').click();
+    }
+    // The panel reopens a tree that was left open (by design): close it, so the filters can be reached.
+    if (await panel.locator('#picker-close').isVisible()) {
+      console.log('  a tree left open earlier was restored: closed it');
+      await panel.locator('#picker-close').click();
+    }
     await panel.locator('[data-filter]').first().waitFor();
     // Department: Ministry of Housing and Public Works, then Public Works Department.
     step = 'department picker';
@@ -103,27 +118,37 @@ for (const c of cases) {
     await panel.locator('#f-department-open').click();
     const ministry = panel.locator('.tree li', { hasText: /Housing (and|&) Public Works/ }).first();
     step = 'ministry arrow';
-    await ministry.locator('.twist').first().click();
     const pwd = panel.locator('.tree .node', { hasText: /^\s*Public Works Department/ }).first();
+    // The panel remembers the last department, so the ministry may open already unfolded: only unfold it if it isn't.
+    await panel.waitForTimeout(500);
+    if (!(await pwd.isVisible())) await ministry.locator('.twist').first().click();
     await pwd.waitFor({ timeout: 15000 }).catch(async () => {
       throw new Error(`no Public Works Department under the ministry; under it: ${(await ministry.locator('.tree .node').allInnerTexts()).slice(0, 8).join(' | ')}`);
     });
     await pwd.click();
     await panel.locator(`[data-count="procuring_entity"]`).filter({ hasText: /\d{2,} items/ }).waitFor();
-    // One office, from the office picker.
-    const officeName = await page.evaluate((v) => [...document.getElementById('cmbOffice').options].find((o) => o.value.trim() === v)?.text.trim(), OFFICE);
-    step = 'office picker';
-    await panel.locator('#f-procuring_entity').click();
-    await panel.locator('#offices-search').fill(officeName);
-    step = 'office tick';
-    await panel.locator(`input[data-office="${OFFICE}"]`).first().check();
-    step = 'office done';
-    await panel.locator('#offices-done').click();
+    // One office, from the office picker; OFFICE=all leaves every office of the department.
+    if (OFFICE !== 'all') {
+      const officeName = await page.evaluate((v) => [...document.getElementById('cmbOffice').options].find((o) => o.value.trim() === v)?.text.trim(), OFFICE);
+      step = 'office picker';
+      await panel.locator('#f-procuring_entity').click();
+      await panel.locator('#offices-search').fill(officeName);
+      step = 'office tick';
+      await panel.locator(`input[data-office="${OFFICE}"]`).first().check();
+      step = 'office done';
+      await panel.locator('#offices-done').click();
+    }
     // A short date window.
-    await panel.locator(`#f-${c.date}-from`).fill(FROM);
-    await panel.locator(`#f-${c.date}-from`).blur();
-    await panel.locator(`#f-${c.date}-to`).fill(TO);
-    await panel.locator(`#f-${c.date}-to`).blur();
+    // Typed as a person does: an instant fill can land in a box the panel is just redrawing and add to the old date.
+    for (const [part, value] of [['from', FROM], ['to', TO]]) {
+      await panel.locator(`#f-${c.date}-${part}`).click();
+      await panel.keyboard.press('Control+A');
+      await panel.keyboard.type(value, { delay: 40 });
+      await panel.locator(`#f-${c.date}-${part}`).blur();
+      await panel.waitForTimeout(800);
+    }
+    const typed = [await panel.locator(`#f-${c.date}-from`).inputValue(), await panel.locator(`#f-${c.date}-to`).inputValue()];
+    if (typed[0] !== FROM || typed[1] !== TO) throw new Error(`the dates read back as ${typed.join(' to ')}`);
     await panel.waitForTimeout(800);
     const reasons = await panel.locator('#start-reasons').count() ? await panel.locator('#start-reasons').innerText() : '';
     if (reasons) throw new Error(`Start is held: ${reasons}`);
@@ -146,7 +171,7 @@ for (const c of cases) {
       rows: [...document.querySelectorAll('#resultTable tr')].filter((r) => r.querySelector('td')).length,
       noRecord: !!document.getElementById('noRecordFound'),
       office: document.getElementById('cmbOffice')?.value,
-      dates: [...document.querySelectorAll('input')].filter((i) => /contract(Signe|Start)Date/i.test(i.id)).map((i) => `${i.id}=${i.value}`).join(' '),
+      dates: [...document.querySelectorAll('input')].filter((i) => /contract(Signe|Start)(Date|Dt)/i.test(i.id)).map((i) => `${i.id}=${i.value}`).join(' '),
     }));
     console.log(`  ${c.name} page after its own Search: ${JSON.stringify(pageRows)}`);
     // Every field group ticked.
@@ -179,8 +204,12 @@ for (const c of cases) {
     await panel.close();
   } catch (err) {
     console.log(`${c.name} FAILED at ${step}: ${String(err.message).split('\n')[0]}`);
+    // The panel as it was, to see why. Kept in the git-ignored recon/raw/.
+    const shot = path.join(root, 'recon', 'raw', `live-flows45-fail-${Date.now()}.png`);
+    if (panel) await panel.screenshot({ path: shot, fullPage: true }).then(() => console.log(`  panel screenshot: ${shot}`), () => {});
   } finally {
     console.log(`  ${c.name} logged in after: ${await loggedIn()}`);
+    if (panel) await panel.close().catch(() => {});
     if (!OWN) await page.close().catch(() => {}); // the owner's own tab stays open
   }
 }
