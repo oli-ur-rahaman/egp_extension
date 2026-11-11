@@ -8,6 +8,7 @@
 // Logged in: TAB=own uses the flow's page the owner opened from the menu, and never opens a portal page in a new tab
 // (that can end the session, insight 64). Run one flow at a time: ONLY=Flow4 or ONLY=Flow5. It prints the login state
 // from the portal's answer before and after, and whether the department can still be chosen (D35's open question).
+// MAX=150 measures the run first and collects only if it is no bigger than that.
 // Log each run in docs/recon/self-run-log.md.
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
@@ -131,6 +132,13 @@ for (const c of cases) {
     await panel.locator('#plan-count').waitFor({ timeout: 90000 });
     const plan = await panel.locator('#plan-count').textContent();
     const planRows = Number(plan.replace(/\D/g, ''));
+    // MAX: measure only, and stop before collecting if the run is bigger than this (the smallest selection that proves the point).
+    if (process.env.MAX && planRows > Number(process.env.MAX)) {
+      console.log(`  ${c.name}: plan ${plan}, over MAX ${process.env.MAX}: not collected. Try a narrower window.`);
+      await panel.locator('#plan-close').click().catch(() => {});
+      await panel.close();
+      continue;
+    }
     // The page shows the same search (D53): its own page count.
     await page.waitForTimeout(4000);
     const pagePages = await page.evaluate(() => document.getElementById('totalPages')?.value ?? document.querySelector('[id="totalPages"]')?.getAttribute('value') ?? null);
