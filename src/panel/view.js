@@ -213,7 +213,11 @@ export function renderFlow(state, on, now = new Date()) {
   const values = Object.fromEntries(panelFilters.map((f) => [f.id, on.value(f.id)]));
   const today = todayOf(now);
   const result = evaluateStart(flow, values, { loggedIn: page.loggedIn, today });
-  const reasons = [...vanished.map((f) => `${f.label} is no longer on this page. The portal has changed.`), ...result.reasons];
+  // M11-T01: no run on a page that isn't the one the tool knows; the reason names what differs.
+  const pageReason = page.verdict.outcome !== 'OK'
+    ? `This page isn't the one the tool knows: ${page.verdict.reason}${page.verdict.found ? ` (${page.verdict.found})` : ''} The portal may have changed; collecting could give wrong data.`
+    : null;
+  const reasons = [...(pageReason ? [pageReason] : []), ...vanished.map((f) => `${f.label} is no longer on this page. The portal has changed.`), ...result.reasons];
   const windowFilter = flow.rules.window?.filter;
   const win = windowFilter ? resolveWindow(values[windowFilter], today) : null;
   const windowNote = win?.from && win.to && win.from <= win.to
@@ -243,5 +247,5 @@ export function renderFlow(state, on, now = new Date()) {
         ? h('ul', { id: 'start-reasons', class: 'reasons' }, ...reasons.map((r) => h('li', {}, r)))
         : h('p', { class: 'ready' }, icon('check'), 'Filters are ready.'),
       result.exemptionUsed && h('p', { class: 'exempt' }, `Department and date aren't needed for this search, while it stays within ${result.maxRows.toLocaleString('en-US')} rows.`),
-      h('button', { id: 'start', type: 'button', class: 'btn filled wide', disabled: !result.ok || vanished.length > 0, onclick: () => on.startPlan(values, result) }, 'Start')));
+      h('button', { id: 'start', type: 'button', class: 'btn filled wide', disabled: !result.ok || vanished.length > 0 || !!pageReason, onclick: () => on.startPlan(values, result) }, 'Start')));
 }

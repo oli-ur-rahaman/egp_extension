@@ -220,6 +220,7 @@ test('opening a branch keeps the list where it is, and children sit on a tinted 
 });
 
 test('clicking or choosing never moves the filters (owner, 2026-11-07)', async () => {
+  test.setTimeout(60000); // many steps: 27 to 32 s measured, so the default 30 s failed now and then
   const t = await setup();
   try {
     await t.open('tender_info');

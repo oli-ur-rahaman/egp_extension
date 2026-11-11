@@ -96,7 +96,7 @@ async function downloaded(t) {
   await expect.poll(async () => t.worker.evaluate(async (before) => {
     const [item] = await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 });
     return item && item.id !== before ? item.state : 'waiting';
-  }, last)).toBe('complete');
+  }, last), { timeout: 15000 }).toBe('complete'); // the file is built first: slower when every test runs at once
   const item = await t.worker.evaluate(async () => (await chrome.downloads.search({ orderBy: ['-startTime'], limit: 1 }))[0]);
   const book = XLSX.read(await readFile(item.filename), { type: 'buffer' });
   const name = await t.panel.evaluate(() => window.lastDownload);
@@ -300,6 +300,31 @@ test('when the portal slows down, the run waits longer and says why; back to nor
     await expect(t.panel.locator('#run-slow')).toHaveCount(0, { timeout: 30000 });
     await expect(state(t)).toHaveText('Finished', { timeout: 30000 });
     await expect(t.panel.locator('#run-numbers')).toContainText('40 of 40');
+  } finally { await t.close(); }
+});
+
+test('a changed page: Start is blocked, and the reason names what is missing (M11-T01, M11-AT1)', async () => {
+  const t = await setup({ rows: 30 });
+  try {
+    await t.open('tender_info');
+    await t.panel.locator('#warning-proceed').click();
+    await chooseDepartment(t);
+    await expect(t.panel.locator('#start')).toBeEnabled();
+    await t.panel.waitForTimeout(300); // the panel saves its choices a moment after a change
+    // The portal "changes": a landmark the tool relies on is gone.
+    await t.page.evaluate(() => document.getElementById('viewType').removeAttribute('id'));
+    await t.panel.reload();
+    await t.page.bringToFront();
+    await expect(t.panel.locator('#start-reasons')).toContainText("This page isn't the one the tool knows");
+    await expect(t.panel.locator('#start-reasons')).toContainText('missing #viewType');
+    await expect(t.panel.locator('#start')).toBeDisabled();
+    // Put back, it starts again.
+    await t.page.reload();
+    await t.panel.reload();
+    await t.page.bringToFront();
+    await expect(t.panel.locator('#page-match')).toBeVisible();
+    // Reloading the e-GP page resets its own filters, so other reasons may show; the page's own is gone.
+    await expect(t.panel.locator('#flow-view')).not.toContainText("This page isn't the one the tool knows");
   } finally { await t.close(); }
 });
 
