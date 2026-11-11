@@ -14,7 +14,7 @@ PDMS eGP Extractor: a private Chrome MV3 extension that collects report data fro
 
 ## Two PCs
 
-The owner works from two PCs and syncs through GitHub. Anything needed to continue the work belongs in the repo; nothing machine-specific (absolute paths, local profiles). At the end of each day: `npm run verify`, commit, push. At the start: `git pull`, `npm ci` if the lockfile changed, `npm run build`.
+The owner works from two PCs and syncs through GitHub. Anything needed to continue the work belongs in the repo; nothing machine-specific (absolute paths, local profiles). At the end of each day: `npm run verify`, commit, push. At the start: double-click `setup.cmd` (pull, install if needed, build, opens `chrome://extensions`), then reload the PDMS card. Claude's memory and chat history stay on the PC where they were made: anything Claude needs on the other PC goes in this file or the docs, and §13 "Resume here" is updated before every push.
 
 ## After every piece of progress
 

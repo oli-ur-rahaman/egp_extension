@@ -9,27 +9,20 @@ A private Chrome (MV3) extension for the Public Works Department's Procurement D
 | [project_scope/](project_scope/) | Approved ToR and Proposal (highest precedence) |
 | [CLAUDE.md](CLAUDE.md) | Working rules for Claude Code on either PC |
 
-## Set up a PC (once)
+## Set up a PC, or bring it up to date: one double-click
 
-Requirements: Windows, Google Chrome, Git, Node.js 22 or later (24 recommended, see `.nvmrc`).
+Needs Windows, Google Chrome, [Git](https://git-scm.com/download/win) and [Node.js](https://nodejs.org) LTS (22 or later). First time only, get the code:
 
-If PowerShell says *"npm.ps1 cannot be loaded because running scripts is disabled"*, allow local scripts for your Windows user once:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
-
-Or skip the change and type `npm.cmd` instead of `npm` (for example `npm.cmd run chrome`).
-
-```powershell
 git clone https://github.com/oli-ur-rahaman/egp_extension.git C:\egp_extension
-cd C:\egp_extension
-npm ci
-npx playwright install chromium   # only needed for npm run e2e
-npm run build
 ```
 
-Then load the extension in Chrome: `chrome://extensions` → turn on **Developer mode** → **Load unpacked** → pick `C:\egp_extension\dist`. Click the toolbar icon to open the side panel.
+Then, **every time you sit down at either PC: double-click `C:\egp_extension\setup.cmd`.** It checks Git and Node, gets the latest from GitHub (never over unsaved work), installs packages only when they changed, builds, says which version it built, and opens `chrome://extensions`. There:
+
+- **First time on this PC:** turn on **Developer mode** → **Load unpacked** → choose `C:\egp_extension\dist`.
+- **Already loaded:** press the round **reload arrow** on the PDMS card. The card must show the version setup.cmd printed.
+
+If a step fails, setup.cmd stops and says why in plain words. Browser tests (`npm run e2e`) also need `npx playwright install chromium` once; using the extension doesn't.
 
 **What doesn't travel through GitHub** (it lives in one PC's browser or is git-ignored): your office hierarchy changes (use the panel's Office hierarchy → Export Excel, then Import Excel on the other PC), finished runs, `recon/raw/` captures and `project_scope/*.xlsx`.
 
@@ -37,11 +30,7 @@ Then load the extension in Chrome: `chrome://extensions` → turn on **Developer
 
 **Start of the day, on whichever PC you're at:**
 
-```powershell
-git pull
-npm ci          # only if package-lock.json changed
-npm run build   # then press the reload icon on the extension in chrome://extensions
-```
+Double-click `setup.cmd`, then press the reload arrow on the PDMS card in `chrome://extensions`.
 
 **End of the day:**
 
