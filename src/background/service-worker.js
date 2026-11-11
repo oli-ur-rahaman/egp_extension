@@ -222,8 +222,10 @@ function runEnded(run) {
 }
 
 const getEngine = () => (enginePromise ??= getProfile().then(async (profile) => {
-  const test = await chrome.storage.session.get('testPaceMs');
-  const pacing = typeof test.testPaceMs === 'number' ? { ...profile.pageStates.pacing, paceMs: test.testPaceMs, jitterMs: 0, backoffSeconds: [1, 1, 1] } : profile.pageStates.pacing;
+  const test = await chrome.storage.session.get(['testPaceMs', 'testSprintMs']);
+  let pacing = typeof test.testPaceMs === 'number' ? { ...profile.pageStates.pacing, paceMs: test.testPaceMs, jitterMs: 0, backoffSeconds: [1, 1, 1] } : profile.pageStates.pacing;
+  // Browser tests: a sprint of a few seconds instead of hours.
+  if (typeof test.testSprintMs === 'number') pacing = { ...pacing, sprintMs: test.testSprintMs };
   return createEngine({ store, transport, sleep, pacing, onChange: runChanged, onEnd: runEnded });
 }));
 

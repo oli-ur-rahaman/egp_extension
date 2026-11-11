@@ -343,6 +343,72 @@ describe('when things go wrong', () => {
   });
 });
 
+describe('sprints (D27) and slowing down (M8-T01)', () => {
+  /** An engine on a fake clock: each portal call takes `latency(kind, n)` ms. Records every pause between requests. */
+  function timedSetup(total, pace, latency, { size = 10, clusters = [] } = {}) {
+    let clock = 0;
+    const counts = { list: 0, detail: 0 };
+    const transport = portal(total, { size, onCall: (kind) => { clock += latency(kind, counts[kind]++); } });
+    const store = memoryStore();
+    const waits = [];
+    const ended = [];
+    const engine = createEngine({ store, transport, pacing: pace, now: () => clock, random: () => 0, sleep: async (ms) => { waits.push(ms); }, onEnd: (r) => ended.push(structuredClone(r)) });
+    return { engine, store, waits, ended, plan: plan({ totalPages: Math.ceil(total / size), rows: total, size, repeatSize: size, clusters }) };
+  }
+
+  it('pauses after each sprint, says so, and Resume carries on to one complete result', async () => {
+    const t = timedSetup(200, { ...pacing, sprintMs: 3000 }, () => 400);
+    const run = await t.engine.start(t.plan);
+    let got = await settled(t.store, run.id);
+    expect(got.status).toBe('paused');
+    expect(got.pauseKind).toBe('sprint');
+    expect(got.reason).toMatch(/^Sprint 1 is done: 1 minute of collecting\. Everything is saved.*Press Resume to start sprint 2/);
+    expect(t.ended.at(-1).pauseKind).toBe('sprint'); // so the user is told (a notification)
+    let sprints = 1;
+    while (got.status === 'paused' && got.pauseKind === 'sprint') {
+      await t.engine.resume(run.id);
+      got = await settled(t.store, run.id);
+      sprints += 1;
+      expect(got.sprint).toBe(sprints);
+    }
+    expect(got.status).toBe('finished');
+    expect(await t.store.countRows(run.id)).toBe(200);
+    // 20 list pages of 400 ms each, in sprints of 3 s: 8 pages a sprint, so 3 sprints.
+    expect(sprints).toBe(3);
+  });
+
+  it('no sprint pause when the profile sets none', async () => {
+    const t = timedSetup(200, pacing, () => 400);
+    const run = await t.engine.start(t.plan);
+    expect((await settled(t.store, run.id)).status).toBe('finished');
+  });
+
+  it('waits longer while the portal answers slowly, and goes back to normal pace after', async () => {
+    const slowDown = { firstAnswers: 5, lastAnswers: 5, slowAt: 2, normalAt: 1.5, maxFactor: 4 };
+    // Detail pages: 10 at 100 ms, then 10 at 500 ms, then the rest at 100 ms.
+    const latency = (kind, i) => (kind === 'detail' && i >= 10 && i < 20 ? 500 : 100);
+    const t = timedSetup(40, { ...pacing, paceMs: 1000, slowDown }, latency, { size: 40, clusters: ['identity'] });
+    const run = await t.engine.start(t.plan);
+    const got = await settled(t.store, run.id);
+    expect(got.status).toBe('finished');
+    expect(got.stats.detailDone).toBe(40);
+    // Pauses: 1 after the list page, then one after each detail page but the last.
+    const detailWaits = t.waits.slice(1);
+    expect(Math.max(...detailWaits)).toBe(4000); // 5 times as slow, held to 4 times the pace
+    expect(detailWaits.slice(0, 12).every((w) => w === 1000)).toBe(true); // normal until the slow answers outnumber the rest
+    expect(detailWaits.at(-1)).toBe(1000); // and normal again at the end
+    expect(got.slow).toBeNull();
+  });
+
+  it('says why it is going slower while it does', async () => {
+    const slowDown = { firstAnswers: 2, lastAnswers: 2, slowAt: 2, normalAt: 1.5, maxFactor: 4 };
+    const t = timedSetup(30, { ...pacing, paceMs: 1000, slowDown }, (kind, i) => (kind === 'detail' && i >= 2 ? 300 : 100), { size: 30, clusters: ['identity'] });
+    const run = await t.engine.start(t.plan);
+    const got = await settled(t.store, run.id);
+    expect(got.slow).toEqual({ kind: 'detail', factor: 3, normalMs: 100, nowMs: 300 });
+  });
+});
+
 describe('estimate (D27)', () => {
   const p = { paceMs: 3000, jitterMs: 1000, listSeconds: 2, detailSeconds: 0.5 };
   it('is a range, and says when a run is long', () => {
@@ -362,6 +428,9 @@ describe('estimate (D27)', () => {
     expect(Math.abs(live.low - 72 * 60) / (72 * 60)).toBeLessThan(0.05); // the expected time, within 5%
     expect(live.high).toBeGreaterThanOrEqual(72 * 60);
     expect(live.text).toBe('About 1 hour to 2 hours');
+    expect(live.sprints).toBe(1);
+    // 10,000 detail pages: about 10 hours, so 2 sprints of 6 hours.
+    expect(estimate({ pacing: profile.pageStates.pacing, listRequests: 100, detailRequests: 10000 }).sprints).toBe(2);
   });
   it('progress runs from 0 to 1 and time left comes from measured speed', () => {
     const run = { phase: 'detail', status: 'running', totalPages: 2, sweep: 1, page: 2, expected: 100, clusters: ['a'], requests: 10, activeMs: 40000, offices: null, stats: { rows: 100, detailTotal: 100, detailDone: 49, detailFailed: 0, refused: 0 } };

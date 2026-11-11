@@ -49,6 +49,7 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
       time.level !== 'ok' && h('p', { class: 'hint warn' }, time.level === 'unrealistic'
         ? 'Too long for one sitting. To shorten it: collect the list only, narrow the dates, or choose one Procuring Entity.'
         : 'Over 6 hours. To shorten it: collect the list only, narrow the dates, or choose one Procuring Entity. Progress is saved if you stop.'),
+      time.sprints > 1 && h('p', { class: 'hint', id: 'plan-sprints' }, `In about ${time.sprints} sprints of up to ${plan.pacing.sprintHours} hours. The run pauses after each one and tells you; Resume starts the next. One file at the end.`),
     ].filter(Boolean));
     mustAgree = time.level === 'unrealistic';
     agreeLine.hidden = !mustAgree;
@@ -167,6 +168,10 @@ export function renderRun(run, actions, flowName) {
     if (run.stats.detailFailed) numbers.push(["Couldn't read", n(run.stats.detailFailed)]);
   }
   if (left) numbers.push(['Time left', left.startsWith('under') ? left : `about ${left}`]);
+  if ((run.sprint ?? 1) > 1 || run.pauseKind === 'sprint') numbers.push(['Sprint', n(run.sprint ?? 1)]);
+  const secs = (ms) => (ms < 10000 ? (Math.round(ms / 100) / 10).toFixed(1) : String(Math.round(ms / 1000)));
+  // M8-T01: why the run is going slower than the estimate said.
+  const slowNote = run.slow && `The portal is answering slowly (about ${secs(run.slow.nowMs)} s a page; ${secs(run.slow.normalMs)} s at the start), so the tool waits ${run.slow.factor} times as long between pages to spare it. It goes back to normal pace when the portal does.`;
 
   const kind = run.pauseKind === 'block' || run.pauseKind === 'shape' ? 'bad' : 'warn';
   return h('div', { id: 'run-view' },
@@ -177,6 +182,7 @@ export function renderRun(run, actions, flowName) {
       h('div', { class: 'meter', role: 'progressbar', 'aria-valuenow': String(progress), 'aria-valuemin': '0', 'aria-valuemax': '100' }, h('div', { style: `width:${progress}%` })),
       h('dl', { id: 'run-numbers', class: 'run-numbers' }, ...numbers.flatMap(([k, v]) => [h('dt', {}, k), h('dd', {}, v)])),
       run.status === 'running' && (run.note || run.reason) && h('p', { class: 'run-note', id: 'run-note' }, run.reason ?? run.note),
+      run.status === 'running' && slowNote && h('p', { class: 'run-note', id: 'run-slow' }, slowNote),
       h('div', { class: 'run-actions' },
         run.status === 'running' && h('button', { id: 'run-pause', type: 'button', class: 'btn', onclick: actions.pause }, 'Pause'),
         run.status === 'paused' && h('button', { id: 'run-resume', type: 'button', class: 'btn filled', onclick: actions.resume }, 'Resume'),

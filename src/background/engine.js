@@ -14,6 +14,21 @@ const PAUSE_TEXT = {
   user: 'Paused by you.',
 };
 
+/** D27: the pause between sprints. @param {number} sprint @param {number} ms */
+const sprintText = (sprint, ms) => {
+  const hours = ms / 3600000;
+  const minutes = Math.max(1, Math.round(ms / 60000));
+  const length = hours >= 1 ? `${Math.round(hours * 10) / 10} hour${hours === 1 ? '' : 's'}` : `${minutes} minute${minutes === 1 ? '' : 's'}`;
+  return `Sprint ${sprint} is done: ${length} of collecting. Everything is saved, and the file at the end holds every sprint. Press Resume to start sprint ${sprint + 1} when you're ready.`;
+};
+
+/** @param {number[]} xs */
+const median = (xs) => {
+  const s = [...xs].sort((a, b) => a - b);
+  const m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+};
+
 /** After this many detail pages in a row that don't read, the portal has probably changed, so the run stops. */
 const MAX_BAD_IN_A_ROW = 5;
 
@@ -24,6 +39,41 @@ export class NetworkError extends Error {}
  * @param {{ store: any, transport: any, sleep: (ms: number) => Promise<void>, now?: () => number, pacing: any, random?: () => number, onChange?: (run: any) => void, onEnd?: (run: any) => void }} deps
  */
 export function createEngine({ store, transport, sleep, now = Date.now, pacing, random = Math.random, onChange = () => {}, onEnd = () => {} }) {
+  // D27: a run pauses after this much collecting. Tests set sprintMs.
+  const sprintMs = pacing.sprintMs ?? (pacing.sprintHours ? pacing.sprintHours * 3600000 : Infinity);
+  /** How long each run's last portal request took, and of which kind: set by `timed`. @type {Map<string, { kind: string, ms: number }>} */
+  const lastAnswer = new Map();
+  const timed = async (run, kind, call) => {
+    const started = now();
+    const result = await call();
+    lastAnswer.set(run.id, { kind, ms: now() - started });
+    return result;
+  };
+
+  /**
+   * M8-T01: slow down before the portal pushes back. The first answers of each kind (list, detail, report) set the run's
+   * normal speed; when the latest answers take `slowAt` times as long, the gap between requests grows to match, up to
+   * `maxFactor`, and goes back to normal at `normalAt`. Never faster than the set pace.
+   */
+  function noteSpeed(run, kind, ms) {
+    const rule = pacing.slowDown;
+    if (!rule) return;
+    run.speed ??= {};
+    const s = (run.speed[kind] ??= { first: [], last: [] });
+    if (s.first.length < rule.firstAnswers) {
+      s.first.push(ms);
+      return;
+    }
+    s.last = [...s.last, ms].slice(-rule.lastAnswers);
+    if (s.last.length < rule.lastAnswers) return;
+    const normalMs = Math.max(median(s.first), 1);
+    const nowMs = median(s.last);
+    const ratio = nowMs / normalMs;
+    if (ratio >= rule.slowAt) run.slow = { kind, factor: Math.min(rule.maxFactor, Math.round(ratio * 10) / 10), normalMs, nowMs };
+    else if (ratio <= rule.normalAt && run.slow?.kind === kind) run.slow = null;
+    else if (run.slow?.kind === kind) run.slow = { ...run.slow, nowMs };
+  }
+
   /** Runs with a loop going in this worker. @type {Set<string>} */
   const looping = new Set();
   /** Pause or Stop pressed while a step is under way, kept here so that step's own save can't lose it. @type {Map<string, 'pause' | 'stop'>} */
@@ -120,7 +170,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
   }
 
   async function listStep(run) {
-    const result = await transport.list(run, run.page, run.size, searchFields(run));
+    const result = await timed(run, 'list', () => transport.list(run, run.page, run.size, searchFields(run)));
     if (result.outcome !== 'OK' && result.outcome !== 'EMPTY') {
       if (await handleBad(run, result)) return;
       await pause(run, 'shape', `${PAUSE_TEXT.shape} ${result.reason ?? ''}`.trim());
@@ -158,7 +208,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       run.phase = 'done';
       return;
     }
-    const result = await transport.detail(run, row);
+    const result = await timed(run, 'detail', () => transport.detail(run, row));
     if (await handleBad(run, result)) return;
     if (result.outcome === 'OK') {
       await store.saveDetail(run.id, row.key, { detail: result.values, outcome: 'ok', lots: result.lots });
@@ -186,7 +236,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       run.phase = 'done';
       return;
     }
-    const result = await transport.report(run, office);
+    const result = await timed(run, 'report', () => transport.report(run, office));
     if (result.outcome !== 'OK' && result.outcome !== 'EMPTY') {
       if (await handleBad(run, result)) return;
       await pause(run, 'shape', `${PAUSE_TEXT.shape} ${result.reason ?? ''}`.trim());
@@ -225,7 +275,12 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
           await finish(run);
           return;
         }
+        if (run.activeMs - (run.sprintFromMs ?? 0) >= sprintMs) {
+          await pause(run, 'sprint', sprintText(run.sprint ?? 1, sprintMs));
+          return;
+        }
         const started = now();
+        lastAnswer.delete(id);
         try {
           if (await sessionGone(run)) return;
           run.retrying = false;
@@ -236,6 +291,8 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
           if (run.status === 'running' && !run.retrying) {
             run.attempts = 0;
             run.reason = null;
+            const answer = lastAnswer.get(id);
+            if (answer) noteSpeed(run, answer.kind, answer.ms);
           }
         } catch (err) {
           if (err instanceof TabGone) {
@@ -272,7 +329,7 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         }
         if (run.phase !== 'done' && !run.stopRequested) {
           const waited = now();
-          await sleep(pacing.paceMs + random() * pacing.jitterMs);
+          await sleep((pacing.paceMs + random() * pacing.jitterMs) * (run.slow?.factor ?? 1));
           const after = await store.getRun(id);
           if (after && !asked.has(id)) {
             after.activeMs += now() - waited;
@@ -335,6 +392,10 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
         interruptions: [],
         stopRequested: false,
         dismissed: false,
+        sprint: 1,
+        sprintFromMs: 0,
+        speed: {},
+        slow: null,
         stats: { rows: 0, detailTotal: 0, detailDone: 0, detailFailed: 0, refused: 0, multiLot: 0 },
       };
       await store.saveRun(run);
@@ -359,6 +420,10 @@ export function createEngine({ store, transport, sleep, now = Date.now, pacing, 
       if (!run || run.status !== 'paused') return run;
       asked.delete(id);
       if (tabId) run.tabId = tabId;
+      if (run.pauseKind === 'sprint') {
+        run.sprint = (run.sprint ?? 1) + 1;
+        run.sprintFromMs = run.activeMs;
+      }
       run.status = 'running';
       run.pauseKind = null;
       run.reason = null;

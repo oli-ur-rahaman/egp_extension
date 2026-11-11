@@ -16,7 +16,7 @@ export function roundTime(seconds) {
 
 /**
  * @param {{ pacing: any, listRequests: number, detailRequests: number }} input
- * @returns {{ low: number, high: number, text: string, listText: string, detailText: string, level: 'ok' | 'long' | 'unrealistic' }}
+ * @returns {{ low: number, high: number, text: string, listText: string, detailText: string, level: 'ok' | 'long' | 'unrealistic', sprints: number }}
  */
 export function estimate({ pacing, listRequests, detailRequests }) {
   const pace = pacing.paceMs / 1000 + pacing.jitterMs / 2000;
@@ -33,6 +33,8 @@ export function estimate({ pacing, listRequests, detailRequests }) {
     listText: roundTime(listTime),
     detailText: roundTime(detailTime),
     level: low > 24 * HOUR ? 'unrealistic' : low > 6 * HOUR ? 'long' : 'ok',
+    // D27: the run pauses after each sprint of collecting; one file at the end.
+    sprints: pacing.sprintHours ? Math.max(1, Math.ceil(low / (pacing.sprintHours * HOUR))) : 1,
   };
 }
 

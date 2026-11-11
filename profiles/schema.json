@@ -71,7 +71,21 @@
             "backoffSeconds": { "type": "array", "items": { "type": "integer" } },
             "listSeconds": { "type": "number" },
             "detailSeconds": { "type": "number" },
-            "sessionCheckEvery": { "type": "integer", "minimum": 1 }
+            "sessionCheckEvery": { "type": "integer", "minimum": 1 },
+            "sprintHours": { "type": "number", "minimum": 1, "description": "D27: a run pauses after this much collecting; Resume starts the next sprint. One file at the end" },
+            "slowDown": {
+              "type": "object",
+              "description": "M8-T01: wait longer when the portal answers slower than it did at the start of the run",
+              "required": ["firstAnswers", "lastAnswers", "slowAt", "normalAt", "maxFactor"],
+              "additionalProperties": false,
+              "properties": {
+                "firstAnswers": { "type": "integer", "minimum": 1, "description": "answers whose median is the run's normal speed, per kind of request" },
+                "lastAnswers": { "type": "integer", "minimum": 1, "description": "answers whose median is the speed now" },
+                "slowAt": { "type": "number", "minimum": 1, "description": "slow down when the speed now is this many times the normal" },
+                "normalAt": { "type": "number", "minimum": 1, "description": "back to normal pace at or below this many times the normal" },
+                "maxFactor": { "type": "number", "minimum": 1, "description": "the gap between requests grows at most this many times" }
+              }
+            }
           }
         }
       }

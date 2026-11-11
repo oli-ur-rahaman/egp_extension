@@ -257,6 +257,52 @@ test('after a network pause, the run carries on by itself once the portal answer
   } finally { await t.close(); }
 });
 
+test('a run pauses after each sprint and says so; Resume starts the next; one complete file at the end (D27)', async () => {
+  test.setTimeout(120000);
+  const t = await setup({ rows: 30, paceMs: 40 });
+  try {
+    // A sprint of 1.5 s of collecting instead of 6 hours.
+    await t.worker.evaluate(() => chrome.storage.session.set({ testSprintMs: 1500 }));
+    await flow2Plan(t);
+    await cluster(t, 'identity').check();
+    await t.panel.locator('#run-start').click();
+    await expect(state(t)).toHaveText('Paused', { timeout: 30000 });
+    await expect(t.panel.locator('#run-view')).toContainText('Sprint 1 is done');
+    await expect(t.panel.locator('#run-numbers')).toContainText(/Sprint\s*1/);
+    let sprints = 1;
+    for (; sprints < 20; sprints++) {
+      await t.panel.locator('#run-resume').click();
+      await expect(state(t)).toHaveText(/Paused|Finished/, { timeout: 30000 });
+      if ((await state(t).innerText()).includes('Finished')) break;
+      await expect(t.panel.locator('#run-view')).toContainText(`Sprint ${sprints + 1} is done`);
+    }
+    await expect(t.panel.locator('#run-numbers')).toContainText(/Sprint\s*([2-9]|\d\d)/); // the finished run says how many sprints it took
+    await expect(t.panel.locator('#run-numbers')).toContainText('30 of 30');
+    const file = await downloaded(t);
+    expect(file.data).toHaveLength(30);
+    expect(new Set(file.data.map((r) => r['Tender/Proposal ID'])).size).toBe(30);
+    expect(file.data.every((r) => ['Read', 'Refused by portal'].includes(r['Detail page']))).toBe(true);
+  } finally { await t.close(); }
+});
+
+test('when the portal slows down, the run waits longer and says why; back to normal when it recovers (M8-T01)', async () => {
+  test.setTimeout(120000);
+  const t = await setup({ rows: 40, paceMs: 40, latencyMs: 30 });
+  try {
+    await flow2Plan(t);
+    await cluster(t, 'identity').check();
+    await t.panel.locator('#run-start').click();
+    await expect(t.panel.locator('#run-numbers')).toContainText(/Detail pages read(8|9|\d\d) of/, { timeout: 30000 });
+    t.portal.state.latencyMs = 400;
+    await expect(t.panel.locator('#run-slow')).toContainText('The portal is answering slowly', { timeout: 30000 });
+    await expect(t.panel.locator('#run-slow')).toContainText('waits 4 times as long');
+    t.portal.state.latencyMs = 30;
+    await expect(t.panel.locator('#run-slow')).toHaveCount(0, { timeout: 30000 });
+    await expect(state(t)).toHaveText('Finished', { timeout: 30000 });
+    await expect(t.panel.locator('#run-numbers')).toContainText('40 of 40');
+  } finally { await t.close(); }
+});
+
 test('the user can pause, resume, stop; Stop keeps what was collected', async () => {
   const t = await setup({ rows: 40, paceMs: 60 });
   try {
@@ -521,6 +567,7 @@ test('a very long run: Start says the tick is what\'s missing, and starts once i
     await expect(t.panel.locator('#plan-agree-line')).toBeHidden();
     await cluster(t, 'identity').check();
     await expect(t.panel.locator('#plan-estimate')).toContainText('Too long for one sitting');
+    await expect(t.panel.locator('#plan-sprints')).toContainText(/In about \d+ sprints of up to 6 hours/);
     await expect(t.panel.locator('#plan-agree-line')).toBeVisible();
     await expect(go).toBeEnabled();
     await go.click();

@@ -1,7 +1,7 @@
 {
   "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
   "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
-  "profileVersion": "1.5.1",
+  "profileVersion": "1.6.0",
   "capturedAt": "2026-11-06",
   "pageStates": {
     "loginForm": "#txtPassword",
@@ -12,7 +12,7 @@
     "sessionEnded": { "urlContains": "SessionTimedOut.jsp" },
     "block": { "textPattern": "captcha|access denied|too many requests|temporarily blocked|forbidden", "statuses": [403, 429] },
     "slowResponseMs": 60000,
-    "pacing": { "paceMs": 3000, "jitterMs": 1000, "backoffSeconds": [5, 15, 45], "listSeconds": 2, "detailSeconds": 0.2, "sessionCheckEvery": 100 }
+    "pacing": { "paceMs": 3000, "jitterMs": 1000, "backoffSeconds": [5, 15, 45], "listSeconds": 2, "detailSeconds": 0.2, "sessionCheckEvery": 100, "sprintHours": 6, "slowDown": { "firstAnswers": 5, "lastAnswers": 5, "slowAt": 2, "normalAt": 1.5, "maxFactor": 4 } }
   },
   "sharedSources": {
     "departmentTree": {
