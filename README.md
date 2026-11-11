@@ -50,6 +50,7 @@ Never leave work uncommitted on one PC overnight; the other PC can't see it.
 |---|---|
 | `npm run build` / `npm run dev` | Build `dist/` once / rebuild on change |
 | `npm run verify` | Everything that must be green before a commit |
+| `npm run package` | A zip to give a user (e.g. by WhatsApp): `release/PDMS_v<version>.zip`, with `HOW TO INSTALL.txt` inside |
 | `npm test` / `npm run e2e` | Unit and golden tests / extension E2E in Playwright Chromium |
 | `npm run chrome` | Open the separate debug Chrome used for recon (own profile, port 9222) |
 | `npm run recon -- ping` | Check that Claude can see the debug Chrome |

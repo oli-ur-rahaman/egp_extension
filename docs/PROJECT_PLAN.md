@@ -799,7 +799,7 @@ egp_ext/
 |---|---|---|
 | D1 | Target = Bangladesh eGP, `eprocure.gov.bd` | Confirmed |
 | D2 | Recon via CDP attach to a dedicated debug Chrome profile | Confirmed; keeps your normal profile untouched |
-| D3 | Dev mode offers **both** drift report and AI-assisted repair; developer chooses | Confirmed |
+| D3 | Dev mode offers **both** drift report and AI-assisted repair; developer chooses | Confirmed; **replaced by D79** (Path A only) |
 | D4 | Export = one `.xlsx` per sprint, one sheet, one flat DB-style table | Confirmed |
 | D5 | Scale target ≈ under 5,000 rows/sprint (architecture tolerates 10×) | Confirmed |
 | D6 | Attended runs that survive hiccups without losing progress | Confirmed |
@@ -838,6 +838,7 @@ egp_ext/
 | D41 | **What a user can't see doesn't exist for this tool.** Content hidden on a page isn't read, listed or collected, and needs no question to the owner. Revises nothing already decided; it settles E23 | Owner, 2026-11-07 |
 | D42 | **"All" is the first item of each dropdown,** not a separate checkbox beside it as M3-T04 says. Same meaning, fewer controls; it matches how the owner described Status and Tender Type. **Deviation from the plan, approved by the owner:** "more straight forward". A required filter shows "Choose…" instead | Owner, 2026-11-07 |
 | D76 | **Finished runs are cleared 30 days after they finish** (M12-T05), rows and all, unless New search cleared them sooner. A running or paused run is never cleared, however old. The run screen says so under New search. Checked at each start of the background and once a minute. The number is a setting in PDMS (`KEEP_FINISHED_DAYS`), not in the site profile, since it isn't about the portal. | Owner, 2026-11-12, on Claude's recommendation |
+| D79 | **Dev mode offers the drift report (Path A) only; no AI-assisted repair (Path B).** **Departs from D3** (both paths, developer chooses) and drops M11-T08. A broken flow is fixed by the owner sending Claude the drift report, and Claude pushing an update. | Owner, 2026-11-12, on Claude's recommendation |
 | D78 | **Before the final stage (B11: full runs, guides, handover), the owner and Claude work out the future builds together:** M15 Lookup by ID, the Detailed report on Flow 3, presets and history, the study types (D57, D59–D64), and anything new. B11 waits for that plan. | Owner, 2026-11-12 |
 | D77 | **PDMS leaves the portal's own menu as it is (E24).** The misplaced dropdown in a narrow window is the portal's fault; PDMS changes no portal page. The owner no longer sees it. Workaround if it returns: zoom the page to 90%. | Owner, 2026-11-12, on Claude's recommendation |
 | D75 | **Department on a logged-in run: PDMS offers what the portal offers.** If the portal lets a logged-in user choose another department on a flow, the panel lets them too; if the portal locks it (Flow 2), the panel shows it locked. Settles D35's open question as a rule; the logged-in Flow 4 and 5 runs will show which case each flow is. | Owner, 2026-11-12 |

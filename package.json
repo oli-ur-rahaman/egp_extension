@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "node tools/build.js",
+    "package": "node tools/package.js",
     "dev": "node tools/build.js --watch",
     "test": "vitest run",
     "test:watch": "vitest",
