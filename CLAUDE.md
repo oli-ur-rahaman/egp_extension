@@ -57,7 +57,7 @@ Update `docs/EXECUTION_PLAN.md` in the same turn: tick task status markers (`[ ]
 - The response body in `network.json` is often the quickest source: a list response carries `totalPages` and the rows, so several clicks can be read from one recording.
 - Print structure, not personal values. When reading captures, don't echo field values, account IDs or officials' names. A "skeleton" of a cell's HTML still prints its text: print booleans and counts instead. Nothing with those goes into a commit; this repo is **public**.
 - Never open `project_scope/id and pass.txt`.
-- Run `npm run verify` before every commit, not just lint.
+- Run `npm run verify` before every commit, not just lint. Run it from PowerShell: from Git Bash (`cd /c/egp_extension`) every unit suite fails with "Vitest failed to find the runner" before any test runs (2026-11-12).
 - Shell: backticks inside a double-quoted `node -e` or `sed` string run as commands, and regex backslashes get mangled. Write helper scripts to the scratchpad with the Write tool and pass the repo as the working directory. `require()` resolves relative to the script, so read files with `fs` and `process.cwd()`.
 - `tools/launch-chrome.ps1 -WithExtension` doesn't load the extension: tested on Chrome 156, the flag is ignored. Load `dist/` once via `chrome://extensions` (Developer mode, Load unpacked). After a rebuild, press the extension's reload button there.
 

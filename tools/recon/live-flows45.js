@@ -5,6 +5,9 @@
 //   npm run chrome            (once; nothing to log in to)
 //   node tools/recon/live-flows45.js
 // OFFICE (default 1552), FROM and TO (default 01/07/2025 to 31/12/2025) can be set as environment variables.
+// Logged in: TAB=own uses the flow's page the owner opened from the menu, and never opens a portal page in a new tab
+// (that can end the session, insight 64). Run one flow at a time: ONLY=Flow4 or ONLY=Flow5. It prints the login state
+// from the portal's answer before and after, and whether the department can still be chosen (D35's open question).
 // Log each run in docs/recon/self-run-log.md.
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
@@ -17,6 +20,7 @@ const OFFICE = process.env.OFFICE ?? '1552';
 const FROM = process.env.FROM ?? '01/07/2025';
 const TO = process.env.TO ?? '31/12/2025';
 const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
+const OWN = process.env.TAB === 'own';
 
 const browser = await chromium.connectOverCDP('http://127.0.0.1:9222').catch(() => {
   console.error('No debug Chrome on port 9222. Run `npm run chrome`, then run this again.');
@@ -67,11 +71,23 @@ const cases = [
 for (const c of cases) {
   if (only && !only.includes(c.name.replace(' ', ''))) continue;
   const flow = profile.flows[c.flowId];
-  const page = await context.newPage();
+  const pagePath = flow.page.url.split('?')[0];
+  const page = OWN ? context.pages().find((p) => p.url().includes(pagePath)) : await context.newPage();
+  if (!page) {
+    console.log(`${c.name} SKIPPED: no ${c.name} tab open. Open it from the portal's menu, then run this again.`);
+    continue;
+  }
+  // The portal's answer, not what the page shows: a page can keep Logout after the session ends (insight 64).
+  const loggedIn = () => page.evaluate(async (states) => {
+    const r = await fetch(states.sessionCheckUrl, { credentials: 'same-origin' });
+    const d = new DOMParser().parseFromString(await r.text(), 'text/html');
+    return !r.url.includes(states.sessionEnded.urlContains) && !!d.querySelector(states.logoutLink) && !d.querySelector(states.loginForm);
+  }, profile.pageStates).catch(() => null);
   let step = 'opening';
   try {
-    await page.goto(profile.site.baseUrl + flow.page.url, { waitUntil: 'domcontentloaded' });
+    if (!OWN) await page.goto(profile.site.baseUrl + flow.page.url, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500);
+    console.log(`  ${c.name} logged in before: ${await loggedIn()}`);
     const tabId = await sw.evaluate(async (url) => (await chrome.tabs.query({})).find((t) => t.url?.includes(url))?.id, flow.page.url.split('?')[0]);
     const panel = await context.newPage();
     panel.setDefaultTimeout(30000);
@@ -80,6 +96,9 @@ for (const c of cases) {
     await panel.locator('[data-filter]').first().waitFor();
     // Department: Ministry of Housing and Public Works, then Public Works Department.
     step = 'department picker';
+    // D35's open question: can a logged-in user choose another department here? Read from the page and the panel.
+    const deptOnPage = await page.evaluate(() => [...document.querySelectorAll('select, input')].filter((e) => /dep(artment|t)/i.test(e.id) && e.type !== 'hidden').map((e) => `${e.id}:${e.disabled || e.readOnly ? 'locked' : 'open'}`).join(' '));
+    console.log(`  department on the page: ${deptOnPage || 'none found'} | panel picker enabled: ${await panel.locator('#f-department-open').isEnabled().catch(() => 'missing')}`);
     await panel.locator('#f-department-open').click();
     const ministry = panel.locator('.tree li', { hasText: /Housing (and|&) Public Works/ }).first();
     step = 'ministry arrow';
@@ -153,7 +172,8 @@ for (const c of cases) {
   } catch (err) {
     console.log(`${c.name} FAILED at ${step}: ${String(err.message).split('\n')[0]}`);
   } finally {
-    await page.close().catch(() => {});
+    console.log(`  ${c.name} logged in after: ${await loggedIn()}`);
+    if (!OWN) await page.close().catch(() => {}); // the owner's own tab stays open
   }
 }
 await browser.close().catch(() => {});
