@@ -10,4 +10,3 @@
 *.zip binary
 # Vendored files are hash-checked (vendor/SHA256SUMS); git must never touch their bytes.
 vendor/** -text
-*.cmd text eol=crlf
