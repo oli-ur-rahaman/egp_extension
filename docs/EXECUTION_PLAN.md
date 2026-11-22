@@ -972,6 +972,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-23 | — | Health check; §13 | **Back after 11 days, home PC.** `npm run verify` green: 386 unit tests. §13 "Resume here" rewritten: its old lines said nothing was built. **Owner's order:** health check, then the new Flow 1 work (one sheet per budget and row type, e.g. `Dev_OTM(Goods)`; no grand total row), then planning the future builds (D78), then M11 and the rest. Atlas still "not found" from this PC's claude.ai account. | Owner to settle the Flow 1 details (D80). |
 | 2026-11-23 | — | Flow 1 export (M10), D80 | **Flow 1 file by row type built (v0.13.0, profile 1.7.0).** Owner's choices: only the new sheets; budget Total rows on one `Totals` sheet; prefixes `Dev_`, `Rev_`, `Own_` (in the profile, next to each table). A sheet exists only for a row type that appears; names Excel would refuse are cleaned, cut to 31 characters and kept unique. The About sheet counts each sheet's rows. Checked on the saved real report: `Dev_OTM(Goods)`, `Dev_OTM(Works)`, `Rev_LTM(Works)`, `Rev_OTM(Works)`, `Rev_RFQU(Works)`, `Totals`. 387 unit tests, 42 browser tests pass. | Not yet run live. Owner: reload PDMS (0.13.0), run a small Flow 1 grab, open the file. |
 | 2026-11-23 | — | Flow 1 export (M10), D80 | **Owner tested v0.13.0 live: "seems ok".** Asked for the totals split by budget: **v0.13.1** replaces the single `Totals` sheet with `Dev_Total`, `Rev_Total`, `Own_Total`, each right after its budget's row-type sheets (one Total row per report). 387 unit tests; both Flow 1 browser tests pass. | Owner checks again on 0.13.1. Next: plan the future builds (D78). |
+| 2026-11-23 | — | D80, release | **Owner checked v0.13.1: "seems ok".** Release made: `npm run package` → `release/PDMS_v0.13.1.zip` (278 KB, git-ignored, home PC). | Next: plan the future builds with the owner (D78), starting from M15's open gap. |
 
 **Milestone record**
 
@@ -994,7 +995,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 **Next, in the owner's order (2026-11-23):**
 1. **Health check** after 11 days away: `npm run verify`, `npm run e2e`, then one small live search through PDMS on the owner's own tab.
-2. **New work: Flow 1 sheets by row type (D80).** [x] Built in v0.13.0; owner's live check "seems ok". [x] v0.13.1: one Total sheet per budget (`Dev_Total`, `Rev_Total`, `Own_Total`). [ ] Owner checks 0.13.1 again.
+2. **New work: Flow 1 sheets by row type (D80).** [x] Built in v0.13.0; owner's live check "seems ok". [x] v0.13.1: one Total sheet per budget (`Dev_Total`, `Rev_Total`, `Own_Total`). [x] Owner checked 0.13.1; released as `PDMS_v0.13.1.zip`.
 3. **Plan the future builds with the owner (D78):** M15 Lookup by ID, the Detailed report, presets and history, the study types.
 4. **M11-T02–T04 change report.** Agreed in principle with the owner: report each selector as found or missing. The profile has one selector per item and no backups, so "degraded" doesn't arise yet. Copy the page fingerprints from `tests/fixtures/manifest.json` into `profiles/`, so the installed PDMS has a "before" to compare with. A changed fingerprint means "look closer"; a missing selector means stop.
 5. **M11-T09, T05, T06 hidden Dev screen.** The owner runs the hash tool and gives only the hash (Q7).
