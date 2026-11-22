@@ -96,7 +96,7 @@ const lasted = (ms) => {
 };
 
 /**
- * Flow 1 (D65, D80): About, then one sheet per budget and row type (Dev_OTM(Goods) and so on), then a Totals sheet with the budget Total rows.
+ * Flow 1 (D65, D80): About, then one sheet per budget and row type (Dev_OTM(Goods) and so on), each budget ending with its Total sheet (Dev_Total).
  * The year, office and project of each report are columns of their own.
  * @returns {import('./xlsx-writer.js').Sheet[]}
  */
@@ -136,7 +136,9 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
     return { name, widths: columns.map((c) => c.width), rows: [head, ...body], heights: { 0: 62 }, freeze: true, filter: `A1:${colName(columns.length - 1)}${Math.max(body.length + 1, 1)}` };
   };
   // D80: one sheet per budget and row type, named like Dev_OTM(Goods); budgets in the report's order, row types as they first appear.
-  const taken = new Set(['about this grab', 'totals']);
+  // Each budget ends with its own Total sheet (Dev_Total), holding that budget's Total row from every report.
+  const totalName = (/** @type {any} */ table) => `${table.sheetPrefix}Total`;
+  const taken = new Set(['about this grab', ...chosenTables.map((t) => totalName(t).toLowerCase())]);
   /** Excel refuses some characters and more than 31 of them, and two sheets can't share a name. @param {string} wanted */
   const sheetName = (wanted) => {
     const base = wanted.replace(/[[\]:*?/\\]/g, '-').slice(0, 31);
@@ -156,11 +158,10 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
       sheets.push(sheet);
       counts.push([sheet.name, these.length]);
     }
+    const totals = kept.filter((row) => row.list.budget_type === table.budgetType && row.list.row_type !== 'Method');
+    sheets.push(sheetFor(totalName(table), totals));
+    counts.push([totalName(table), totals.length]);
   }
-  // The budget Total rows have no row type, so they share one sheet of their own.
-  const totals = kept.filter((row) => row.list.row_type !== 'Method');
-  sheets.push(sheetFor('Totals', totals));
-  counts.push(['Totals', totals.length]);
 
   const about = [];
   const merges = [];
@@ -207,9 +208,10 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   kv('Verdict', verdictOf(flow, run, rows.length).text);
   about.push([]);
   title('Good to know about this file');
-  const example = counts.length > 1 ? counts[0][0] : null;
+  const totalNames = chosenTables.map(totalName);
+  const example = counts.find(([name]) => !totalNames.includes(name))?.[0];
   para(`Each sheet holds one budget and one row type: ${chosenTables.map((t) => `${t.sheetPrefix} is ${t.budgetType}`).join(', ')}.${example ? ` For example, ${example} holds those rows from every report in this grab.` : ''} A row type the reports never show has no sheet.`, 44);
-  para("The Totals sheet holds each report's budget Total rows. There is no grand total.");
+  para(`Each budget ends with its own Total sheet (${totalNames.join(', ')}), holding that budget's Total row from every report. There is no grand total.`);
   para('Amounts are in Crore BDT, as on the portal. A value the portal shows as N.A. is empty.');
   return [{ name: 'About this grab', widths: [34, 58, 16, 18], rows: about, merges, heights, hideGrid: true }, ...sheets];
 }

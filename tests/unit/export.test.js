@@ -151,14 +151,14 @@ describe('workbook', () => {
     expect(ministry.value({ list: { ministry: 'short' }, detail: {} })).toBe('short');
   });
 
-  it('Flow 1: About, one sheet per budget and row type, then Totals; no grand total (D65, D80)', async () => {
+  it('Flow 1: About, one sheet per budget and row type, each budget ending with its Total sheet; no grand total (D65, D80)', async () => {
     const flow = profile.flows.procurement_transaction_report;
     const report = parseReport(doc(raw('flow1/report')), flow).rows;
     const rows = ['Office A', 'Office B'].flatMap((office, i) => report.map((r, seq) => ({ key: `${i}|${r.key}`, seq, list: { financial_year: '2024-2025', pe_office: office, project: 'Road Project', budget_type: r.budget, row_type: r.kind, label: r.label, ...r.values } })));
     const run = baseRun({ flowId: 'procurement_transaction_report', project: 'Road Project', scope: 'national', offices: [{}, {}], officeIndex: 2, shown: [{ label: 'Financial Year', value: '2024-2025' }, { label: 'PE Office', value: 'All offices' }, { label: 'Project', value: 'Road Project' }] });
     const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.5.0', profileVersion: '1.4.0', siteHost: profile.site.host }));
-    // The saved report has two Development row types and three Revenue ones; Own Fund has none, so no Own_ sheet.
-    expect(book.SheetNames).toEqual(['About this grab', 'Dev_OTM(Goods)', 'Dev_OTM(Works)', 'Rev_LTM(Works)', 'Rev_OTM(Works)', 'Rev_RFQU(Works)', 'Totals']);
+    // The saved report has two Development row types and three Revenue ones; Own Fund has none, so only its Total sheet.
+    expect(book.SheetNames).toEqual(['About this grab', 'Dev_OTM(Goods)', 'Dev_OTM(Works)', 'Dev_Total', 'Rev_LTM(Works)', 'Rev_OTM(Works)', 'Rev_RFQU(Works)', 'Rev_Total', 'Own_Total']);
     const sheet = (name, b = book) => XLSX.utils.sheet_to_json(b.Sheets[name], { raw: true });
     const goods = sheet('Dev_OTM(Goods)');
     // One row per report: each office's OTM(Goods) line of the Development table, and nothing else.
@@ -166,12 +166,14 @@ describe('workbook', () => {
     expect(goods.every((r) => r['Method of Procurement'] === 'OTM(Goods)')).toBe(true);
     expect(goods[0]).toMatchObject({ 'Financial Year': '2024-2025', Office: 'Office A', Project: 'Road Project' });
     // Every method row lands on exactly one sheet.
-    const typeSheets = book.SheetNames.slice(1, -1);
+    const typeSheets = book.SheetNames.slice(1).filter((n) => !n.endsWith('_Total'));
     expect(typeSheets.reduce((sum, name) => sum + sheet(name).length, 0)).toBe(rows.filter((r) => r.list.row_type === 'Method').length);
-    // Totals: each office's three budget totals, and no grand total (D72).
-    const totals = sheet('Totals');
-    expect(totals.map((r) => r['Method of Procurement'])).toEqual(['Total Development Budget', 'Total Revenue Budget', 'Total Own Fund', 'Total Development Budget', 'Total Revenue Budget', 'Total Own Fund']);
-    expect(totals.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
+    // Each budget's Total sheet: that budget's Total row from each office, and no grand total anywhere (D72).
+    const label = (name) => sheet(name).map((r) => `${r.Office}: ${r['Method of Procurement']}`);
+    expect(label('Dev_Total')).toEqual(['Office A: Total Development Budget', 'Office B: Total Development Budget']);
+    expect(label('Rev_Total')).toEqual(['Office A: Total Revenue Budget', 'Office B: Total Revenue Budget']);
+    expect(label('Own_Total')).toEqual(['Office A: Total Own Fund', 'Office B: Total Own Fund']);
+    expect(book.SheetNames.flatMap((n) => label(n)).some((x) => x.includes('GRAND TOTAL'))).toBe(false);
     // With no project chosen, the column is still there and says so (D69).
     const bare = rows.map((r) => ({ ...r, list: { ...r.list, project: undefined } }));
     const plain = await readBack(buildWorkbook({ flow, run: { ...run, project: null }, rows: bare, toolVersion: '0.8.2', profileVersion: '1.5.0', siteHost: profile.site.host }));
@@ -183,8 +185,7 @@ describe('workbook', () => {
     expect(headers.some((h) => h.includes('National'))).toBe(true);
     // Only the tables chosen: without Revenue, no Rev_ sheet and no Revenue total.
     const noRev = await readBack(buildWorkbook({ flow, run: { ...run, tables: ['Development', 'Own Fund'] }, rows, toolVersion: '0.13.0', profileVersion: '1.7.0', siteHost: profile.site.host }));
-    expect(noRev.SheetNames).toEqual(['About this grab', 'Dev_OTM(Goods)', 'Dev_OTM(Works)', 'Totals']);
-    expect(sheet('Totals', noRev).some((r) => r['Method of Procurement'] === 'Total Revenue Budget')).toBe(false);
+    expect(noRev.SheetNames).toEqual(['About this grab', 'Dev_OTM(Goods)', 'Dev_OTM(Works)', 'Dev_Total', 'Own_Total']);
     // The About sheet counts each sheet's rows.
     expect(XLSX.utils.sheet_to_json(book.Sheets['About this grab'], { header: 1 }).map((r) => r.join(' ')).join(' | ')).toContain('Rows on the Dev_OTM(Goods) sheet 2');
   });
@@ -195,7 +196,7 @@ describe('workbook', () => {
     const rows = [long, `${long}x`, 'A:B?(Works)'].map((label, i) => ({ key: String(i), seq: i, list: { financial_year: '2024-2025', pe_office: 'Office A', budget_type: 'Development', row_type: 'Method', label, planned_packages_national: '1' } }));
     const run = baseRun({ flowId: 'procurement_transaction_report', offices: [{}], officeIndex: 1, shown: [] });
     const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.13.0', profileVersion: '1.7.0', siteHost: profile.site.host }));
-    const names = book.SheetNames.slice(1, -1);
+    const names = book.SheetNames.slice(1).filter((n) => !n.endsWith('_Total'));
     expect(names).toHaveLength(3);
     expect(names.every((n) => n.length <= 31 && !/[[\]:*?/\\]/.test(n))).toBe(true);
     expect(new Set(names.map((n) => n.toLowerCase())).size).toBe(3);
