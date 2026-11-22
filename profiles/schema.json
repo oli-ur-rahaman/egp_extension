@@ -388,12 +388,13 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["number", "selector", "budgetType", "totalLabel"],
+            "required": ["number", "selector", "budgetType", "sheetPrefix", "totalLabel"],
             "additionalProperties": false,
             "properties": {
               "number": { "type": "integer", "minimum": 1 },
               "selector": { "type": "string" },
               "budgetType": { "type": "string" },
+              "sheetPrefix": { "type": "string", "pattern": "^[A-Za-z0-9 _-]{1,10}$" },
               "totalLabel": { "type": "string" },
               "grandTotalLabel": { "type": "string" }
             }

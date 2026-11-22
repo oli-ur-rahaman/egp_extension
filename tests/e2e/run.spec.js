@@ -529,7 +529,7 @@ for (const [flowId, key, clusterId] of [['app_info', 'Package ID', 'package'], [
   });
 }
 
-test('Flow 1, logged in: an office grab gives one sheet per budget, with each office\'s rows and totals (D65)', async () => {
+test('Flow 1, logged in: an office grab gives one sheet per budget and row type, and the totals on their own sheet (D65, D80)', async () => {
   const t = await setup({ loggedIn: true, paceMs: 1 });
   try {
     await t.open('procurement_transaction_report');
@@ -544,12 +544,22 @@ test('Flow 1, logged in: an office grab gives one sheet per budget, with each of
     await t.panel.locator('#run-start').click();
     await expect(state(t)).toHaveText('Finished', { timeout: 60000 });
     const file = await downloaded(t);
-    expect(file.book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);
-    const own = XLSX.utils.sheet_to_json(file.book.Sheets['Own Fund'], { raw: true });
-    expect(own.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
-    expect(own.filter((r) => r['Method of Procurement'] === 'Total Own Fund')).toHaveLength(reports);
-    expect(own[0]['Financial Year']).toBeTruthy();
-    expect(Object.keys(own[0]).some((h) => h.includes('International'))).toBe(false);
+    const names = file.book.SheetNames;
+    expect(names[0]).toBe('About this grab');
+    expect(names.at(-1)).toBe('Totals');
+    const typeSheets = names.slice(1, -1);
+    expect(typeSheets.length).toBeGreaterThan(0);
+    expect(typeSheets.every((n) => /^(Dev|Rev|Own)_.+\(.+\)$/.test(n))).toBe(true);
+    // Each row-type sheet holds only its own row type.
+    for (const name of typeSheets) {
+      const rows = XLSX.utils.sheet_to_json(file.book.Sheets[name], { raw: true });
+      expect(rows.every((r) => name.endsWith(r['Method of Procurement'])), name).toBe(true);
+    }
+    const totals = XLSX.utils.sheet_to_json(file.book.Sheets.Totals, { raw: true });
+    expect(totals.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
+    expect(totals.filter((r) => r['Method of Procurement'] === 'Total Own Fund')).toHaveLength(reports);
+    expect(totals[0]['Financial Year']).toBeTruthy();
+    expect(Object.keys(totals[0]).some((h) => h.includes('International'))).toBe(false);
   } finally { await t.close(); }
 });
 
@@ -655,10 +665,13 @@ test('Flow 1: all 8 combinations of years, offices and projects (D68)', async ()
       else expect(sent.every((r) => r.project === '0'), c.name).toBe(true);
       expect(sent.every((r) => (r.office === '0') === (c.projects > 0 && c.offices === 'all')), c.name).toBe(true);
       const file = await downloaded(t);
-      expect(file.book.SheetNames, c.name).toEqual(['About this grab', 'Development', 'Own Fund']);
-      const dev = XLSX.utils.sheet_to_json(file.book.Sheets.Development, { raw: true });
-      const own = XLSX.utils.sheet_to_json(file.book.Sheets['Own Fund'], { raw: true });
-      const all = [...dev, ...own];
+      // Development and Own Fund only (D80): Dev_ and Own_ sheets, then Totals.
+      const names = file.book.SheetNames;
+      expect(names[0], c.name).toBe('About this grab');
+      expect(names.at(-1), c.name).toBe('Totals');
+      expect(names.slice(1, -1).every((n) => /^(Dev|Own)_/.test(n)), c.name).toBe(true);
+      const all = names.slice(1).flatMap((n) => XLSX.utils.sheet_to_json(file.book.Sheets[n], { raw: true }));
+      expect(all.some((r) => r['Method of Procurement'] === 'Total Revenue Budget'), c.name).toBe(false);
       // A project shows only under its own office: chosen offices that don't own a chosen project give nothing, as on e-GP.
       const owned = !(c.projects && c.offices !== 'all') || sent.some((r) => t.portal.ownerOf(r.project) === r.office);
       if (!owned) {
@@ -670,9 +683,9 @@ test('Flow 1: all 8 combinations of years, offices and projects (D68)', async ()
         continue;
       }
       expect(all.length, c.name).toBeGreaterThan(0);
-      expect(Object.keys(dev[0] ?? own[0]).some((h) => h.includes('International')), c.name).toBe(false);
+      expect(Object.keys(all[0]).some((h) => h.includes('International')), c.name).toBe(false);
       // The three search columns are on every sheet (D69); Project says Not set when none was chosen.
-      expect(Object.keys(dev[0] ?? own[0]).slice(0, 3), c.name).toEqual(['Financial Year', 'Office', 'Project']);
+      expect(Object.keys(all[0]).slice(0, 3), c.name).toEqual(['Financial Year', 'Office', 'Project']);
       expect(all.every((r) => (c.projects ? r.Project !== 'Not set' : r.Project === 'Not set')), c.name).toBe(true);
       // Rows with a number only: no row of all zeros.
       const numbers = (r) => Object.entries(r).filter(([k]) => /\(No\.\)|BDT|Tenders|%/.test(k)).map(([, v]) => Number(v) || 0);

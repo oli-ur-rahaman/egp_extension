@@ -96,7 +96,7 @@ const lasted = (ms) => {
 };
 
 /**
- * Flow 1 (D65): About, then one sheet per budget, each with e-GP's own rows in e-GP's order, Total rows included.
+ * Flow 1 (D65, D80): About, then one sheet per budget and row type (Dev_OTM(Goods) and so on), then a Totals sheet with the budget Total rows.
  * The year, office and project of each report are columns of their own.
  * @returns {import('./xlsx-writer.js').Sheet[]}
  */
@@ -117,27 +117,50 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
     { group: 'source', header: 'Login state', type: 'text', width: 12, value: () => (run.loggedIn ? 'Logged in' : 'Logged out') },
   ];
   const head = columns.map((c) => ({ v: c.header, s: { bold: true, color: 'FFFFFF', fill: FILL[c.group], border: true, wrap: true, h: 'center', v: 'center' } }));
-  // No grand total row (D72); a run saved by an older version may still hold one, and it's left out here.
-  const sheetOf = (row) => (row.list.row_type === 'Grand Total' ? null : row.list.budget_type);
   const chosenTables = flow.report.tables.filter((t) => !run.tables || run.tables.includes(t.budgetType));
   const numberColumns = columns.filter((c) => c.key && c.type !== 'text');
   // D68: a row whose every number is zero or blank is left out when the user asked for rows with a number only.
   const hasNumber = (row) => numberColumns.some((c) => Number(row.list[c.key]) !== 0 && row.list[c.key] !== '' && row.list[c.key] !== undefined && !Number.isNaN(Number(row.list[c.key])));
-  const kept = run.rowsMode === 'nonzero' ? rows.filter(hasNumber) : rows;
-  const counts = {};
-  const sheets = chosenTables.map((table) => {
-    const own = kept.filter((row) => sheetOf(row) === table.budgetType);
-    counts[table.budgetType] = own.length;
-    const body = own.map((row) => {
-      const isTotal = row.list.row_type !== 'Method';
-      return columns.map((c) => {
-        const v = typed(c.type, c.value(row));
-        const format = FORMAT[c.type];
-        return { v, s: { border: true, v: 'top', ...(isTotal ? { bold: true, fill: FILL.key } : {}), ...(format && typeof v === 'number' ? { format } : {}) } };
-      });
-    });
-    return { name: table.budgetType, widths: columns.map((c) => c.width), rows: [head, ...body], heights: { 0: 62 }, freeze: true, filter: `A1:${colName(columns.length - 1)}${Math.max(body.length + 1, 1)}` };
-  });
+  // No grand total row (D72); a run saved by an older version may still hold one, and it's left out here.
+  const kept = (run.rowsMode === 'nonzero' ? rows.filter(hasNumber) : rows)
+    .filter((row) => row.list.row_type !== 'Grand Total' && chosenTables.some((t) => t.budgetType === row.list.budget_type));
+  // The first report column is the row's own label, such as OTM(Goods).
+  const labelOf = columns.find((c) => c.group === 'list').value;
+  /** @param {string} name @param {any[]} own */
+  const sheetFor = (name, own) => {
+    const body = own.map((row) => columns.map((c) => {
+      const v = typed(c.type, c.value(row));
+      const format = FORMAT[c.type];
+      return { v, s: { border: true, v: 'top', ...(format && typeof v === 'number' ? { format } : {}) } };
+    }));
+    return { name, widths: columns.map((c) => c.width), rows: [head, ...body], heights: { 0: 62 }, freeze: true, filter: `A1:${colName(columns.length - 1)}${Math.max(body.length + 1, 1)}` };
+  };
+  // D80: one sheet per budget and row type, named like Dev_OTM(Goods); budgets in the report's order, row types as they first appear.
+  const taken = new Set(['about this grab', 'totals']);
+  /** Excel refuses some characters and more than 31 of them, and two sheets can't share a name. @param {string} wanted */
+  const sheetName = (wanted) => {
+    const base = wanted.replace(/[[\]:*?/\\]/g, '-').slice(0, 31);
+    let name = base;
+    for (let i = 2; taken.has(name.toLowerCase()); i++) name = `${base.slice(0, 31 - String(i).length - 1)}~${i}`;
+    taken.add(name.toLowerCase());
+    return name;
+  };
+  const sheets = [];
+  const counts = [];
+  for (const table of chosenTables) {
+    const own = kept.filter((row) => row.list.budget_type === table.budgetType && row.list.row_type === 'Method');
+    const types = [...new Set(own.map((row) => labelOf(row)))];
+    for (const type of types) {
+      const these = own.filter((row) => labelOf(row) === type);
+      const sheet = sheetFor(sheetName(`${table.sheetPrefix}${type}`), these);
+      sheets.push(sheet);
+      counts.push([sheet.name, these.length]);
+    }
+  }
+  // The budget Total rows have no row type, so they share one sheet of their own.
+  const totals = kept.filter((row) => row.list.row_type !== 'Method');
+  sheets.push(sheetFor('Totals', totals));
+  counts.push(['Totals', totals.length]);
 
   const about = [];
   const merges = [];
@@ -180,12 +203,13 @@ export function buildReportWorkbook({ flow, run, rows, toolVersion, profileVersi
   title('Is it complete?');
   kv('Reports in this grab / made', `${run.offices?.length ?? 0} / ${run.officeIndex}`);
   kv('Reports with no rows', String(run.stats.emptyReports ?? 0));
-  for (const table of chosenTables) kv(`Rows on the ${table.budgetType} sheet`, String(counts[table.budgetType]));
+  for (const [name, count] of counts) kv(`Rows on the ${name} sheet`, String(count));
   kv('Verdict', verdictOf(flow, run, rows.length).text);
   about.push([]);
   title('Good to know about this file');
-  para("Each sheet keeps the report's own rows, in the portal's order, with its Total rows. Totals are in bold.");
-  para('To add up, filter Method of Procurement first and leave out the Total rows, or totals count twice.');
+  const example = counts.length > 1 ? counts[0][0] : null;
+  para(`Each sheet holds one budget and one row type: ${chosenTables.map((t) => `${t.sheetPrefix} is ${t.budgetType}`).join(', ')}.${example ? ` For example, ${example} holds those rows from every report in this grab.` : ''} A row type the reports never show has no sheet.`, 44);
+  para("The Totals sheet holds each report's budget Total rows. There is no grand total.");
   para('Amounts are in Crore BDT, as on the portal. A value the portal shows as N.A. is empty.');
   return [{ name: 'About this grab', widths: [34, 58, 16, 18], rows: about, merges, heights, hideGrid: true }, ...sheets];
 }

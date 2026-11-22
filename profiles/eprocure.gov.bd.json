@@ -1,7 +1,7 @@
 {
   "$comment": "Site Profile: everything the tool knows about the portal. Evidence: docs/recon/. Decisions (D#): docs/PROJECT_PLAN.md section 8. Selectors and cell splits are proven against saved pages in stage B2.",
   "site": { "host": "www.eprocure.gov.bd", "baseUrl": "https://www.eprocure.gov.bd", "language": "English" },
-  "profileVersion": "1.6.0",
+  "profileVersion": "1.7.0",
   "capturedAt": "2026-11-06",
   "pageStates": {
     "loginForm": "#txtPassword",
@@ -93,9 +93,9 @@
           "fromPage": ["depName", "depId"]
         },
         "tables": [
-          { "number": 1, "selector": "#tab1", "budgetType": "Development", "totalLabel": "Total Development Budget" },
-          { "number": 2, "selector": "#tab2", "budgetType": "Revenue", "totalLabel": "Total Revenue Budget" },
-          { "number": 3, "selector": "#tab3", "budgetType": "Own Fund", "totalLabel": "Total Own Fund", "grandTotalLabel": "GRAND TOTAL" }
+          { "number": 1, "selector": "#tab1", "budgetType": "Development", "sheetPrefix": "Dev_", "totalLabel": "Total Development Budget" },
+          { "number": 2, "selector": "#tab2", "budgetType": "Revenue", "sheetPrefix": "Rev_", "totalLabel": "Total Revenue Budget" },
+          { "number": 3, "selector": "#tab3", "budgetType": "Own Fund", "sheetPrefix": "Own_", "totalLabel": "Total Own Fund", "grandTotalLabel": "GRAND TOTAL" }
         ],
         "cell": "t{table}col{col}_{row}",
         "totalCell": "t{table}total{col}",

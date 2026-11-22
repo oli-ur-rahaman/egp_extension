@@ -129,7 +129,7 @@ export function buildPlanSheet({ flow, plan, remembered, limit, onStart, onClose
       ].filter(Boolean).join(' ')),
       report && h('h3', { class: 'plan-h' }, 'Columns'),
       report && scopeChoice,
-      report && h('h3', { class: 'plan-h' }, 'Tables, one sheet each'),
+      report && h('h3', { class: 'plan-h' }, 'Tables (each row type gets its own sheet)'),
       report && tableChoice,
       report && h('h3', { class: 'plan-h' }, 'Rows'),
       report && rowsChoice,

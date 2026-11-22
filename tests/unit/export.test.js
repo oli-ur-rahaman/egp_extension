@@ -151,29 +151,55 @@ describe('workbook', () => {
     expect(ministry.value({ list: { ministry: 'short' }, detail: {} })).toBe('short');
   });
 
-  it('Flow 1: About and one sheet per budget, with the report\'s own rows and Total rows (D65)', async () => {
+  it('Flow 1: About, one sheet per budget and row type, then Totals; no grand total (D65, D80)', async () => {
     const flow = profile.flows.procurement_transaction_report;
     const report = parseReport(doc(raw('flow1/report')), flow).rows;
     const rows = ['Office A', 'Office B'].flatMap((office, i) => report.map((r, seq) => ({ key: `${i}|${r.key}`, seq, list: { financial_year: '2024-2025', pe_office: office, project: 'Road Project', budget_type: r.budget, row_type: r.kind, label: r.label, ...r.values } })));
     const run = baseRun({ flowId: 'procurement_transaction_report', project: 'Road Project', scope: 'national', offices: [{}, {}], officeIndex: 2, shown: [{ label: 'Financial Year', value: '2024-2025' }, { label: 'PE Office', value: 'All offices' }, { label: 'Project', value: 'Road Project' }] });
     const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.5.0', profileVersion: '1.4.0', siteHost: profile.site.host }));
-    expect(book.SheetNames).toEqual(['About this grab', 'Development', 'Revenue', 'Own Fund']);
-    const dev = XLSX.utils.sheet_to_json(book.Sheets.Development, { raw: true });
-    expect(dev[0]).toMatchObject({ 'Financial Year': '2024-2025', Office: 'Office A', Project: 'Road Project', 'Method of Procurement': 'OTM(Goods)' });
+    // The saved report has two Development row types and three Revenue ones; Own Fund has none, so no Own_ sheet.
+    expect(book.SheetNames).toEqual(['About this grab', 'Dev_OTM(Goods)', 'Dev_OTM(Works)', 'Rev_LTM(Works)', 'Rev_OTM(Works)', 'Rev_RFQU(Works)', 'Totals']);
+    const sheet = (name, b = book) => XLSX.utils.sheet_to_json(b.Sheets[name], { raw: true });
+    const goods = sheet('Dev_OTM(Goods)');
+    // One row per report: each office's OTM(Goods) line of the Development table, and nothing else.
+    expect(goods.map((r) => r.Office)).toEqual(['Office A', 'Office B']);
+    expect(goods.every((r) => r['Method of Procurement'] === 'OTM(Goods)')).toBe(true);
+    expect(goods[0]).toMatchObject({ 'Financial Year': '2024-2025', Office: 'Office A', Project: 'Road Project' });
+    // Every method row lands on exactly one sheet.
+    const typeSheets = book.SheetNames.slice(1, -1);
+    expect(typeSheets.reduce((sum, name) => sum + sheet(name).length, 0)).toBe(rows.filter((r) => r.list.row_type === 'Method').length);
+    // Totals: each office's three budget totals, and no grand total (D72).
+    const totals = sheet('Totals');
+    expect(totals.map((r) => r['Method of Procurement'])).toEqual(['Total Development Budget', 'Total Revenue Budget', 'Total Own Fund', 'Total Development Budget', 'Total Revenue Budget', 'Total Own Fund']);
+    expect(totals.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
     // With no project chosen, the column is still there and says so (D69).
     const bare = rows.map((r) => ({ ...r, list: { ...r.list, project: undefined } }));
     const plain = await readBack(buildWorkbook({ flow, run: { ...run, project: null }, rows: bare, toolVersion: '0.8.2', profileVersion: '1.5.0', siteHost: profile.site.host }));
-    const first = XLSX.utils.sheet_to_json(plain.Sheets.Development, { raw: true })[0];
+    const first = sheet('Dev_OTM(Goods)', plain)[0];
     expect(Object.keys(first).slice(0, 3)).toEqual(['Financial Year', 'Office', 'Project']);
     expect(first.Project).toBe('Not set');
-    expect(dev.filter((r) => r['Method of Procurement'] === 'Total Development Budget')).toHaveLength(2);
-    const headers = Object.keys(dev[0]);
+    const headers = Object.keys(goods[0]);
     expect(headers.some((h) => h.includes('International'))).toBe(false);
     expect(headers.some((h) => h.includes('National'))).toBe(true);
-    const own = XLSX.utils.sheet_to_json(book.Sheets['Own Fund'], { raw: true });
-    // No grand total row (D72); each office keeps its Own Fund total.
-    expect(own.some((r) => r['Method of Procurement'] === 'GRAND TOTAL')).toBe(false);
-    expect(own.filter((r) => r['Method of Procurement'] === 'Total Own Fund').map((r) => r.Office)).toEqual(['Office A', 'Office B']);
+    // Only the tables chosen: without Revenue, no Rev_ sheet and no Revenue total.
+    const noRev = await readBack(buildWorkbook({ flow, run: { ...run, tables: ['Development', 'Own Fund'] }, rows, toolVersion: '0.13.0', profileVersion: '1.7.0', siteHost: profile.site.host }));
+    expect(noRev.SheetNames).toEqual(['About this grab', 'Dev_OTM(Goods)', 'Dev_OTM(Works)', 'Totals']);
+    expect(sheet('Totals', noRev).some((r) => r['Method of Procurement'] === 'Total Revenue Budget')).toBe(false);
+    // The About sheet counts each sheet's rows.
+    expect(XLSX.utils.sheet_to_json(book.Sheets['About this grab'], { header: 1 }).map((r) => r.join(' ')).join(' | ')).toContain('Rows on the Dev_OTM(Goods) sheet 2');
+  });
+
+  it('Flow 1 sheet names: characters Excel refuses are replaced, long names cut to 31, and no two alike (D80)', async () => {
+    const flow = profile.flows.procurement_transaction_report;
+    const long = 'Direct Procurement Method/Very Long(Services)';
+    const rows = [long, `${long}x`, 'A:B?(Works)'].map((label, i) => ({ key: String(i), seq: i, list: { financial_year: '2024-2025', pe_office: 'Office A', budget_type: 'Development', row_type: 'Method', label, planned_packages_national: '1' } }));
+    const run = baseRun({ flowId: 'procurement_transaction_report', offices: [{}], officeIndex: 1, shown: [] });
+    const book = await readBack(buildWorkbook({ flow, run, rows, toolVersion: '0.13.0', profileVersion: '1.7.0', siteHost: profile.site.host }));
+    const names = book.SheetNames.slice(1, -1);
+    expect(names).toHaveLength(3);
+    expect(names.every((n) => n.length <= 31 && !/[[\]:*?/\\]/.test(n))).toBe(true);
+    expect(new Set(names.map((n) => n.toLowerCase())).size).toBe(3);
+    expect(names[2]).toBe('Dev_A-B-(Works)');
   });
 
   it('says so plainly when a file isn\'t complete', () => {
