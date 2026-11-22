@@ -969,6 +969,7 @@ Append one line per working block. Demo and feedback dates matter contractually 
 | 2026-11-12 | 1 | D35; self-run 19–22 | **Flow 5 ran logged in through PDMS** on the owner's own eExperience tab, all complete and logged in before and after: office 1552 over 5 years, 1 row (its only record); all PWD offices, January 2025, 13 rows; **all PWD offices, January–August 2025, 72 rows = plan, 72 detail pages read, 38 columns none empty, 4 min.** Five earlier attempts failed in the test script before any search (finished run on the panel, a restored open tree, Playwright's instant fill appending a date); no PDMS fault found, script fixed. **Every flow has now run through PDMS logged in.** | Owner to decide: M12-T05 retention rule; whether PDMS should correct the portal's menu (E24). |
 | 2026-11-12 | 1 | B9 M12-T05; D76, D77 | **Owner decided:** finished runs are cleared after 30 days (D76); PDMS leaves the portal's menu alone, and the owner no longer sees the fault (D77). **Built (v0.12.0):** finished and stopped runs more than 30 days past their finish are deleted with their rows, at each start of the background and each minute's check; running and paused runs never. The run screen says "If left, it is cleared 30 days after it finished." Unit tests for the rule; a browser test puts four runs in the store and confirms only the two old finished ones go. 386 unit tests. | Next: M11 drift report (T02–T04), then the secret-code Dev panel (needs the owner's code, Q7) and the override layer with its audit (M11-T07, M12-T04). |
 | 2026-11-12 | 1 | D79; handover | **Owner: Dev mode offers the drift report only (D79), departing from D3; M11-T08 dropped.** **Shareable zip for the client:** new `npm run package` builds, leaves out source maps, adds `HOW TO INSTALL.txt` (install, use, update, notes) and writes `release/PDMS_v<version>.zip` (git-ignored). `release/PDMS_v0.12.0.zip`, 278 KB, checked: unzipped into a clean folder and loaded into a fresh browser, it starts as PDMS 0.12.0 and the panel shows v0.12.0. Change detection (M11-T02–T04) not started in code yet. | Next session: M11-T02–T04. |
+| 2026-11-23 | — | Health check; §13 | **Back after 11 days, home PC.** `npm run verify` green: 386 unit tests. §13 "Resume here" rewritten: its old lines said nothing was built. **Owner's order:** health check, then the new Flow 1 work (one sheet per budget and row type, e.g. `Dev_OTM(Goods)`; no grand total row), then planning the future builds (D78), then M11 and the rest. Atlas still "not found" from this PC's claude.ai account. | Owner to settle the Flow 1 details (D80). |
 
 **Milestone record**
 
@@ -985,78 +986,37 @@ Append one line per working block. Demo and feedback dates matter contractually 
 
 ## 13. Immediate next steps (this week)
 
-### ▶ Resume here (updated 2026-11-11, end of day, home PC; next: the office PC)
+### ▶ Resume here (updated 2026-11-23, home PC)
 
-**Next, in order (2026-11-12, end of day):** (1) build M11-T02–T04: tell "degraded" (a fallback selector used) from "broken", compare each page against its saved fingerprint, and export a drift report the owner can send to Claude; (2) M11-T05/T06 Dev panel behind a secret code, drift report only (D79): **needs the owner's code (Q7), given privately**; (3) M11-T07 override layer with one-click rollback, and its audit log (M12-T04); (4) **plan the future builds with the owner (D78)**: M15 Lookup by ID, the Detailed report, presets and history, study types; (5) then full runs, guides, handover (B11). Done today: owner's recovery checks passed; every flow has run logged in through PDMS (Flow 4 = logged out, 166 rows; Flow 5, 72 rows); activity log and 30-day clean-up (M12). To give the client a copy: `npm run package` makes `release/PDMS_v<version>.zip` with an install guide. Current build **v0.12.0**: 386 unit tests, 42 browser tests.
+**Where we are.** Build **v0.12.0**. Every flow has run live through PDMS, logged out and logged in; a one-hour run (1,191 detail pages) finished clean; the owner's recovery checks passed (network cut, Chrome closed, logged out mid-run). Built: side panel, live filters, office picker and hierarchy editor, size check and estimate, checkerboard, list and detail collection, Flow 1's 8 combinations, save and resume, sprints and slowing down, activity log, 30-day clean-up, Excel files, and `npm run package` (a zip with an install guide for the client).
 
+**Next, in the owner's order (2026-11-23):**
+1. **Health check** after 11 days away: `npm run verify`, `npm run e2e`, then one small live search through PDMS on the owner's own tab.
+2. **New work: Flow 1 sheets by row type** (owner, 2026-11-23). Today the file has one sheet per budget (Development, Revenue, Own Fund). The client now wants one sheet per budget and row type, such as `Dev_OTM(Goods)`, `Dev_LTM(Goods)`, `Rev_LTM(Works)`, and no grand total row. Departs from D65; recorded as D80 once the owner settles the details.
+3. **Plan the future builds with the owner (D78):** M15 Lookup by ID, the Detailed report, presets and history, the study types.
+4. **M11-T02–T04 change report.** Agreed in principle with the owner: report each selector as found or missing. The profile has one selector per item and no backups, so "degraded" doesn't arise yet. Copy the page fingerprints from `tests/fixtures/manifest.json` into `profiles/`, so the installed PDMS has a "before" to compare with. A changed fingerprint means "look closer"; a missing selector means stop.
+5. **M11-T09, T05, T06 hidden Dev screen.** The owner runs the hash tool and gives only the hash (Q7).
+6. **M11-T07** repairs with one-click undo, and their audit log (M12-T04).
+7. **B11** full runs, guides, handover.
 
-**Office PC, first thing (owner, 2026-11-10: work and show the client from the office):**
-1. **Double-click `C:\egp_extension\setup.cmd`** (since 2026-11-12). It pulls, installs only if needed, builds, prints the version and opens `chrome://extensions`; it stops with a plain reason if Git or Node is missing or a step fails.
-2. In Chrome: `chrome://extensions` → reload the PDMS card (or Load unpacked → `C:\egp_extension\dist` if it isn't there). It must show **version 0.12.0**, named **Procurement Data Management System (PDMS)**.
-3. `npm run verify` should end green: 372 unit tests. `npm run e2e` (about 6 minutes): 37 browser tests. A fresh clone of GitHub was checked on 2026-11-10 and passed both, so nothing needed is missing from the repo.
-4. **What lives only in the home PC's browser and doesn't travel:** office hierarchy changes (carry them with Office hierarchy → Export Excel at home, Import Excel at the office), finished runs, and the panel's remembered choices. The shipped hierarchy (`profiles/pwd-offices.json`) is in the repo. Also home-only and git-ignored: `recon/raw/` (saved live captures) and the owner's `project_scope/*.xlsx`; only needed to rebuild fixtures or the shipped office tree.
-5. Live Flow 1 check from the office: `npm run chrome`, owner logs in there, opens Flow 1, loads `dist/`, opens the panel; then `node tools/recon/live-flow1.js` (or `ONLY=1.8 node tools/recon/live-flow1.js`). Log it in `docs/recon/self-run-log.md`.
+**Owner checks still open:** M0-MC1, MC2 (load `dist/`, the panel says Ready), MC4 (`git status` clean).
 
-**What to show the client (proven live):** Flow 2 logged out (small runs, file checked by the owner); Flow 3 logged out (owner: worked); Flow 1 logged in, all 8 combinations (run 14 of the self-run log); the office picker and hierarchy editor (owner: drag and Excel worked). **Not yet run live:** Flows 4 and 5, logged-in Flow 2, and anything long. Show small searches.
+**Atlas:** on 2026-11-23 the artifact tool on the home PC answered "not found" for the atlas URL: it is signed in to a different claude.ai account from the one that owns the atlas. Progress since about 11 Nov is in §12 only.
 
-**The atlas** (claude.ai artifact) couldn't be updated from this session: the artifact tools connected to a different claude.ai account and couldn't find it. The progress log in this file is complete; bring the atlas up to date from the account that owns it.
+**Starting on either PC:** double-click `setup.cmd` (pulls, installs if needed, builds, opens `chrome://extensions`), then reload the PDMS card; it must show the version in `package.json`. **Doesn't travel between PCs:** office hierarchy edits (carry them with Office hierarchy → Export Excel, then Import Excel), finished runs, the panel's remembered choices, and the git-ignored `recon/raw/` and `project_scope/*.xlsx` (home PC only; needed only to rebuild fixtures or the shipped office tree).
 
+**Live scripts:** `tools/recon/live-flow1.js`, `live-flows45.js`, `live-flow2-in.js`, `live-long.js`. Log each run in `docs/recon/self-run-log.md`.
 
-**Where we are.** All five report pages are mapped, logged out and logged in. Decisions D11–D36 are in `PROJECT_PLAN.md` §8; findings are in `docs/INSIGHTS.md`; per-flow notes are in `docs/recon/`. **Nothing beyond M0 is built:** no `profiles/`, no filter panel, no extraction. `docs/BUILD_PLAN.md` governs the build, with gates, not dates; the first demo comes at the end of stage B3.
+**Optional checks, never blocking:** whether the midnight logout is a reset or chance; session idle timeout and logout page (R1); the hidden cell in the Flow 2 lots table.
 
-**Now (2026-11-12): every flow has run live, logged out and (Flows 1, 2) logged in, and a one-hour run (1,191 detail pages) finished clean. v0.9.1 fixed the file name and automatic resume; v0.10.0 adds sprints and slowing down (D74) and blocks Start on a changed page (M11-T01); `setup.cmd` sets up either PC in one double-click.** The owner's recovery checks all passed on v0.10.0 (network, closing Chrome, logging out); Flows 4 and 5 ran logged in (166 rows, the same as logged out; 72 rows), so every flow has run logged in; v0.11.0 adds the activity log (M12).** v0.12.0 clears finished runs after 30 days (D76). Next: M11 drift report, then the Dev panel (needs the owner's secret code, Q7).
-
-- **[x] Done 2026-11-07. Step 2, the panel stays on its tab (D43):** (1) press the extension's reload arrow in `chrome://extensions`; (2) on the e-GP tab, click the icon: the panel opens; (3) open a new tab: the panel disappears; (4) back to the e-GP tab: it returns. Also report what the panel shows on the homepage: the five report pages, with Flow 1 marked "needs a login".
-- **Step 3, live demo, logged out (M3-MC1–MC3):** open Flows 2, 3, 4, 5 by the normal route. On each, the panel's filters match the page; a choice changes the real page; the child list updates (Department to Procuring Entity; Financial Year to Project on Flow 3; Nature to Method on Flow 5). Flow 2 shows the warning first. **These page-script cascades have never run live: the fake portal's pages have no scripts.**
-- **Step 4, live demo, logged in:** `npm run recon -- stop` first, then the owner logs in. Flow 1 (two filters, All offices), Flow 2 (no warning, Department fixed). **Check whether a logged-in Flow 4 or 5 lets the user pick another department** (`departmentWhenLoggedIn: notChecked` in the profile; D35 depends on it). Capture RFQ and framework notices for the test bed while logged in.
-- **Then:** B3's gate passes; start stage B4 (engine).
-
-**On the office PC:** `git pull`, `npm ci`, `npm run build`, then load `dist/` via `chrome://extensions` (Developer mode, Load unpacked). `recon/raw/` isn't there, so `npm run fixtures` won't run; the committed fixtures are enough for the tests.
-
-**Sunday 8 Nov is the owner's dated check** (below): the same PWD search, morning and night, logged out and logged in.
-
-**Do these in order:**
-
-| # | Task | Who | Time |
-|---|---|---|---|
-| 1 | [x] **LTM confirmed** (R7, T1): logged out LTM gives no records; logged in OTM 2,272 against 2,274 public | done | |
-| 2 | [x] **Audit done:** Flows 3, 4, 5 give the same counts both ways; only Flow 2 differs | done | |
-| 3 | [x] **Decided: D23–D27.** Demos reviewed by the owner: "better now". **D29: LTM tenders are collected and exported.** | done | |
-| 3a | [x] **Pre-build check done:** Tenderer ID = Company Unique ID (one exact match); Flow 5 completed record has the same fields; ongoing and LTM work are on Flow 4. Flow 4's contract page has several layouts (D31). PQ, RFP and PPS notices not sampled: the parser reads whatever labels are present, and they can be added later | done | |
-| 3b | [x] **R8 done:** logged out, logged in, and PWD like for like (D34) | done | |
-| 3c | [x] **Owner approved `docs/BUILD_PLAN.md`** (D36) and D35. Next: owner reads the atlas and says to start B1 | done | |
-| 4 | [x] **B1 built** (M1-T01, T05, T06). [x] **Owner's gate:** passed 2026-11-07 | owner | |
-| 4a | [x] **B2 done.** Owner's gate (M1-MC5) passed 2026-11-07 | done | |
-| 4b | [x] **B3 built on the fake portal.** [ ] **Owner's gate (M3-MC1–MC3): live demo on all five pages.** Capture RFQ and framework notices at the first logged-in check | owner, Claude | 30 min |
-| 5 | **M3 live filters** (D18): what the M1 demo actually shows, on all five pages | Claude, then owner checks | |
-| 6 | **M0 checks still unticked:** M0-MC1, MC2 (load `dist/`, panel says Ready), MC4 (`git status` clean). Owner: tomorrow | owner | 2 min |
-
-**Dated checks that don't block the build:**
-- **Sunday 8 Nov, morning and night** (owner's request): PWD + 01/01/2023–31/12/2025, logged out and logged in. How fast do counts move on a working day?
-- **Any night:** stay logged in across 12:00. Was the midnight logout a reset, or chance?
-
-**Moved to M6, not recon:** the full-sweep row loss (`flow-2.md`), including trying one big `size` and date windows, and sweeps on Flows 3–5.
-
-**Optional inspections, not before building (owner, 2026-11-06):** Sunday and midnight checks; session idle timeout, logout page and cookie name (R1, needs a login, due by M8); the hidden cell in the Flow 2 lots table (from captures); Flow 3 package detail fixture, whose raw copy is on the office PC.
-
-**Open owner decisions:** Q7 secret code, by Week 9.
-
-**Next, in order:** live checks of Flows 4 and 5, then Flows 1 and 2 logged in; required filters (D58) are applied. **Future work (D64):** presets and history (D60, D63); M15 (D57, D59, D61, D62).
-
-**Recorder note:** `watch` caught 0 requests twice on 2026-11-06, once on the wrong tab (DevTools) and once on the right one, cause unknown. Tab numbers shift, so check `tabs` each time. `snapshot` reads rows straight from the page and hasn't failed. Run `npm run recon -- stop` before any login.
-
-**First-time setup on a new PC:** see `README.md`. Raw captures in `recon/raw/` never travel between PCs; fixtures must be recaptured or built on the PC that holds them.
+**Recorder note:** run `tabs` before `watch`; check the request count straight after the clicks; `snapshot` is the reliable fallback; `npm run recon -- stop` before any login.
 
 ### Checklist
 
-1. [x] ~~X1: ignore rule for the credentials file.~~ Done 2026-11-04.
-2. [x] ~~Repo visibility (X2) and first push.~~ Public by the owner's choice; pushed.
-3. [x] ~~Note to PWD.~~ Not needed: the owner is a PWD employee with permission.
-4. [ ] **You:** pick the secret code privately (Q7). It's needed only by Week 9.
-5. [x] ~~**Claude:** M0-T02 … M0-T08.~~ Done 2026-11-04.
-6. [ ] **You:** M0-MC1, MC2 (load `dist/` unpacked, open the panel → "Ready"), MC4 (`git status` clean). MC3 done.
-7. [~] **Together:** R0 ✓ → R1 partly (session expiry, logout page and cookie name left) → R2–R6 ✓ → R7 audit in progress.
-8. [ ] Build the profile and M3 live filters on all five pages → **demo M1 on Thu 12 Nov 2026.**
+1. [x] Pre-start items (X1, X2, X4–X7), M0, recon R0–R8: done.
+2. [x] Stages B1–B9 built and checked live on every flow.
+3. [ ] **Owner:** the secret code's hash (Q7), for the Dev screen.
+4. [ ] **Owner:** M0-MC1, MC2, MC4.
 
 ---
 
